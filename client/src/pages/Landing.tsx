@@ -29,13 +29,12 @@ export default function Landing() {
             <span className="inline-block py-1 px-3 rounded-full bg-white/5 border border-white/10 text-primary text-sm font-medium mb-6">
               The #1 Solana Marketing Platform
             </span>
-            <h1 className="text-5xl md:text-7xl font-display font-extrabold tracking-tight mb-6 bg-gradient-to-br from-white via-white to-gray-500 bg-clip-text text-transparent">
+            <h1 className="text-6xl md:text-8xl font-display font-extrabold tracking-tighter mb-8 bg-gradient-to-br from-white via-white to-gray-600 bg-clip-text text-transparent">
               Earn Crypto for <br />
-              <span className="text-primary neon-text">Real Engagement</span>
+              <span className="text-primary neon-text">Real Actions</span>
             </h1>
-            <p className="text-xl text-muted-foreground max-w-2xl mx-auto mb-10 leading-relaxed">
-              Connect your wallet, discover emerging Solana projects, and earn tokens for simple tasks.
-              Transparent, automated, and secure.
+            <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto mb-12 leading-relaxed font-medium">
+              The premier Solana engagement platform. Connect, complete tasks, and get paid instantly in project tokens.
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center">

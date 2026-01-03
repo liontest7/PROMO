@@ -34,7 +34,12 @@ const formSchema = insertCampaignSchema.extend({
     rewardAmount: z.coerce.number().min(0.00001),
     maxExecutions: z.coerce.number().optional()
   })).min(1, "At least one action is required"),
-  creatorId: z.number().optional()
+  creatorId: z.number().optional(),
+  bannerUrl: z.string().url("Invalid banner URL").optional().or(z.literal("")),
+  logoUrl: z.string().url("Invalid logo URL").optional().or(z.literal("")),
+  websiteUrl: z.string().url("Invalid website URL").optional().or(z.literal("")),
+  twitterUrl: z.string().url("Invalid Twitter URL").optional().or(z.literal("")),
+  telegramUrl: z.string().url("Invalid Telegram URL").optional().or(z.literal("")),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -52,6 +57,11 @@ export function CreateCampaignDialog() {
       tokenName: "",
       tokenAddress: "",
       totalBudget: 0,
+      bannerUrl: "",
+      logoUrl: "",
+      websiteUrl: "",
+      twitterUrl: "",
+      telegramUrl: "",
       actions: [{ type: "website", title: "", url: "", rewardAmount: 0 }],
       creatorId: 1 // In real app, this comes from auth context/session
     },
@@ -161,6 +171,77 @@ export function CreateCampaignDialog() {
                 </FormItem>
               )}
             />
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <FormField
+                control={form.control}
+                name="bannerUrl"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Banner Image URL</FormLabel>
+                    <FormControl>
+                      <Input placeholder="https://images.unsplash.com/..." {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="logoUrl"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Logo Image URL</FormLabel>
+                    <FormControl>
+                      <Input placeholder="https://images.unsplash.com/..." {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <FormField
+                control={form.control}
+                name="websiteUrl"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Website URL</FormLabel>
+                    <FormControl>
+                      <Input placeholder="https://..." {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="twitterUrl"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Twitter URL</FormLabel>
+                    <FormControl>
+                      <Input placeholder="https://twitter.com/..." {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="telegramUrl"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Telegram URL</FormLabel>
+                    <FormControl>
+                      <Input placeholder="https://t.me/..." {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
 
             <div className="space-y-4">
               <div className="flex justify-between items-center">
