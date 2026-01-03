@@ -9,6 +9,7 @@ import Landing from "@/pages/Landing";
 import Earn from "@/pages/Earn";
 import Dashboard from "@/pages/Dashboard";
 import AdvertiserDashboard from "@/pages/AdvertiserDashboard";
+import About from "@/pages/About";
 import NotFound from "@/pages/not-found";
 
 function ProtectedRoute({ component: Component, allowedRole }: { component: any, allowedRole?: string }) {
@@ -26,6 +27,7 @@ function Router() {
   return (
     <Switch>
       <Route path="/" component={Landing} />
+      <Route path="/about" component={About} />
       
       {/* User Routes */}
       <Route path="/earn">

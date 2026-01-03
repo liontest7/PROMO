@@ -13,6 +13,12 @@ interface WalletContextType {
   isLoading: boolean;
 }
 
+declare global {
+  interface Window {
+    solana: any;
+  }
+}
+
 const WalletContext = createContext<WalletContextType | undefined>(undefined);
 
 export function WalletProvider({ children }: { children: ReactNode }) {
@@ -35,14 +41,22 @@ export function WalletProvider({ children }: { children: ReactNode }) {
   const connect = async (selectedRole: "user" | "advertiser") => {
     setIsLoading(true);
     try {
-      // Mock wallet connection - in real app would use @solana/wallet-adapter
-      await new Promise(resolve => setTimeout(resolve, 800));
-      
-      const mockAddress = "8x" + Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+      // Real Solana Wallet Connection
+      if (!window.solana || !window.solana.isPhantom) {
+        toast({
+          title: "Phantom Not Found",
+          description: "Please install the Phantom wallet extension to continue.",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      const response = await window.solana.connect();
+      const publicAddress = response.publicKey.toString();
       
       // Auth with backend
       const res = await apiRequest("POST", api.users.getOrCreate.path, {
-        walletAddress: mockAddress,
+        walletAddress: publicAddress,
         role: selectedRole
       });
       

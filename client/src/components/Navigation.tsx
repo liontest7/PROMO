@@ -1,7 +1,7 @@
 import { Link, useLocation } from "wouter";
 import { useWallet } from "@/hooks/use-wallet";
 import { Button } from "@/components/ui/button";
-import { LayoutDashboard, Coins, Wallet, LogOut, PlusCircle, Trophy } from "lucide-react";
+import { LayoutDashboard, Coins, Wallet, LogOut, PlusCircle, Trophy, Twitter, Send, ShieldCheck } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export function Navigation() {
@@ -36,6 +36,7 @@ export function Navigation() {
 
           {/* Nav Links */}
           <div className="hidden md:flex items-center gap-2">
+            <NavLink href="/about" icon={ShieldCheck}>About</NavLink>
             {isConnected && role === "user" && (
               <>
                 <NavLink href="/earn" icon={Coins}>Earn</NavLink>
@@ -53,6 +54,18 @@ export function Navigation() {
 
           {/* Wallet Connection */}
           <div className="flex items-center gap-4">
+            <div className="hidden lg:flex items-center gap-4 mr-4 pr-4 border-r border-white/10 text-muted-foreground">
+              <a href="https://twitter.com" target="_blank" rel="noreferrer" className="hover:text-primary transition-colors">
+                <Twitter className="w-5 h-5" />
+              </a>
+              <a href="https://t.me" target="_blank" rel="noreferrer" className="hover:text-primary transition-colors">
+                <Send className="w-5 h-5" />
+              </a>
+              <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary">
+                <span className="text-[10px] font-bold uppercase tracking-widest">PROMO</span>
+                <span className="text-xs font-bold">$0.42</span>
+              </div>
+            </div>
             {isConnected ? (
               <div className="flex items-center gap-3">
                 <div className="hidden sm:flex flex-col items-end">

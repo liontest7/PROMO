@@ -2,8 +2,9 @@ import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Navigation } from "@/components/Navigation";
 import { useWallet } from "@/hooks/use-wallet";
-import { Rocket, Coins, ShieldCheck, ArrowRight } from "lucide-react";
+import { Rocket, Coins, ShieldCheck, ArrowRight, Users } from "lucide-react";
 import { motion } from "framer-motion";
+import { Card, CardContent } from "@/components/ui/card";
 
 export default function Landing() {
   const { connect } = useWallet();
@@ -38,21 +39,23 @@ export default function Landing() {
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button 
-                size="lg" 
-                onClick={() => connect('user')}
-                className="h-14 px-8 text-lg bg-primary text-primary-foreground hover:bg-primary/90 shadow-[0_0_30px_rgba(34,197,94,0.3)] hover:shadow-[0_0_40px_rgba(34,197,94,0.5)] transition-all"
-              >
-                Start Earning <Coins className="ml-2 w-5 h-5" />
-              </Button>
-              <Button 
-                size="lg" 
-                variant="outline" 
-                onClick={() => connect('advertiser')}
-                className="h-14 px-8 text-lg border-white/10 hover:bg-white/5"
-              >
-                Create Campaign <Rocket className="ml-2 w-5 h-5" />
-              </Button>
+              <Link href="/earn">
+                <Button 
+                  size="lg" 
+                  className="h-14 px-8 text-lg bg-primary text-primary-foreground hover:bg-primary/90 shadow-[0_0_30px_rgba(34,197,94,0.3)] hover:shadow-[0_0_40px_rgba(34,197,94,0.5)] transition-all"
+                >
+                  Start Earning <Coins className="ml-2 w-5 h-5" />
+                </Button>
+              </Link>
+              <Link href="/advertiser">
+                <Button 
+                  size="lg" 
+                  variant="outline" 
+                  className="h-14 px-8 text-lg border-white/10 hover:bg-white/5"
+                >
+                  Create Campaign <Rocket className="ml-2 w-5 h-5" />
+                </Button>
+              </Link>
             </div>
           </motion.div>
 
@@ -82,36 +85,78 @@ export default function Landing() {
       <section className="py-24 bg-black/20 relative">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-display font-bold mb-4">How It Works</h2>
-            <p className="text-muted-foreground max-w-xl mx-auto">Simple steps to start earning or growing your project.</p>
+            <h2 className="text-4xl font-display font-bold mb-4">Why Choose Promotion?</h2>
+            <p className="text-muted-foreground max-w-xl mx-auto">The most transparent engagement platform on Solana.</p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-8">
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-20">
             {[
-              { 
-                icon: <Coins className="w-8 h-8 text-primary" />,
-                title: "1. Connect Wallet",
-                desc: "Link your Solana wallet safely. No deposits required for earners."
-              },
-              { 
-                icon: <ShieldCheck className="w-8 h-8 text-secondary" />,
-                title: "2. Complete Actions",
-                desc: "Verify tasks like Twitter follows, Telegram joins, or website visits."
-              },
-              { 
-                icon: <Rocket className="w-8 h-8 text-blue-500" />,
-                title: "3. Get Paid Instantly",
-                desc: "Rewards are automatically sent to your wallet upon verification."
-              },
-            ].map((feature, i) => (
-              <div key={i} className="p-8 rounded-2xl bg-card border border-white/5 hover:border-primary/20 transition-all hover:-translate-y-1">
-                <div className="w-16 h-16 rounded-xl bg-white/5 flex items-center justify-center mb-6">
-                  {feature.icon}
-                </div>
-                <h3 className="text-xl font-bold mb-3">{feature.title}</h3>
-                <p className="text-muted-foreground">{feature.desc}</p>
-              </div>
+              { title: "Real Users", desc: "Anti-bot verification ensures every action comes from a unique Solana wallet.", icon: Users },
+              { title: "On-Chain Proof", desc: "Transactions are recorded on Solana for immutable proof of payout.", icon: ShieldCheck },
+              { title: "Native Rewards", desc: "Projects pay directly in their own tokens, creating instant holders.", icon: Coins },
+              { title: "Instant Growth", desc: "Launch a campaign and see real-time engagement in minutes.", icon: Rocket }
+            ].map((item, i) => (
+              <Card key={i} className="glass-card border-white/5 bg-white/[0.02] hover:border-primary/20 transition-all">
+                <CardContent className="p-6">
+                  <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center mb-4">
+                    <item.icon className="w-6 h-6 text-primary" />
+                  </div>
+                  <h3 className="font-bold mb-2">{item.title}</h3>
+                  <p className="text-sm text-muted-foreground leading-relaxed">{item.desc}</p>
+                </CardContent>
+              </Card>
             ))}
+          </div>
+
+          <div className="bg-gradient-to-br from-primary/10 to-secondary/10 rounded-3xl p-8 md:p-12 border border-white/10">
+            <div className="grid md:grid-cols-2 gap-12 items-center">
+              <div>
+                <h2 className="text-3xl font-display font-bold mb-6">Built for the $PROMO Ecosystem</h2>
+                <p className="text-lg text-muted-foreground mb-8">
+                  Our native token $PROMO powers the entire platform. Hold $PROMO to get higher rewards, or stake it as an advertiser to get premium placement.
+                </p>
+                <div className="flex gap-4">
+                  <div className="text-center p-4 bg-black/20 rounded-2xl border border-white/5 flex-1">
+                    <p className="text-2xl font-bold text-primary">15%</p>
+                    <p className="text-xs text-muted-foreground uppercase font-bold">Reward Boost</p>
+                  </div>
+                  <div className="text-center p-4 bg-black/20 rounded-2xl border border-white/5 flex-1">
+                    <p className="text-2xl font-bold text-secondary">Low</p>
+                    <p className="text-xs text-muted-foreground uppercase font-bold">Platform Fees</p>
+                  </div>
+                </div>
+              </div>
+              <div className="flex justify-center">
+                <div className="w-48 h-48 rounded-full bg-primary/20 flex items-center justify-center border-4 border-primary/30 shadow-[0_0_50px_rgba(34,197,94,0.2)]">
+                  <Coins className="w-24 h-24 text-primary" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Featured Campaigns */}
+      <section className="py-24">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-end mb-12">
+            <div>
+              <h2 className="text-4xl font-display font-bold mb-2">Active Campaigns</h2>
+              <p className="text-muted-foreground">Join these top-tier projects and start earning.</p>
+            </div>
+            <Link href="/earn">
+              <Button variant="ghost" className="text-primary hover:text-primary hover:bg-primary/10">
+                View All Campaigns <ArrowRight className="ml-2 w-4 h-4" />
+              </Button>
+            </Link>
+          </div>
+          
+          {/* We'll use the same grid from Earn page but limited */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {/* Real campaigns will be loaded here in a real app */}
+            <div className="col-span-full text-center py-12 bg-white/5 rounded-3xl border border-dashed border-white/10">
+              <p className="text-muted-foreground">Connect wallet to view live campaigns</p>
+            </div>
           </div>
         </div>
       </section>

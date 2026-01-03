@@ -14,8 +14,9 @@ export default function Earn() {
   const [selectedAction, setSelectedAction] = useState<{ action: Action; campaign: Campaign } | null>(null);
 
   const filteredCampaigns = campaigns?.filter(c => 
-    c.title.toLowerCase().includes(searchTerm.toLowerCase()) || 
-    c.tokenName.toLowerCase().includes(searchTerm.toLowerCase())
+    (c.title?.toLowerCase() || "").includes(searchTerm.toLowerCase()) || 
+    (c.tokenName?.toLowerCase() || "").includes(searchTerm.toLowerCase()) ||
+    (c.description?.toLowerCase() || "").includes(searchTerm.toLowerCase())
   );
 
   return (
