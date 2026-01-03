@@ -49,6 +49,13 @@ export const api = {
           reputation: z.number()
         }),
       }
+    },
+    executions: {
+      method: 'GET' as const,
+      path: '/api/users/:walletAddress/executions',
+      responses: {
+        200: z.array(z.custom<typeof executions.$inferSelect & { action: typeof actions.$inferSelect, campaign: typeof campaigns.$inferSelect }>()),
+      }
     }
   },
   campaigns: {

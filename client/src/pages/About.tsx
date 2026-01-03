@@ -48,19 +48,26 @@ export default function About() {
         {/* Mission Section */}
         <div className="grid md:grid-cols-2 gap-16 items-center mb-24">
           <div>
-            <h2 className="text-4xl font-display font-bold mb-6">Why Promotion?</h2>
+            <h2 className="text-4xl font-display font-bold mb-6">Why Choose Promotion?</h2>
             <p className="text-lg text-muted-foreground leading-relaxed mb-6">
               In a landscape crowded with bots and inorganic growth, Promotion stands for authenticity. 
               Our platform helps other projects grow by providing them with a community of verified users 
-              who are genuinely interested in their success. Projects get real engagement, and users get rewarded 
-              for their time and effort.
+              who are genuinely interested in their success.
             </p>
+            <div className="bg-primary/5 border border-primary/10 p-6 rounded-2xl mb-8">
+              <h3 className="text-xl font-bold text-primary mb-3">Value for Projects</h3>
+              <ul className="space-y-2 text-muted-foreground list-disc list-inside">
+                <li>Acquire real, unique holders through task-based rewards.</li>
+                <li>Boost social engagement on Twitter and Telegram instantly.</li>
+                <li>Reduce marketing waste by paying only for verified actions.</li>
+                <li>Build a long-term community rather than just temporary hype.</li>
+              </ul>
+            </div>
             <div className="space-y-4">
               {[
                 { icon: Rocket, title: "Accelerate Growth", desc: "Get high-quality exposure and real social engagement instantly." },
-                { icon: ShieldCheck, title: "Verified Actions", desc: "Every task is verified on-chain and through social APIs." },
+                { icon: ShieldCheck, title: "Verified Actions", desc: "Every task is verified on-chain and through digital signatures." },
                 { icon: Zap, title: "Instant Payouts", desc: "No waiting periods. Earn tokens directly to your wallet." },
-                { icon: Globe, title: "Global Reach", desc: "Connect with Solana enthusiasts from every corner of the world." }
               ].map((item, i) => (
                 <div key={i} className="flex gap-4">
                   <div className="p-2 h-fit rounded-lg bg-primary/10">

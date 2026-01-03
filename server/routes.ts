@@ -63,6 +63,28 @@ export async function registerRoutes(
     });
   });
 
+  app.get(api.users.executions.path, async (req, res) => {
+    const user = await storage.getUserByWallet(req.params.walletAddress);
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    const userExecutions = await storage.getExecutionsByUser(user.id);
+    const results = [];
+    
+    for (const execution of userExecutions) {
+      const action = await storage.getAction(execution.actionId);
+      const campaign = await storage.getCampaign(execution.campaignId);
+      if (action && campaign) {
+        results.push({
+          ...execution,
+          action,
+          campaign
+        });
+      }
+    }
+    
+    res.json(results);
+  });
+
   // Campaigns
   app.get(api.campaigns.list.path, async (req, res) => {
     // const creatorId = req.query.creatorId ? parseInt(req.query.creatorId as string) : undefined;
