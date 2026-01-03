@@ -1,16 +1,254 @@
 import type { Express } from "express";
-import { createServer, type Server } from "http";
+import type { Server } from "http";
 import { storage } from "./storage";
+import { api } from "@shared/routes";
+import { z } from "zod";
+import { insertCampaignSchema, insertActionSchema } from "@shared/schema";
 
 export async function registerRoutes(
   httpServer: Server,
   app: Express
 ): Promise<Server> {
-  // put application routes here
-  // prefix all routes with /api
 
-  // use storage to perform CRUD operations on the storage interface
-  // e.g. storage.insertUser(user) or storage.getUserByUsername(username)
+  // Users
+  app.post(api.users.getOrCreate.path, async (req, res) => {
+    try {
+      const input = api.users.getOrCreate.input.parse(req.body);
+      let user = await storage.getUserByWallet(input.walletAddress);
+      
+      if (!user) {
+        user = await storage.createUser({ 
+          walletAddress: input.walletAddress,
+          role: input.role || "user"
+        });
+        res.status(201).json(user);
+      } else {
+        res.json(user);
+      }
+    } catch (err) {
+      if (err instanceof z.ZodError) {
+        return res.status(400).json({ message: err.errors[0].message });
+      }
+      res.status(500).json({ message: "Internal Server Error" });
+    }
+  });
+
+  app.get(api.users.get.path, async (req, res) => {
+    const user = await storage.getUserByWallet(req.params.walletAddress);
+    if (!user) return res.status(404).json({ message: "User not found" });
+    res.json(user);
+  });
+
+  app.get(api.users.stats.path, async (req, res) => {
+    const user = await storage.getUserByWallet(req.params.walletAddress);
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    const executions = await storage.getExecutionsByUser(user.id);
+    const completed = executions.filter(e => e.status === 'paid' || e.status === 'verified').length;
+    // Mock total earned calculation
+    const totalEarned = executions
+      .filter(e => e.status === 'paid')
+      .length * 50; // Mock 50 tokens per task average for now
+
+    res.json({
+      totalEarned: totalEarned.toString(),
+      tasksCompleted: completed,
+      reputation: user.reputationScore
+    });
+  });
+
+  // Campaigns
+  app.get(api.campaigns.list.path, async (req, res) => {
+    // const creatorId = req.query.creatorId ? parseInt(req.query.creatorId as string) : undefined;
+    // For MVP, just list all
+    const campaigns = await storage.getCampaigns();
+    res.json(campaigns);
+  });
+
+  app.get(api.campaigns.get.path, async (req, res) => {
+    const campaign = await storage.getCampaign(parseInt(req.params.id));
+    if (!campaign) return res.status(404).json({ message: "Campaign not found" });
+    res.json(campaign);
+  });
+
+  app.post(api.campaigns.create.path, async (req, res) => {
+    try {
+      // Manually parse to handle the extended schema with actions
+      const body = req.body;
+      const campaignData = insertCampaignSchema.parse({
+        ...body,
+        remainingBudget: body.totalBudget, // Set initial remaining budget
+        status: "active"
+      });
+      
+      const campaign = await storage.createCampaign(campaignData);
+
+      // Create actions
+      const actionsData = z.array(insertActionSchema.omit({ campaignId: true })).parse(body.actions);
+      for (const action of actionsData) {
+        await storage.createAction({
+          ...action,
+          campaignId: campaign.id
+        });
+      }
+
+      const result = await storage.getCampaign(campaign.id);
+      res.status(201).json(result);
+    } catch (err) {
+      if (err instanceof z.ZodError) {
+        return res.status(400).json({ message: err.errors[0].message });
+      }
+      console.error(err);
+      res.status(500).json({ message: "Failed to create campaign" });
+    }
+  });
+
+  // Verification & Claiming
+  app.post(api.executions.verify.path, async (req, res) => {
+    try {
+      const input = api.executions.verify.input.parse(req.body);
+      
+      // Get User
+      const user = await storage.getUserByWallet(input.userWallet);
+      if (!user) return res.status(404).json({ message: "User not found" });
+
+      // Get Action
+      const action = await storage.getAction(input.actionId);
+      if (!action) return res.status(404).json({ message: "Action not found" });
+
+      // Mock Verification Logic
+      // In real app: call Twitter/Telegram API
+      const isVerified = true; 
+
+      if (isVerified) {
+        const execution = await storage.createExecution({
+          actionId: action.id,
+          campaignId: action.campaignId,
+          userId: user.id,
+          status: "verified",
+          transactionSignature: null
+        });
+        
+        await storage.incrementActionExecution(action.id);
+        
+        res.json({
+          success: true,
+          status: "verified",
+          message: "Action verified successfully",
+          executionId: execution.id
+        });
+      } else {
+         res.json({
+          success: false,
+          status: "rejected",
+          message: "Verification failed"
+        });
+      }
+    } catch (err) {
+      res.status(400).json({ message: "Invalid request" });
+    }
+  });
+
+  app.post(api.executions.claim.path, async (req, res) => {
+     try {
+      const input = api.executions.claim.input.parse(req.body);
+      
+      const execution = await storage.getExecution(input.executionId);
+      if (!execution) return res.status(404).json({ message: "Execution not found" });
+      
+      if (execution.status === 'paid') {
+        return res.status(400).json({ message: "Already paid" });
+      }
+
+      // Mock On-Chain Transaction
+      const mockTxSignature = "5x" + Math.random().toString(36).substring(7);
+
+      const updated = await storage.updateExecutionStatus(
+        execution.id,
+        "paid",
+        mockTxSignature
+      );
+
+      res.json({
+        success: true,
+        txSignature: mockTxSignature
+      });
+
+    } catch (err) {
+      res.status(400).json({ message: "Invalid request" });
+    }
+  });
+
+  // Seed Data
+  seed();
 
   return httpServer;
+}
+
+async function seed() {
+  const campaigns = await storage.getCampaigns();
+  if (campaigns.length === 0) {
+    console.log("Seeding database...");
+    
+    // Create Demo Advertiser
+    const advertiser = await storage.createUser({
+      walletAddress: "DemoAdvertiserWallet123",
+      role: "advertiser"
+    });
+
+    // Create Campaign 1
+    const c1 = await storage.createCampaign({
+      title: "Solana Summer Airdrop",
+      description: "Join our community and get free tokens! We are building the next gen DeFi protocol.",
+      tokenName: "SOLSUM",
+      tokenAddress: "So11111111111111111111111111111111111111112",
+      totalBudget: "10000",
+      remainingBudget: "10000",
+      status: "active",
+      creatorId: advertiser.id,
+      requirements: { minSolBalance: 0.1 }
+    });
+
+    await storage.createAction({
+      campaignId: c1.id,
+      type: "twitter",
+      title: "Follow @SolanaSummer",
+      rewardAmount: "100",
+      url: "https://twitter.com/solana",
+      maxExecutions: 1000
+    });
+    
+    await storage.createAction({
+      campaignId: c1.id,
+      type: "telegram",
+      title: "Join Telegram Group",
+      rewardAmount: "50",
+      url: "https://t.me/solana",
+      maxExecutions: 500
+    });
+
+    // Create Campaign 2
+    const c2 = await storage.createCampaign({
+      title: "Neon EVM Launch",
+      description: "Experience Ethereum on Solana. Complete tasks to earn NEON tokens.",
+      tokenName: "NEON",
+      tokenAddress: "Neon...",
+      totalBudget: "5000",
+      remainingBudget: "5000",
+      status: "active",
+      creatorId: advertiser.id,
+      requirements: {}
+    });
+
+     await storage.createAction({
+      campaignId: c2.id,
+      type: "website",
+      title: "Visit Official Website",
+      rewardAmount: "10",
+      url: "https://neonevm.org",
+      maxExecutions: 2000
+    });
+
+    console.log("Seeding complete.");
+  }
 }
