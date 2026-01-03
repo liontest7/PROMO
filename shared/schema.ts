@@ -21,6 +21,11 @@ export const campaigns = pgTable("campaigns", {
   tokenAddress: text("token_address").notNull(),
   totalBudget: numeric("total_budget").notNull(), // Using numeric for token amounts
   remainingBudget: numeric("remaining_budget").notNull(),
+  bannerUrl: text("banner_url"), // Added for professional look
+  logoUrl: text("logo_url"), // Added for professional look
+  websiteUrl: text("website_url"), // Project website
+  twitterUrl: text("twitter_url"), // Project Twitter
+  telegramUrl: text("telegram_url"), // Project Telegram
   status: text("status", { enum: ["active", "completed", "paused"] }).default("active").notNull(),
   creatorId: integer("creator_id").references(() => users.id).notNull(),
   requirements: jsonb("requirements").$type<{

@@ -196,49 +196,59 @@ async function seed() {
       role: "advertiser"
     });
 
-    // Create Campaign 1
-    const c1 = await storage.createCampaign({
-      title: "Solana Summer Airdrop",
-      description: "Join our community and get free tokens! We are building the next gen DeFi protocol.",
-      tokenName: "SOLSUM",
-      tokenAddress: "So11111111111111111111111111111111111111112",
-      totalBudget: "10000",
-      remainingBudget: "10000",
-      status: "active",
-      creatorId: advertiser.id,
-      requirements: { minSolBalance: 0.1 }
-    });
+      // Create Campaign 1
+      const c1 = await storage.createCampaign({
+        title: "Solana Summer Airdrop",
+        description: "Join our community and get free tokens! We are building the next gen DeFi protocol.",
+        tokenName: "SOLSUM",
+        tokenAddress: "So11111111111111111111111111111111111111112",
+        totalBudget: "10000",
+        remainingBudget: "10000",
+        status: "active",
+        creatorId: advertiser.id,
+        requirements: { minSolBalance: 0.1 },
+        bannerUrl: "https://images.unsplash.com/photo-1639762681485-074b7f938ba0?q=80&w=2000",
+        logoUrl: "https://images.unsplash.com/photo-1622560480605-d83c853bc5c3?q=80&w=200&h=200&fit=crop",
+        websiteUrl: "https://solana.com",
+        twitterUrl: "https://twitter.com/solana",
+        telegramUrl: "https://t.me/solana"
+      });
 
-    await storage.createAction({
-      campaignId: c1.id,
-      type: "twitter",
-      title: "Follow @SolanaSummer",
-      rewardAmount: "100",
-      url: "https://twitter.com/solana",
-      maxExecutions: 1000
-    });
-    
-    await storage.createAction({
-      campaignId: c1.id,
-      type: "telegram",
-      title: "Join Telegram Group",
-      rewardAmount: "50",
-      url: "https://t.me/solana",
-      maxExecutions: 500
-    });
+      await storage.createAction({
+        campaignId: c1.id,
+        type: "twitter",
+        title: "Follow @SolanaSummer",
+        rewardAmount: "100",
+        url: "https://twitter.com/solana",
+        maxExecutions: 1000
+      });
+      
+      await storage.createAction({
+        campaignId: c1.id,
+        type: "telegram",
+        title: "Join Telegram Group",
+        rewardAmount: "50",
+        url: "https://t.me/solana",
+        maxExecutions: 500
+      });
 
-    // Create Campaign 2
-    const c2 = await storage.createCampaign({
-      title: "Neon EVM Launch",
-      description: "Experience Ethereum on Solana. Complete tasks to earn NEON tokens.",
-      tokenName: "NEON",
-      tokenAddress: "Neon...",
-      totalBudget: "5000",
-      remainingBudget: "5000",
-      status: "active",
-      creatorId: advertiser.id,
-      requirements: {}
-    });
+      // Create Campaign 2
+      const c2 = await storage.createCampaign({
+        title: "Neon EVM Launch",
+        description: "Experience Ethereum on Solana. Complete tasks to earn NEON tokens.",
+        tokenName: "NEON",
+        tokenAddress: "Neon...",
+        totalBudget: "5000",
+        remainingBudget: "5000",
+        status: "active",
+        creatorId: advertiser.id,
+        requirements: {},
+        bannerUrl: "https://images.unsplash.com/photo-1642104704074-907c0698cbd9?q=80&w=2000",
+        logoUrl: "https://images.unsplash.com/photo-1621504450181-5d356f63d3ee?q=80&w=200&h=200&fit=crop",
+        websiteUrl: "https://neonevm.org",
+        twitterUrl: "https://twitter.com/neonevm",
+        telegramUrl: "https://t.me/neonevm"
+      });
 
      await storage.createAction({
       campaignId: c2.id,
