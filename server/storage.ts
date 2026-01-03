@@ -52,21 +52,15 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getCampaigns(creatorId?: number): Promise<(Campaign & { actions: Action[] })[]> {
-    let query = db.select().from(campaigns).orderBy(desc(campaigns.createdAt));
+    const allCampaigns = await (creatorId 
+      ? db.select().from(campaigns).where(eq(campaigns.creatorId, creatorId)).orderBy(desc(campaigns.createdAt))
+      : db.select().from(campaigns).orderBy(desc(campaigns.createdAt)));
     
-    if (creatorId) {
-      // @ts-ignore - dyanmic query construction
-      query = query.where(eq(campaigns.creatorId, creatorId));
-    }
-
-    const allCampaigns = await query;
     const results = [];
-
     for (const campaign of allCampaigns) {
       const campaignActions = await db.select().from(actions).where(eq(actions.campaignId, campaign.id));
       results.push({ ...campaign, actions: campaignActions });
     }
-
     return results;
   }
 
