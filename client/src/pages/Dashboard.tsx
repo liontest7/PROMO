@@ -16,7 +16,12 @@ export default function Dashboard() {
   // Fetch real activity
   const { data: executions } = useQuery({
     queryKey: [api.users.executions.path, walletAddress],
-    enabled: !!walletAddress
+    enabled: !!walletAddress,
+    queryFn: async () => {
+      const res = await fetch(api.users.executions.path.replace(':walletAddress', walletAddress!));
+      if (!res.ok) throw new Error('Failed to fetch executions');
+      return res.json();
+    }
   });
 
   const chartData = [
