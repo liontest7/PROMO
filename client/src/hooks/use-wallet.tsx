@@ -77,6 +77,11 @@ export function WalletProvider({ children }: { children: ReactNode }) {
       // Prefetch user data
       queryClient.invalidateQueries({ queryKey: [api.users.get.path, user.walletAddress] });
 
+      // Handle real wallet disconnect
+      window.solana.on('disconnect', () => {
+        disconnect();
+      });
+
     } catch (error) {
       toast({
         title: "Connection Failed",

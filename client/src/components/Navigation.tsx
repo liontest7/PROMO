@@ -36,7 +36,6 @@ export function Navigation() {
 
           {/* Nav Links */}
           <div className="hidden md:flex items-center gap-2">
-            <NavLink href="/about" icon={ShieldCheck}>About</NavLink>
             {isConnected && role === "user" && (
               <>
                 <NavLink href="/earn" icon={Coins}>Earn</NavLink>
@@ -47,9 +46,9 @@ export function Navigation() {
             {isConnected && role === "advertiser" && (
               <>
                 <NavLink href="/advertiser" icon={LayoutDashboard}>Campaigns</NavLink>
-                <NavLink href="/create-campaign" icon={PlusCircle}>New Campaign</NavLink>
               </>
             )}
+            <NavLink href="/about" icon={ShieldCheck}>About</NavLink>
           </div>
 
           {/* Wallet Connection */}

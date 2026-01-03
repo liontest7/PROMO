@@ -2,6 +2,7 @@ import { useState } from "react";
 import { type Action, type Campaign } from "@shared/schema";
 import { useVerifyAction } from "@/hooks/use-executions";
 import { useWallet } from "@/hooks/use-wallet";
+import { useToast } from "@/hooks/use-toast";
 import {
   Dialog,
   DialogContent,
@@ -25,28 +26,41 @@ interface VerifyActionDialogProps {
 export function VerifyActionDialog({ action, campaign, open, onOpenChange }: VerifyActionDialogProps) {
   const { verify, isPending } = useVerifyAction();
   const { walletAddress } = useWallet();
+  const { toast } = useToast();
   const [proof, setProof] = useState("");
   const [step, setStep] = useState<"perform" | "verify" | "success">("perform");
 
   if (!action || !campaign) return null;
 
-  const handleVerify = () => {
+  const handleVerify = async () => {
     if (!walletAddress) return;
 
-    // Simulate verification delay
-    verify(
-      { actionId: action.id, userWallet: walletAddress, proof },
-      {
-        onSuccess: () => {
-          setStep("success");
-          setTimeout(() => {
-            onOpenChange(false);
-            setStep("perform");
-            setProof("");
-          }, 2000);
+    try {
+      // Real Solana Transaction Proof (Simplified for MVP, would involve signing in real app)
+      const message = `Verify action ${action.id} for campaign ${campaign.id}`;
+      const encodedMessage = new TextEncoder().encode(message);
+      const signedMessage = await window.solana.signMessage(encodedMessage, "utf8");
+      
+      verify(
+        { actionId: action.id, userWallet: walletAddress, proof: JSON.stringify(signedMessage) },
+        {
+          onSuccess: () => {
+            setStep("success");
+            setTimeout(() => {
+              onOpenChange(false);
+              setStep("perform");
+              setProof("");
+            }, 2000);
+          }
         }
-      }
-    );
+      );
+    } catch (err) {
+      toast({
+        title: "Verification Canceled",
+        description: "You must sign the message to verify your action.",
+        variant: "destructive"
+      });
+    }
   };
 
   return (
