@@ -3,22 +3,31 @@ import { useUserStats } from "@/hooks/use-user-stats";
 import { Navigation } from "@/components/Navigation";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Coins, Trophy, TrendingUp, Activity } from "lucide-react";
+import { Coins, Trophy, TrendingUp, Activity, CheckCircle } from "lucide-react";
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
-
-const mockChartData = [
-  { name: 'Mon', earnings: 400 },
-  { name: 'Tue', earnings: 300 },
-  { name: 'Wed', earnings: 600 },
-  { name: 'Thu', earnings: 200 },
-  { name: 'Fri', earnings: 900 },
-  { name: 'Sat', earnings: 1100 },
-  { name: 'Sun', earnings: 800 },
-];
+import { useQuery } from "@tanstack/react-query";
+import { api } from "@shared/routes";
+import { formatDistanceToNow } from "date-fns";
 
 export default function Dashboard() {
   const { walletAddress } = useWallet();
   const { data: stats, isLoading } = useUserStats(walletAddress);
+  
+  // Fetch real activity
+  const { data: executions } = useQuery({
+    queryKey: [api.users.executions.path, walletAddress],
+    enabled: !!walletAddress
+  });
+
+  const chartData = [
+    { name: 'Mon', earnings: 0 },
+    { name: 'Tue', earnings: 0 },
+    { name: 'Wed', earnings: 0 },
+    { name: 'Thu', earnings: 0 },
+    { name: 'Fri', earnings: 0 },
+    { name: 'Sat', earnings: 0 },
+    { name: 'Sun', earnings: 0 },
+  ];
 
   if (isLoading) {
     return (
@@ -103,7 +112,7 @@ export default function Dashboard() {
             <CardContent>
               <div className="h-[300px] w-full">
                 <ResponsiveContainer width="100%" height="100%">
-                  <AreaChart data={mockChartData}>
+                  <AreaChart data={chartData}>
                     <defs>
                       <linearGradient id="colorEarnings" x1="0" y1="0" x2="0" y2="1">
                         <stop offset="5%" stopColor="#22c55e" stopOpacity={0.3}/>
@@ -130,15 +139,24 @@ export default function Dashboard() {
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                {[1, 2, 3, 4].map((i) => (
-                  <div key={i} className="flex items-start gap-4 p-3 rounded-xl bg-white/5 hover:bg-white/10 transition-colors">
-                    <div className="w-2 h-2 mt-2 rounded-full bg-primary" />
-                    <div>
-                      <p className="text-sm font-medium">Completed "Follow on Twitter"</p>
-                      <p className="text-xs text-muted-foreground">Project Campaign • {i*2}h ago</p>
+                {executions && executions.length > 0 ? (
+                  executions.slice(0, 5).map((execution: any) => (
+                    <div key={execution.id} className="flex items-start gap-4 p-3 rounded-xl bg-white/5 hover:bg-white/10 transition-colors">
+                      <div className={`w-2 h-2 mt-2 rounded-full ${execution.status === 'paid' ? 'bg-primary' : 'bg-yellow-500'}`} />
+                      <div>
+                        <p className="text-sm font-medium">{execution.action?.title || 'Action Completed'}</p>
+                        <p className="text-xs text-muted-foreground">
+                          {execution.campaign?.title} • {formatDistanceToNow(new Date(execution.createdAt), { addSuffix: true })}
+                        </p>
+                      </div>
                     </div>
+                  ))
+                ) : (
+                  <div className="text-center py-8 text-muted-foreground">
+                    <CheckCircle className="w-8 h-8 mx-auto mb-2 opacity-20" />
+                    <p className="text-sm">No activity yet</p>
                   </div>
-                ))}
+                )}
               </div>
             </CardContent>
           </Card>

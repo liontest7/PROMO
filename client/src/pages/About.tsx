@@ -48,14 +48,16 @@ export default function About() {
         {/* Mission Section */}
         <div className="grid md:grid-cols-2 gap-16 items-center mb-24">
           <div>
-            <h2 className="text-4xl font-display font-bold mb-6">Our Mission</h2>
+            <h2 className="text-4xl font-display font-bold mb-6">Why Promotion?</h2>
             <p className="text-lg text-muted-foreground leading-relaxed mb-6">
               In a landscape crowded with bots and inorganic growth, Promotion stands for authenticity. 
-              Our mission is to provide Solana projects with tools to build real, verified communities while 
-              rewarding users for their genuine interest and participation.
+              Our platform helps other projects grow by providing them with a community of verified users 
+              who are genuinely interested in their success. Projects get real engagement, and users get rewarded 
+              for their time and effort.
             </p>
             <div className="space-y-4">
               {[
+                { icon: Rocket, title: "Accelerate Growth", desc: "Get high-quality exposure and real social engagement instantly." },
                 { icon: ShieldCheck, title: "Verified Actions", desc: "Every task is verified on-chain and through social APIs." },
                 { icon: Zap, title: "Instant Payouts", desc: "No waiting periods. Earn tokens directly to your wallet." },
                 { icon: Globe, title: "Global Reach", desc: "Connect with Solana enthusiasts from every corner of the world." }

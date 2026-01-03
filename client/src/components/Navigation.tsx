@@ -48,7 +48,9 @@ export function Navigation() {
                 <NavLink href="/advertiser" icon={LayoutDashboard}>Campaigns</NavLink>
               </>
             )}
-            <NavLink href="/about" icon={ShieldCheck}>About</NavLink>
+            <div className="ml-auto flex items-center gap-2">
+              <NavLink href="/about" icon={ShieldCheck}>About</NavLink>
+            </div>
           </div>
 
           {/* Wallet Connection */}

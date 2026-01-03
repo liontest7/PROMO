@@ -45,10 +45,16 @@ export async function registerRoutes(
 
     const executions = await storage.getExecutionsByUser(user.id);
     const completed = executions.filter(e => e.status === 'paid' || e.status === 'verified').length;
-    // Mock total earned calculation
-    const totalEarned = executions
-      .filter(e => e.status === 'paid')
-      .length * 50; // Mock 50 tokens per task average for now
+    
+    // Calculate real total earned from paid executions
+    let totalEarned = 0;
+    const paidExecutions = executions.filter(e => e.status === 'paid');
+    for (const execution of paidExecutions) {
+      const action = await storage.getAction(execution.actionId);
+      if (action) {
+        totalEarned += Number(action.rewardAmount);
+      }
+    }
 
     res.json({
       totalEarned: totalEarned.toString(),
