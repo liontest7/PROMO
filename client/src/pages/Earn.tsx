@@ -5,19 +5,40 @@ import { CampaignCard } from "@/components/CampaignCard";
 import { VerifyActionDialog } from "@/components/VerifyActionDialog";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Search, Filter } from "lucide-react";
+import { Search, Filter, X } from "lucide-react";
 import { type Action, type Campaign } from "@shared/schema";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Label } from "@/components/ui/label";
 
 export default function Earn() {
   const { data: campaigns, isLoading } = useCampaigns();
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedAction, setSelectedAction] = useState<{ action: Action; campaign: Campaign } | null>(null);
+  const [activeFilters, setActiveFilters] = useState<string[]>([]);
 
-  const filteredCampaigns = campaigns?.filter(c => 
-    ((c.title || "").toLowerCase()).includes(searchTerm.toLowerCase()) || 
-    ((c.tokenName || "").toLowerCase()).includes(searchTerm.toLowerCase()) ||
-    ((c.description || "").toLowerCase()).includes(searchTerm.toLowerCase())
-  );
+  const filteredCampaigns = campaigns?.filter(c => {
+    const matchesSearch = 
+      ((c.title || "").toLowerCase()).includes(searchTerm.toLowerCase()) || 
+      ((c.tokenName || "").toLowerCase()).includes(searchTerm.toLowerCase()) ||
+      ((c.description || "").toLowerCase()).includes(searchTerm.toLowerCase());
+    
+    if (activeFilters.length === 0) return matchesSearch;
+    
+    const matchesFilter = c.actions.some(a => activeFilters.includes(a.type));
+    return matchesSearch && matchesFilter;
+  });
+
+  const toggleFilter = (type: string) => {
+    setActiveFilters(prev => 
+      prev.includes(type) ? prev.filter(t => t !== type) : [...prev, type]
+    );
+  };
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -40,9 +61,50 @@ export default function Earn() {
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
             </div>
-            <button className="p-2.5 rounded-lg bg-white/5 border border-white/10 hover:bg-white/10">
-              <Filter className="w-5 h-5 text-muted-foreground" />
-            </button>
+            
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button variant="outline" className="gap-2 border-white/10 bg-white/5 hover:bg-white/10">
+                  <Filter className="w-4 h-4" />
+                  {activeFilters.length > 0 && (
+                    <span className="flex h-4 w-4 items-center justify-center rounded-full bg-primary text-[10px] text-primary-foreground font-bold">
+                      {activeFilters.length}
+                    </span>
+                  )}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-56 glass-card border-white/10 bg-background/95 backdrop-blur-xl">
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <h4 className="font-bold text-sm">Filter by Type</h4>
+                    {activeFilters.length > 0 && (
+                      <Button 
+                        variant="ghost" 
+                        size="sm" 
+                        className="h-auto p-0 text-xs text-primary"
+                        onClick={() => setActiveFilters([])}
+                      >
+                        Clear
+                      </Button>
+                    )}
+                  </div>
+                  <div className="space-y-3">
+                    {['twitter', 'telegram', 'website'].map((type) => (
+                      <div key={type} className="flex items-center space-x-2">
+                        <Checkbox 
+                          id={type} 
+                          checked={activeFilters.includes(type)}
+                          onCheckedChange={() => toggleFilter(type)}
+                        />
+                        <Label htmlFor={type} className="text-sm font-medium capitalize cursor-pointer">
+                          {type}
+                        </Label>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </PopoverContent>
+            </Popover>
           </div>
         </div>
 
