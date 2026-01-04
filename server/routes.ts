@@ -208,11 +208,12 @@ export async function registerRoutes(
   });
 
   // Seed Data
-  seed();
+  // seed(); // Commented out to prevent mock data on restart if database has real data
 
   return httpServer;
 }
 
+// Function remains for manual trigger if needed, but not called by default
 async function seed() {
   const campaigns = await storage.getCampaigns();
   if (campaigns.length === 0) {

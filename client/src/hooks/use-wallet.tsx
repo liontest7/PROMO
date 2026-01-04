@@ -7,6 +7,7 @@ import { api } from "@shared/routes";
 interface WalletContextType {
   isConnected: boolean;
   walletAddress: string | null;
+  userId: number | null;
   role: "user" | "advertiser" | null;
   connect: (role: "user" | "advertiser") => Promise<void>;
   disconnect: () => void;
@@ -23,6 +24,7 @@ const WalletContext = createContext<WalletContextType | undefined>(undefined);
 
 export function WalletProvider({ children }: { children: ReactNode }) {
   const [walletAddress, setWalletAddress] = useState<string | null>(null);
+  const [userId, setUserId] = useState<number | null>(null);
   const [role, setRole] = useState<"user" | "advertiser" | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
@@ -32,9 +34,11 @@ export function WalletProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     const savedAddress = localStorage.getItem("wallet_address");
     const savedRole = localStorage.getItem("user_role") as "user" | "advertiser";
+    const savedId = localStorage.getItem("user_id");
     if (savedAddress && savedRole) {
       setWalletAddress(savedAddress);
       setRole(savedRole);
+      if (savedId) setUserId(parseInt(savedId));
     }
   }, []);
 
@@ -64,9 +68,11 @@ export function WalletProvider({ children }: { children: ReactNode }) {
       
       setWalletAddress(user.walletAddress);
       setRole(user.role);
+      setUserId(user.id);
       
       localStorage.setItem("wallet_address", user.walletAddress);
       localStorage.setItem("user_role", user.role);
+      localStorage.setItem("user_id", user.id.toString());
 
       toast({
         title: "Wallet Connected",
@@ -96,8 +102,10 @@ export function WalletProvider({ children }: { children: ReactNode }) {
   const disconnect = () => {
     setWalletAddress(null);
     setRole(null);
+    setUserId(null);
     localStorage.removeItem("wallet_address");
     localStorage.removeItem("user_role");
+    localStorage.removeItem("user_id");
     queryClient.clear();
     
     toast({
@@ -110,6 +118,7 @@ export function WalletProvider({ children }: { children: ReactNode }) {
     <WalletContext.Provider value={{
       isConnected: !!walletAddress,
       walletAddress,
+      userId,
       role,
       connect,
       disconnect,

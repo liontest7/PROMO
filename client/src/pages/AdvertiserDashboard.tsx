@@ -8,9 +8,9 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { AlertCircle } from "lucide-react";
 
 export default function AdvertiserDashboard() {
-  const { walletAddress } = useWallet();
-  // In real app, we would map walletAddress to user ID properly
-  const { data: campaigns, isLoading } = useCampaigns("1"); 
+  const { walletAddress, userId } = useWallet();
+  // Fetch campaigns for the current connected advertiser
+  const { data: campaigns, isLoading } = useCampaigns(userId?.toString()); 
 
   return (
     <div className="min-h-screen bg-background text-foreground">

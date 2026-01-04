@@ -49,7 +49,7 @@ export function CreateCampaignDialog() {
   const [open, setOpen] = useState(false);
   const [location] = useLocation();
   const { mutate: createCampaign, isPending } = useCreateCampaign();
-  const { walletAddress } = useWallet();
+  const { walletAddress, userId } = useWallet();
 
   useEffect(() => {
     // Basic dialog state management, removed complex URL triggers that caused refresh issues
@@ -69,9 +69,15 @@ export function CreateCampaignDialog() {
       twitterUrl: "",
       telegramUrl: "",
       actions: [{ type: "website", title: "", url: "", rewardAmount: 0 }],
-      creatorId: 1 // In real app, this comes from auth context/session
+      creatorId: userId || 1
     },
   });
+
+  useEffect(() => {
+    if (userId) {
+      form.setValue('creatorId', userId);
+    }
+  }, [userId, form]);
 
   const { fields, append, remove } = useFieldArray({
     control: form.control,
