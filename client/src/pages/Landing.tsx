@@ -54,8 +54,7 @@ export default function Landing() {
                 onClick={async () => {
                   try {
                     await connect('advertiser');
-                    // Use a simple Link-like navigation that doesn't trigger a full refresh
-                    // Since we're in a component context, we can use useLocation indirectly or just trigger a navigation event
+                    // Navigate to advertiser dashboard which contains the dialog
                     window.history.pushState({}, '', '/advertiser?openCreate=true');
                     window.dispatchEvent(new PopStateEvent('popstate'));
                   } catch (err) {
