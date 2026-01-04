@@ -47,7 +47,7 @@ export default function Landing() {
                   Start Earning <Coins className="ml-2 w-5 h-5" />
                 </Button>
               </Link>
-              <Link href="/advertiser">
+              <Link href="/earn">
                 <Button 
                   size="lg" 
                   variant="outline" 
