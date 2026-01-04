@@ -41,6 +41,7 @@ const formSchema = insertCampaignSchema.extend({
   websiteUrl: z.string().url("Invalid website URL").optional().or(z.literal("")),
   twitterUrl: z.string().url("Invalid Twitter URL").optional().or(z.literal("")),
   telegramUrl: z.string().url("Invalid Telegram URL").optional().or(z.literal("")),
+  minSolBalance: z.coerce.number().min(0).default(0),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -68,6 +69,7 @@ export function CreateCampaignDialog() {
       websiteUrl: "",
       twitterUrl: "",
       telegramUrl: "",
+      minSolBalance: 0,
       actions: [{ type: "website", title: "", url: "", rewardAmount: 0 }],
       creatorId: userId || 1
     },
@@ -254,6 +256,24 @@ export function CreateCampaignDialog() {
                 )}
               />
             </div>
+
+            <FormField
+              control={form.control}
+              name="minSolBalance"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="text-primary font-bold">Minimum SOL Balance Requirement</FormLabel>
+                  <FormControl>
+                    <div className="relative">
+                      <Input type="number" step="0.01" placeholder="e.g. 0.1" className="bg-primary/5 border-primary/20 focus:border-primary" {...field} />
+                      <div className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-bold text-primary/50">SOL</div>
+                    </div>
+                  </FormControl>
+                  <FormMessage />
+                  <p className="text-[10px] text-muted-foreground mt-1 italic">Users must hold at least this amount of SOL to participate.</p>
+                </FormItem>
+              )}
+            />
 
             <div className="space-y-4">
               <div className="flex justify-between items-center">

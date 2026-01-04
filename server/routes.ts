@@ -105,6 +105,7 @@ export async function registerRoutes(
       const body = req.body;
       const campaignData = insertCampaignSchema.parse({
         ...body,
+        requirements: { minSolBalance: body.minSolBalance || 0 },
         remainingBudget: body.totalBudget, // Set initial remaining budget
         status: "active"
       });
