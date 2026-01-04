@@ -52,21 +52,14 @@ export function CreateCampaignDialog() {
   const { walletAddress } = useWallet();
 
   useEffect(() => {
-    const checkParams = () => {
-      const searchParams = new URLSearchParams(window.location.search);
-      if (searchParams.get('openCreate') === 'true') {
-        setOpen(true);
-        // Clean up URL without trigger re-render loop
-        const newUrl = window.location.pathname;
-        window.history.replaceState({}, '', newUrl);
-      }
-    };
-    
-    checkParams();
-    // Also listen for popstate in case of client-side nav
-    window.addEventListener('popstate', checkParams);
-    return () => window.removeEventListener('popstate', checkParams);
-  }, [location]);
+    const searchParams = new URLSearchParams(window.location.search);
+    if (searchParams.get('openCreate') === 'true') {
+      setOpen(true);
+      // Clean up URL without trigger re-render loop
+      const newUrl = window.location.pathname;
+      window.history.replaceState({}, '', newUrl);
+    }
+  }, [location, open]); // Added open to dependency to allow reopening if URL changes
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),

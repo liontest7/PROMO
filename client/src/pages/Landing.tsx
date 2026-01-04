@@ -52,8 +52,15 @@ export default function Landing() {
                 variant="outline" 
                 className="h-14 px-8 text-lg border-white/10 hover:bg-white/5"
                 onClick={async () => {
-                  await connect('advertiser');
-                  window.location.href = '/advertiser?openCreate=true';
+                  try {
+                    await connect('advertiser');
+                    // Use a small delay to ensure state is updated before navigation
+                    setTimeout(() => {
+                      window.location.href = '/advertiser?openCreate=true';
+                    }, 100);
+                  } catch (err) {
+                    console.error("Connection failed", err);
+                  }
                 }}
               >
                 Create Campaign <Rocket className="ml-2 w-5 h-5" />
