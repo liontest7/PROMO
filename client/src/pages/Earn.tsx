@@ -5,7 +5,7 @@ import { CampaignCard } from "@/components/CampaignCard";
 import { VerifyActionDialog } from "@/components/VerifyActionDialog";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Search, Filter, X } from "lucide-react";
+import { Search, Filter, X, Plus } from "lucide-react";
 import { type Action, type Campaign } from "@shared/schema";
 import {
   Popover,
@@ -15,9 +15,12 @@ import {
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
+import { useWallet } from "@/hooks/use-wallet";
+import { Link } from "wouter";
 
 export default function Earn() {
   const { data: campaigns, isLoading } = useCampaigns();
+  const { role } = useWallet();
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedAction, setSelectedAction] = useState<{ action: Action; campaign: Campaign } | null>(null);
   const [activeFilters, setActiveFilters] = useState<string[]>([]);
@@ -46,65 +49,73 @@ export default function Earn() {
       
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-12">
-          <div>
+          <div className="flex-1">
             <h1 className="text-4xl font-display font-bold mb-2">Explore Campaigns</h1>
             <p className="text-muted-foreground">Complete tasks and earn crypto rewards instantly.</p>
           </div>
           
-          <div className="flex w-full md:w-auto gap-3">
-            <div className="relative flex-1 md:w-64">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-              <Input 
-                placeholder="Search projects..." 
-                className="pl-10 bg-white/5 border-white/10 focus:border-primary/50"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
-            </div>
-            
-            <Popover>
-              <PopoverTrigger asChild>
-                <Button variant="outline" className="gap-2 border-white/10 bg-white/5 hover:bg-white/10">
-                  <Filter className="w-4 h-4" />
-                  {activeFilters.length > 0 && (
-                    <span className="flex h-4 w-4 items-center justify-center rounded-full bg-primary text-[10px] text-primary-foreground font-bold">
-                      {activeFilters.length}
-                    </span>
-                  )}
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-56 glass-card border-white/10 bg-background/95 backdrop-blur-xl">
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between">
-                    <h4 className="font-bold text-sm">Filter by Type</h4>
+          <div className="flex flex-col sm:flex-row w-full md:w-auto gap-3">
+            <Link href="/advertiser">
+              <Button className="w-full sm:w-auto gap-2 bg-primary hover:bg-primary/90">
+                <Plus className="w-4 h-4" /> Create Campaign
+              </Button>
+            </Link>
+
+            <div className="flex gap-2 w-full sm:w-auto">
+              <div className="relative flex-1 md:w-64">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                <Input 
+                  placeholder="Search projects..." 
+                  className="pl-10 bg-white/5 border-white/10 focus:border-primary/50"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                />
+              </div>
+              
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button variant="outline" className="gap-2 border-white/10 bg-white/5 hover:bg-white/10">
+                    <Filter className="w-4 h-4" />
                     {activeFilters.length > 0 && (
-                      <Button 
-                        variant="ghost" 
-                        size="sm" 
-                        className="h-auto p-0 text-xs text-primary"
-                        onClick={() => setActiveFilters([])}
-                      >
-                        Clear
-                      </Button>
+                      <span className="flex h-4 w-4 items-center justify-center rounded-full bg-primary text-[10px] text-primary-foreground font-bold">
+                        {activeFilters.length}
+                      </span>
                     )}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-56 glass-card border-white/10 bg-background/95 backdrop-blur-xl">
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between">
+                      <h4 className="font-bold text-sm">Filter by Type</h4>
+                      {activeFilters.length > 0 && (
+                        <Button 
+                          variant="ghost" 
+                          size="sm" 
+                          className="h-auto p-0 text-xs text-primary"
+                          onClick={() => setActiveFilters([])}
+                        >
+                          Clear
+                        </Button>
+                      )}
+                    </div>
+                    <div className="space-y-3">
+                      {['twitter', 'telegram', 'website'].map((type) => (
+                        <div key={type} className="flex items-center space-x-2">
+                          <Checkbox 
+                            id={type} 
+                            checked={activeFilters.includes(type)}
+                            onCheckedChange={() => toggleFilter(type)}
+                          />
+                          <Label htmlFor={type} className="text-sm font-medium capitalize cursor-pointer">
+                            {type}
+                          </Label>
+                        </div>
+                      ))}
+                    </div>
                   </div>
-                  <div className="space-y-3">
-                    {['twitter', 'telegram', 'website'].map((type) => (
-                      <div key={type} className="flex items-center space-x-2">
-                        <Checkbox 
-                          id={type} 
-                          checked={activeFilters.includes(type)}
-                          onCheckedChange={() => toggleFilter(type)}
-                        />
-                        <Label htmlFor={type} className="text-sm font-medium capitalize cursor-pointer">
-                          {type}
-                        </Label>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </PopoverContent>
-            </Popover>
+                </PopoverContent>
+              </Popover>
+            </div>
           </div>
         </div>
 

@@ -47,15 +47,14 @@ export default function Landing() {
                   Start Earning <Coins className="ml-2 w-5 h-5" />
                 </Button>
               </Link>
-              <Link href="/advertiser">
-                <Button 
-                  size="lg" 
-                  variant="outline" 
-                  className="h-14 px-8 text-lg border-white/10 hover:bg-white/5"
-                >
-                  Create Campaign <Rocket className="ml-2 w-5 h-5" />
-                </Button>
-              </Link>
+              <Button 
+                size="lg" 
+                variant="outline" 
+                className="h-14 px-8 text-lg border-white/10 hover:bg-white/5"
+                onClick={() => connect('advertiser')}
+              >
+                Create Campaign <Rocket className="ml-2 w-5 h-5" />
+              </Button>
             </div>
           </motion.div>
 
