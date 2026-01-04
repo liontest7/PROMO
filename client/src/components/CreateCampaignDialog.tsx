@@ -264,9 +264,27 @@ export function CreateCampaignDialog() {
                 <FormItem>
                   <FormLabel className="text-primary font-bold">Minimum SOL Balance Requirement</FormLabel>
                   <FormControl>
-                    <div className="relative">
-                      <Input type="number" step="0.01" placeholder="e.g. 0.1" className="bg-primary/5 border-primary/20 focus:border-primary" {...field} />
-                      <div className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-bold text-primary/50">SOL</div>
+                    <div className="relative group">
+                      <Input type="number" step="0.01" placeholder="e.g. 0.1" className="bg-primary/5 border-primary/20 focus:border-primary pr-12 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" {...field} />
+                      <div className="absolute right-0 top-0 h-full flex items-center border-l border-primary/20 bg-primary/5 px-2 rounded-r-md">
+                        <span className="text-xs font-bold text-primary mr-1">SOL</span>
+                        <div className="flex flex-col gap-0.5">
+                          <button
+                            type="button"
+                            className="p-0.5 hover:bg-primary/20 rounded transition-colors"
+                            onClick={() => field.onChange(Math.max(0, (Number(field.value) || 0) + 0.01))}
+                          >
+                            <svg className="w-3 h-3 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 15l7-7 7 7" /></svg>
+                          </button>
+                          <button
+                            type="button"
+                            className="p-0.5 hover:bg-primary/20 rounded transition-colors"
+                            onClick={() => field.onChange(Math.max(0, (Number(field.value) || 0) - 0.01))}
+                          >
+                            <svg className="w-3 h-3 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M19 9l-7 7-7-7" /></svg>
+                          </button>
+                        </div>
+                      </div>
                     </div>
                   </FormControl>
                   <FormMessage />
