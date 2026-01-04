@@ -51,7 +51,10 @@ export default function Landing() {
                 size="lg" 
                 variant="outline" 
                 className="h-14 px-8 text-lg border-white/10 hover:bg-white/5"
-                onClick={() => connect('advertiser')}
+                onClick={async () => {
+                  await connect('advertiser');
+                  window.location.href = '/advertiser?openCreate=true';
+                }}
               >
                 Create Campaign <Rocket className="ml-2 w-5 h-5" />
               </Button>

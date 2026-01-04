@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { insertCampaignSchema, insertActionSchema } from "@shared/schema";
 import { useCreateCampaign } from "@/hooks/use-campaigns";
 import { useWallet } from "@/hooks/use-wallet";
+import { useLocation } from "wouter";
 import {
   Dialog,
   DialogContent,
@@ -46,8 +47,26 @@ type FormValues = z.infer<typeof formSchema>;
 
 export function CreateCampaignDialog() {
   const [open, setOpen] = useState(false);
+  const [location] = useLocation();
   const { mutate: createCampaign, isPending } = useCreateCampaign();
   const { walletAddress } = useWallet();
+
+  useEffect(() => {
+    const checkParams = () => {
+      const searchParams = new URLSearchParams(window.location.search);
+      if (searchParams.get('openCreate') === 'true') {
+        setOpen(true);
+        // Clean up URL without trigger re-render loop
+        const newUrl = window.location.pathname;
+        window.history.replaceState({}, '', newUrl);
+      }
+    };
+    
+    checkParams();
+    // Also listen for popstate in case of client-side nav
+    window.addEventListener('popstate', checkParams);
+    return () => window.removeEventListener('popstate', checkParams);
+  }, [location]);
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),

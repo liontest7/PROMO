@@ -55,7 +55,7 @@ export default function Earn() {
           </div>
           
           <div className="flex flex-col sm:flex-row w-full md:w-auto gap-3">
-            <Link href="/advertiser">
+            <Link href="/advertiser?openCreate=true">
               <Button className="w-full sm:w-auto gap-2 bg-primary hover:bg-primary/90">
                 <Plus className="w-4 h-4" /> Create Campaign
               </Button>
