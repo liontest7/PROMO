@@ -55,10 +55,9 @@ export function CreateCampaignDialog() {
     const searchParams = new URLSearchParams(window.location.search);
     if (searchParams.get('openCreate') === 'true') {
       setOpen(true);
-      // Clean up URL parameters after opening
-      import("wouter").then(({ setLocation }) => {
-        setLocation(window.location.pathname, { replace: true });
-      });
+      // Clean up URL parameters after opening without full reload
+      const newUrl = window.location.pathname;
+      window.history.replaceState({}, '', newUrl);
     }
   }, [location]);
 

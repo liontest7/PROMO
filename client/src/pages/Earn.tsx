@@ -58,9 +58,7 @@ export default function Earn() {
             <Button 
               className="w-full sm:w-auto gap-2 bg-primary hover:bg-primary/90"
               onClick={() => {
-                import("wouter").then(({ setLocation }) => {
-                  setLocation('/advertiser?openCreate=true');
-                });
+                window.location.href = '/advertiser?openCreate=true';
               }}
             >
               <Plus className="w-4 h-4" /> Create Campaign
