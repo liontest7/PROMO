@@ -55,11 +55,12 @@ export function CreateCampaignDialog() {
     const searchParams = new URLSearchParams(window.location.search);
     if (searchParams.get('openCreate') === 'true') {
       setOpen(true);
-      // Clean up URL without trigger re-render loop
-      const newUrl = window.location.pathname;
-      window.history.replaceState({}, '', newUrl);
+      // Clean up URL parameters after opening
+      import("wouter").then(({ setLocation }) => {
+        setLocation(window.location.pathname, { replace: true });
+      });
     }
-  }, [location, open]); // Added open to dependency to allow reopening if URL changes
+  }, [location]);
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),

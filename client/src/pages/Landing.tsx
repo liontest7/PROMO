@@ -54,10 +54,10 @@ export default function Landing() {
                 onClick={async () => {
                   try {
                     await connect('advertiser');
-                    // Use a small delay to ensure state is updated before navigation
-                    setTimeout(() => {
-                      window.location.href = '/advertiser?openCreate=true';
-                    }, 100);
+                    // Directly use location to navigate within SPA
+                    import("wouter").then(({ setLocation }) => {
+                      setLocation('/advertiser?openCreate=true');
+                    });
                   } catch (err) {
                     console.error("Connection failed", err);
                   }
