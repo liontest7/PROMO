@@ -36,10 +36,16 @@ export function VerifyActionDialog({ action, campaign, open, onOpenChange }: Ver
     if (!walletAddress) return;
 
     try {
-      // Real Solana Transaction Proof (Simplified for MVP, would involve signing in real app)
+      // Real Solana Transaction Proof
       const message = `Verify action ${action.id} for campaign ${campaign.id}`;
       const encodedMessage = new TextEncoder().encode(message);
-      const signedMessage = await window.solana.signMessage(encodedMessage, "utf8");
+      
+      let signedMessage;
+      if (window.solana && window.solana.signMessage) {
+        signedMessage = await window.solana.signMessage(encodedMessage, "utf8");
+      } else {
+        throw new Error("Wallet does not support message signing");
+      }
       
       verify(
         { actionId: action.id, userWallet: walletAddress, proof: JSON.stringify(signedMessage) },

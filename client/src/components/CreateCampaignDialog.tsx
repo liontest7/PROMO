@@ -272,14 +272,20 @@ export function CreateCampaignDialog() {
                           <button
                             type="button"
                             className="p-0.5 hover:bg-primary/20 rounded transition-colors"
-                            onClick={() => field.onChange(Math.max(0, (Number(field.value) || 0) + 0.01))}
+                            onClick={() => {
+                              const current = Number(field.value) || 0;
+                              field.onChange(Math.max(0, Number((current + 0.01).toFixed(2))));
+                            }}
                           >
                             <svg className="w-3 h-3 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 15l7-7 7 7" /></svg>
                           </button>
                           <button
                             type="button"
                             className="p-0.5 hover:bg-primary/20 rounded transition-colors"
-                            onClick={() => field.onChange(Math.max(0, (Number(field.value) || 0) - 0.01))}
+                            onClick={() => {
+                              const current = Number(field.value) || 0;
+                              field.onChange(Math.max(0, Number((current - 0.01).toFixed(2))));
+                            }}
                           >
                             <svg className="w-3 h-3 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M19 9l-7 7-7-7" /></svg>
                           </button>
