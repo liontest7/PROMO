@@ -54,9 +54,8 @@ export default function Landing() {
                 onClick={async () => {
                   try {
                     await connect('advertiser');
-                    // Navigate to advertiser dashboard which contains the dialog
-                    window.history.pushState({}, '', '/advertiser?openCreate=true');
-                    window.dispatchEvent(new PopStateEvent('popstate'));
+                    // Simple path-based navigation with search param
+                    window.location.href = '/advertiser?openCreate=true';
                   } catch (err) {
                     console.error("Connection failed", err);
                   }

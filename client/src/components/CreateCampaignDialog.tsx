@@ -55,11 +55,11 @@ export function CreateCampaignDialog() {
     const searchParams = new URLSearchParams(window.location.search);
     if (searchParams.get('openCreate') === 'true') {
       setOpen(true);
-      // Clean up URL parameters without triggering a full page reload or re-render loop
+      // Clean up URL without trigger re-render loop
       const newUrl = window.location.pathname;
       window.history.replaceState({}, '', newUrl);
     }
-  }, [location]);
+  }, []); // Only run once on mount to handle the redirect case
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
