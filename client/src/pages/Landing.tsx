@@ -47,22 +47,16 @@ export default function Landing() {
                   Start Earning <Coins className="ml-2 w-5 h-5" />
                 </Button>
               </Link>
-              <Button 
-                size="lg" 
-                variant="outline" 
-                className="h-14 px-8 text-lg border-white/10 hover:bg-white/5"
-                onClick={async () => {
-                  try {
-                    await connect('advertiser');
-                    // Simple path-based navigation with search param
-                    window.location.href = '/advertiser?openCreate=true';
-                  } catch (err) {
-                    console.error("Connection failed", err);
-                  }
-                }}
-              >
-                Create Campaign <Rocket className="ml-2 w-5 h-5" />
-              </Button>
+              <Link href="/advertiser">
+                <Button 
+                  size="lg" 
+                  variant="outline" 
+                  className="h-14 px-8 text-lg border-white/10 hover:bg-white/5"
+                  onClick={() => connect('advertiser')}
+                >
+                  Create Campaign <Rocket className="ml-2 w-5 h-5" />
+                </Button>
+              </Link>
             </div>
           </motion.div>
 

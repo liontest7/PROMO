@@ -52,14 +52,8 @@ export function CreateCampaignDialog() {
   const { walletAddress } = useWallet();
 
   useEffect(() => {
-    const searchParams = new URLSearchParams(window.location.search);
-    if (searchParams.get('openCreate') === 'true') {
-      setOpen(true);
-      // Clean up URL without trigger re-render loop
-      const newUrl = window.location.pathname;
-      window.history.replaceState({}, '', newUrl);
-    }
-  }, []); // Only run once on mount to handle the redirect case
+    // Basic dialog state management, removed complex URL triggers that caused refresh issues
+  }, []);
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
