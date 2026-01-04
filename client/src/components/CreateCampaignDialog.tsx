@@ -55,7 +55,7 @@ export function CreateCampaignDialog() {
     const searchParams = new URLSearchParams(window.location.search);
     if (searchParams.get('openCreate') === 'true') {
       setOpen(true);
-      // Clean up URL parameters after opening without full reload
+      // Clean up URL parameters without triggering a full page reload or re-render loop
       const newUrl = window.location.pathname;
       window.history.replaceState({}, '', newUrl);
     }

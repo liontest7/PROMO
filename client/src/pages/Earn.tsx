@@ -58,7 +58,8 @@ export default function Earn() {
             <Button 
               className="w-full sm:w-auto gap-2 bg-primary hover:bg-primary/90"
               onClick={() => {
-                window.location.href = '/advertiser?openCreate=true';
+                window.history.pushState({}, '', '/advertiser?openCreate=true');
+                window.dispatchEvent(new PopStateEvent('popstate'));
               }}
             >
               <Plus className="w-4 h-4" /> Create Campaign
