@@ -2,9 +2,53 @@ import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Navigation } from "@/components/Navigation";
 import { useWallet } from "@/hooks/use-wallet";
-import { Rocket, Coins, ShieldCheck, ArrowRight, Users } from "lucide-react";
+import { Rocket, Coins, ShieldCheck, ArrowRight, Users, Search } from "lucide-react";
 import { motion } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
+import { useCampaigns } from "@/hooks/use-campaigns";
+import { CampaignCard } from "@/components/CampaignCard";
+import { Skeleton } from "@/components/ui/skeleton";
+import { useToast } from "@/hooks/use-toast";
+
+function EarnContentOnly() {
+  const { data: campaigns, isLoading } = useCampaigns();
+  const { isConnected } = useWallet();
+  const { toast } = useToast();
+
+  if (isLoading) {
+    return (
+      <>
+        {[1, 2, 3].map((i) => (
+          <div key={i} className="h-[300px] rounded-2xl border border-white/5 bg-white/5 p-6">
+            <Skeleton className="h-8 w-3/4 mb-4 bg-white/10" />
+            <Skeleton className="h-4 w-full mb-2 bg-white/10" />
+            <Skeleton className="h-10 w-full mt-auto bg-white/10 rounded-lg" />
+          </div>
+        ))}
+      </>
+    );
+  }
+
+  return (
+    <>
+      {campaigns?.slice(0, 3).map((campaign) => (
+        <CampaignCard 
+          key={campaign.id} 
+          campaign={campaign} 
+          onActionClick={() => {
+            if (!isConnected) {
+              toast({
+                title: "Connection Required",
+                description: "Please connect your wallet to participate.",
+                variant: "destructive"
+              });
+            }
+          }}
+        />
+      ))}
+    </>
+  );
+}
 
 export default function Landing() {
   const { connect } = useWallet();
@@ -47,16 +91,14 @@ export default function Landing() {
                   Start Earning <Coins className="ml-2 w-5 h-5" />
                 </Button>
               </Link>
-              <Link href="/earn">
-                <Button 
-                  size="lg" 
-                  variant="outline" 
-                  className="h-14 px-8 text-lg border-white/10 hover:bg-white/5"
-                  onClick={() => connect('advertiser')}
-                >
-                  Create Campaign <Rocket className="ml-2 w-5 h-5" />
-                </Button>
-              </Link>
+              <Button 
+                size="lg" 
+                variant="outline" 
+                className="h-14 px-8 text-lg border-white/10 hover:bg-white/5"
+                onClick={() => connect('advertiser')}
+              >
+                Create Campaign <Rocket className="ml-2 w-5 h-5" />
+              </Button>
             </div>
           </motion.div>
 
@@ -137,30 +179,26 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* Featured Campaigns */}
-      <section className="py-24">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-end mb-12">
-            <div>
-              <h2 className="text-4xl font-display font-bold mb-2">Active Campaigns</h2>
-              <p className="text-muted-foreground">Join these top-tier projects and start earning.</p>
+          {/* Featured Campaigns */}
+          <section className="py-24">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+              <div className="flex justify-between items-end mb-12">
+                <div>
+                  <h2 className="text-4xl font-display font-bold mb-2">Active Campaigns</h2>
+                  <p className="text-muted-foreground">Join these top-tier projects and start earning.</p>
+                </div>
+                <Link href="/earn">
+                  <Button variant="ghost" className="text-primary hover:text-primary hover:bg-primary/10">
+                    View All Campaigns <ArrowRight className="ml-2 w-4 h-4" />
+                  </Button>
+                </Link>
+              </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <EarnContentOnly />
+              </div>
             </div>
-            <Link href="/earn">
-              <Button variant="ghost" className="text-primary hover:text-primary hover:bg-primary/10">
-                View All Campaigns <ArrowRight className="ml-2 w-4 h-4" />
-              </Button>
-            </Link>
-          </div>
-          
-          {/* We'll use the same grid from Earn page but limited */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {/* Real campaigns will be loaded here in a real app */}
-            <div className="col-span-full text-center py-12 bg-white/5 rounded-3xl border border-dashed border-white/10">
-              <p className="text-muted-foreground">Connect wallet to view live campaigns</p>
-            </div>
-          </div>
-        </div>
-      </section>
+          </section>
     </div>
   );
 }

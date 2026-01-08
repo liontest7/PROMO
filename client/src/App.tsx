@@ -28,11 +28,9 @@ function Router() {
     <Switch>
       <Route path="/" component={Landing} />
       <Route path="/about" component={About} />
+      <Route path="/earn" component={Earn} />
       
       {/* User Routes */}
-      <Route path="/earn">
-        <ProtectedRoute component={Earn} allowedRole="user" />
-      </Route>
       <Route path="/dashboard">
         <ProtectedRoute component={Dashboard} allowedRole="user" />
       </Route>

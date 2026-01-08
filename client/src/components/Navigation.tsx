@@ -36,9 +36,10 @@ export function Navigation() {
 
           {/* Nav Links */}
           <div className="hidden md:flex items-center gap-2">
+            <NavLink href="/earn" icon={Coins}>Earn</NavLink>
+            
             {isConnected && role === "user" && (
               <>
-                <NavLink href="/earn" icon={Coins}>Earn</NavLink>
                 <NavLink href="/dashboard" icon={Trophy}>My Dashboard</NavLink>
               </>
             )}

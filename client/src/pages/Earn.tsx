@@ -17,14 +17,29 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { useWallet } from "@/hooks/use-wallet";
+import { useToast } from "@/hooks/use-toast";
 import { Link } from "wouter";
 
 export default function Earn() {
-  const { data: campaigns, isLoading } = useCampaigns();
-  const { role } = useWallet();
+  const { isConnected } = useWallet();
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedAction, setSelectedAction] = useState<{ action: Action; campaign: Campaign } | null>(null);
   const [activeFilters, setActiveFilters] = useState<string[]>([]);
+  const { toast } = useToast();
+
+  const { data: campaigns, isLoading } = useCampaigns();
+
+  const handleActionClick = (action: Action, campaign: Campaign) => {
+    if (!isConnected) {
+      toast({
+        title: "Connection Required",
+        description: "Please connect your wallet to participate in campaigns.",
+        variant: "destructive",
+      });
+      return;
+    }
+    setSelectedAction({ action, campaign });
+  };
 
   const filteredCampaigns = campaigns?.filter(c => {
     const matchesSearch = 
@@ -133,7 +148,7 @@ export default function Earn() {
               <CampaignCard 
                 key={campaign.id} 
                 campaign={campaign} 
-                onActionClick={(action) => setSelectedAction({ action, campaign })}
+                onActionClick={(action) => handleActionClick(action, campaign)}
               />
             ))}
           </div>

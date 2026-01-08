@@ -52,18 +52,30 @@ export function WalletProvider({ children }: { children: ReactNode }) {
           description: "Please install the Phantom wallet extension to continue.",
           variant: "destructive",
         });
+        setIsLoading(false);
         return;
       }
 
-      const response = await window.solana.connect();
-      const publicAddress = response.publicKey.toString();
-      
-      // Auth with backend
-      const res = await apiRequest("POST", api.users.getOrCreate.path, {
-        walletAddress: publicAddress,
-        role: selectedRole
+      console.log("Connecting to Solana wallet...");
+      const response = await window.solana.connect().catch((err: any) => {
+        console.error("Phantom connection error:", err);
+        throw new Error(err.message || "User rejected the connection.");
       });
       
+      const publicAddress = response.publicKey.toString();
+      console.log("Wallet connected:", publicAddress);
+      
+      // Auth with backend
+      const res = await fetch(api.users.getOrCreate.path, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          walletAddress: publicAddress,
+          role: selectedRole
+        })
+      });
+      
+      if (!res.ok) throw new Error("Backend authentication failed");
       const user = await res.json();
       
       setWalletAddress(user.walletAddress);
