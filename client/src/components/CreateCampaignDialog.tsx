@@ -5,6 +5,7 @@ import { z } from "zod";
 import { insertCampaignSchema, insertActionSchema } from "@shared/schema";
 import { useCreateCampaign } from "@/hooks/use-campaigns";
 import { useWallet } from "@/hooks/use-wallet";
+import { useToast } from "@/hooks/use-toast";
 import { useLocation } from "wouter";
 import {
   Dialog,
@@ -50,11 +51,21 @@ export function CreateCampaignDialog() {
   const [open, setOpen] = useState(false);
   const [location] = useLocation();
   const { mutate: createCampaign, isPending } = useCreateCampaign();
-  const { walletAddress, userId } = useWallet();
+  const { isConnected, walletAddress, userId, connect } = useWallet();
+  const { toast } = useToast();
 
-  useEffect(() => {
-    // Basic dialog state management, removed complex URL triggers that caused refresh issues
-  }, []);
+  const handleOpenClick = (e: React.MouseEvent) => {
+    if (!isConnected) {
+      e.preventDefault();
+      toast({
+        title: "Connection Required",
+        description: "Please connect your wallet as an advertiser to create campaigns.",
+        variant: "destructive"
+      });
+      connect('advertiser');
+      return;
+    }
+  };
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -100,7 +111,10 @@ export function CreateCampaignDialog() {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button className="bg-primary text-primary-foreground font-bold hover:shadow-[0_0_20px_rgba(34,197,94,0.4)] transition-all">
+        <Button 
+          onClick={handleOpenClick}
+          className="bg-primary text-primary-foreground font-bold hover:shadow-[0_0_20px_rgba(34,197,94,0.4)] transition-all"
+        >
           <Rocket className="mr-2 h-4 w-4" />
           Launch Campaign
         </Button>

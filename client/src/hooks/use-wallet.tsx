@@ -57,16 +57,13 @@ export function WalletProvider({ children }: { children: ReactNode }) {
       }
 
       console.log("Connecting to Solana wallet...");
-      const response = await window.solana.connect().catch((err: any) => {
-        console.error("Phantom connection error:", err);
-        throw new Error(err.message || "User rejected the connection.");
-      });
+      const response = await window.solana.connect();
       
       const publicAddress = response.publicKey.toString();
       console.log("Wallet connected:", publicAddress);
       
       // Auth with backend
-      const res = await fetch(api.users.getOrCreate.path, {
+      const res = await fetch('/api/users/auth', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

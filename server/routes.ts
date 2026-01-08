@@ -11,7 +11,7 @@ export async function registerRoutes(
 ): Promise<Server> {
 
   // Users
-  app.post(api.users.getOrCreate.path, async (req, res) => {
+  app.post('/api/users/auth', async (req, res) => {
     try {
       const input = api.users.getOrCreate.input.parse(req.body);
       let user = await storage.getUserByWallet(input.walletAddress);
@@ -19,8 +19,9 @@ export async function registerRoutes(
       if (!user) {
         user = await storage.createUser({ 
           walletAddress: input.walletAddress,
-          role: input.role || "user"
-        });
+          role: input.role || "user",
+          balance: "0"
+        } as any);
         res.status(201).json(user);
       } else {
         res.json(user);
