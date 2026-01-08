@@ -150,6 +150,14 @@ export async function registerRoutes(
       // For now, we trust the wallet signature proof provided by the frontend
       const isVerified = true; 
 
+      // Check min SOL balance requirement
+      const campaign = await storage.getCampaign(action.campaignId);
+      if (campaign?.requirements?.minSolBalance) {
+        // In real app, we would query the Solana RPC for the wallet's balance
+        // This is a placeholder for real on-chain balance verification
+        // console.log(`Checking balance for ${input.userWallet} against ${campaign.requirements.minSolBalance} SOL`);
+      }
+
       if (isVerified) {
         const execution = await storage.createExecution({
           actionId: action.id,
@@ -199,6 +207,16 @@ export async function registerRoutes(
         "paid",
         txSignature
       );
+
+      // Update campaign remaining budget
+      const campaign = await storage.getCampaign(execution.campaignId);
+      if (campaign) {
+        const action = await storage.getAction(execution.actionId);
+        if (action) {
+          const newBudget = Number(campaign.remainingBudget) - Number(action.rewardAmount);
+          await storage.updateCampaignRemainingBudget(campaign.id, newBudget.toString());
+        }
+      }
 
       res.json({
         success: true,

@@ -10,6 +10,7 @@ export const users = pgTable("users", {
   walletAddress: text("wallet_address").notNull().unique(),
   role: text("role", { enum: ["user", "advertiser"] }).default("user").notNull(),
   reputationScore: integer("reputation_score").default(100),
+  balance: numeric("balance").default("0").notNull(),
   createdAt: timestamp("created_at").defaultNow(),
 });
 

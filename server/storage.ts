@@ -30,6 +30,7 @@ export interface IStorage {
   getExecution(id: number): Promise<Execution | undefined>;
   getExecutionsByUser(userId: number): Promise<Execution[]>;
   updateExecutionStatus(id: number, status: "pending" | "verified" | "paid" | "rejected", txSignature?: string): Promise<Execution>;
+  updateCampaignRemainingBudget(id: number, remainingBudget: string): Promise<Campaign>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -120,6 +121,14 @@ export class DatabaseStorage implements IStorage {
       .where(eq(executions.id, id))
       .returning();
     return execution;
+  }
+
+  async updateCampaignRemainingBudget(id: number, remainingBudget: string): Promise<Campaign> {
+    const [campaign] = await db.update(campaigns)
+      .set({ remainingBudget })
+      .where(eq(campaigns.id, id))
+      .returning();
+    return campaign;
   }
 }
 
