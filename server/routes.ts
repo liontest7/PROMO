@@ -103,12 +103,7 @@ export async function registerRoutes(
     try {
       // Manually parse to handle the extended schema with actions
       const body = req.body;
-      const campaignData = insertCampaignSchema.parse({
-        ...body,
-        requirements: { minSolBalance: body.minSolBalance || 0 },
-        remainingBudget: body.totalBudget, // Set initial remaining budget
-        status: "active"
-      });
+      const campaignData = insertCampaignSchema.parse(body);
       
       const campaign = await storage.createCampaign(campaignData);
 
@@ -150,12 +145,15 @@ export async function registerRoutes(
       // For now, we trust the wallet signature proof provided by the frontend
       const isVerified = true; 
 
+      // Verification Placeholder:
+      // In production, you would use @solana/web3.js and tweetnacl to verify 
+      // the signature provided in input.proof matches input.userWallet
+      
       // Check min SOL balance requirement
       const campaign = await storage.getCampaign(action.campaignId);
       if (campaign?.requirements?.minSolBalance) {
         // In real app, we would query the Solana RPC for the wallet's balance
         // This is a placeholder for real on-chain balance verification
-        // console.log(`Checking balance for ${input.userWallet} against ${campaign.requirements.minSolBalance} SOL`);
       }
 
       if (isVerified) {
@@ -163,9 +161,8 @@ export async function registerRoutes(
           actionId: action.id,
           campaignId: action.campaignId,
           userId: user.id,
-          status: "verified",
           transactionSignature: null
-        });
+        } as any);
         
         await storage.incrementActionExecution(action.id);
         

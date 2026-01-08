@@ -48,7 +48,14 @@ export function VerifyActionDialog({ action, campaign, open, onOpenChange }: Ver
       }
       
       verify(
-        { actionId: action.id, userWallet: walletAddress, proof: JSON.stringify(signedMessage) },
+        { 
+          actionId: action.id, 
+          userWallet: walletAddress, 
+          proof: JSON.stringify({
+            signature: signedMessage.signature,
+            publicKey: signedMessage.publicKey.toString()
+          }) 
+        },
         {
           onSuccess: () => {
             setStep("success");
