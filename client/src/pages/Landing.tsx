@@ -12,6 +12,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useQuery } from "@tanstack/react-query";
 
 import { APP_CONFIG } from "@/config";
+import { PLATFORM_CONFIG } from "@shared/config";
 
 function EarnContentOnly() {
   const { data: campaigns, isLoading } = useCampaigns();
@@ -143,6 +144,27 @@ export default function Landing() {
         </div>
       </section>
 
+      {/* Featured Campaigns Section - Moved up */}
+      <section className="py-24">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-end mb-12">
+            <div>
+              <h2 className="text-4xl font-display font-bold mb-2">Active Campaigns</h2>
+              <p className="text-muted-foreground">Join these top-tier projects and start earning.</p>
+            </div>
+            <Link href="/earn">
+              <Button variant="ghost" className="text-primary hover:text-primary hover:bg-primary/10">
+                View All Campaigns <ArrowRight className="ml-2 w-4 h-4" />
+              </Button>
+            </Link>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <EarnContentOnly />
+          </div>
+        </div>
+      </section>
+
       {/* Feature Section */}
       <section className="py-24 bg-black/20 relative">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -191,8 +213,8 @@ export default function Landing() {
                     <p className="text-xs text-muted-foreground uppercase font-bold">Reward Boost</p>
                   </div>
                   <div className="text-center p-4 bg-black/20 rounded-2xl border border-white/5 flex-1">
-                    <p className="text-2xl font-bold text-secondary">Low</p>
-                    <p className="text-xs text-muted-foreground uppercase font-bold">Platform Fees</p>
+                    <p className="text-2xl font-bold text-secondary">Burn {PLATFORM_CONFIG.BURN_AMOUNT}</p>
+                    <p className="text-xs text-muted-foreground uppercase font-bold">Meme Tokens to Launch</p>
                   </div>
                 </div>
               </div>

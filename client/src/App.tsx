@@ -11,7 +11,9 @@ import Landing from "@/pages/Landing";
 import Earn from "@/pages/Earn";
 import Dashboard from "@/pages/Dashboard";
 import AdvertiserDashboard from "@/pages/AdvertiserDashboard";
+
 import About from "@/pages/About";
+import CampaignDetails from "@/pages/CampaignDetails";
 import NotFound from "@/pages/not-found";
 
 function ProtectedRoute({ component: Component, allowedRole }: { component: any, allowedRole?: string }) {
@@ -69,8 +71,8 @@ function Router() {
         <Route path="/advertiser">
           <ProtectedRoute component={AdvertiserDashboard} allowedRole="advertiser" />
         </Route>
-        <Route path="/create-campaign">
-          <ProtectedRoute component={AdvertiserDashboard} allowedRole="advertiser" />
+        <Route path="/campaign/:id">
+          <PageWrapper><CampaignDetails /></PageWrapper>
         </Route>
 
         <Route>
