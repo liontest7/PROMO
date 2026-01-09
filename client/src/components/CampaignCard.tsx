@@ -161,12 +161,14 @@ export function CampaignCard({ campaign, onActionClick, isOwner }: CampaignCardP
             <Progress value={percentComplete} className="h-1.5 bg-white/5 rounded-full" />
           </div>
 
-          <Link href={`/campaign/${campaign.id}`}>
-            <Button className="w-full bg-primary/10 text-primary hover:bg-primary hover:text-white font-black h-12 rounded-2xl border border-primary/20 group/btn transition-all">
-              VIEW DETAILS
-              <ArrowRight className="ml-2 w-4 h-4 group-btn-hover:translate-x-1 transition-transform" />
-            </Button>
-          </Link>
+          <div className="flex flex-col gap-2">
+            <Link href={`/campaign/${campaign.id}`}>
+              <Button className="w-full bg-primary/10 text-primary hover:bg-primary hover:text-white font-black h-12 rounded-2xl border border-primary/20 group/btn transition-all">
+                VIEW DETAILS
+                <ArrowRight className="ml-2 w-4 h-4 group-btn-hover:translate-x-1 transition-transform" />
+              </Button>
+            </Link>
+          </div>
         </CardContent>
 
         <CardFooter className="pt-4 pb-6 border-t border-white/5 bg-white/[0.01] px-6">

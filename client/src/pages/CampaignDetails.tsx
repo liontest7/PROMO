@@ -1,7 +1,7 @@
 import { useRoute } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { Campaign, Action, Execution } from "@shared/schema";
-import { Loader2, ArrowLeft, ExternalLink, ShieldCheck, Coins, Users, CheckCircle, ArrowRight } from "lucide-react";
+import { Loader2, ArrowLeft, ExternalLink, ShieldCheck, Coins, Users, CheckCircle, ArrowRight, Twitter } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -17,7 +17,7 @@ export default function CampaignDetails() {
   const campaignId = params?.id;
   const [selectedAction, setSelectedAction] = useState<{ action: Action; campaign: Campaign } | null>(null);
 
-  const { data: campaign, isLoading: campaignLoading } = useQuery<Campaign & { actions: Action[] }>({
+  const { data: campaign, isLoading: campaignLoading } = useQuery<(Campaign & { actions: Action[] }) | undefined>({
     queryKey: [`/api/campaigns/${campaignId}`],
     enabled: !!campaignId,
   });
@@ -28,7 +28,9 @@ export default function CampaignDetails() {
   });
 
   const handleActionClick = (action: Action) => {
-    setSelectedAction({ action, campaign });
+    if (campaign) {
+      setSelectedAction({ action, campaign });
+    }
   };
 
   if (campaignLoading) {
@@ -197,7 +199,7 @@ export default function CampaignDetails() {
                       <div className="flex items-center gap-3">
                         {p.status === 'paid' && (
                           <Button variant="ghost" size="sm" className="h-8 text-[10px] uppercase font-bold text-primary gap-1.5 bg-primary/5 hover:bg-primary/10 border border-primary/10" asChild>
-                            <a href={`https://solscan.io/tx/${p.transactionHash || '#'}`} target="_blank" rel="noreferrer">
+                            <a href={`https://solscan.io/tx/${p.transactionSignature || '#'}`} target="_blank" rel="noreferrer">
                               Proof <ExternalLink className="w-3 h-3" />
                             </a>
                           </Button>
