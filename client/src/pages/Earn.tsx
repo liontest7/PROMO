@@ -43,18 +43,24 @@ export default function Earn() {
     setSelectedAction({ action, campaign });
   };
 
+  const [minReward, setMinReward] = useState<string>("");
+
   const filteredCampaigns = campaigns?.filter(c => {
     const matchesSearch = 
       ((c.title || "").toLowerCase()).includes(searchTerm.toLowerCase()) || 
       ((c.tokenName || "").toLowerCase()).includes(searchTerm.toLowerCase()) ||
       ((c.description || "").toLowerCase()).includes(searchTerm.toLowerCase());
     
-    if (activeFilters.length === 0) return matchesSearch;
+    const rewardValue = parseFloat(c.rewardPerWallet || "0");
+    const minRewardValue = parseFloat(minReward || "0");
+    const matchesReward = isNaN(minRewardValue) || rewardValue >= minRewardValue;
+
+    if (activeFilters.length === 0) return matchesSearch && matchesReward;
     
     const matchesFilter = activeFilters.length === 0 || 
       (c.campaignType === 'holder_qualification' && activeFilters.includes('holder')) ||
       c.actions.some(a => activeFilters.includes(a.type));
-    return matchesSearch && matchesFilter;
+    return matchesSearch && matchesFilter && matchesReward;
   });
 
   const toggleFilter = (type: string) => {
@@ -103,22 +109,38 @@ export default function Earn() {
                     )}
                   </Button>
                 </PopoverTrigger>
-                <PopoverContent className="w-56 glass-card border-white/10 bg-background/95 backdrop-blur-xl">
+                <PopoverContent className="w-64 glass-card border-white/10 bg-background/95 backdrop-blur-xl">
                   <div className="space-y-4">
                     <div className="flex items-center justify-between">
-                      <h4 className="font-bold text-sm">Filter by Type</h4>
-                      {activeFilters.length > 0 && (
+                      <h4 className="font-bold text-sm">Advanced Filters</h4>
+                      {(activeFilters.length > 0 || minReward) && (
                         <Button 
                           variant="ghost" 
                           size="sm" 
                           className="h-auto p-0 text-xs text-primary"
-                          onClick={() => setActiveFilters([])}
+                          onClick={() => {
+                            setActiveFilters([]);
+                            setMinReward("");
+                          }}
                         >
-                          Clear
+                          Clear All
                         </Button>
                       )}
                     </div>
+
+                    <div className="space-y-2">
+                      <Label className="text-xs text-muted-foreground uppercase font-black">Min Reward Amount</Label>
+                      <Input 
+                        type="number"
+                        placeholder="0.00"
+                        className="h-8 bg-white/5 border-white/10"
+                        value={minReward}
+                        onChange={(e) => setMinReward(e.target.value)}
+                      />
+                    </div>
+
                     <div className="space-y-3">
+                      <Label className="text-xs text-muted-foreground uppercase font-black">Task Types</Label>
                       {[
                         { id: 'holder', label: 'Holder Qualification' },
                         { id: 'twitter', label: 'Twitter Follow' },
@@ -145,9 +167,9 @@ export default function Earn() {
         </div>
 
         {isLoading ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-            {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
-              <div key={i} className="h-[300px] rounded-2xl border border-white/5 bg-white/5 p-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {[1, 2, 3, 4, 5, 6].map((i) => (
+              <div key={i} className="h-[400px] rounded-2xl border border-white/5 bg-white/5 p-6">
                 <Skeleton className="h-8 w-3/4 mb-4 bg-white/10" />
                 <Skeleton className="h-4 w-full mb-2 bg-white/10" />
                 <Skeleton className="h-4 w-2/3 mb-8 bg-white/10" />
@@ -156,7 +178,7 @@ export default function Earn() {
             ))}
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {filteredCampaigns?.map((campaign: CampaignType & { actions: ActionType[] }) => (
               <CampaignCard 
                 key={campaign.id} 
