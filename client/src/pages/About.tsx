@@ -3,6 +3,8 @@ import { Navigation } from "@/components/Navigation";
 import { ShieldCheck, Rocket, Coins, Users, Zap, Globe, Target, BarChart3 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 
+import { APP_CONFIG } from "@/config";
+
 export default function About() {
   const stats = [
     { label: "Active Campaigns", value: "24", icon: BarChart3 },
@@ -86,8 +88,12 @@ export default function About() {
             </div>
           </div>
           <div className="relative">
-            <div className="aspect-square rounded-3xl bg-gradient-to-br from-primary/20 to-secondary/20 border border-white/10 flex items-center justify-center">
-              <Rocket className="w-32 h-32 text-primary animate-pulse" />
+            <div className="aspect-square rounded-3xl overflow-hidden bg-gradient-to-br from-primary/20 to-secondary/20 border border-white/10 flex items-center justify-center p-8 group">
+              <img 
+                src={APP_CONFIG.assets.characterQuestion} 
+                alt="About Us" 
+                className="w-full h-full object-contain drop-shadow-[0_0_20px_rgba(34,197,94,0.3)] group-hover:scale-105 transition-transform duration-500" 
+              />
             </div>
             {/* Abstract glow */}
             <div className="absolute inset-0 bg-primary/20 blur-[120px] -z-10" />

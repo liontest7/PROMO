@@ -277,68 +277,56 @@ export default function Dashboard() {
               </CardHeader>
               <CardContent className="space-y-4">
                 {!isAuthenticated ? (
-                  <div className="p-4 rounded-xl bg-blue-500/10 border border-blue-500/20 text-center">
+                  <div className="p-4 rounded-xl bg-blue-500/10 border border-blue-500/20 text-center relative overflow-hidden group">
+                    <div className="absolute top-0 right-0 p-2 opacity-10 group-hover:opacity-20 transition-opacity">
+                      <Twitter className="w-12 h-12" />
+                    </div>
                     <p className="text-xs text-blue-400 font-bold mb-3 uppercase tracking-wider">Official Verification Required</p>
                     <Button 
                       onClick={() => window.location.href = "/api/login"}
-                      className="w-full bg-blue-500 hover:bg-blue-600 text-white gap-2 font-bold"
+                      className="w-full bg-blue-500 hover:bg-blue-600 text-white gap-2 font-bold relative z-10"
                     >
                       <Twitter className="w-4 h-4" /> Connect Official X Account
                     </Button>
-                    <p className="text-[10px] text-muted-foreground mt-2 italic">
-                      Required for automated task verification.
+                    <p className="text-[10px] text-muted-foreground mt-3 italic">
+                      Physical login required to verify tasks automatically.
                     </p>
                   </div>
                 ) : (
-                  <div className="p-4 rounded-xl bg-primary/10 border border-primary/20 flex items-center gap-4">
-                    <Avatar className="h-12 w-12 border-2 border-primary/20">
+                  <div className="p-4 rounded-xl bg-primary/10 border border-primary/20 flex items-center gap-4 relative overflow-hidden group">
+                    <Avatar className="h-12 w-12 border-2 border-primary/20 relative z-10">
                       <AvatarImage src={replitUser?.profileImageUrl || ""} />
                       <AvatarFallback><UserIcon className="w-6 h-6" /></AvatarFallback>
                     </Avatar>
-                    <div className="flex-1">
+                    <div className="flex-1 relative z-10">
                       <p className="text-sm font-bold leading-none mb-1">{replitUser?.firstName} {replitUser?.lastName}</p>
                       <Badge variant="outline" className="text-[9px] uppercase font-black bg-primary/20 text-primary border-primary/30">Verified X Account</Badge>
                     </div>
-                    <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-destructive" onClick={() => logout()}>
+                    <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-destructive relative z-10" onClick={() => logout()}>
                       <LogOut className="w-4 h-4" />
                     </Button>
                   </div>
                 )}
 
-                <div className="space-y-2">
-                  <Label htmlFor="twitter" className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-muted-foreground">
-                    <Twitter className="w-3.5 h-3.5 text-blue-400" /> Twitter Handle
-                  </Label>
-                  <Input
-                    id="twitter"
-                    placeholder="@username"
-                    className="bg-black/40 border-white/10"
-                    value={twitter}
-                    onChange={(e) => setTwitter(e.target.value)}
-                  />
+                <div className="space-y-4 pt-2">
+                  <div className="p-4 rounded-xl bg-blue-500/5 border border-blue-500/10 opacity-60">
+                    <div className="flex items-center gap-3 mb-2">
+                      <div className="w-8 h-8 rounded bg-blue-500/10 flex items-center justify-center">
+                        <Send className="w-4 h-4 text-blue-500" />
+                      </div>
+                      <div className="flex flex-col">
+                        <span className="text-sm font-bold">Connect Telegram</span>
+                        <span className="text-[9px] text-blue-400/70 font-bold uppercase tracking-tighter">Coming Soon</span>
+                      </div>
+                    </div>
+                    <Button variant="outline" className="w-full text-[10px] h-8 border-blue-500/20" disabled>
+                      Sync Official Telegram
+                    </Button>
+                  </div>
                 </div>
-                <div className="space-y-2">
-                  <Label htmlFor="telegram" className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-muted-foreground">
-                    <Send className="w-3.5 h-3.5 text-blue-500" /> Telegram Username
-                  </Label>
-                  <Input
-                    id="telegram"
-                    placeholder="@username"
-                    className="bg-black/40 border-white/10"
-                    value={telegram}
-                    onChange={(e) => setTelegram(e.target.value)}
-                  />
-                </div>
-                <Button 
-                  onClick={() => updateProfile.mutate({ twitterHandle: twitter, telegramHandle: telegram })}
-                  disabled={updateProfile.isPending}
-                  className="w-full font-bold bg-primary/10 text-primary hover:bg-primary hover:text-primary-foreground border-primary/20"
-                >
-                  {updateProfile.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                  Update Profiles
-                </Button>
+
                 <p className="text-[10px] text-muted-foreground italic text-center">
-                  Linking accounts enables automated task verification.
+                  Manual handle entry is disabled. Real-time sync ensures secure verification.
                 </p>
               </CardContent>
             </Card>
