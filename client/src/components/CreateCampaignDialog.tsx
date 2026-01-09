@@ -97,6 +97,53 @@ export function CreateCampaignDialog() {
     name: "actions",
   });
 
+  // Watch for changes to calculate derived values
+  const watchedActions = form.watch("actions");
+  const watchedTotalBudget = form.watch("totalBudget");
+
+  const totalCalculatedCost = watchedActions.reduce((acc, action) => {
+    const reward = Number(action.rewardAmount) || 0;
+    const executions = Number(action.maxExecutions) || 0;
+    return acc + (reward * executions);
+  }, 0);
+
+  const remainingFromBudget = Math.max(0, (Number(watchedTotalBudget) || 0) - totalCalculatedCost);
+
+  const fetchTokenMetadata = async (address: string) => {
+    if (!address || address.length < 32) return;
+    
+    try {
+      // In a real Solana app, we'd use @solana/web3.js and @metaplex-foundation/js
+      // For this demo, we'll simulate a fetch from a DEX aggregator or Helius API
+      const response = await fetch(`https://api.dexscreener.com/latest/dex/tokens/${address}`);
+      const data = await response.json();
+      
+      if (data.pairs && data.pairs.length > 0) {
+        const pair = data.pairs[0];
+        const token = pair.baseToken;
+        
+        if (token.symbol) form.setValue('tokenName', token.symbol);
+        if (token.name && !form.getValues('title')) form.setValue('title', `${token.name} Growth Campaign`);
+        if (pair.info?.imageUrl) form.setValue('logoUrl', pair.info.imageUrl);
+        if (pair.info?.websites?.[0]?.url) form.setValue('websiteUrl', pair.info.websites[0].url);
+        
+        // Try to find social links
+        const twitter = pair.info?.socials?.find((s: any) => s.type === 'twitter');
+        if (twitter?.url) form.setValue('twitterUrl', twitter.url);
+        
+        const telegram = pair.info?.socials?.find((s: any) => s.type === 'telegram');
+        if (telegram?.url) form.setValue('telegramUrl', telegram.url);
+
+        toast({
+          title: "Metadata Loaded",
+          description: `Found details for ${token.symbol}. Some fields have been auto-filled.`,
+        });
+      }
+    } catch (error) {
+      console.error("Error fetching metadata:", error);
+    }
+  };
+
   function onSubmit(values: FormValues) {
     if (!userId) {
       toast({
@@ -208,12 +255,43 @@ export function CreateCampaignDialog() {
                   <FormItem>
                     <FormLabel>Contract Address</FormLabel>
                     <FormControl>
-                      <Input placeholder="Token Mint Address..." {...field} />
+                      <Input 
+                        placeholder="Token Mint Address..." 
+                        {...field} 
+                        onChange={(e) => {
+                          field.onChange(e);
+                          fetchTokenMetadata(e.target.value);
+                        }}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
+            </div>
+
+            <div className="p-4 rounded-xl bg-primary/5 border border-primary/20 space-y-3">
+              <div className="flex justify-between items-center">
+                <span className="text-sm font-medium">Budget Status</span>
+                <Badge variant={remainingFromBudget >= 0 ? "outline" : "destructive"}>
+                  {remainingFromBudget >= 0 ? "Budget OK" : "Budget Exceeded"}
+                </Badge>
+              </div>
+              <div className="grid grid-cols-2 gap-4 text-xs">
+                <div>
+                  <p className="text-muted-foreground">Allocated Rewards</p>
+                  <p className="text-lg font-bold text-primary">{totalCalculatedCost.toFixed(2)}</p>
+                </div>
+                <div>
+                  <p className="text-muted-foreground">Remaining in Pool</p>
+                  <p className="text-lg font-bold">{remainingFromBudget.toFixed(2)}</p>
+                </div>
+              </div>
+              {totalCalculatedCost > Number(watchedTotalBudget) && (
+                <p className="text-[10px] text-destructive font-bold animate-pulse">
+                  * Allocated rewards exceed total budget. Please increase budget or reduce task counts.
+                </p>
+              )}
             </div>
 
             <FormField
@@ -404,22 +482,22 @@ export function CreateCampaignDialog() {
                         <FormItem>
                           <FormLabel>Reward Amount</FormLabel>
                           <FormControl>
-                            <Input type="number" {...field} />
+                            <Input type="number" step="0.00001" {...field} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
                       )}
                     />
                   </div>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <FormField
                       control={form.control}
                       name={`actions.${index}.title`}
                       render={({ field }) => (
-                        <FormItem>
+                        <FormItem className="md:col-span-1">
                           <FormLabel>Action Title</FormLabel>
                           <FormControl>
-                            <Input placeholder="e.g. Follow us on Twitter" {...field} />
+                            <Input placeholder="e.g. Follow us" {...field} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -429,10 +507,23 @@ export function CreateCampaignDialog() {
                       control={form.control}
                       name={`actions.${index}.url`}
                       render={({ field }) => (
-                        <FormItem>
+                        <FormItem className="md:col-span-1">
                           <FormLabel>Target URL</FormLabel>
                           <FormControl>
                             <Input placeholder="https://..." {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name={`actions.${index}.maxExecutions`}
+                      render={({ field }) => (
+                        <FormItem className="md:col-span-1">
+                          <FormLabel>Max Participants</FormLabel>
+                          <FormControl>
+                            <Input type="number" placeholder="100" {...field} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -443,8 +534,12 @@ export function CreateCampaignDialog() {
               ))}
             </div>
 
-            <Button type="submit" disabled={isPending} className="w-full h-12 text-lg bg-primary text-primary-foreground font-bold hover:shadow-lg hover:shadow-primary/20">
-              {isPending ? "Deploying Campaign..." : "Create Campaign & Deposit Budget"}
+            <Button 
+              type="submit" 
+              disabled={isPending || totalCalculatedCost > Number(watchedTotalBudget)} 
+              className="w-full h-12 text-lg bg-primary text-primary-foreground font-bold hover:shadow-lg hover:shadow-primary/20 disabled:opacity-50"
+            >
+              {isPending ? "Deploying Campaign..." : totalCalculatedCost > Number(watchedTotalBudget) ? "Insufficient Budget" : "Create Campaign & Deposit Budget"}
             </Button>
           </form>
         </Form>
