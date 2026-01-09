@@ -162,7 +162,25 @@ export default function Dashboard() {
                 </CardHeader>
                 <CardContent>
                   <div className="text-3xl font-bold font-display tracking-tight">{stats?.totalEarned || "0.00"} SOL</div>
-                  <div className="flex items-center gap-1.5 mt-2">
+                  {stats?.pendingRewards && Number(stats.pendingRewards) > 0 && (
+                    <div className="mt-2 flex items-center justify-between">
+                      <div className="flex flex-col">
+                        <span className="text-[10px] text-muted-foreground uppercase font-bold">Pending Rewards</span>
+                        <span className="text-sm font-bold text-yellow-500">{stats.pendingRewards} SOL</span>
+                      </div>
+                      <Button 
+                        size="sm" 
+                        variant="default"
+                        className="h-7 px-3 text-[10px] font-bold bg-primary hover:bg-primary/90"
+                        onClick={() => claimAllMutation.mutate()}
+                        disabled={claimAllMutation.isPending}
+                      >
+                        {claimAllMutation.isPending ? <Loader2 className="h-3 w-3 animate-spin mr-1" /> : <Coins className="h-3 w-3 mr-1" />}
+                        CLAIM ALL
+                      </Button>
+                    </div>
+                  )}
+                  <div className="flex items-center gap-1.5 mt-4">
                     <span className="text-[10px] font-bold py-0.5 px-1.5 rounded bg-primary/20 text-primary">+12.5%</span>
                     <span className="text-[10px] text-muted-foreground font-medium uppercase">vs last 7 days</span>
                   </div>

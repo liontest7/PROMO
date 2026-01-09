@@ -505,7 +505,35 @@ export function CreateCampaignDialog() {
                       name={`actions.${index}.url`}
                       render={({ field }) => (
                         <FormItem className="md:col-span-1">
-                          <FormLabel>Target URL</FormLabel>
+                          <FormLabel className="flex items-center justify-between">
+                            Target URL
+                            <div className="flex gap-1">
+                              {form.watch("websiteUrl") && (
+                                <Button 
+                                  type="button" 
+                                  variant="ghost" 
+                                  size="icon" 
+                                  className="h-4 w-4" 
+                                  onClick={() => field.onChange(form.watch("websiteUrl"))}
+                                  title="Use project website"
+                                >
+                                  <Rocket className="h-3 w-3" />
+                                </Button>
+                              )}
+                              {form.watch("twitterUrl") && (
+                                <Button 
+                                  type="button" 
+                                  variant="ghost" 
+                                  size="icon" 
+                                  className="h-4 w-4" 
+                                  onClick={() => field.onChange(form.watch("twitterUrl"))}
+                                  title="Use Twitter URL"
+                                >
+                                  <Plus className="h-3 w-3" />
+                                </Button>
+                              )}
+                            </div>
+                          </FormLabel>
                           <FormControl>
                             <Input placeholder="https://..." {...field} />
                           </FormControl>

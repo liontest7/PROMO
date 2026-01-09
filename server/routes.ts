@@ -63,8 +63,19 @@ export async function registerRoutes(
       }
     }
 
+    // Pending rewards for "Claim All" functionality
+    let pendingRewards = 0;
+    const verifiedExecutions = executions.filter(e => e.status === 'verified');
+    for (const execution of verifiedExecutions) {
+      const action = await storage.getAction(execution.actionId);
+      if (action) {
+        pendingRewards += Number(action.rewardAmount);
+      }
+    }
+
     res.json({
       totalEarned: totalEarned.toFixed(6),
+      pendingRewards: pendingRewards.toFixed(6),
       tasksCompleted: completed,
       reputation: user.reputationScore,
       balance: user.balance
