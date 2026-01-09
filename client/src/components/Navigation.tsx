@@ -145,50 +145,7 @@ export function Navigation() {
               </Button>
             </div>
 
-            {/* Replit Auth Section */}
-            {isConnected && !isAuthenticated && (
-              <Button 
-                variant="outline" 
-                size="sm"
-                className="hidden sm:flex border-white/10 hover:bg-white/5 gap-2 h-9 rounded-lg opacity-50 cursor-not-allowed"
-                disabled
-              >
-                <ShieldCheck className="w-4 h-4 text-primary" />
-                Socials (Soon)
-              </Button>
-            )}
-            {isConnected && isAuthenticated && (
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" className="relative h-10 w-10 rounded-full border border-white/10 p-0 hover:bg-white/5">
-                    <Avatar className="h-9 w-9">
-                      <AvatarImage src={user?.profileImageUrl || ""} alt={user?.firstName || ""} />
-                      <AvatarFallback className="bg-primary/10 text-primary font-bold">
-                        {user?.firstName?.[0] || <UserIcon className="w-4 h-4" />}
-                      </AvatarFallback>
-                    </Avatar>
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent className="w-56 glass-card border-white/10 bg-background/95 backdrop-blur-xl" align="end">
-                  <DropdownMenuLabel className="font-normal">
-                    <div className="flex flex-col space-y-1">
-                      <p className="text-sm font-medium leading-none">
-                        {user?.firstName} {user?.lastName}
-                      </p>
-                      <p className="text-[10px] text-muted-foreground truncate">
-                        {user?.email}
-                      </p>
-                    </div>
-                  </DropdownMenuLabel>
-                  <DropdownMenuSeparator className="bg-white/5" />
-                  <DropdownMenuItem className="cursor-pointer gap-2 focus:bg-destructive/10 focus:text-destructive" onClick={() => logout()}>
-                    <LogOut className="w-4 h-4" />
-                    <span>Log out X</span>
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            )}
-
+            {/* User Wallet Info */}
             {isConnected ? (
               <div className="flex items-center gap-3">
                 <div className="hidden sm:flex flex-col items-end">

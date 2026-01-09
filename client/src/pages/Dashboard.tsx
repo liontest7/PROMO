@@ -281,15 +281,15 @@ export default function Dashboard() {
                     <div className="absolute top-0 right-0 p-2 opacity-10 group-hover:opacity-20 transition-opacity">
                       <Twitter className="w-12 h-12" />
                     </div>
-                    <p className="text-xs text-blue-400 font-bold mb-3 uppercase tracking-wider">Official Verification Required</p>
+                    <p className="text-xs text-blue-400 font-bold mb-3 uppercase tracking-wider">Verification (Coming Soon)</p>
                     <Button 
-                      onClick={() => window.location.href = "/api/login"}
-                      className="w-full bg-blue-500 hover:bg-blue-600 text-white gap-2 font-bold relative z-10"
+                      className="w-full bg-blue-500/50 cursor-not-allowed text-white gap-2 font-bold relative z-10"
+                      disabled
                     >
-                      <Twitter className="w-4 h-4" /> Sync Socials via Replit
+                      <Twitter className="w-4 h-4" /> Sync Socials (Soon)
                     </Button>
                     <p className="text-[10px] text-muted-foreground mt-3 italic">
-                      Verify your X & Telegram accounts through Replit's secure login.
+                      Twitter & Telegram API integration is in progress.
                     </p>
                   </div>
                 ) : (

@@ -133,7 +133,24 @@ export function CreateCampaignDialog() {
         .then(res => res.json())
         .catch(() => null);
 
-      const [dexData, pumpData] = await Promise.all([dexPromise, pumpPromise]);
+      // 3. Fetch from Moralis (Excellent for logos and native supply)
+      const moralisPromise = fetch(`https://solana-gateway.moralis.io/token/mainnet/${address}/metadata`, {
+        headers: {
+          'accept': 'application/json',
+          'X-API-Key': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJub25jZSI6ImRhY2M3ZmQ1LWYyOTgtNGY5Zi1iZDIwLTdiYWM5MWRkMjNhNCIsIm9yZ0lkIjoiNDcxNTg3IiwidXNlcklkIjoiNDg1MTI3IiwidHlwZUlkIjoiYmVlNmFiMTItODg0NS00Nzc3LWJlMDQtODU4ODYzOTYxMjAxIiwidHlwZSI6IlBST0pFQ1QiLCJpYXQiOjE3NTgzNDIwMzksImV4cCI6NDkxNDEwMjAzOX0.twhytkJWhGoqh5NVfhSkG9Irub-cS2cSSqKqPCI5Ur8'
+        }
+      })
+        .then(res => res.json())
+        .catch(() => null);
+
+      const [dexData, pumpData, moralisData] = await Promise.all([dexPromise, pumpPromise, moralisPromise]);
+
+      // Process Moralis data (often best for official logos)
+      if (moralisData && moralisData.mint) {
+        if (moralisData.symbol) mergedMetadata.tokenName = moralisData.symbol;
+        if (moralisData.name && !mergedMetadata.title) mergedMetadata.title = `${moralisData.name} Growth Campaign`;
+        if (moralisData.logo) mergedMetadata.logoUrl = moralisData.logo;
+      }
 
       // Process Pump.fun data (often more direct for new tokens)
       if (pumpData && pumpData.success && pumpData.result) {
@@ -348,9 +365,9 @@ export function CreateCampaignDialog() {
                         <div>
                           <p className="text-[10px] text-muted-foreground uppercase tracking-wider mb-1">Total Budget</p>
                           <p className="text-xl font-bold text-primary">
-                            {form.watch("campaignType") === "holder_qualification" 
-                              ? (Number(form.watch("rewardPerWallet")) * Number(form.watch("maxClaims")) || 0).toFixed(6) 
-                              : totalCalculatedCost.toFixed(6)
+                            {watchedType === "holder_qualification" 
+                              ? (Number(form.watch("rewardPerWallet")) * Number(form.watch("maxClaims")) || 0).toLocaleString(undefined, { maximumFractionDigits: 6 })
+                              : totalCalculatedCost.toLocaleString(undefined, { maximumFractionDigits: 6 })
                             } <span className="text-sm">{form.watch("tokenName") || "Tokens"}</span>
                           </p>
                         </div>
@@ -497,7 +514,9 @@ export function CreateCampaignDialog() {
                 </div>
                 <div className="space-y-2 p-4 rounded-xl bg-primary/10 border border-primary/20">
                   <p className="text-xs text-primary uppercase tracking-widest">Reward Pool Deposit</p>
-                  <p className="text-lg font-bold text-primary">{form.getValues("totalBudget")} {form.getValues("tokenName")}</p>
+                  <p className="text-lg font-bold text-primary">
+                    {Number(form.getValues("totalBudget")).toLocaleString(undefined, { maximumFractionDigits: 6 })} {form.getValues("tokenName")}
+                  </p>
                 </div>
               </div>
 
