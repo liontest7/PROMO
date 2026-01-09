@@ -145,11 +145,41 @@ export default function Earn() {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredCampaigns?.map((campaign) => (
-              <CampaignCard 
-                key={campaign.id} 
-                campaign={campaign} 
-                onActionClick={(action) => handleActionClick(action, campaign)}
-              />
+              <div key={campaign.id} className="glass-card border-white/5 bg-white/[0.02] rounded-2xl p-6 hover:bg-white/[0.04] transition-all group">
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex flex-col">
+                    <span className="text-[10px] font-bold text-primary uppercase tracking-wider bg-primary/10 px-2 py-0.5 rounded-full w-fit mb-1">
+                      {campaign.tokenName} Reward
+                    </span>
+                    <h3 className="text-xl font-bold font-display group-hover:text-primary transition-colors line-clamp-1">
+                      {campaign.title}
+                    </h3>
+                  </div>
+                  <div className="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-primary group-hover:bg-primary/10 transition-all">
+                    <Coins className="w-6 h-6" />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4 mb-6">
+                  <div className="p-2 rounded-lg bg-white/5 border border-white/10">
+                    <p className="text-[10px] text-muted-foreground uppercase font-bold mb-1">Remaining</p>
+                    <p className="text-sm font-mono font-bold text-foreground">
+                      {campaign.tokenBudget} {campaign.tokenName}
+                    </p>
+                  </div>
+                  <div className="p-2 rounded-lg bg-white/5 border border-white/10">
+                    <p className="text-[10px] text-muted-foreground uppercase font-bold mb-1">Actions</p>
+                    <p className="text-sm font-mono font-bold text-foreground">
+                      {campaign.actions?.length || 0} Tasks
+                    </p>
+                  </div>
+                </div>
+
+                <CampaignCard 
+                  campaign={campaign} 
+                  onActionClick={(action) => handleActionClick(action, campaign)}
+                />
+              </div>
             ))}
           </div>
         )}

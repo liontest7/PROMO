@@ -1,8 +1,9 @@
 import { Link, useLocation } from "wouter";
 import { useWallet } from "@/hooks/use-wallet";
 import { Button } from "@/components/ui/button";
-import { LayoutDashboard, Coins, Wallet, LogOut, PlusCircle, Trophy, Twitter, Send, ShieldCheck, User } from "lucide-react";
+import { LayoutDashboard, Coins, Wallet, LogOut, ExternalLink, Trophy, Twitter, Send, ShieldCheck } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { APP_CONFIG } from "@/config";
 
 export function Navigation() {
   const [location] = useLocation();
@@ -30,7 +31,7 @@ export function Navigation() {
               <Coins className="text-white w-6 h-6" />
             </div>
             <span className="font-display font-bold text-2xl tracking-tight bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent">
-              Promotion
+              {APP_CONFIG.platformName}
             </span>
           </Link>
 
@@ -39,33 +40,38 @@ export function Navigation() {
             <NavLink href="/earn" icon={Coins}>Earn</NavLink>
             
             {isConnected && role === "user" && (
-              <>
-                <NavLink href="/dashboard" icon={Trophy}>Dashboard</NavLink>
-              </>
+              <NavLink href="/dashboard" icon={Trophy}>Dashboard</NavLink>
             )}
             
             {isConnected && role === "advertiser" && (
-              <>
-                <NavLink href="/advertiser" icon={LayoutDashboard}>Campaigns</NavLink>
-              </>
+              <NavLink href="/advertiser" icon={LayoutDashboard}>Campaigns</NavLink>
             )}
             <div className="ml-auto flex items-center gap-2">
               <NavLink href="/about" icon={ShieldCheck}>About</NavLink>
             </div>
           </div>
 
-          {/* Wallet Connection */}
+          {/* Wallet Connection & Socials */}
           <div className="flex items-center gap-4">
             <div className="hidden lg:flex items-center gap-4 mr-4 pr-4 border-r border-white/10 text-muted-foreground">
-              <a href="https://twitter.com" target="_blank" rel="noreferrer" className="hover:text-primary transition-colors">
+              <a href={APP_CONFIG.socials.twitter} target="_blank" rel="noreferrer" className="hover:text-primary transition-colors">
                 <Twitter className="w-5 h-5" />
               </a>
-              <a href="https://t.me" target="_blank" rel="noreferrer" className="hover:text-primary transition-colors">
+              <a href={APP_CONFIG.socials.telegram} target="_blank" rel="noreferrer" className="hover:text-primary transition-colors">
                 <Send className="w-5 h-5" />
               </a>
-              <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary">
-                <span className="text-[10px] font-bold uppercase tracking-widest">PROMO</span>
-                <span className="text-xs font-bold">$0.42</span>
+              <div className="flex items-center gap-2">
+                <Button 
+                  asChild
+                  variant="ghost" 
+                  size="sm" 
+                  className="px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary hover:bg-primary/20 h-7"
+                >
+                  <a href={APP_CONFIG.token.buyLinks.pumpFun} target="_blank" rel="noreferrer" className="flex items-center gap-2">
+                    <span className="text-[10px] font-bold uppercase tracking-widest">BUY {APP_CONFIG.token.symbol}</span>
+                    <ExternalLink className="w-3 h-3" />
+                  </a>
+                </Button>
               </div>
             </div>
             {isConnected ? (
@@ -80,7 +86,7 @@ export function Navigation() {
                   variant="outline" 
                   size="sm" 
                   onClick={disconnect}
-                  className="border-white/10 hover:bg-white/5 hover:border-white/20 hover:text-destructive"
+                  className="border-white/10 hover:bg-white/5 hover:border-white/20 hover:text-destructive h-9"
                 >
                   <LogOut className="w-4 h-4" />
                 </Button>
@@ -88,7 +94,7 @@ export function Navigation() {
             ) : (
               <Button 
                 onClick={() => connect('user')}
-                className="bg-primary text-primary-foreground font-bold hover:bg-primary/90 shadow-lg shadow-primary/25 hover:shadow-primary/40 transition-all"
+                className="bg-primary text-primary-foreground font-bold hover:bg-primary/90 shadow-lg shadow-primary/25 hover:shadow-primary/40 transition-all h-9"
               >
                 <Wallet className="w-4 h-4 mr-2" />
                 Connect Wallet
