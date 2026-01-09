@@ -156,11 +156,11 @@ export default function Landing() {
                 { label: "Active Campaigns", value: stats?.activeCampaigns || "0" },
                 { label: "Community Members", value: stats?.totalUsers || "1,240" },
                 { label: "Verified Projects", value: stats?.totalVerifiedProjects || "0" },
-                { label: "Rewards Paid", value: stats ? `${stats.totalPaid} TOKENS` : "450k MEME" },
+                { label: "Rewards Paid (Tokens)", value: stats ? stats.totalPaid : "450k" },
               ].map((stat, i) => (
-                <div key={i} className="text-center p-6 rounded-2xl bg-white/5 border border-white/5 backdrop-blur-sm group hover:border-primary/30 transition-all flex flex-col justify-center min-h-[120px]">
-                  <h3 className="text-2xl md:text-4xl font-display font-black text-white mb-1.5 tracking-tighter">{stat.value}</h3>
-                  <p className="text-[10px] md:text-[11px] text-muted-foreground uppercase font-black tracking-widest leading-tight">{stat.label}</p>
+                <div key={i} className="text-center p-4 rounded-2xl bg-white/5 border border-white/5 backdrop-blur-sm group hover:border-primary/30 transition-all flex flex-col justify-center min-h-[100px]">
+                  <h3 className="text-xl md:text-3xl font-display font-black text-white mb-1 tracking-tighter">{stat.value}</h3>
+                  <p className="text-[9px] md:text-[10px] text-muted-foreground uppercase font-black tracking-widest leading-tight">{stat.label}</p>
                 </div>
               ))}
             </div>
