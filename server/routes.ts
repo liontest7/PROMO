@@ -164,9 +164,17 @@ export async function registerRoutes(
           
           if (!state) {
             // Check balance (mocked for Phase 1)
-            const balance = 1000; // Simulated wallet check
-            if (balance < parseFloat(campaign.minHoldingAmount || "0")) {
-              return res.json({ success: false, message: "Insufficient balance" });
+            const balance = 10; // Simulated wallet check (user has 10)
+            const required = parseFloat(campaign.minHoldingAmount || "0");
+            
+            if (balance < required) {
+              return res.json({ 
+                success: false, 
+                status: "insufficient",
+                currentBalance: balance,
+                requiredBalance: required,
+                message: "Insufficient balance" 
+              });
             }
             state = await storage.createHolderState({
               userId: user.id,
@@ -174,25 +182,44 @@ export async function registerRoutes(
               holdStartTimestamp: new Date(),
               claimed: false
             });
-            return res.json({ success: true, status: "holding", message: "Holding period started!" });
+            return res.json({ 
+              success: true, 
+              status: "holding", 
+              currentBalance: balance,
+              requiredBalance: required,
+              holdDuration: 0,
+              message: "Holding period started!" 
+            });
           }
 
           if (state.claimed) return res.json({ success: false, message: "Already claimed" });
 
           const now = new Date();
           const durationDays = (now.getTime() - state.holdStartTimestamp.getTime()) / (1000 * 60 * 60 * 24);
-          
+          const balance = 1000; // Simulated wallet check
+          const required = parseFloat(campaign.minHoldingAmount || "0");
+
           if (durationDays < (campaign.minHoldingDuration || 0)) {
             return res.json({ 
               success: true, 
               status: "waiting", 
               remaining: (campaign.minHoldingDuration || 0) - durationDays,
+              currentBalance: balance,
+              requiredBalance: required,
+              holdDuration: durationDays,
               message: "Still in holding period" 
             });
           }
 
           // Ready to claim
-          return res.json({ success: true, status: "ready", message: "Eligibility verified! You can claim now." });
+          return res.json({ 
+            success: true, 
+            status: "ready", 
+            currentBalance: balance,
+            requiredBalance: required,
+            holdDuration: durationDays,
+            message: "Eligibility verified! You can claim now." 
+          });
         }
         return res.status(404).json({ message: "Action or Campaign not found" });
       }
