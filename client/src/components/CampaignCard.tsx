@@ -18,8 +18,10 @@ export function CampaignCard({ campaign, onActionClick, isOwner }: CampaignCardP
   const [copied, setCopied] = useState(false);
   const { toast } = useToast();
   
-  const percentComplete = 
-    ((Number(campaign.totalBudget) - Number(campaign.remainingBudget)) / Number(campaign.totalBudget)) * 100;
+  const totalBudgetNum = Number(campaign.totalBudget);
+  const remainingBudgetNum = Number(campaign.remainingBudget);
+  const distributedNum = totalBudgetNum - remainingBudgetNum;
+  const percentComplete = (distributedNum / totalBudgetNum) * 100;
 
   const getIcon = (type: string) => {
     switch(type) {
@@ -161,12 +163,18 @@ export function CampaignCard({ campaign, onActionClick, isOwner }: CampaignCardP
         )}
 
         {/* Budget Progress */}
-        <div className="space-y-2">
-          <div className="flex justify-between text-[11px] font-bold tracking-tight">
-            <span className="text-muted-foreground uppercase">Budget Distribution</span>
-            <span className="text-primary">{Math.round(percentComplete)}% DISTRIBUTED</span>
+        <div className="space-y-1.5">
+          <div className="flex justify-between text-[10px] font-bold tracking-tight mb-1">
+            <div className="flex flex-col">
+              <span className="text-muted-foreground uppercase">Remaining</span>
+              <span className="text-foreground">{remainingBudgetNum.toLocaleString()} {campaign.tokenName}</span>
+            </div>
+            <div className="flex flex-col text-right">
+              <span className="text-muted-foreground uppercase">Distributed</span>
+              <span className="text-primary">{distributedNum.toLocaleString()} {campaign.tokenName}</span>
+            </div>
           </div>
-          <Progress value={percentComplete} className="h-2 bg-white/5 rounded-full" />
+          <Progress value={percentComplete} className="h-1.5 bg-white/5 rounded-full" />
         </div>
 
         {/* Actions List */}

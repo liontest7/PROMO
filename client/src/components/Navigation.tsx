@@ -51,28 +51,30 @@ export function Navigation() {
             </div>
           </div>
 
-          {/* Wallet Connection & Socials */}
           <div className="flex items-center gap-4">
-            <div className="hidden lg:flex items-center gap-4 mr-4 pr-4 border-r border-white/10 text-muted-foreground">
-              <a href={APP_CONFIG.socials.twitter} target="_blank" rel="noreferrer" className="hover:text-primary transition-colors">
-                <Twitter className="w-5 h-5" />
-              </a>
-              <a href={APP_CONFIG.socials.telegram} target="_blank" rel="noreferrer" className="hover:text-primary transition-colors">
-                <Send className="w-5 h-5" />
-              </a>
-              <div className="flex items-center gap-2">
-                <Button 
-                  asChild
-                  variant="ghost" 
-                  size="sm" 
-                  className="px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary hover:bg-primary/20 h-7"
-                >
-                  <a href={APP_CONFIG.token.buyLinks.pumpFun} target="_blank" rel="noreferrer" className="flex items-center gap-2">
-                    <span className="text-[10px] font-bold uppercase tracking-widest">BUY {APP_CONFIG.token.symbol}</span>
-                    <ExternalLink className="w-3 h-3" />
-                  </a>
-                </Button>
-              </div>
+            <div className="hidden lg:flex items-center gap-3 mr-4 pr-4 border-r border-white/10">
+              <Button 
+                asChild
+                variant="ghost" 
+                size="sm" 
+                className="px-3 h-8 rounded-full bg-primary/10 border border-primary/20 text-primary hover:bg-primary/20 transition-all"
+              >
+                <a href={APP_CONFIG.token.buyLinks.pumpFun} target="_blank" rel="noreferrer" className="flex items-center gap-2">
+                  <span className="text-[10px] font-bold uppercase tracking-widest">Buy on Pump.fun</span>
+                  <ExternalLink className="w-3 h-3" />
+                </a>
+              </Button>
+              <Button 
+                asChild
+                variant="ghost" 
+                size="sm" 
+                className="px-3 h-8 rounded-full bg-white/5 border border-white/10 text-muted-foreground hover:bg-white/10 hover:text-foreground transition-all"
+              >
+                <a href={APP_CONFIG.token.buyLinks.dexScanner} target="_blank" rel="noreferrer" className="flex items-center gap-2">
+                  <span className="text-[10px] font-bold uppercase tracking-widest">DEXScreener</span>
+                  <ExternalLink className="w-3 h-3" />
+                </a>
+              </Button>
             </div>
             {isConnected ? (
               <div className="flex items-center gap-3">

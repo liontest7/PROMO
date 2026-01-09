@@ -142,6 +142,8 @@ export type VerifyActionRequest = {
   actionId: number;
   userWallet: string;
   proof?: string; // e.g., tweet URL or signature
+  handle?: string; // New field for social handle verification
+  socialVerified?: boolean; // Flag if social account was verified
 };
 
 // Response Types

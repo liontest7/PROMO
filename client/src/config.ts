@@ -7,7 +7,7 @@ export const APP_CONFIG = {
     price: 0.42,
     buyLinks: {
       pumpFun: "https://pump.fun/",
-      dexScanner: "https://dexscreener.com/solana/...",
+      dexScanner: "https://dexscreener.com/solana/",
     }
   },
   socials: {
