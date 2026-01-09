@@ -4,7 +4,7 @@ import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@/componen
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { Coins, Twitter, MessageCircle, ExternalLink, ShieldCheck, Globe, Send, Share2, Copy, Check, ArrowRight } from "lucide-react";
+import { Coins, Twitter, MessageCircle, ExternalLink, ShieldCheck, Globe, Send, Share2, Copy, Check, ArrowRight, Zap } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
@@ -100,7 +100,7 @@ export function CampaignCard({ campaign, onActionClick, isOwner }: CampaignCardP
           </div>
         </Link>
 
-        <CardHeader className="pb-3 relative pt-12 px-6">
+        <CardHeader className="pb-1 relative pt-10 px-6">
           <div className="absolute -top-10 left-6 w-20 h-24 flex flex-col gap-2">
             <Link href={`/campaign/${campaign.id}`}>
               <div className="w-20 h-20 rounded-2xl border-4 border-background bg-card overflow-hidden shadow-2xl hover:scale-105 transition-transform">
@@ -115,8 +115,8 @@ export function CampaignCard({ campaign, onActionClick, isOwner }: CampaignCardP
             </Link>
           </div>
 
-          <div className="flex justify-between items-start pt-2">
-            <div className="space-y-1 w-full">
+          <div className="flex justify-between items-start pt-1">
+            <div className="space-y-0.5 w-full">
               <Link href={`/campaign/${campaign.id}`}>
                 <CardTitle className="text-xl font-display font-black leading-tight group-hover:text-primary transition-colors cursor-pointer line-clamp-1">
                   {campaign.title}
@@ -127,23 +127,12 @@ export function CampaignCard({ campaign, onActionClick, isOwner }: CampaignCardP
               </Badge>
             </div>
           </div>
-          <p className="text-sm text-muted-foreground line-clamp-2 min-h-[40px] mt-3 leading-relaxed">
+          <p className="text-sm text-muted-foreground line-clamp-1 min-h-[20px] mt-2 leading-relaxed">
             {campaign.description}
           </p>
         </CardHeader>
 
-        <CardContent className="flex-1 space-y-6 px-6">
-          <div className="grid grid-cols-2 gap-4 mb-4">
-            <div className="p-3 bg-white/5 rounded-2xl border border-white/5 text-center">
-              <p className="text-[9px] text-muted-foreground uppercase font-black tracking-widest mb-1">Total Pool</p>
-              <p className="text-sm font-black text-white">{totalBudgetNum.toLocaleString()} {campaign.tokenName}</p>
-            </div>
-            <div className="p-3 bg-primary/5 rounded-2xl border border-primary/10 text-center">
-              <p className="text-[9px] text-primary uppercase font-black tracking-widest mb-1">Remaining</p>
-              <p className="text-sm font-black text-primary">{remainingBudgetNum.toLocaleString()} {campaign.tokenName}</p>
-            </div>
-          </div>
-
+        <CardContent className="flex-1 space-y-4 px-6 pt-2">
           {campaign.campaignType === 'holder_qualification' ? (
             <div className="space-y-2 bg-primary/5 p-3 rounded-2xl border border-primary/10">
               <div className="flex items-center gap-2 text-[10px] font-black text-primary uppercase tracking-tighter">
@@ -152,50 +141,25 @@ export function CampaignCard({ campaign, onActionClick, isOwner }: CampaignCardP
               </div>
             </div>
           ) : (
-            <div className="space-y-2">
-              <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-3">Tasks</p>
-              <div className="grid grid-cols-1 gap-2">
-                {campaign.actions?.slice(0, 2).map((action) => (
-                  <Button 
-                    key={action.id}
-                    variant="outline" 
-                    size="sm"
-                    className="justify-between h-9 text-xs border-white/5 bg-white/5 hover:bg-primary/10 hover:border-primary/20 transition-all group/action"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                      onActionClick?.(action);
-                    }}
-                  >
-                    <span className="flex items-center gap-2">
-                      {getIcon(action.type)}
-                      {action.title}
-                    </span>
-                    <Badge variant="secondary" className="bg-primary/20 text-primary border-0 text-[10px]">
-                      +{action.rewardAmount}
-                    </Badge>
-                  </Button>
-                ))}
-                {campaign.actions?.length > 2 && (
-                  <p className="text-[10px] text-center text-muted-foreground italic">
-                    +{campaign.actions.length - 2} more tasks
-                  </p>
-                )}
+            <div className="space-y-2 bg-primary/5 p-3 rounded-2xl border border-primary/10">
+              <div className="flex items-center gap-2 text-[10px] font-black text-primary uppercase tracking-tighter">
+                <Zap className="w-3.5 h-3.5" />
+                <span>{campaign.actions?.length || 0} TASKS AVAILABLE • EARN UP TO {campaign.actions?.reduce((acc, a) => acc + Number(a.rewardAmount), 0)} {campaign.tokenName}</span>
               </div>
             </div>
           )}
 
           <div className="space-y-2">
-            <div className="flex justify-between text-[10px] font-black uppercase tracking-widest mb-1 text-muted-foreground/60">
-              <span>PROGRESS</span>
-              <span>{percentComplete.toFixed(0)}%</span>
+            <div className="flex justify-between text-[10px] font-black uppercase tracking-widest mb-1">
+              <span className="text-muted-foreground">PROGRESS ({percentComplete.toFixed(0)}%)</span>
+              <span className="text-primary">{remainingBudgetNum.toLocaleString()} / {totalBudgetNum.toLocaleString()} {campaign.tokenName}</span>
             </div>
-            <Progress value={percentComplete} className="h-1.5 bg-white/5 rounded-full" />
+            <Progress value={percentComplete} className="h-2 bg-white/5 rounded-full" />
           </div>
 
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-2 pt-2">
             <Link href={`/campaign/${campaign.id}`}>
-              <Button className="w-full bg-primary/10 text-primary hover:bg-primary hover:text-white font-black h-12 rounded-2xl border border-primary/20 group/btn transition-all">
+              <Button className="w-full bg-primary/10 text-primary hover:bg-primary hover:text-white font-black h-11 rounded-2xl border border-primary/20 group/btn transition-all">
                 VIEW DETAILS
                 <ArrowRight className="ml-2 w-4 h-4 group-btn-hover:translate-x-1 transition-transform" />
               </Button>
