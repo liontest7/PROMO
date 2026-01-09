@@ -50,6 +50,18 @@ export function VerifyActionDialog({ action, campaign, open, onOpenChange }: Ver
   const isWebsiteAction = action.type === "website";
   const isHolderCampaign = campaign.campaignType === 'holder_qualification';
 
+  const formatDuration = (days: number) => {
+    if (days < 0) return "0s";
+    const totalSeconds = Math.floor(days * 24 * 60 * 60);
+    const h = Math.floor(totalSeconds / 3600);
+    const m = Math.floor((totalSeconds % 3600) / 60);
+    const s = totalSeconds % 60;
+    
+    if (h > 0) return `${h}h ${m}m ${s}s`;
+    if (m > 0) return `${m}m ${s}s`;
+    return `${s}s`;
+  };
+
   const handleVerify = async () => {
     if (!walletAddress) return;
 
@@ -210,7 +222,9 @@ export function VerifyActionDialog({ action, campaign, open, onOpenChange }: Ver
                         <div className="mt-2 space-y-2">
                           <div className="flex justify-between text-[10px]">
                             <span className="text-muted-foreground uppercase font-bold">Duration</span>
-                            <span className="text-primary font-black">{holdingStatus.holdDuration?.toFixed(2)} / {campaign.minHoldingDuration} DAYS</span>
+                            <span className="text-primary font-black">
+                              {holdingStatus.holdDuration !== undefined ? formatDuration(holdingStatus.holdDuration) : "0s"} / {campaign.minHoldingDuration} DAYS
+                            </span>
                           </div>
                           <div className="w-full bg-white/5 h-1.5 rounded-full overflow-hidden">
                             <div 
@@ -220,7 +234,7 @@ export function VerifyActionDialog({ action, campaign, open, onOpenChange }: Ver
                           </div>
                           {holdingStatus.remaining !== undefined && (
                             <p className="text-[9px] text-muted-foreground text-center font-bold uppercase tracking-wider">
-                              {holdingStatus.remaining.toFixed(2)} Days remaining for rewards
+                              {formatDuration(holdingStatus.remaining)} remaining for rewards
                             </p>
                           )}
                         </div>
