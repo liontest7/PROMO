@@ -45,19 +45,22 @@ export function WalletProvider({ children }: { children: ReactNode }) {
   const connect = async (selectedRole: "user" | "advertiser") => {
     setIsLoading(true);
     try {
-      // Real Solana Wallet Connection
-      if (!window.solana || !window.solana.isPhantom) {
+      console.log("Connecting to Solana wallet...");
+      // Try multiple ways to find the provider
+      const solanaInstance = (window as any).phantom?.solana || (window as any).solana;
+      
+      if (!solanaInstance) {
         toast({
           title: "Phantom Not Found",
-          description: "Please install the Phantom wallet extension to continue.",
+          description: "Please install the Phantom wallet extension or unlock it to continue.",
           variant: "destructive",
         });
         setIsLoading(false);
         return;
       }
 
-      console.log("Connecting to Solana wallet...");
-      const response = await window.solana.connect();
+      console.log("Found provider, calling connect...");
+      const response = await solanaInstance.connect();
       
       const publicAddress = response.publicKey.toString();
       console.log("Wallet connected:", publicAddress);
@@ -97,10 +100,15 @@ export function WalletProvider({ children }: { children: ReactNode }) {
         disconnect();
       });
 
-    } catch (error) {
+    } catch (error: any) {
+      console.error("Connection error detail:", error);
+      // Detailed logging for debugging
+      if (error?.message) console.log("Error message:", error.message);
+      if (error?.code) console.log("Error code:", error.code);
+      
       toast({
         title: "Connection Failed",
-        description: "Could not connect to Solana wallet.",
+        description: error.message || "Could not connect to Solana wallet. Please check if Phantom is unlocked.",
         variant: "destructive",
       });
     } finally {

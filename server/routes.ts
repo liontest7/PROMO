@@ -17,16 +17,22 @@ export async function registerRoutes(
       let user = await storage.getUserByWallet(input.walletAddress);
       
       if (!user) {
-        user = await storage.createUser({ 
+        // Use a plain object that matches the expected User type properties
+        // to bypass strict type check for balance/reputationScore while seeding DB correctly
+        const userData = { 
           walletAddress: input.walletAddress,
           role: input.role || "user",
-          balance: "0"
-        } as any);
+          balance: "0",
+          reputationScore: 0
+        };
+        // @ts-ignore
+        user = await storage.createUser(userData);
         res.status(201).json(user);
       } else {
         res.json(user);
       }
     } catch (err) {
+      console.error("Auth error:", err);
       if (err instanceof z.ZodError) {
         return res.status(400).json({ message: err.errors[0].message });
       }
