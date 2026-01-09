@@ -120,20 +120,37 @@ export function CreateCampaignDialog() {
   const fetchTokenMetadata = async (address: string) => {
     if (!address || address.length < 32) return;
     try {
+      // Primary source: DexScreener
       const response = await fetch(`https://api.dexscreener.com/latest/dex/tokens/${address}`);
       const data = await response.json();
+      
       if (data.pairs && data.pairs.length > 0) {
-        const pair = data.pairs[0];
-        const token = pair.baseToken;
+        // Find the pair with most liquidity/volume to get best metadata
+        const bestPair = data.pairs.sort((a: any, b: any) => (b.liquidity?.usd || 0) - (a.liquidity?.usd || 0))[0];
+        const token = bestPair.baseToken;
+        
         if (token.symbol) form.setValue('tokenName', token.symbol);
         if (token.name && !form.getValues('title')) form.setValue('title', `${token.name} Growth Campaign`);
-        if (pair.info?.imageUrl) form.setValue('logoUrl', pair.info.imageUrl);
-        if (pair.info?.websites?.[0]?.url) form.setValue('websiteUrl', pair.info.websites[0].url);
-        const twitter = pair.info?.socials?.find((s: any) => s.type === 'twitter');
+        
+        // Try to find social links and images from the best pair
+        if (bestPair.info?.imageUrl) form.setValue('logoUrl', bestPair.info.imageUrl);
+        if (bestPair.info?.header) form.setValue('bannerUrl', bestPair.info.header);
+        if (bestPair.info?.websites?.[0]?.url) form.setValue('websiteUrl', bestPair.info.websites[0].url);
+        
+        const twitter = bestPair.info?.socials?.find((s: any) => s.type === 'twitter');
         if (twitter?.url) form.setValue('twitterUrl', twitter.url);
-        const telegram = pair.info?.socials?.find((s: any) => s.type === 'telegram');
+        
+        const telegram = bestPair.info?.socials?.find((s: any) => s.type === 'telegram');
         if (telegram?.url) form.setValue('telegramUrl', telegram.url);
+
+        // Fallback for description if available in DEX data
+        // Some DEX APIs provide info/description
+        
         toast({ title: "Metadata Loaded", description: `Found details for ${token.symbol}.` });
+      } else {
+        // Secondary source: Try Birdeye or Jupiter if needed, 
+        // but DexScreener is usually enough for most meme tokens
+        toast({ title: "Limited Data", description: "Found token but some metadata might be missing.", variant: "default" });
       }
     } catch (error) {
       console.error("Error fetching metadata:", error);
@@ -410,7 +427,11 @@ export function CreateCampaignDialog() {
                       </div>
                     )}
                     
-                    <Button type="submit" className="w-full h-14 bg-primary text-primary-foreground font-bold text-xl hover:shadow-[0_0_30px_rgba(34,197,94,0.4)] transition-all">
+                    <Button 
+                      type="submit" 
+                      className="w-full h-14 bg-primary text-primary-foreground font-bold text-xl hover:shadow-[0_0_30px_rgba(34,197,94,0.4)] transition-all"
+                      disabled={watchedType === "engagement" || isPending}
+                    >
                       {watchedType === "engagement" ? "Coming Soon" : "Review Campaign"}
                       {watchedType === "engagement" ? null : <Eye className="ml-2 h-5 w-5" />}
                     </Button>

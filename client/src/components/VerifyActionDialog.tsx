@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { type Action, type Campaign } from "@shared/schema";
 import { useVerifyAction } from "@/hooks/use-executions";
 import { useWallet } from "@/hooks/use-wallet";
@@ -9,7 +9,6 @@ import {
   DialogHeader,
   DialogTitle,
   DialogDescription,
-  DialogFooter,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -29,12 +28,20 @@ export function VerifyActionDialog({ action, campaign, open, onOpenChange }: Ver
   const { toast } = useToast();
   const [proof, setProof] = useState("");
   const [step, setStep] = useState<"perform" | "verify" | "success">("perform");
+  const [holdingStatus, setHoldingStatus] = useState<{ status: string; remaining?: number } | null>(null);
+
+  useEffect(() => {
+    if (!open) {
+      setStep("perform");
+      setProof("");
+      setHoldingStatus(null);
+    }
+  }, [open]);
 
   if (!action || !campaign) return null;
 
   const isWebsiteAction = action.type === "website";
   const isHolderCampaign = campaign.campaignType === 'holder_qualification';
-  const [holdingStatus, setHoldingStatus] = useState<{ status: string; remaining?: number } | null>(null);
 
   const handleVerify = async () => {
     if (!walletAddress) return;
@@ -109,8 +116,6 @@ export function VerifyActionDialog({ action, campaign, open, onOpenChange }: Ver
             });
             setTimeout(() => {
               onOpenChange(false);
-              setStep("perform");
-              setProof("");
             }, 2000);
           }
         }

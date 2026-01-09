@@ -150,11 +150,11 @@ export function Navigation() {
               <Button 
                 variant="outline" 
                 size="sm"
-                className="hidden sm:flex border-white/10 hover:bg-white/5 gap-2 h-9 rounded-lg"
-                onClick={() => window.location.href = "/api/login"}
+                className="hidden sm:flex border-white/10 hover:bg-white/5 gap-2 h-9 rounded-lg opacity-50 cursor-not-allowed"
+                disabled
               >
                 <ShieldCheck className="w-4 h-4 text-primary" />
-                Verify Socials
+                Socials (Soon)
               </Button>
             )}
             {isConnected && isAuthenticated && (
