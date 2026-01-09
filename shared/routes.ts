@@ -45,8 +45,16 @@ export const api = {
       responses: {
         200: z.object({
           totalEarned: z.string(),
+          pendingRewards: z.string(),
           tasksCompleted: z.number(),
-          reputation: z.number()
+          reputation: z.number(),
+          balance: z.string(),
+          tokenBalances: z.array(z.object({
+            symbol: z.string(),
+            balance: z.string(),
+            earned: z.string(),
+            pending: z.string()
+          })).optional()
         }),
       }
     },
