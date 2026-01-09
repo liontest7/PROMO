@@ -3,7 +3,7 @@ import { useUserStats } from "@/hooks/use-user-stats";
 import { Navigation } from "@/components/Navigation";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Coins, Trophy, TrendingUp, Activity, CheckCircle, Twitter, Send, Loader2, Wallet } from "lucide-react";
+import { Coins, Trophy, TrendingUp, Activity, CheckCircle, Twitter, Send, Loader2, Wallet, LogOut } from "lucide-react";
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { api } from "@shared/routes";
@@ -33,7 +33,7 @@ export default function Dashboard() {
     enabled: !!walletAddress,
   });
 
-  const { user: replitUser, isAuthenticated, linkAccount, isLinking } = useAuth();
+  const { user: replitUser, isAuthenticated, linkAccount, logout } = useAuth();
 
   useEffect(() => {
     if (user) {
