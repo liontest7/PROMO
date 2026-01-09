@@ -120,37 +120,63 @@ export function CreateCampaignDialog() {
   const fetchTokenMetadata = async (address: string) => {
     if (!address || address.length < 32) return;
     try {
-      // Primary source: DexScreener
-      const response = await fetch(`https://api.dexscreener.com/latest/dex/tokens/${address}`);
-      const data = await response.json();
-      
-      if (data.pairs && data.pairs.length > 0) {
-        // Find the pair with most liquidity/volume to get best metadata
-        const bestPair = data.pairs.sort((a: any, b: any) => (b.liquidity?.usd || 0) - (a.liquidity?.usd || 0))[0];
+      // Create an object to store merged metadata
+      const mergedMetadata: any = {};
+
+      // 1. Fetch from DexScreener (Best for liquidity, socials, and header)
+      const dexPromise = fetch(`https://api.dexscreener.com/latest/dex/tokens/${address}`)
+        .then(res => res.json())
+        .catch(() => null);
+
+      // 2. Fetch from Pump.fun API (Best for native pump tokens and IPFS images)
+      const pumpPromise = fetch(`https://pmpapi.fun/api/get_metadata/${address}`)
+        .then(res => res.json())
+        .catch(() => null);
+
+      const [dexData, pumpData] = await Promise.all([dexPromise, pumpPromise]);
+
+      // Process Pump.fun data (often more direct for new tokens)
+      if (pumpData && pumpData.success && pumpData.result) {
+        const res = pumpData.result;
+        mergedMetadata.tokenName = res.symbol;
+        mergedMetadata.title = `${res.name} Growth Campaign`;
+        mergedMetadata.logoUrl = res.image;
+        mergedMetadata.description = res.description;
+      }
+
+      // Process DexScreener data (excellent for socials and header/banner)
+      if (dexData && dexData.pairs && dexData.pairs.length > 0) {
+        const bestPair = dexData.pairs.sort((a: any, b: any) => (b.liquidity?.usd || 0) - (a.liquidity?.usd || 0))[0];
         const token = bestPair.baseToken;
         
-        if (token.symbol) form.setValue('tokenName', token.symbol);
-        if (token.name && !form.getValues('title')) form.setValue('title', `${token.name} Growth Campaign`);
+        if (token.symbol) mergedMetadata.tokenName = token.symbol;
+        if (token.name && !mergedMetadata.title) mergedMetadata.title = `${token.name} Growth Campaign`;
         
-        // Try to find social links and images from the best pair
-        if (bestPair.info?.imageUrl) form.setValue('logoUrl', bestPair.info.imageUrl);
-        if (bestPair.info?.header) form.setValue('bannerUrl', bestPair.info.header);
-        if (bestPair.info?.websites?.[0]?.url) form.setValue('websiteUrl', bestPair.info.websites[0].url);
+        if (bestPair.info?.imageUrl) mergedMetadata.logoUrl = bestPair.info.imageUrl;
+        if (bestPair.info?.header) mergedMetadata.bannerUrl = bestPair.info.header;
+        if (bestPair.info?.websites?.[0]?.url) mergedMetadata.websiteUrl = bestPair.info.websites[0].url;
         
         const twitter = bestPair.info?.socials?.find((s: any) => s.type === 'twitter');
-        if (twitter?.url) form.setValue('twitterUrl', twitter.url);
+        if (twitter?.url) mergedMetadata.twitterUrl = twitter.url;
         
         const telegram = bestPair.info?.socials?.find((s: any) => s.type === 'telegram');
-        if (telegram?.url) form.setValue('telegramUrl', telegram.url);
+        if (telegram?.url) mergedMetadata.telegramUrl = telegram.url;
+      }
 
-        // Fallback for description if available in DEX data
-        // Some DEX APIs provide info/description
-        
-        toast({ title: "Metadata Loaded", description: `Found details for ${token.symbol}.` });
+      // Apply merged metadata to form
+      if (Object.keys(mergedMetadata).length > 0) {
+        if (mergedMetadata.tokenName) form.setValue('tokenName', mergedMetadata.tokenName);
+        if (mergedMetadata.title && !form.getValues('title')) form.setValue('title', mergedMetadata.title);
+        if (mergedMetadata.logoUrl) form.setValue('logoUrl', mergedMetadata.logoUrl);
+        if (mergedMetadata.bannerUrl) form.setValue('bannerUrl', mergedMetadata.bannerUrl);
+        if (mergedMetadata.description && !form.getValues('description')) form.setValue('description', mergedMetadata.description);
+        if (mergedMetadata.websiteUrl) form.setValue('websiteUrl', mergedMetadata.websiteUrl);
+        if (mergedMetadata.twitterUrl) form.setValue('twitterUrl', mergedMetadata.twitterUrl);
+        if (mergedMetadata.telegramUrl) form.setValue('telegramUrl', mergedMetadata.telegramUrl);
+
+        toast({ title: "Metadata Loaded", description: `Successfully retrieved token details.` });
       } else {
-        // Secondary source: Try Birdeye or Jupiter if needed, 
-        // but DexScreener is usually enough for most meme tokens
-        toast({ title: "Limited Data", description: "Found token but some metadata might be missing.", variant: "default" });
+        toast({ title: "Limited Data", description: "Found token but could not retrieve full metadata.", variant: "default" });
       }
     } catch (error) {
       console.error("Error fetching metadata:", error);
