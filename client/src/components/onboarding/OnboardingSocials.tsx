@@ -75,8 +75,8 @@ export function OnboardingSocials() {
                   <Twitter className="w-4 h-4 text-blue-400" />
                 </div>
                 <div className="flex flex-col items-start text-left">
-                  <span className="text-sm font-bold">Connect Twitter (X)</span>
-                  <span className="text-[10px] text-muted-foreground">Required for X tasks</span>
+                  <span className="text-sm font-bold">Verify with Replit (X/Telegram)</span>
+                  <span className="text-[10px] text-muted-foreground">Sync your social accounts securely</span>
                 </div>
               </Button>
 

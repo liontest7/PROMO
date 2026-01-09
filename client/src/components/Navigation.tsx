@@ -153,8 +153,8 @@ export function Navigation() {
                 className="hidden sm:flex border-white/10 hover:bg-white/5 gap-2 h-9 rounded-lg"
                 onClick={() => window.location.href = "/api/login"}
               >
-                <Twitter className="w-4 h-4 text-blue-400" />
-                Connect X
+                <ShieldCheck className="w-4 h-4 text-primary" />
+                Verify Socials
               </Button>
             )}
             {isConnected && isAuthenticated && (

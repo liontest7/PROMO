@@ -286,10 +286,10 @@ export default function Dashboard() {
                       onClick={() => window.location.href = "/api/login"}
                       className="w-full bg-blue-500 hover:bg-blue-600 text-white gap-2 font-bold relative z-10"
                     >
-                      <Twitter className="w-4 h-4" /> Connect Official X Account
+                      <Twitter className="w-4 h-4" /> Sync Socials via Replit
                     </Button>
                     <p className="text-[10px] text-muted-foreground mt-3 italic">
-                      Physical login required to verify tasks automatically.
+                      Verify your X & Telegram accounts through Replit's secure login.
                     </p>
                   </div>
                 ) : (
