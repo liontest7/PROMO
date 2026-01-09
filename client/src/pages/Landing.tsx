@@ -93,13 +93,14 @@ export default function Landing() {
             <span className="inline-block py-1 px-3 rounded-full bg-white/5 border border-white/10 text-primary text-sm font-medium mb-6">
               The #1 Solana Marketing Platform
             </span>
-            <h1 className="text-6xl md:text-8xl font-display font-extrabold tracking-tighter mb-8 bg-gradient-to-br from-white via-white to-gray-600 bg-clip-text text-transparent">
-              Holder Qualification <br />
-              <span className="text-primary neon-text">Phase 1 is Live</span>
+            <h1 className="text-6xl md:text-8xl font-display font-extrabold tracking-tighter mb-8 bg-gradient-to-br from-white via-white to-gray-600 bg-clip-text text-transparent text-center">
+              The Ultimate <br />
+              <span className="text-primary neon-text">Phase 1: Holder Verification</span>
             </h1>
-            <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto mb-12 leading-relaxed font-medium">
-              Revolutionize your project's growth with our new 100% On-chain Holder Qualification model. Reward loyal supporters based on verified holdings and duration. Join the future of crypto marketing.
+            <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto mb-12 leading-relaxed font-medium text-center">
+              MemeDrop is revolutionizing Solana marketing. Launching with 100% On-chain Holder Qualification to build authentic communities. Phase 2 Social Engagement coming soon.
             </p>
+
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link href="/earn">

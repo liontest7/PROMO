@@ -228,10 +228,10 @@ export function CreateCampaignDialog() {
                     <Select 
                       onValueChange={(value) => {
                         field.onChange(value);
-                        // Clear actions when switching to holder_qualification
+                        // Reset form fields when switching types
                         if (value === "holder_qualification") {
                           form.setValue("actions", []);
-                        } else if (watchedActions.length === 0) {
+                        } else if (value === "engagement") {
                           form.setValue("actions", [{ type: "website", title: "Visit Website", url: "", rewardAmount: 0.01, maxExecutions: 10 }]);
                         }
                       }} 
@@ -243,7 +243,7 @@ export function CreateCampaignDialog() {
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        <SelectItem value="holder_qualification">Holder Qualification (Hold & Win)</SelectItem>
+                        <SelectItem value="holder_qualification">Holder Qualification (Live)</SelectItem>
                         <SelectItem value="engagement">Social Engagement (Coming Soon)</SelectItem>
                       </SelectContent>
                     </Select>
@@ -327,132 +327,16 @@ export function CreateCampaignDialog() {
                 </div>
               </div>
             ) : form.watch("campaignType") === "engagement" ? (
-              <>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <FormField
-                    control={form.control}
-                    name="totalBudget"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Total Budget</FormLabel>
-                        <FormControl>
-                          <Input type="number" placeholder="1000" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-
-                <div className="space-y-4">
-                  <div className="flex justify-between items-center">
-                    <h3 className="font-semibold text-lg text-primary">Actions & Rewards</h3>
-                    <Button 
-                      type="button" 
-                      variant="outline" 
-                      size="sm"
-                      onClick={() => append({ type: "website", title: "", url: "", rewardAmount: 0, maxExecutions: 100 })}
-                      className="border-dashed border-primary/30 hover:border-primary text-primary"
-                    >
-                      <Plus className="mr-2 h-4 w-4" /> Add Action
-                    </Button>
-                  </div>
-
-                  {fields.map((field, index) => (
-                    <div key={field.id} className="p-4 border border-white/10 rounded-lg bg-black/20 space-y-4 animate-in fade-in slide-in-from-bottom-2">
-                      <div className="flex justify-between items-center">
-                        <span className="text-sm font-mono text-muted-foreground">Action #{index + 1}</span>
-                        {fields.length > 1 && (
-                          <Button variant="ghost" size="sm" onClick={() => remove(index)} className="text-destructive hover:bg-destructive/10">
-                            <Trash2 className="h-4 w-4" />
-                          </Button>
-                        )}
-                      </div>
-                      
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <FormField
-                          control={form.control}
-                          name={`actions.${index}.type`}
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Type</FormLabel>
-                              <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                <FormControl>
-                                  <SelectTrigger>
-                                    <SelectValue placeholder="Select type" />
-                                  </SelectTrigger>
-                                </FormControl>
-                                <SelectContent>
-                                  <SelectItem value="website">Website Visit</SelectItem>
-                                  <SelectItem value="twitter">Twitter Follow</SelectItem>
-                                  <SelectItem value="telegram">Join Telegram</SelectItem>
-                                </SelectContent>
-                              </Select>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                        <FormField
-                          control={form.control}
-                          name={`actions.${index}.title`}
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Action Title</FormLabel>
-                              <FormControl>
-                                <Input placeholder="e.g. Follow on Twitter" {...field} />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                      </div>
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <FormField
-                          control={form.control}
-                          name={`actions.${index}.url`}
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>URL</FormLabel>
-                              <FormControl>
-                                <Input placeholder="https://..." {...field} />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                        <div className="grid grid-cols-2 gap-2">
-                          <FormField
-                            control={form.control}
-                            name={`actions.${index}.rewardAmount`}
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel>Reward</FormLabel>
-                                <FormControl>
-                                  <Input type="number" step="0.0001" {...field} />
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-                          <FormField
-                            control={form.control}
-                            name={`actions.${index}.maxExecutions`}
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel>Max Uses</FormLabel>
-                                <FormControl>
-                                  <Input type="number" {...field} />
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </>
+              <div className="flex flex-col items-center justify-center p-12 border border-dashed border-primary/30 rounded-2xl bg-primary/5 text-center space-y-4">
+                <Rocket className="w-12 h-12 text-primary animate-pulse" />
+                <h3 className="text-xl font-bold text-primary">Social Engagement is Coming Soon</h3>
+                <p className="text-muted-foreground max-w-sm">
+                  Our team is working on full API integration for Twitter and Telegram. Stay tuned for Phase 2!
+                </p>
+                <Button disabled className="bg-primary/50 cursor-not-allowed">
+                  Coming Soon
+                </Button>
+              </div>
             ) : null}
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -501,16 +385,25 @@ export function CreateCampaignDialog() {
               <div className="grid grid-cols-2 gap-4 text-xs">
                 <div>
                   <p className="text-muted-foreground">Total Budget Required</p>
-                  <p className="text-lg font-bold text-primary">{totalCalculatedCost.toFixed(6)} {form.watch("tokenName") || "Tokens"}</p>
+                  <p className="text-lg font-bold text-primary">
+                    {form.watch("campaignType") === "holder_qualification" 
+                      ? (Number(form.watch("rewardPerWallet")) * Number(form.watch("maxClaims")) || 0).toFixed(6)
+                      : totalCalculatedCost.toFixed(6)
+                    } {form.watch("tokenName") || "Tokens"}
+                  </p>
                 </div>
                 <div>
-                  <p className="text-muted-foreground">Total Tasks</p>
+                  <p className="text-muted-foreground">Total Participants</p>
                   <p className="text-lg font-bold">
-                    {(watchedActions || []).reduce((acc, a) => acc + (Number(a.maxExecutions) || 0), 0)}
+                    {form.watch("campaignType") === "holder_qualification"
+                      ? form.watch("maxClaims") || 0
+                      : (watchedActions || []).reduce((acc, a) => acc + (Number(a.maxExecutions) || 0), 0)
+                    }
                   </p>
                 </div>
               </div>
             </div>
+
 
             <FormField
               control={form.control}

@@ -54,21 +54,20 @@ export default function About() {
         {/* Mission Section */}
         <div className="grid md:grid-cols-2 gap-16 items-center mb-24">
           <div>
-            <h2 className="text-4xl font-display font-bold mb-6">Why Choose MemeDrop?</h2>
+            <h2 className="text-4xl font-display font-bold mb-6">Phase 1: Pure On-Chain Growth</h2>
             <p className="text-lg text-muted-foreground leading-relaxed mb-6">
-              In a landscape crowded with bots and inorganic growth, MemeDrop stands for authenticity. 
-              Our platform helps other projects grow by providing them with a community of verified users 
-              who are genuinely interested in their success.
+              MemeDrop is starting with a focus on high-conviction growth. Our Phase 1 launch brings 100% on-chain holder verification, ensuring that rewards go to real supporters who hold your tokens.
             </p>
             <div className="bg-primary/5 border border-primary/10 p-6 rounded-2xl mb-8">
-              <h3 className="text-xl font-bold text-primary mb-3">Value for Projects</h3>
+              <h3 className="text-xl font-bold text-primary mb-3">Phase 1 Features</h3>
               <ul className="space-y-2 text-muted-foreground list-disc list-inside">
-                <li>Cultivate long-term holders through duration-based rewards.</li>
-                <li>Eliminate bot activity with wallet balance requirements.</li>
-                <li>Drastically reduce marketing costs by removing social API dependencies.</li>
-                <li>Build authentic community value through sustainable token holding.</li>
+                <li>Verify holdings directly on Solana Mainnet.</li>
+                <li>Duration-based rewards for long-term loyalty.</li>
+                <li>Bot-resistant participation through balance checks.</li>
+                <li>Zero social API dependency for maximum privacy.</li>
               </ul>
             </div>
+
             <div className="space-y-4">
               {[
                 { icon: Rocket, title: "Accelerate Growth", desc: "Get high-quality exposure and real social engagement instantly." },
@@ -99,6 +98,57 @@ export default function About() {
             <div className="absolute inset-0 bg-primary/20 blur-[120px] -z-10" />
           </div>
         </div>
+
+        {/* Roadmap Section */}
+        <section className="py-20 mb-24">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-display font-bold mb-4">MemeDrop Roadmap</h2>
+            <p className="text-muted-foreground">Our journey to revolutionizing Solana marketing.</p>
+          </div>
+          
+          <div className="relative space-y-8 before:absolute before:inset-0 before:ml-5 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-transparent before:via-primary/50 before:to-transparent">
+            {[
+              { 
+                phase: "Phase 1: Foundation", 
+                title: "Launch & Holder Qualification", 
+                items: ["Platform Build & UI/UX", "Token Launch & Initial Liquidity", "100% On-chain Holder Verification Model"],
+                status: "active"
+              },
+              { 
+                phase: "Phase 2: Engagement", 
+                title: "Social & API Integration", 
+                items: ["Twitter & Telegram API Connections", "Automated Engagement Verification", "Advertiser Dashboard Expansion"],
+                status: "pending"
+              },
+              { 
+                phase: "Phase 3: Ecosystem", 
+                title: "DEX & Payments", 
+                items: ["Direct DEX Payment Integrations", "Multi-token Reward Support", "Cross-chain Expansion Exploration"],
+                status: "pending"
+              }
+            ].map((step, i) => (
+              <div key={i} className={`relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active`}>
+                <div className="flex items-center justify-center w-10 h-10 rounded-full border border-primary/50 bg-background shadow shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 z-10">
+                  <div className={`w-3 h-3 rounded-full ${step.status === 'active' ? 'bg-primary animate-pulse' : 'bg-muted'}`} />
+                </div>
+                <Card className="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] glass-card border-white/5 bg-white/[0.02] p-6">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-primary font-bold text-sm uppercase tracking-wider">{step.phase}</span>
+                  </div>
+                  <h3 className="text-xl font-bold mb-4">{step.title}</h3>
+                  <ul className="space-y-2">
+                    {step.items.map((item, j) => (
+                      <li key={j} className="text-sm text-muted-foreground flex items-center gap-2">
+                        <div className="w-1 h-1 rounded-full bg-primary/50" />
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
+                </Card>
+              </div>
+            ))}
+          </div>
+        </section>
 
         {/* Token Info Section */}
         <section className="py-20 border-t border-white/5">
