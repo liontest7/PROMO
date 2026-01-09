@@ -4,11 +4,15 @@ import { storage } from "./storage";
 import { api } from "@shared/routes";
 import { z } from "zod";
 import { insertCampaignSchema, insertActionSchema } from "@shared/schema";
+import { setupAuth, registerAuthRoutes, isAuthenticated } from "./replit_integrations/auth";
 
 export async function registerRoutes(
   httpServer: Server,
   app: Express
 ): Promise<Server> {
+  // Setup Auth
+  await setupAuth(app);
+  registerAuthRoutes(app);
 
   // Users
   app.post('/api/users/auth', async (req, res) => {

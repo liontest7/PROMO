@@ -61,6 +61,15 @@ export class DatabaseStorage implements IStorage {
     return user;
   }
 
+  async linkReplitUser(walletAddress: string, replitId: string): Promise<User> {
+    const [user] = await db
+      .update(users)
+      .set({ replitId })
+      .where(eq(users.walletAddress, walletAddress))
+      .returning();
+    return user;
+  }
+
   async getCampaigns(creatorId?: number): Promise<(Campaign & { actions: Action[] })[]> {
     const allCampaigns = await (creatorId 
       ? db.select().from(campaigns).where(eq(campaigns.creatorId, creatorId)).orderBy(desc(campaigns.createdAt))

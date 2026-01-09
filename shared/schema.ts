@@ -1,9 +1,26 @@
-import { pgTable, text, serial, integer, boolean, timestamp, numeric, jsonb } from "drizzle-orm/pg-core";
+import { pgTable, text, serial, integer, boolean, timestamp, numeric, jsonb, varchar } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
-import { relations } from "drizzle-orm";
+import { relations, sql } from "drizzle-orm";
+
+export * from "./models/auth";
 
 // === TABLE DEFINITIONS ===
+
+// User storage table.
+// (IMPORTANT) This table is mandatory for Replit Auth, don't drop it.
+export const replitUsers = pgTable("replit_users", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  email: varchar("email").unique(),
+  firstName: varchar("first_name"),
+  lastName: varchar("last_name"),
+  profileImageUrl: varchar("profile_image_url"),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export type UpsertReplitUser = typeof replitUsers.$inferInsert;
+export type ReplitUser = typeof replitUsers.$inferSelect;
 
 export const users = pgTable("users", {
   id: serial("id").primaryKey(),
@@ -13,6 +30,7 @@ export const users = pgTable("users", {
   balance: numeric("balance").default("0").notNull(),
   twitterHandle: text("twitter_handle"),
   telegramHandle: text("telegram_handle"),
+  replitId: text("replit_id"), // Added to link with Replit Auth
   createdAt: timestamp("created_at").defaultNow(),
 });
 

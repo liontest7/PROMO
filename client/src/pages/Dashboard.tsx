@@ -14,6 +14,10 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { type User as UserType } from "@shared/schema";
+import { useAuth } from "@/hooks/use-auth";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
+import { User as UserIcon } from "lucide-react";
 
 export default function Dashboard() {
   const { walletAddress, userId, solBalance } = useWallet();
@@ -29,12 +33,21 @@ export default function Dashboard() {
     enabled: !!walletAddress,
   });
 
+  const { user: replitUser, isAuthenticated, linkAccount, isLinking } = useAuth();
+
   useEffect(() => {
     if (user) {
       setTwitter(user.twitterHandle || "");
       setTelegram(user.telegramHandle || "");
     }
   }, [user]);
+
+  // Auto-link account if authenticated with Replit but not linked in DB
+  useEffect(() => {
+    if (isAuthenticated && walletAddress && user && !user.replitId) {
+      linkAccount(walletAddress);
+    }
+  }, [isAuthenticated, walletAddress, user, linkAccount]);
 
   const updateProfile = useMutation({
     mutationFn: async (data: any) => {
@@ -263,6 +276,35 @@ export default function Dashboard() {
                 <CardTitle className="text-lg">Social Connections</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
+                {!isAuthenticated ? (
+                  <div className="p-4 rounded-xl bg-blue-500/10 border border-blue-500/20 text-center">
+                    <p className="text-xs text-blue-400 font-bold mb-3 uppercase tracking-wider">Official Verification Required</p>
+                    <Button 
+                      onClick={() => window.location.href = "/api/login"}
+                      className="w-full bg-blue-500 hover:bg-blue-600 text-white gap-2 font-bold"
+                    >
+                      <Twitter className="w-4 h-4" /> Connect Official X Account
+                    </Button>
+                    <p className="text-[10px] text-muted-foreground mt-2 italic">
+                      Required for automated task verification.
+                    </p>
+                  </div>
+                ) : (
+                  <div className="p-4 rounded-xl bg-primary/10 border border-primary/20 flex items-center gap-4">
+                    <Avatar className="h-12 w-12 border-2 border-primary/20">
+                      <AvatarImage src={replitUser?.profileImageUrl || ""} />
+                      <AvatarFallback><UserIcon className="w-6 h-6" /></AvatarFallback>
+                    </Avatar>
+                    <div className="flex-1">
+                      <p className="text-sm font-bold leading-none mb-1">{replitUser?.firstName} {replitUser?.lastName}</p>
+                      <Badge variant="outline" className="text-[9px] uppercase font-black bg-primary/20 text-primary border-primary/30">Verified X Account</Badge>
+                    </div>
+                    <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-destructive" onClick={() => logout()}>
+                      <LogOut className="w-4 h-4" />
+                    </Button>
+                  </div>
+                )}
+
                 <div className="space-y-2">
                   <Label htmlFor="twitter" className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-muted-foreground">
                     <Twitter className="w-3.5 h-3.5 text-blue-400" /> Twitter Handle

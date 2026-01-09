@@ -1,5 +1,6 @@
 import { Link, useLocation } from "wouter";
 import { useWallet } from "@/hooks/use-wallet";
+import { useAuth } from "@/hooks/use-auth";
 import { Button } from "@/components/ui/button";
 import { 
   LayoutDashboard, 
@@ -11,7 +12,8 @@ import {
   Twitter, 
   Send, 
   ShieldCheck,
-  ChevronDown
+  ChevronDown,
+  User as UserIcon
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { APP_CONFIG } from "@/config";
@@ -20,12 +22,17 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
+  DropdownMenuSeparator,
+  DropdownMenuLabel,
 } from "@/components/ui/dropdown-menu";
 import { SiJupyter } from "react-icons/si";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
 
 export function Navigation() {
   const [location] = useLocation();
   const { isConnected, role, walletAddress, disconnect, connect } = useWallet();
+  const { user, isAuthenticated, logout } = useAuth();
 
   const NavLink = ({ href, children, icon: Icon }: { href: string; children: React.ReactNode; icon: any }) => (
     <Link href={href} className={cn(
@@ -113,6 +120,50 @@ export function Navigation() {
                 </DropdownMenuContent>
               </DropdownMenu>
             </div>
+
+            {/* Replit Auth Section */}
+            {!isAuthenticated ? (
+              <Button 
+                variant="outline" 
+                size="sm"
+                className="hidden sm:flex border-white/10 hover:bg-white/5 gap-2 h-9 rounded-lg"
+                onClick={() => window.location.href = "/api/login"}
+              >
+                <Twitter className="w-4 h-4 text-blue-400" />
+                Connect X
+              </Button>
+            ) : (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" className="relative h-10 w-10 rounded-full border border-white/10 p-0 hover:bg-white/5">
+                    <Avatar className="h-9 w-9">
+                      <AvatarImage src={user?.profileImageUrl || ""} alt={user?.firstName || ""} />
+                      <AvatarFallback className="bg-primary/10 text-primary font-bold">
+                        {user?.firstName?.[0] || <UserIcon className="w-4 h-4" />}
+                      </AvatarFallback>
+                    </Avatar>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="w-56 glass-card border-white/10 bg-background/95 backdrop-blur-xl" align="end">
+                  <DropdownMenuLabel className="font-normal">
+                    <div className="flex flex-col space-y-1">
+                      <p className="text-sm font-medium leading-none">
+                        {user?.firstName} {user?.lastName}
+                      </p>
+                      <p className="text-[10px] text-muted-foreground truncate">
+                        {user?.email}
+                      </p>
+                    </div>
+                  </DropdownMenuLabel>
+                  <DropdownMenuSeparator className="bg-white/5" />
+                  <DropdownMenuItem className="cursor-pointer gap-2 focus:bg-destructive/10 focus:text-destructive" onClick={() => logout()}>
+                    <LogOut className="w-4 h-4" />
+                    <span>Log out X</span>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            )}
+
             {isConnected ? (
               <div className="flex items-center gap-3">
                 <div className="hidden sm:flex flex-col items-end">
@@ -133,7 +184,7 @@ export function Navigation() {
             ) : (
               <Button 
                 onClick={() => connect('user')}
-                className="bg-primary text-primary-foreground font-bold hover:bg-primary/90 shadow-lg shadow-primary/25 hover:shadow-primary/40 transition-all h-9"
+                className="bg-primary text-primary-foreground font-bold hover:bg-primary/90 shadow-lg shadow-primary/25 hover:shadow-primary/40 transition-all h-9 px-6 rounded-lg"
               >
                 <Wallet className="w-4 h-4 mr-2" />
                 Connect Wallet
