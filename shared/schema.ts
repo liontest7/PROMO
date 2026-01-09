@@ -85,7 +85,7 @@ export const executions = pgTable("executions", {
   actionId: integer("action_id").references(() => actions.id).notNull(),
   campaignId: integer("campaign_id").references(() => campaigns.id).notNull(),
   userId: integer("user_id").references(() => users.id).notNull(),
-  status: text("status", { enum: ["pending", "verified", "paid", "rejected"] }).default("pending").notNull(),
+  status: text("status", { enum: ["pending", "verified", "paid", "rejected", "waiting"] }).default("pending").notNull(),
   transactionSignature: text("transaction_signature"), // For on-chain proof if needed
   createdAt: timestamp("created_at").defaultNow(),
 });

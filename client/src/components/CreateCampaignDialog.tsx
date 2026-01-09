@@ -150,6 +150,7 @@ export function CreateCampaignDialog() {
         if (moralisData.symbol) mergedMetadata.tokenName = moralisData.symbol;
         if (moralisData.name && !mergedMetadata.title) mergedMetadata.title = `${moralisData.name} Growth Campaign`;
         if (moralisData.logo) mergedMetadata.logoUrl = moralisData.logo;
+        if (moralisData.description) mergedMetadata.description = moralisData.description;
         
         // Moralis sometimes provides links directly
         if (moralisData.links?.website) mergedMetadata.websiteUrl = moralisData.links.website;
