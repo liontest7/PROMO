@@ -3,8 +3,10 @@ import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@/componen
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { Coins, Twitter, MessageCircle, ExternalLink, ShieldCheck, Globe, Send } from "lucide-react";
+import { Coins, Twitter, MessageCircle, ExternalLink, ShieldCheck, Globe, Send, Share2, Copy, Check } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
+import { useState } from "react";
+import { useToast } from "@/hooks/use-toast";
 
 interface CampaignCardProps {
   campaign: Campaign & { actions: Action[] };
@@ -13,6 +15,9 @@ interface CampaignCardProps {
 }
 
 export function CampaignCard({ campaign, onActionClick, isOwner }: CampaignCardProps) {
+  const [copied, setCopied] = useState(false);
+  const { toast } = useToast();
+  
   const percentComplete = 
     ((Number(campaign.totalBudget) - Number(campaign.remainingBudget)) / Number(campaign.totalBudget)) * 100;
 
@@ -22,6 +27,29 @@ export function CampaignCard({ campaign, onActionClick, isOwner }: CampaignCardP
       case 'telegram': return <MessageCircle className="w-4 h-4 text-blue-500" />;
       default: return <ExternalLink className="w-4 h-4 text-gray-400" />;
     }
+  };
+
+  const shareUrl = `${window.location.origin}/earn?campaign=${campaign.id}`;
+  const shareText = `Check out this airdrop on PPA Solana: ${campaign.title}! Earn ${campaign.tokenName} by completing simple tasks.`;
+
+  const handleCopyLink = () => {
+    navigator.clipboard.writeText(shareUrl);
+    setCopied(true);
+    toast({
+      title: "Link Copied!",
+      description: "Campaign link copied to clipboard.",
+    });
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  const shareOnTwitter = () => {
+    const url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(shareUrl)}`;
+    window.open(url, '_blank');
+  };
+
+  const shareOnTelegram = () => {
+    const url = `https://t.me/share/url?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(shareText)}`;
+    window.open(url, '_blank');
   };
 
   return (
@@ -43,6 +71,37 @@ export function CampaignCard({ campaign, onActionClick, isOwner }: CampaignCardP
           <Badge variant={campaign.status === 'active' ? 'default' : 'secondary'} className="uppercase text-[10px] tracking-wider font-bold shadow-lg">
             {campaign.status}
           </Badge>
+        </div>
+
+        {/* Share Buttons overlay on banner */}
+        <div className="absolute bottom-3 right-3 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+          <Button 
+            size="icon" 
+            variant="secondary" 
+            className="h-8 w-8 rounded-full bg-background/60 backdrop-blur-md border border-white/10 hover:bg-primary hover:text-white transition-all"
+            onClick={shareOnTwitter}
+            title="Share on Twitter"
+          >
+            <Twitter className="w-3.5 h-3.5" />
+          </Button>
+          <Button 
+            size="icon" 
+            variant="secondary" 
+            className="h-8 w-8 rounded-full bg-background/60 backdrop-blur-md border border-white/10 hover:bg-primary hover:text-white transition-all"
+            onClick={shareOnTelegram}
+            title="Share on Telegram"
+          >
+            <Send className="w-3.5 h-3.5" />
+          </Button>
+          <Button 
+            size="icon" 
+            variant="secondary" 
+            className="h-8 w-8 rounded-full bg-background/60 backdrop-blur-md border border-white/10 hover:bg-primary hover:text-white transition-all"
+            onClick={handleCopyLink}
+            title="Copy Link"
+          >
+            {copied ? <Check className="w-3.5 h-3.5 text-green-500" /> : <Copy className="w-3.5 h-3.5" />}
+          </Button>
         </div>
       </div>
 
