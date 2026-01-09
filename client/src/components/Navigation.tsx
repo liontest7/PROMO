@@ -1,9 +1,27 @@
 import { Link, useLocation } from "wouter";
 import { useWallet } from "@/hooks/use-wallet";
 import { Button } from "@/components/ui/button";
-import { LayoutDashboard, Coins, Wallet, LogOut, ExternalLink, Trophy, Twitter, Send, ShieldCheck } from "lucide-react";
+import { 
+  LayoutDashboard, 
+  Coins, 
+  Wallet, 
+  LogOut, 
+  ExternalLink, 
+  Trophy, 
+  Twitter, 
+  Send, 
+  ShieldCheck,
+  ChevronDown
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 import { APP_CONFIG } from "@/config";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { SiJupiter } from "react-icons/si";
 
 export function Navigation() {
   const [location] = useLocation();
@@ -53,28 +71,47 @@ export function Navigation() {
 
           <div className="flex items-center gap-4">
             <div className="hidden lg:flex items-center gap-3 mr-4 pr-4 border-r border-white/10">
-              <Button 
-                asChild
-                variant="ghost" 
-                size="sm" 
-                className="px-3 h-8 rounded-full bg-primary/10 border border-primary/20 text-primary hover:bg-primary/20 transition-all"
-              >
-                <a href={APP_CONFIG.token.buyLinks.pumpFun} target="_blank" rel="noreferrer" className="flex items-center gap-2">
-                  <span className="text-[10px] font-bold uppercase tracking-widest">Buy on Pump.fun</span>
-                  <ExternalLink className="w-3 h-3" />
-                </a>
-              </Button>
-              <Button 
-                asChild
-                variant="ghost" 
-                size="sm" 
-                className="px-3 h-8 rounded-full bg-white/5 border border-white/10 text-muted-foreground hover:bg-white/10 hover:text-foreground transition-all"
-              >
-                <a href={APP_CONFIG.token.buyLinks.dexScanner} target="_blank" rel="noreferrer" className="flex items-center gap-2">
-                  <span className="text-[10px] font-bold uppercase tracking-widest">DEXScreener</span>
-                  <ExternalLink className="w-3 h-3" />
-                </a>
-              </Button>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    className="px-4 h-9 rounded-full bg-primary/10 border border-primary/20 text-primary hover:bg-primary/20 transition-all gap-2 group"
+                  >
+                    <span className="text-xs font-bold uppercase tracking-widest">Buy {APP_CONFIG.token.symbol}</span>
+                    <ChevronDown className="w-4 h-4 transition-transform group-data-[state=open]:rotate-180" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-48 glass-card border-white/10 bg-background/95 backdrop-blur-xl">
+                  <DropdownMenuItem asChild className="cursor-pointer focus:bg-primary/10 focus:text-primary">
+                    <a href={APP_CONFIG.token.buyLinks.pumpFun} target="_blank" rel="noreferrer" className="flex items-center gap-3 w-full py-2">
+                      <div className="w-6 h-6 rounded bg-primary/10 flex items-center justify-center">
+                        <Coins className="w-3.5 h-3.5" />
+                      </div>
+                      <span className="text-sm font-medium">Pump.fun</span>
+                      <ExternalLink className="w-3 h-3 ml-auto opacity-50" />
+                    </a>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild className="cursor-pointer focus:bg-primary/10 focus:text-primary">
+                    <a href={APP_CONFIG.token.buyLinks.dexScanner} target="_blank" rel="noreferrer" className="flex items-center gap-3 w-full py-2">
+                      <div className="w-6 h-6 rounded bg-primary/10 flex items-center justify-center">
+                        <SiJupiter className="w-3.5 h-3.5 text-blue-400" />
+                      </div>
+                      <span className="text-sm font-medium">DEXScreener</span>
+                      <ExternalLink className="w-3 h-3 ml-auto opacity-50" />
+                    </a>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild className="cursor-pointer focus:bg-primary/10 focus:text-primary">
+                    <a href={APP_CONFIG.token.buyLinks.jupiter} target="_blank" rel="noreferrer" className="flex items-center gap-3 w-full py-2">
+                      <div className="w-6 h-6 rounded bg-primary/10 flex items-center justify-center">
+                        <SiJupiter className="w-3.5 h-3.5 text-emerald-400" />
+                      </div>
+                      <span className="text-sm font-medium">Jupiter</span>
+                      <ExternalLink className="w-3 h-3 ml-auto opacity-50" />
+                    </a>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
             {isConnected ? (
               <div className="flex items-center gap-3">

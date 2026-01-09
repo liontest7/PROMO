@@ -1,13 +1,14 @@
 export const APP_CONFIG = {
-  platformName: "Promotion",
+  platformName: "MemeDrop",
   token: {
-    symbol: "PROMO",
-    name: "Promotion Token",
+    symbol: "MEME",
+    name: "MemeDrop Token",
     address: "EPjFW33rdvq2zhpks87j3jt7jjh8p7wlwnvxy3cb68", // Placeholder for user to edit
     price: 0.42,
     buyLinks: {
       pumpFun: "https://pump.fun/",
       dexScanner: "https://dexscreener.com/solana/",
+      jupiter: "https://jup.ag/swap/SOL-MEME",
     }
   },
   socials: {

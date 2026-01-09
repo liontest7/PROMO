@@ -1,8 +1,8 @@
-# Promotion - Solana Crypto Marketing Platform
+# MemeDrop - Solana Crypto Marketing Platform
 
 ## Overview
 
-Promotion is a pay-per-action marketing platform built for the Solana ecosystem. Users connect their Phantom wallet and complete engagement tasks (following Twitter, joining Telegram, visiting websites) to earn project tokens. Advertisers create campaigns with token budgets, and the platform verifies task completion before distributing rewards.
+MemeDrop is a pay-per-action marketing platform built for the Solana ecosystem. Users connect their Phantom wallet and complete engagement tasks (following Twitter, joining Telegram, visiting websites) to earn project tokens. Advertisers create campaigns with token budgets, and the platform verifies task completion before distributing rewards.
 
 The core business model:
 - **Users** earn tokens by completing verified actions for crypto projects
