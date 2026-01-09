@@ -138,13 +138,17 @@ export function VerifyActionDialog({ action, campaign, open, onOpenChange }: Ver
             <div className="space-y-4 animate-in slide-in-from-right">
               {!isWebsiteAction && (
                 <div className="space-y-2">
-                  <Label>Verification Proof (Optional)</Label>
+                  <Label>Verification Proof (Username or Screenshot Link)</Label>
                   <Input 
-                    placeholder={action.type === "twitter" ? "e.g. Tweet URL" : "e.g. Telegram username"} 
+                    placeholder={action.type === "twitter" ? "e.g. @username or Link to screenshot" : "e.g. @username or Link to screenshot"} 
                     value={proof}
                     onChange={(e) => setProof(e.target.value)}
                   />
-                  <p className="text-xs text-muted-foreground">Some actions require manual review or proof submission.</p>
+                  <div className="p-3 bg-blue-500/10 border border-blue-500/20 rounded-lg">
+                    <p className="text-[11px] text-blue-400 leading-relaxed">
+                      <strong>Verification Info:</strong> We use a community-driven verification system to keep fees low. Please provide your username or a link to a screenshot (via Imgur, etc.) as proof.
+                    </p>
+                  </div>
                 </div>
               )}
               

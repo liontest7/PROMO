@@ -208,17 +208,18 @@ export default function Landing() {
       {/* Character Hello Section */}
       <section className="py-24 border-t border-white/5 overflow-hidden">
         <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto flex flex-col md:flex-row items-center gap-12 bg-primary/5 border border-primary/10 rounded-3xl p-8 md:p-12 relative">
-            <div className="flex-1 text-center md:text-left">
+          <div className="max-w-4xl mx-auto flex flex-col md:flex-row items-center gap-12 bg-primary/5 border border-primary/10 rounded-3xl p-8 md:p-12 relative overflow-hidden group">
+            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-primary/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+            <div className="flex-1 text-center md:text-left relative z-10">
               <h2 className="text-3xl font-display font-bold mb-4 italic">Ready to start earning?</h2>
               <p className="text-muted-foreground mb-8">Join thousands of users who are already earning rewards for supporting the best projects on Solana.</p>
               <div className="flex flex-wrap justify-center md:justify-start gap-4">
-                <Button size="lg" className="bg-primary text-primary-foreground font-bold hover:bg-primary/90 px-8" asChild>
+                <Button size="lg" className="bg-primary text-primary-foreground font-bold hover:bg-primary/90 px-8 shadow-lg shadow-primary/20" asChild>
                   <a href="/earn">Start Earning Now</a>
                 </Button>
               </div>
             </div>
-            <div className="w-48 h-48 md:w-64 md:h-64 relative group">
+            <div className="w-48 h-48 md:w-64 md:h-64 relative z-10">
               <img 
                 src={APP_CONFIG.assets.characterHello} 
                 alt="Meme Character" 
