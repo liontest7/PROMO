@@ -1,3 +1,4 @@
+import { Link } from "wouter";
 import { type Campaign, type Action } from "@shared/schema";
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
