@@ -109,9 +109,11 @@ export const api = {
       responses: {
         200: z.object({
           success: z.boolean(),
-          status: z.enum(["verified", "rejected", "pending"]),
+          status: z.enum(["verified", "rejected", "pending", "holding", "waiting", "ready", "paid"]),
           message: z.string(),
-          executionId: z.number().optional()
+          executionId: z.number().optional(),
+          remaining: z.number().optional(),
+          txSignature: z.string().optional()
         }),
         400: errorSchemas.validation,
       },
