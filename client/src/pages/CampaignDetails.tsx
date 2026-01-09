@@ -93,7 +93,21 @@ export default function CampaignDetails() {
                 {campaign.campaignType === 'holder_qualification' ? (
                   <Button 
                     className="w-full h-16 justify-between px-6 bg-primary/10 border-primary/20 text-primary hover:bg-primary hover:text-white transition-all"
-                    onClick={() => setSelectedAction({ action: { id: 0, campaignId: campaign.id, type: 'holder', title: 'Holder Verification', rewardAmount: campaign.rewardPerWallet || '0' } as any, campaign })}
+                    onClick={() => {
+                      console.log("Triggering holder verification from details...");
+                      setSelectedAction({ 
+                        action: { 
+                          id: 0, 
+                          campaignId: campaign.id, 
+                          type: 'holder', 
+                          title: 'Holder Verification', 
+                          rewardAmount: campaign.rewardPerWallet || '0',
+                          url: '',
+                          maxExecutions: 1
+                        } as any, 
+                        campaign 
+                      });
+                    }}
                   >
                     <div className="flex items-center gap-4">
                       <ShieldCheck className="w-6 h-6" />

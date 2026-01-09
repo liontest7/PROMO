@@ -71,7 +71,28 @@ export function CampaignCard({ campaign, onActionClick, isOwner }: CampaignCardP
               </Badge>
             </div>
 
-            <div className="absolute bottom-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+            <div className="absolute bottom-4 right-4 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+              {campaign.websiteUrl && (
+                <Button size="icon" variant="secondary" className="h-8 w-8 rounded-full bg-background/80 backdrop-blur-md border border-white/10" asChild>
+                  <a href={campaign.websiteUrl} target="_blank" rel="noreferrer" onClick={(e) => e.stopPropagation()}>
+                    <Globe className="w-3.5 h-3.5" />
+                  </a>
+                </Button>
+              )}
+              {campaign.twitterUrl && (
+                <Button size="icon" variant="secondary" className="h-8 w-8 rounded-full bg-background/80 backdrop-blur-md border border-white/10" asChild>
+                  <a href={campaign.twitterUrl} target="_blank" rel="noreferrer" onClick={(e) => e.stopPropagation()}>
+                    <Twitter className="w-3.5 h-3.5" />
+                  </a>
+                </Button>
+              )}
+              {campaign.telegramUrl && (
+                <Button size="icon" variant="secondary" className="h-8 w-8 rounded-full bg-background/80 backdrop-blur-md border border-white/10" asChild>
+                  <a href={campaign.telegramUrl} target="_blank" rel="noreferrer" onClick={(e) => e.stopPropagation()}>
+                    <Send className="w-3.5 h-3.5" />
+                  </a>
+                </Button>
+              )}
               <Button size="icon" variant="secondary" className="h-8 w-8 rounded-full bg-background/80 backdrop-blur-md border border-white/10" onClick={handleCopyLink}>
                 {copied ? <Check className="w-3.5 h-3.5 text-green-500" /> : <Share2 className="w-3.5 h-3.5" />}
               </Button>
