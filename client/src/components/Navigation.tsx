@@ -40,8 +40,7 @@ export function Navigation() {
             
             {isConnected && role === "user" && (
               <>
-                <NavLink href="/dashboard" icon={Trophy}>My Dashboard</NavLink>
-                <NavLink href="/profile" icon={User}>Profile</NavLink>
+                <NavLink href="/dashboard" icon={Trophy}>Dashboard</NavLink>
               </>
             )}
             

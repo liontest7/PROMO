@@ -30,7 +30,6 @@ function Router() {
       <Route path="/" component={Landing} />
       <Route path="/about" component={About} />
       <Route path="/earn" component={Earn} />
-      <Route path="/profile" component={Profile} />
       
       {/* User Routes */}
       <Route path="/dashboard">
