@@ -177,16 +177,26 @@ export async function registerRoutes(
         
         await storage.incrementActionExecution(action.id);
         
-        // Auto-pay simulation
-        const txSignature = "sol-" + Math.random().toString(36).substring(7);
-        await storage.updateExecutionStatus(execution.id, "paid", txSignature);
+        // Updated: Only set to paid automatically for website clicks
+        // Social tasks go to 'verified' first to allow batch claiming
+        if (action.type === 'website') {
+          const txSignature = "sol-" + Math.random().toString(36).substring(7);
+          await storage.updateExecutionStatus(execution.id, "paid", txSignature);
+
+          return res.json({
+            success: true,
+            status: "paid",
+            message: `Action verified and ${reward} rewards paid!`,
+            executionId: execution.id,
+            txSignature
+          });
+        }
 
         res.json({
           success: true,
-          status: "paid",
-          message: `Action verified and ${reward} rewards paid!`,
-          executionId: execution.id,
-          txSignature
+          status: "verified",
+          message: `Action verified! Claim your ${reward} rewards in the dashboard.`,
+          executionId: execution.id
         });
       } else {
          res.json({

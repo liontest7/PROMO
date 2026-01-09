@@ -55,13 +55,47 @@ export default function Dashboard() {
     },
   });
 
-  const { data: executions } = useQuery({
+  const { data: executions, refetch: refetchExecutions } = useQuery({
     queryKey: [api.users.executions.path, walletAddress],
     enabled: !!walletAddress,
     queryFn: async () => {
       const res = await fetch(api.users.executions.path.replace(':walletAddress', walletAddress!));
       if (!res.ok) throw new Error('Failed to fetch executions');
       return res.json();
+    }
+  });
+
+  const claimAllMutation = useMutation({
+    mutationFn: async () => {
+      if (!executions) return;
+      const pendingIds = executions
+        .filter((e: any) => e.status === 'verified')
+        .map((e: any) => e.id);
+      
+      if (pendingIds.length === 0) throw new Error("No rewards to claim");
+
+      const res = await fetch(api.executions.claim.path, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ 
+          walletAddress, 
+          executionIds: pendingIds 
+        }),
+      });
+      if (!res.ok) throw new Error("Claim failed");
+      return res.json();
+    },
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: [api.users.get.path, walletAddress] });
+      queryClient.invalidateQueries({ queryKey: [api.users.stats.path, walletAddress] });
+      refetchExecutions();
+      toast({ 
+        title: "Rewards Claimed!", 
+        description: `Successfully claimed rewards for ${data.claimedIds.length} tasks in one transaction.` 
+      });
+    },
+    onError: (error: any) => {
+      toast({ title: "Claim Failed", description: error.message, variant: "destructive" });
     }
   });
 
@@ -236,8 +270,20 @@ export default function Dashboard() {
             </Card>
 
             <Card className="glass-card border-white/5 rounded-2xl bg-white/[0.02]">
-              <CardHeader>
+              <CardHeader className="flex flex-row items-center justify-between pb-2">
                 <CardTitle className="text-lg">Recent Activity</CardTitle>
+                {executions?.some((e: any) => e.status === 'verified') && (
+                  <Button 
+                    size="sm" 
+                    variant="default"
+                    className="h-7 text-[10px] font-bold bg-primary hover:bg-primary/90"
+                    onClick={() => claimAllMutation.mutate()}
+                    disabled={claimAllMutation.isPending}
+                  >
+                    {claimAllMutation.isPending ? <Loader2 className="h-3 w-3 animate-spin mr-1" /> : <Coins className="h-3 w-3 mr-1" />}
+                    CLAIM ALL PENDING
+                  </Button>
+                )}
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">

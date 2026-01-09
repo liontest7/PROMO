@@ -70,6 +70,10 @@ export function VerifyActionDialog({ action, campaign, open, onOpenChange }: Ver
         {
           onSuccess: () => {
             setStep("success");
+            toast({
+              title: "Task Verified!",
+              description: "You can claim your reward now or later in the dashboard.",
+            });
             setTimeout(() => {
               onOpenChange(false);
               setStep("perform");

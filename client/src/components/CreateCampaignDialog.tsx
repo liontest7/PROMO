@@ -32,10 +32,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 
 // Form Schema
 const formSchema = insertCampaignSchema.extend({
-  totalBudget: z.coerce.number().min(1),
+  totalBudget: z.coerce.number().min(0.00001),
   actions: z.array(insertActionSchema.omit({ campaignId: true }).extend({
     rewardAmount: z.coerce.number().min(0.00001),
-    maxExecutions: z.coerce.number().optional()
+    maxExecutions: z.coerce.number().min(1)
   })).min(1, "At least one action is required"),
   creatorId: z.number().optional(),
   bannerUrl: z.string().url("Invalid banner URL").optional().or(z.literal("")),
@@ -55,19 +55,6 @@ export function CreateCampaignDialog() {
   const { isConnected, walletAddress, userId, connect } = useWallet();
   const { toast } = useToast();
 
-  const handleOpenClick = (e: React.MouseEvent) => {
-    if (!isConnected) {
-      e.preventDefault();
-      toast({
-        title: "Connection Required",
-        description: "Please connect your wallet as an advertiser to create campaigns.",
-        variant: "destructive"
-      });
-      connect('advertiser');
-      return;
-    }
-  };
-
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -75,23 +62,17 @@ export function CreateCampaignDialog() {
       description: "",
       tokenName: "",
       tokenAddress: "",
-      totalBudget: 0,
+      totalBudget: 0.1,
       bannerUrl: "",
       logoUrl: "",
       websiteUrl: "",
       twitterUrl: "",
       telegramUrl: "",
       minSolBalance: 0,
-      actions: [{ type: "website", title: "", url: "", rewardAmount: 0 }],
-      creatorId: userId || 1
+      actions: [{ type: "website", title: "Visit Website", url: "", rewardAmount: 0.01, maxExecutions: 10 }],
+      creatorId: userId || undefined
     },
   });
-
-  useEffect(() => {
-    if (userId) {
-      form.setValue('creatorId', userId);
-    }
-  }, [userId, form]);
 
   const { fields, append, remove } = useFieldArray({
     control: form.control,
@@ -100,15 +81,19 @@ export function CreateCampaignDialog() {
 
   // Watch for changes to calculate derived values
   const watchedActions = form.watch("actions");
-  const watchedTotalBudget = form.watch("totalBudget");
-
+  
   const totalCalculatedCost = watchedActions.reduce((acc, action) => {
     const reward = Number(action.rewardAmount) || 0;
     const executions = Number(action.maxExecutions) || 0;
     return acc + (reward * executions);
   }, 0);
 
-  const remainingFromBudget = Math.max(0, (Number(watchedTotalBudget) || 0) - totalCalculatedCost);
+  // Sync totalBudget with calculated cost if user wants automatic calculation
+  useEffect(() => {
+    if (totalCalculatedCost > 0) {
+      form.setValue("totalBudget", Number(totalCalculatedCost.toFixed(6)));
+    }
+  }, [totalCalculatedCost, form]);
 
   const fetchTokenMetadata = async (address: string) => {
     if (!address || address.length < 32) return;
@@ -273,26 +258,23 @@ export function CreateCampaignDialog() {
 
             <div className="p-4 rounded-xl bg-primary/5 border border-primary/20 space-y-3">
               <div className="flex justify-between items-center">
-                <span className="text-sm font-medium">Budget Status</span>
-                <Badge variant={remainingFromBudget >= 0 ? "outline" : "destructive"}>
-                  {remainingFromBudget >= 0 ? "Budget OK" : "Budget Exceeded"}
+                <span className="text-sm font-medium">Campaign Summary</span>
+                <Badge variant="outline">
+                  Auto-calculated
                 </Badge>
               </div>
               <div className="grid grid-cols-2 gap-4 text-xs">
                 <div>
-                  <p className="text-muted-foreground">Allocated Rewards</p>
-                  <p className="text-lg font-bold text-primary">{totalCalculatedCost.toFixed(2)}</p>
+                  <p className="text-muted-foreground">Total Budget Required</p>
+                  <p className="text-lg font-bold text-primary">{totalCalculatedCost.toFixed(6)} {form.watch("tokenName") || "Tokens"}</p>
                 </div>
                 <div>
-                  <p className="text-muted-foreground">Remaining in Pool</p>
-                  <p className="text-lg font-bold">{remainingFromBudget.toFixed(2)}</p>
+                  <p className="text-muted-foreground">Total Tasks</p>
+                  <p className="text-lg font-bold">
+                    {watchedActions.reduce((acc, a) => acc + (Number(a.maxExecutions) || 0), 0)}
+                  </p>
                 </div>
               </div>
-              {totalCalculatedCost > Number(watchedTotalBudget) && (
-                <p className="text-[10px] text-destructive font-bold animate-pulse">
-                  * Allocated rewards exceed total budget. Please increase budget or reduce task counts.
-                </p>
-              )}
             </div>
 
             <FormField

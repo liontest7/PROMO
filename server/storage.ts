@@ -135,33 +135,47 @@ export class DatabaseStorage implements IStorage {
       .returning();
 
     // If verified or paid, update user balance and campaign remaining budget
+    // Note: In "batch claim" mode, we only update status to verified first, then paid when claimed.
+    // For single auto-pay, it goes straight to paid.
     if (status === "verified" || status === "paid") {
       const action = await this.getAction(execution.actionId);
       if (action) {
-        const [user] = await db.select().from(users).where(eq(users.id, execution.userId));
-        if (user) {
-          // Use more precise calculation to avoid floating point issues
-          const currentBalance = parseFloat(user.balance) || 0;
-          const reward = parseFloat(action.rewardAmount) || 0;
-          const newBalance = (currentBalance + reward).toFixed(6);
-          
-          await db.update(users)
-            .set({ 
-              balance: newBalance, 
-              reputationScore: (user.reputationScore || 0) + 10 // Increase reputation more for completions
-            })
-            .where(eq(users.id, user.id));
+        // If it just became verified (and wasn't paid yet), increment reputation
+        if (status === "verified") {
+           const [user] = await db.select().from(users).where(eq(users.id, execution.userId));
+           if (user) {
+             await db.update(users)
+               .set({ reputationScore: (user.reputationScore || 0) + 5 })
+               .where(eq(users.id, user.id));
+           }
         }
 
-        const [campaign] = await db.select().from(campaigns).where(eq(campaigns.id, execution.campaignId));
-        if (campaign) {
-          const currentRemaining = parseFloat(campaign.remainingBudget) || 0;
-          const reward = parseFloat(action.rewardAmount) || 0;
-          const newRemaining = Math.max(0, currentRemaining - reward).toFixed(6);
-          
-          await db.update(campaigns)
-            .set({ remainingBudget: newRemaining })
-            .where(eq(campaigns.id, campaign.id));
+        // If it just became paid, update balance and budget
+        if (status === "paid") {
+          const [user] = await db.select().from(users).where(eq(users.id, execution.userId));
+          if (user) {
+            const currentBalance = parseFloat(user.balance) || 0;
+            const reward = parseFloat(action.rewardAmount) || 0;
+            const newBalance = (currentBalance + reward).toFixed(6);
+            
+            await db.update(users)
+              .set({ 
+                balance: newBalance, 
+                reputationScore: (user.reputationScore || 0) + 10
+              })
+              .where(eq(users.id, user.id));
+          }
+
+          const [campaign] = await db.select().from(campaigns).where(eq(campaigns.id, execution.campaignId));
+          if (campaign) {
+            const currentRemaining = parseFloat(campaign.remainingBudget) || 0;
+            const reward = parseFloat(action.rewardAmount) || 0;
+            const newRemaining = Math.max(0, currentRemaining - reward).toFixed(6);
+            
+            await db.update(campaigns)
+              .set({ remainingBudget: newRemaining })
+              .where(eq(campaigns.id, campaign.id));
+          }
         }
       }
     }
