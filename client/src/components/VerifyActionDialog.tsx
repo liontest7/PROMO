@@ -58,7 +58,7 @@ export function VerifyActionDialog({ action, campaign, open, onOpenChange }: Ver
           },
           {
             onSuccess: (data: any) => {
-              if (data.status === 'ready') {
+              if (data.status === 'ready' || data.status === 'verified') {
                 setStep("success");
                 toast({
                   title: "Eligibility Verified!",
@@ -150,11 +150,31 @@ export function VerifyActionDialog({ action, campaign, open, onOpenChange }: Ver
           {isHolderCampaign ? (
             <div className="space-y-4">
               {holdingStatus ? (
-                <div className="p-4 bg-primary/5 rounded-lg border border-primary/10 text-center">
+                <div className="p-4 bg-primary/5 rounded-lg border border-primary/10 text-center space-y-3">
                   {holdingStatus.status === 'holding' ? (
                     <p className="text-sm">Holding period started! Check back later.</p>
                   ) : (
-                    <p className="text-sm">Still waiting: {holdingStatus.remaining?.toFixed(1)} days remaining.</p>
+                    <>
+                      <p className="text-sm font-bold text-yellow-500">Not Eligible Yet</p>
+                      <p className="text-xs text-muted-foreground">
+                        You need to hold {campaign.minHoldingAmount} {campaign.tokenName} for {campaign.minHoldingDuration} days.
+                      </p>
+                      {holdingStatus.remaining !== undefined && (
+                        <p className="text-[10px] uppercase tracking-widest font-black text-primary">
+                          {holdingStatus.remaining.toFixed(1)} Days Remaining
+                        </p>
+                      )}
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        className="w-full mt-2 gap-2 border-primary/20 hover:bg-primary/10"
+                        asChild
+                      >
+                        <a href={`https://dexscreener.com/solana/${campaign.tokenAddress}`} target="_blank" rel="noreferrer">
+                          <ExternalLink className="w-3 h-3" /> Buy {campaign.tokenName}
+                        </a>
+                      </Button>
+                    </>
                   )}
                 </div>
               ) : (
@@ -162,11 +182,22 @@ export function VerifyActionDialog({ action, campaign, open, onOpenChange }: Ver
                   <div className="p-4 bg-primary/5 rounded-lg border border-primary/10">
                     <p className="text-xs font-medium text-primary mb-1">Holder Verification</p>
                     <p className="text-[11px] text-muted-foreground leading-relaxed">
-                      Click the button below to verify your wallet balance and start the holding period.
+                      Hold {campaign.minHoldingAmount} {campaign.tokenName} for {campaign.minHoldingDuration} days. 
+                      Click below to verify your balance.
                     </p>
                   </div>
                   <Button onClick={handleVerify} disabled={verifyMutation.isPending} className="w-full">
                     {verifyMutation.isPending ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Verifying...</> : "Verify & Start Holding"}
+                  </Button>
+                  <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    className="w-full text-[10px] text-muted-foreground"
+                    asChild
+                  >
+                    <a href={`https://dexscreener.com/solana/${campaign.tokenAddress}`} target="_blank" rel="noreferrer">
+                      View on DEXScreener
+                    </a>
                   </Button>
                 </div>
               )}

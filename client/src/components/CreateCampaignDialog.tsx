@@ -145,20 +145,27 @@ export function CreateCampaignDialog() {
 
       const [dexData, pumpData, moralisData] = await Promise.all([dexPromise, pumpPromise, moralisPromise]);
 
-      // Process Moralis data (often best for official logos)
+      // Process Moralis data (often best for official logos and metadata URI)
       if (moralisData && moralisData.mint) {
         if (moralisData.symbol) mergedMetadata.tokenName = moralisData.symbol;
         if (moralisData.name && !mergedMetadata.title) mergedMetadata.title = `${moralisData.name} Growth Campaign`;
         if (moralisData.logo) mergedMetadata.logoUrl = moralisData.logo;
+        
+        // Moralis sometimes provides links directly
+        if (moralisData.links?.website) mergedMetadata.websiteUrl = moralisData.links.website;
+        if (moralisData.links?.twitter) mergedMetadata.twitterUrl = moralisData.links.twitter;
       }
 
       // Process Pump.fun data (often more direct for new tokens)
       if (pumpData && pumpData.success && pumpData.result) {
         const res = pumpData.result;
-        mergedMetadata.tokenName = res.symbol;
-        mergedMetadata.title = `${res.name} Growth Campaign`;
-        mergedMetadata.logoUrl = res.image;
-        mergedMetadata.description = res.description;
+        if (!mergedMetadata.tokenName) mergedMetadata.tokenName = res.symbol;
+        if (!mergedMetadata.title) mergedMetadata.title = `${res.name} Growth Campaign`;
+        if (!mergedMetadata.logoUrl) mergedMetadata.logoUrl = res.image;
+        if (!mergedMetadata.description) mergedMetadata.description = res.description;
+        
+        // Pump.fun API result sometimes has links in different places, 
+        // but often DexScreener is better for this.
       }
 
       // Process DexScreener data (excellent for socials and header/banner)
@@ -169,8 +176,10 @@ export function CreateCampaignDialog() {
         if (token.symbol) mergedMetadata.tokenName = token.symbol;
         if (token.name && !mergedMetadata.title) mergedMetadata.title = `${token.name} Growth Campaign`;
         
-        if (bestPair.info?.imageUrl) mergedMetadata.logoUrl = bestPair.info.imageUrl;
+        if (bestPair.info?.imageUrl && !mergedMetadata.logoUrl) mergedMetadata.logoUrl = bestPair.info.imageUrl;
         if (bestPair.info?.header) mergedMetadata.bannerUrl = bestPair.info.header;
+        
+        // Update links - DexScreener is often the most complete source for these
         if (bestPair.info?.websites?.[0]?.url) mergedMetadata.websiteUrl = bestPair.info.websites[0].url;
         
         const twitter = bestPair.info?.socials?.find((s: any) => s.type === 'twitter');
@@ -558,15 +567,35 @@ export function CreateCampaignDialog() {
                 </div>
               </div>
 
-              <div className="flex gap-4 pt-6">
+              <div className="flex gap-4 pt-6 items-center">
                 <Button variant="outline" className="flex-1 h-12" onClick={() => setStep("edit")}>Back to Edit</Button>
-                <Button 
-                  className="flex-[2] h-12 bg-primary text-primary-foreground font-bold text-lg hover:shadow-primary/40" 
-                  onClick={form.handleSubmit(onSubmit)}
-                  disabled={isPending}
-                >
-                  {isPending ? "Confirming..." : "Confirm & Launch"}
-                </Button>
+                <div className="flex-[2] flex flex-col gap-2">
+                  <Button 
+                    className="w-full h-12 bg-primary text-primary-foreground font-bold text-lg hover:shadow-primary/40" 
+                    onClick={async () => {
+                      const isValid = await form.trigger();
+                      if (!isValid) {
+                        const errors = form.formState.errors;
+                        const errorFields = Object.keys(errors).join(", ");
+                        toast({
+                          title: "Form Incomplete",
+                          description: `Please fix the following fields: ${errorFields}`,
+                          variant: "destructive"
+                        });
+                        return;
+                      }
+                      form.handleSubmit(onSubmit)();
+                    }}
+                    disabled={isPending}
+                  >
+                    {isPending ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Confirming...</> : "Confirm & Launch"}
+                  </Button>
+                  {Object.keys(form.formState.errors).length > 0 && (
+                    <p className="text-[10px] text-destructive text-center font-bold">
+                      Validation errors detected. Check fields.
+                    </p>
+                  )}
+                </div>
               </div>
             </div>
           )}
