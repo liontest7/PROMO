@@ -13,6 +13,7 @@ export interface IStorage {
   getUserByWallet(walletAddress: string): Promise<User | undefined>;
   createUser(user: InsertUser): Promise<User>;
   updateUserReputation(id: number, score: number): Promise<User>;
+  updateUserSocials(id: number, socials: { twitterHandle?: string; telegramHandle?: string }): Promise<User>;
 
   // Campaign
   getCampaigns(creatorId?: number): Promise<(Campaign & { actions: Action[] })[]>;
@@ -47,6 +48,14 @@ export class DatabaseStorage implements IStorage {
   async updateUserReputation(id: number, score: number): Promise<User> {
     const [user] = await db.update(users)
       .set({ reputationScore: score })
+      .where(eq(users.id, id))
+      .returning();
+    return user;
+  }
+
+  async updateUserSocials(id: number, socials: { twitterHandle?: string; telegramHandle?: string }): Promise<User> {
+    const [user] = await db.update(users)
+      .set(socials)
       .where(eq(users.id, id))
       .returning();
     return user;

@@ -11,6 +11,8 @@ export const users = pgTable("users", {
   role: text("role", { enum: ["user", "advertiser"] }).default("user").notNull(),
   reputationScore: integer("reputation_score").default(100),
   balance: numeric("balance").default("0").notNull(),
+  twitterHandle: text("twitter_handle"),
+  telegramHandle: text("telegram_handle"),
   createdAt: timestamp("created_at").defaultNow(),
 });
 
@@ -98,7 +100,10 @@ export const executionsRelations = relations(executions, ({ one }) => ({
 
 // === BASE SCHEMAS ===
 
-export const insertUserSchema = createInsertSchema(users).omit({ id: true, createdAt: true, reputationScore: true });
+export const insertUserSchema = createInsertSchema(users).omit({ id: true, createdAt: true, reputationScore: true }).extend({
+  twitterHandle: z.string().optional().or(z.literal("")),
+  telegramHandle: z.string().optional().or(z.literal(""))
+});
 export const insertCampaignSchema = createInsertSchema(campaigns).omit({ 
   id: true, 
   createdAt: true, 

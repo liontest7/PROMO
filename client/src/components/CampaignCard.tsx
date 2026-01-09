@@ -107,7 +107,7 @@ export function CampaignCard({ campaign, onActionClick, isOwner }: CampaignCardP
             <span className="text-muted-foreground uppercase">Budget Distribution</span>
             <span className="text-primary">{Math.round(percentComplete)}% DISTRIBUTED</span>
           </div>
-          <Progress value={percentComplete} className="h-2 bg-white/5 rounded-full" indicatorClassName="bg-primary shadow-[0_0_15px_rgba(34,197,94,0.4)]" />
+          <Progress value={percentComplete} className="h-2 bg-white/5 rounded-full" />
         </div>
 
         {/* Actions List */}

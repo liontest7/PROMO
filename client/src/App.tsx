@@ -7,6 +7,7 @@ import { WalletProvider, useWallet } from "@/hooks/use-wallet";
 
 import Landing from "@/pages/Landing";
 import Earn from "@/pages/Earn";
+import Profile from "@/pages/Profile";
 import Dashboard from "@/pages/Dashboard";
 import AdvertiserDashboard from "@/pages/AdvertiserDashboard";
 import About from "@/pages/About";
@@ -29,6 +30,7 @@ function Router() {
       <Route path="/" component={Landing} />
       <Route path="/about" component={About} />
       <Route path="/earn" component={Earn} />
+      <Route path="/profile" component={Profile} />
       
       {/* User Routes */}
       <Route path="/dashboard">

@@ -1,7 +1,7 @@
 import { Link, useLocation } from "wouter";
 import { useWallet } from "@/hooks/use-wallet";
 import { Button } from "@/components/ui/button";
-import { LayoutDashboard, Coins, Wallet, LogOut, PlusCircle, Trophy, Twitter, Send, ShieldCheck } from "lucide-react";
+import { LayoutDashboard, Coins, Wallet, LogOut, PlusCircle, Trophy, Twitter, Send, ShieldCheck, User } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export function Navigation() {
@@ -41,6 +41,7 @@ export function Navigation() {
             {isConnected && role === "user" && (
               <>
                 <NavLink href="/dashboard" icon={Trophy}>My Dashboard</NavLink>
+                <NavLink href="/profile" icon={User}>Profile</NavLink>
               </>
             )}
             

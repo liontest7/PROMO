@@ -71,26 +71,21 @@ export async function registerRoutes(
     });
   });
 
-  app.get(api.users.executions.path, async (req, res) => {
-    const user = await storage.getUserByWallet(req.params.walletAddress);
-    if (!user) return res.status(404).json({ message: "User not found" });
+  app.patch('/api/users/profile', async (req, res) => {
+    try {
+      const { walletAddress, twitterHandle, telegramHandle } = req.body;
+      const user = await storage.getUserByWallet(walletAddress);
+      if (!user) return res.status(404).json({ message: "User not found" });
 
-    const userExecutions = await storage.getExecutionsByUser(user.id);
-    const results = [];
-    
-    for (const execution of userExecutions) {
-      const action = await storage.getAction(execution.actionId);
-      const campaign = await storage.getCampaign(execution.campaignId);
-      if (action && campaign) {
-        results.push({
-          ...execution,
-          action,
-          campaign
-        });
-      }
+      const updatedUser = await storage.updateUserSocials(user.id, {
+        twitterHandle: twitterHandle || user.twitterHandle,
+        telegramHandle: telegramHandle || user.telegramHandle
+      });
+
+      res.json(updatedUser);
+    } catch (err) {
+      res.status(500).json({ message: "Failed to update profile" });
     }
-    
-    res.json(results);
   });
 
   // Campaigns
@@ -150,12 +145,20 @@ export async function registerRoutes(
       const proofObj = JSON.parse(input.proof || "{}");
       let isVerified = !!proofObj.signature;
 
-      // Smart Verification Simulation for social tasks
+      // Smart Verification for linked social accounts
       if (action.type === 'twitter' || action.type === 'telegram') {
-        console.log(`Smart verifying ${action.type} for user ${user.walletAddress}`);
-        // In real app, we would call Twitter/Telegram API here
-        // For now, we simulate success if a proofText is provided
-        if (!proofObj.proofText) {
+        const userHandle = action.type === 'twitter' ? user.twitterHandle : user.telegramHandle;
+        
+        console.log(`Smart verifying ${action.type} for user ${user.walletAddress} with handle ${userHandle}`);
+        
+        // If account is linked, we prioritize that verification
+        if (userHandle) {
+          // In a real production app, we would call the Twitter/Telegram API here
+          // For this MVP/Launch state, we simulate the API call success if the handle exists
+          isVerified = true;
+          console.log(`Auto-verified via linked ${action.type} account: ${userHandle}`);
+        } else if (!proofObj.proofText && !proofObj.isWebsiteClick) {
+          // Fallback if no handle and no manual proof text provided
           isVerified = false;
         }
       }
@@ -170,7 +173,7 @@ export async function registerRoutes(
         
         await storage.incrementActionExecution(action.id);
         
-        // Auto-pay to simulate real experience for MVP
+        // Auto-pay simulation
         const txSignature = "sol-" + Math.random().toString(36).substring(7);
         await storage.updateExecutionStatus(execution.id, "paid", txSignature);
 
@@ -185,7 +188,7 @@ export async function registerRoutes(
          res.json({
           success: false,
           status: "rejected",
-          message: "Verification failed: Requirements not met"
+          message: `Verification failed: Please link your ${action.type} account in profile or provide proof.`
         });
       }
     } catch (err) {
@@ -251,8 +254,6 @@ async function seed() {
         tokenName: "SOLSUM",
         tokenAddress: "So11111111111111111111111111111111111111112",
         totalBudget: "10000",
-        remainingBudget: "10000",
-        status: "active",
         creatorId: advertiser.id,
         requirements: { minSolBalance: 0.1 },
         bannerUrl: "https://images.unsplash.com/photo-1639762681485-074b7f938ba0?q=80&w=2000",
@@ -287,8 +288,6 @@ async function seed() {
         tokenName: "NEON",
         tokenAddress: "Neon...",
         totalBudget: "5000",
-        remainingBudget: "5000",
-        status: "active",
         creatorId: advertiser.id,
         requirements: {},
         bannerUrl: "https://images.unsplash.com/photo-1642104704074-907c0698cbd9?q=80&w=2000",
