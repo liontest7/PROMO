@@ -97,6 +97,13 @@ export function VerifyActionDialog({ action, campaign, open, onOpenChange }: Ver
                   description: "Your holding period has begun. Stay tuned!",
                 });
               } else if (data.status === 'insufficient') {
+                setHoldingStatus({
+                  status: data.status,
+                  remaining: data.remaining,
+                  currentBalance: data.currentBalance,
+                  requiredBalance: data.requiredBalance,
+                  holdDuration: data.holdDuration
+                });
                 toast({
                   title: "Insufficient Balance",
                   description: `You need at least ${data.requiredBalance} ${campaign.tokenName}.`,

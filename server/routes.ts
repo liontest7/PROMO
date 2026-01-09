@@ -217,6 +217,17 @@ export async function registerRoutes(
             const durationDays = (now.getTime() - state.holdStartTimestamp.getTime()) / (1000 * 60 * 60 * 24);
             const minDuration = campaign.minHoldingDuration || 0;
 
+            // CRITICAL: Re-verify balance on every check to ensure they didn't sell
+            if (balance < required) {
+              return res.json({ 
+                success: false, 
+                status: "insufficient",
+                currentBalance: balance,
+                requiredBalance: required,
+                message: `Verification failed: You no longer hold the required ${required} tokens.` 
+              });
+            }
+
             if (durationDays < minDuration) {
               return res.json({ 
                 success: true, 
