@@ -1,0 +1,239 @@
+
+אפיון תוספת – Holder Qualification Campaign (Phase 1)
+
+מסמך זה מגדיר שינויים ותוספות למערכת קיימת של Promotion לפרויקטי קריפטו.
+אין כאן Rewrite – רק הרחבה ממוקדת.
+
+1. מטרת התוספת
+
+לאפשר סוג קמפיין חדש המבוסס על החזקה מאומתת של מטבע פרויקט למשך זמן מינימלי, ללא API חיצוניים וללא אימות Engagement.
+
+המטרה:
+
+MVP זול
+
+אימות ביקוש
+
+100% On-chain
+
+מוכן להרחבה עתידית ל־Engagement Campaigns
+
+2. שינוי קונספטואלי מרכזי
+הוספת Campaign Type חדש
+CampaignType:
+- ENGAGEMENT (קיים / עתידי)
+- HOLDER_QUALIFICATION (חדש – Phase 1)
+
+
+בשלב זה רק HOLDER_QUALIFICATION פעיל, אך המבנה נשאר גנרי.
+
+3. הגדרת Holder Qualification Campaign
+שדות חדשים בקמפיין
+
+בנוסף לשדות הקיימים (שם, תיאור, טוקן, תקציב וכו’):
+
+שדה	תיאור
+campaignType	ערך קבוע: HOLDER_QUALIFICATION
+minHoldingAmount	כמות מינימלית להחזקה
+minHoldingDuration	זמן מינימלי (בשניות / ימים)
+rewardPerWallet	תגמול קבוע לכל Wallet
+maxClaims	מקסימום Wallets שיכולים ל-Claim
+totalBudget	rewardPerWallet × maxClaims
+4. שינויים בטופס יצירת קמפיין (Frontend)
+4.1 בחירת סוג קמפיין
+
+Dropdown / Toggle:
+
+Holder Qualification (זמין)
+
+Engagement Campaign (Disabled / Coming Soon)
+
+4.2 שדות שמוצגים רק ל-Holder Campaign
+
+Min Holding Amount
+
+Min Holding Duration (Days)
+
+Reward Per Wallet
+
+Max Claims
+
+4.3 שדות שלא מוצגים
+
+Action List
+
+Social / Website Actions
+
+API-related settings
+
+5. Flow פתיחת קמפיין (מעודכן)
+
+חיבור Wallet
+
+בדיקת החזקת מינימום מטבע מערכת
+
+Burn מטבע מערכת
+
+יצירת Campaign עם campaignType = HOLDER_QUALIFICATION
+
+חישוב תקציב כולל
+
+הפקדת מטבעות פרויקט ל־Escrow
+
+קמפיין פעיל
+
+6. Flow משתמש (Holder Campaign)
+
+חיבור Wallet
+
+כניסה לעמוד קמפיין
+
+לחיצה על Check Eligibility
+
+קריאה לחוזה:
+
+בדיקת יתרה
+
+בדיקת Timestamp התחלה
+
+אם עדיין לא התחיל:
+
+רישום hold_start_timestamp
+
+אם הזמן עבר:
+
+כפתור Claim זמין
+
+Claim → קבלת תגמול
+
+7. Smart Contract – שינויים נדרשים
+7.1 נתונים חדשים לכל Wallet בקמפיין
+
+PDA / Account:
+
+HolderState:
+- wallet
+- campaign_id
+- hold_start_timestamp
+- claimed (bool)
+
+7.2 לוגיקת Eligibility
+IF wallet.balance < minHoldingAmount → FAIL
+IF hold_start_timestamp == 0 → set now
+IF now - hold_start_timestamp < minHoldingDuration → WAIT
+IF claimed == true → FAIL
+IF totalClaims >= maxClaims → FAIL
+ELSE → ALLOW CLAIM
+
+7.3 פונקציות רלוונטיות
+
+checkEligibility (view / instruction)
+
+claimReward
+
+closeCampaign (אוטומטי כשנגמר budget / claims)
+
+❌ אין:
+
+שינוי תנאים
+
+Claim אוטומטי
+
+משיכה ידנית
+
+8. Backend – שינויים
+בשלב זה:
+
+אין צורך ב-Verification Layer
+
+Backend משמש רק ל:
+
+קריאת מצב קמפיינים
+
+אינדוקס נתונים
+
+הצגת סטטוס למשתמש
+
+❌ אין API חיצוניים
+❌ אין OAuth
+❌ אין Rate limits מיוחדים
+
+9. UI / UX – שינויים נדרשים
+עמוד קמפיין
+
+הצגת:
+
+Min Holding
+
+Duration
+
+Reward
+
+Remaining Claims
+
+CTA דינמי:
+
+“Start Holding”
+
+“X Days Remaining”
+
+“Claim Reward”
+
+“Campaign Full”
+
+10. דירוג קמפיינים (ללא שינוי לוגי)
+
+דירוג ממשיך להתבסס על:
+
+סך תקציב
+
+Burn של מטבע מערכת
+
+קצב Claims
+
+אין ידני. אין תשלום.
+
+11. טקסטים משפטיים / שיווקיים (חשוב)
+❌ לא להשתמש
+
+Hold and Win
+
+Earn Yield
+
+Passive Income
+
+✅ כן להשתמש
+
+Holder Qualification
+
+Claimable Reward
+
+Loyalty Campaign
+
+12. תאימות עתידית (חשוב לציין ל-AI)
+
+אין להסיר קוד של Engagement Campaigns
+
+CampaignType חייב להיות extensible
+
+Frontend ו-DB בנויים להכנסת Actions בעתיד
+
+13. סיכום לביצוע
+
+✔ שינוי מינימלי
+✔ אין API
+✔ אין Rewrite
+✔ MVP חוקי
+✔ מוכן להתרחבות
+
+סוף האפיון – תוספת Phase 1
+
+אם תרצה, בצעד הבא אני יכול:
+
+לקצר את זה לגרסה Ultra-Compact ל-AI
+
+או לכתוב Checklist מדויק לפיתוח (Frontend / Contract / DB)
+
+או לעבור סעיף־סעיף ולוודא שאין חורים
+
+תגיד איך הכי נוח לך לעבוד עם זה.
