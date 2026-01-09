@@ -55,6 +55,19 @@ export function CreateCampaignDialog() {
   const { isConnected, walletAddress, userId, connect } = useWallet();
   const { toast } = useToast();
 
+  const handleOpenClick = (e: React.MouseEvent) => {
+    if (!isConnected) {
+      e.preventDefault();
+      toast({
+        title: "Connection Required",
+        description: "Please connect your wallet as an advertiser to create campaigns.",
+        variant: "destructive"
+      });
+      connect('advertiser');
+      return;
+    }
+  };
+
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -157,8 +170,8 @@ export function CreateCampaignDialog() {
         setOpen(false);
         form.reset();
         toast({
-          title: "Success!",
-          description: "Your campaign has been launched successfully.",
+          title: "Campaign Launched!",
+          description: `Successfully deposited ${formattedValues.totalBudget} ${formattedValues.tokenName} into the escrow pool.`,
         });
       },
       onError: (error: any) => {
