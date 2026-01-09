@@ -150,20 +150,17 @@ export default function Landing() {
               </Button>
             </div>
 
-            {/* Global Stats - Moved under buttons */}
+            {/* Global Stats - Updated UI */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 w-full max-w-4xl mx-auto">
               {[
-                { label: "Active Campaigns", value: stats?.activeCampaigns || "0", icon: Search },
-                { label: "Community Members", value: stats?.totalUsers || "1,240", icon: Users },
-                { label: "Verified Projects", value: stats?.totalVerifiedProjects || "0", icon: ShieldCheck },
-                { label: "Rewards Paid", value: stats ? `${Number(stats.totalPaid).toLocaleString()} TOKENS` : "450k MEME", icon: Coins },
+                { label: "Active Campaigns", value: stats?.activeCampaigns || "0" },
+                { label: "Community Members", value: stats?.totalUsers || "1,240" },
+                { label: "Verified Projects", value: stats?.totalVerifiedProjects || "0" },
+                { label: "Rewards Paid", value: stats ? `${stats.totalPaid} TOKENS` : "450k MEME" },
               ].map((stat, i) => (
-                <div key={i} className="text-center p-4 rounded-2xl bg-white/5 border border-white/5 backdrop-blur-sm group hover:border-primary/30 transition-all">
-                  <div className="flex justify-center mb-2">
-                    <stat.icon className="w-5 h-5 text-primary opacity-50 group-hover:opacity-100 transition-opacity" />
-                  </div>
-                  <h3 className="text-xl md:text-2xl font-display font-black text-white mb-0.5 tracking-tight">{stat.value}</h3>
-                  <p className="text-[9px] text-muted-foreground uppercase font-black tracking-widest leading-none">{stat.label}</p>
+                <div key={i} className="text-center p-6 rounded-2xl bg-white/5 border border-white/5 backdrop-blur-sm group hover:border-primary/30 transition-all flex flex-col justify-center min-h-[120px]">
+                  <h3 className="text-2xl md:text-4xl font-display font-black text-white mb-1.5 tracking-tighter">{stat.value}</h3>
+                  <p className="text-[10px] md:text-[11px] text-muted-foreground uppercase font-black tracking-widest leading-tight">{stat.label}</p>
                 </div>
               ))}
             </div>
