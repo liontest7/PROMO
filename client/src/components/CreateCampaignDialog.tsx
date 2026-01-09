@@ -206,9 +206,12 @@ export function CreateCampaignDialog() {
                 name="bannerUrl"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Banner Image URL</FormLabel>
+                    <FormLabel className="flex items-center gap-2">
+                      Banner Image URL 
+                      <span className="text-[10px] text-muted-foreground font-normal">(Direct link to image)</span>
+                    </FormLabel>
                     <FormControl>
-                      <Input placeholder="https://images.unsplash.com/..." {...field} />
+                      <Input placeholder="https://..." {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -219,9 +222,12 @@ export function CreateCampaignDialog() {
                 name="logoUrl"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Logo Image URL</FormLabel>
+                    <FormLabel className="flex items-center gap-2">
+                      Logo Image URL
+                      <span className="text-[10px] text-muted-foreground font-normal">(Token or project logo)</span>
+                    </FormLabel>
                     <FormControl>
-                      <Input placeholder="https://images.unsplash.com/..." {...field} />
+                      <Input placeholder="https://..." {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>

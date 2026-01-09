@@ -42,7 +42,8 @@ export function VerifyActionDialog({ action, campaign, open, onOpenChange }: Ver
       // Website tasks are verified by simple click-through
       if (!isWebsiteAction) {
         console.log("Requesting signature for social action...");
-        const message = `Verify action ${action.id} for campaign ${campaign.id}`;
+        // In a real app, we would include a unique nonce to prevent replay attacks
+        const message = `Confirm completion of task ${action.id}\nVerification Proof: ${proof || 'None'}`;
         const encodedMessage = new TextEncoder().encode(message);
         
         const solanaInstance = (window as any).phantom?.solana || (window as any).solana;

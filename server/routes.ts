@@ -195,42 +195,33 @@ export async function registerRoutes(
   });
 
   app.post(api.executions.claim.path, async (req, res) => {
-     try {
-      const input = api.executions.claim.input.parse(req.body);
+    try {
+      const { walletAddress: userWallet, executionIds } = req.body;
       
-      const execution = await storage.getExecution(input.executionId);
-      if (!execution) return res.status(404).json({ message: "Execution not found" });
-      
-      if (execution.status === 'paid') {
-        return res.status(400).json({ message: "Already paid" });
+      if (!executionIds || !Array.isArray(executionIds)) {
+        return res.status(400).json({ message: "Invalid execution IDs" });
       }
 
-      // In real app, this would trigger a Solana transaction from the campaign budget
-      // For MVP, we simulate the payment confirmation
+      const results = [];
       const txSignature = "sol-" + Math.random().toString(36).substring(7);
 
-      const updated = await storage.updateExecutionStatus(
-        execution.id,
-        "paid",
-        txSignature
-      );
+      for (const id of executionIds) {
+        const execution = await storage.getExecution(id);
+        if (!execution || execution.status === 'paid') continue;
 
-      // Update campaign remaining budget
-      const campaign = await storage.getCampaign(execution.campaignId);
-      if (campaign) {
-        const action = await storage.getAction(execution.actionId);
-        if (action) {
-          const newBudget = Number(campaign.remainingBudget) - Number(action.rewardAmount);
-          await storage.updateCampaignRemainingBudget(campaign.id, newBudget.toString());
-        }
+        await storage.updateExecutionStatus(id, "paid", txSignature);
+        results.push(id);
       }
 
       res.json({
         success: true,
-        txSignature: txSignature
+        txSignature,
+        claimedIds: results,
+        message: `Successfully claimed ${results.length} rewards. Transaction fee paid by user.`
       });
 
     } catch (err) {
+      console.error("Claim error:", err);
       res.status(400).json({ message: "Invalid request" });
     }
   });

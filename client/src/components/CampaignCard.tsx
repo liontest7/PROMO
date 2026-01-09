@@ -63,7 +63,9 @@ export function CampaignCard({ campaign, onActionClick, isOwner }: CampaignCardP
             <Badge variant="outline" className="border-primary/20 text-primary bg-primary/5 text-[10px] py-0">
               {campaign.tokenName}
             </Badge>
-            <CardTitle className="text-xl font-display font-bold leading-tight">{campaign.title}</CardTitle>
+            <CardTitle className="text-xl font-display font-bold leading-tight flex items-center gap-2">
+              {campaign.title}
+            </CardTitle>
           </div>
         </div>
         <p className="text-sm text-muted-foreground line-clamp-2 min-h-[40px] mt-2 leading-relaxed">
