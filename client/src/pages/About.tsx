@@ -13,6 +13,10 @@ export default function About() {
 
   return (
     <div className="min-h-screen bg-background text-foreground">
+      <header>
+        <title>About MemeDrop - Solana Engagement Revolution</title>
+        <meta name="description" content="Learn how MemeDrop is revolutionizing marketing on Solana by connecting projects with real, verified users." />
+      </header>
       <Navigation />
       
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">

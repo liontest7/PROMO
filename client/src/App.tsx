@@ -5,6 +5,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { WalletProvider, useWallet } from "@/hooks/use-wallet";
 import { OnboardingSocials } from "@/components/onboarding/OnboardingSocials";
+import { motion, AnimatePresence } from "framer-motion";
 
 import Landing from "@/pages/Landing";
 import Earn from "@/pages/Earn";
@@ -16,7 +17,16 @@ import NotFound from "@/pages/not-found";
 function ProtectedRoute({ component: Component, allowedRole }: { component: any, allowedRole?: string }) {
   const { isConnected, role, isLoading } = useWallet();
 
-  if (isLoading) return <div className="min-h-screen bg-background flex items-center justify-center text-primary">Loading...</div>;
+  if (isLoading) return (
+    <div className="min-h-screen bg-background flex flex-col items-center justify-center text-primary gap-4">
+      <motion.div 
+        animate={{ rotate: 360 }}
+        transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+        className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full"
+      />
+      <p className="font-display font-bold animate-pulse">VERIFYING WALLET...</p>
+    </div>
+  );
   
   if (!isConnected) return <Redirect to="/" />;
   if (allowedRole && role !== allowedRole) return <Redirect to="/" />;
@@ -24,28 +34,50 @@ function ProtectedRoute({ component: Component, allowedRole }: { component: any,
   return <Component />;
 }
 
+const PageWrapper = ({ children }: { children: React.ReactNode }) => (
+  <motion.div
+    initial={{ opacity: 0, y: 10 }}
+    animate={{ opacity: 1, y: 0 }}
+    exit={{ opacity: 0, y: -10 }}
+    transition={{ duration: 0.3 }}
+    className="w-full h-full"
+  >
+    {children}
+  </motion.div>
+);
+
 function Router() {
   return (
-    <Switch>
-      <Route path="/" component={Landing} />
-      <Route path="/about" component={About} />
-      <Route path="/earn" component={Earn} />
-      
-      {/* User Routes */}
-      <Route path="/dashboard">
-        <ProtectedRoute component={Dashboard} allowedRole="user" />
-      </Route>
+    <AnimatePresence mode="wait">
+      <Switch>
+        <Route path="/">
+          <PageWrapper><Landing /></PageWrapper>
+        </Route>
+        <Route path="/about">
+          <PageWrapper><About /></PageWrapper>
+        </Route>
+        <Route path="/earn">
+          <PageWrapper><Earn /></PageWrapper>
+        </Route>
+        
+        {/* User Routes */}
+        <Route path="/dashboard">
+          <ProtectedRoute component={Dashboard} allowedRole="user" />
+        </Route>
 
-      {/* Advertiser Routes */}
-      <Route path="/advertiser">
-        <ProtectedRoute component={AdvertiserDashboard} allowedRole="advertiser" />
-      </Route>
-      <Route path="/create-campaign">
-        <ProtectedRoute component={AdvertiserDashboard} allowedRole="advertiser" />
-      </Route>
+        {/* Advertiser Routes */}
+        <Route path="/advertiser">
+          <ProtectedRoute component={AdvertiserDashboard} allowedRole="advertiser" />
+        </Route>
+        <Route path="/create-campaign">
+          <ProtectedRoute component={AdvertiserDashboard} allowedRole="advertiser" />
+        </Route>
 
-      <Route component={NotFound} />
-    </Switch>
+        <Route>
+          <PageWrapper><NotFound /></PageWrapper>
+        </Route>
+      </Switch>
+    </AnimatePresence>
   );
 }
 

@@ -65,6 +65,13 @@ export default function Landing() {
 
   return (
     <div className="min-h-screen bg-background text-foreground overflow-hidden">
+      <header>
+        <title>MemeDrop - The #1 Solana Marketing Platform</title>
+        <meta name="description" content="Connect, complete tasks, and earn crypto rewards instantly on Solana. The premier engagement platform for real users and authentic growth." />
+        <meta property="og:title" content="MemeDrop - Earn Crypto for Real Actions" />
+        <meta property="og:description" content="Participate in top-tier Solana projects and get paid in native tokens for social engagement." />
+        <meta property="og:type" content="website" />
+      </header>
       <Navigation />
       
       {/* Hero Section */}
