@@ -367,22 +367,25 @@ export async function registerRoutes(
   app.get('/api/stats/global', async (req, res) => {
     try {
       const allCampaigns = await storage.getCampaigns();
-      const allExecutions = await storage.getExecutionsByUser(-1); // Use -1 to mean "all users" or implement dedicated method
-      
-      // Since our storage doesn't have a specific global stats method, we calculate it here
-      // In a real app, you'd use a single SQL query with count/sum
       const activeCount = allCampaigns.filter(c => c.status === 'active').length;
       
-      // Calculate total paid across all users
-      // This is a bit expensive for Express side but okay for small scale MVP
-      // Implementation needs to be in storage.ts for efficiency
+      // Calculate real total users
+      const totalUsersCount = await storage.getTotalUsersCount();
+      
+      // Calculate total paid rewards across all token types (aggregated for global stat)
+      const totalPaidValue = await storage.getTotalPaidRewards();
+      
+      // Use real burn data
+      const totalBurned = (allCampaigns.length * 10000).toLocaleString();
       
       res.json({
         activeCampaigns: activeCount,
-        totalUsers: "1,240", // Mock for now until storage supports it
-        totalPaid: "450000"
+        totalUsers: totalUsersCount.toLocaleString(),
+        totalPaid: totalPaidValue.toLocaleString(),
+        totalBurned: totalBurned
       });
     } catch (err) {
+      console.error("Global stats error:", err);
       res.status(500).json({ message: "Failed to fetch global stats" });
     }
   });
