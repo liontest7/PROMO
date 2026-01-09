@@ -11,11 +11,15 @@ import { formatDistanceToNow } from "date-fns";
 import { cn } from "@/lib/utils";
 import { VerifyActionDialog } from "@/components/VerifyActionDialog";
 import { useState } from "react";
+import { useWallet } from "@/hooks/use-wallet";
+import { useToast } from "@/hooks/use-toast";
 
 export default function CampaignDetails() {
   const [, params] = useRoute("/campaign/:id");
   const campaignId = params?.id;
   const [selectedAction, setSelectedAction] = useState<{ action: Action; campaign: Campaign } | null>(null);
+  const { toast } = useToast();
+  const { isConnected, connect } = useWallet();
 
   const { data: campaign, isLoading: campaignLoading } = useQuery<(Campaign & { actions: Action[] }) | undefined>({
     queryKey: [`/api/campaigns/${campaignId}`],
@@ -26,8 +30,6 @@ export default function CampaignDetails() {
     queryKey: [`/api/executions/campaign/${campaignId}`],
     enabled: !!campaignId,
   });
-
-  const { isConnected, connect } = useWallet();
 
   const handleActionClick = (action: Action) => {
     if (!isConnected) {
@@ -54,6 +56,8 @@ export default function CampaignDetails() {
       connect('user');
       return;
     }
+    if (!campaign) return;
+
     console.log("Triggering holder verification from details...");
     setSelectedAction({ 
       action: { 
