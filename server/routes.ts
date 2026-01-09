@@ -7,6 +7,9 @@ import { insertCampaignSchema, insertActionSchema } from "@shared/schema";
 import { setupAuth, registerAuthRoutes, isAuthenticated } from "./replit_integrations/auth";
 
 import { Connection, PublicKey } from "@solana/web3.js";
+import { db } from "./db";
+import { users as usersTable, campaigns as campaignsTable, actions as actionsTable, executions as executionsTable } from "@shared/schema";
+import { eq, desc, sql } from "drizzle-orm";
 
 export async function registerRoutes(
   httpServer: Server,
@@ -370,10 +373,16 @@ export async function registerRoutes(
       const activeCount = allCampaigns.filter(c => c.status === 'active').length;
       
       // Calculate real total users
-      const totalUsersCount = await storage.getTotalUsersCount();
+      const users = await db.select().from(usersTable);
+      const totalUsersCount = users.length;
       
       // Calculate total paid rewards across all token types (aggregated for global stat)
-      const totalPaidValue = await storage.getTotalPaidRewards();
+      const paidExecutions = await db.select()
+        .from(executionsTable)
+        .innerJoin(actionsTable, eq(executionsTable.actionId, actionsTable.id))
+        .where(eq(executionsTable.status, 'paid'));
+      
+      const totalPaidValue = paidExecutions.reduce((sum, e) => sum + Number(e.actions.rewardAmount), 0);
       
       // Use real burn data
       const totalBurned = (allCampaigns.length * 10000).toLocaleString();
