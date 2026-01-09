@@ -155,15 +155,23 @@ export default function Landing() {
               { title: "Native Rewards", desc: "Projects pay directly in their own tokens, creating instant holders.", icon: Coins },
               { title: "Instant Growth", desc: "Launch a campaign and see real-time engagement in minutes.", icon: Rocket }
             ].map((item, i) => (
-              <Card key={i} className="glass-card border-white/5 bg-white/[0.02] hover:border-primary/20 transition-all">
-                <CardContent className="p-6">
-                  <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center mb-4">
-                    <item.icon className="w-6 h-6 text-primary" />
-                  </div>
-                  <h3 className="font-bold mb-2">{item.title}</h3>
-                  <p className="text-sm text-muted-foreground leading-relaxed">{item.desc}</p>
-                </CardContent>
-              </Card>
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.1 }}
+              >
+                <Card className="glass-card border-white/5 bg-white/[0.02] hover:border-primary/20 transition-all h-full">
+                  <CardContent className="p-6">
+                    <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center mb-4">
+                      <item.icon className="w-6 h-6 text-primary" />
+                    </div>
+                    <h3 className="font-bold mb-2">{item.title}</h3>
+                    <p className="text-sm text-muted-foreground leading-relaxed">{item.desc}</p>
+                  </CardContent>
+                </Card>
+              </motion.div>
             ))}
           </div>
 

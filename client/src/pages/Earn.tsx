@@ -160,13 +160,17 @@ export default function Earn() {
         )}
 
         {!isLoading && filteredCampaigns?.length === 0 && (
-          <div className="text-center py-20">
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="text-center py-20"
+          >
             <div className="w-20 h-20 bg-white/5 rounded-full flex items-center justify-center mx-auto mb-4">
               <Search className="w-10 h-10 text-muted-foreground" />
             </div>
             <h3 className="text-xl font-bold mb-2">No campaigns found</h3>
             <p className="text-muted-foreground">Try adjusting your search terms.</p>
-          </div>
+          </motion.div>
         )}
       </main>
 

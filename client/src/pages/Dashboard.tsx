@@ -335,7 +335,7 @@ export default function Dashboard() {
                           <p className="text-[10px] font-bold text-muted-foreground uppercase">
                             {execution.createdAt ? format(new Date(execution.createdAt), 'MMM d, HH:mm') : 'Recently'}
                           </p>
-                          <p className={`text-[9px] font-bold uppercase tracking-wider ${execution.status === 'paid' ? 'text-primary' : 'text-yellow-500'}`}>
+                          <p className={`text-[9px] font-bold uppercase tracking-wider ${execution.status === 'paid' ? 'text-primary' : execution.status === 'rejected' ? 'text-destructive' : 'text-yellow-500'}`}>
                             {execution.status}
                           </p>
                         </div>

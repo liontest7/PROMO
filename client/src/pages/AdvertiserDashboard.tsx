@@ -28,38 +28,28 @@ export default function AdvertiserDashboard() {
           <CreateCampaignDialog />
         </div>
 
-        {isLoading ? (
+        {!isLoading && campaigns && campaigns.length === 0 && (
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="text-center py-24 rounded-2xl border border-dashed border-white/10 bg-white/5"
+          >
+            <div className="w-16 h-16 bg-white/5 rounded-full flex items-center justify-center mx-auto mb-4">
+              <AlertCircle className="w-8 h-8 text-muted-foreground" />
+            </div>
+            <h3 className="text-xl font-bold mb-2">No Active Campaigns</h3>
+            <p className="text-muted-foreground mb-6 max-w-sm mx-auto">
+              You haven't launched any campaigns yet. Start promoting your project today.
+            </p>
+            <CreateCampaignDialog />
+          </motion.div>
+        )}
+        {!isLoading && campaigns && campaigns.length > 0 && (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {[1, 2].map((i) => (
-              <div key={i} className="h-[300px] rounded-2xl border border-white/5 bg-white/5 p-6">
-                <Skeleton className="h-8 w-3/4 mb-4 bg-white/10" />
-                <Skeleton className="h-4 w-full mb-2 bg-white/10" />
-                <Skeleton className="h-4 w-2/3 mb-8 bg-white/10" />
-                <Skeleton className="h-10 w-full bg-white/10 rounded-lg" />
-              </div>
+            {campaigns.map((campaign) => (
+              <CampaignCard key={campaign.id} campaign={campaign} isOwner />
             ))}
           </div>
-        ) : (
-          <>
-            {campaigns && campaigns.length > 0 ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {campaigns.map((campaign) => (
-                  <CampaignCard key={campaign.id} campaign={campaign} isOwner />
-                ))}
-              </div>
-            ) : (
-              <div className="text-center py-24 rounded-2xl border border-dashed border-white/10 bg-white/5">
-                <div className="w-16 h-16 bg-white/5 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <AlertCircle className="w-8 h-8 text-muted-foreground" />
-                </div>
-                <h3 className="text-xl font-bold mb-2">No Active Campaigns</h3>
-                <p className="text-muted-foreground mb-6 max-w-sm mx-auto">
-                  You haven't launched any campaigns yet. Start promoting your project today.
-                </p>
-                <CreateCampaignDialog />
-              </div>
-            )}
-          </>
         )}
       </main>
     </div>
