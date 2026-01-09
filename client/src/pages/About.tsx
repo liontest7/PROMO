@@ -33,7 +33,8 @@ export default function About() {
             <span className="text-primary">The Future of Crypto Growth</span>
           </motion.h1>
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-            MemeDrop has officially launched Phase 1: Holder Qualification. This model focuses on building genuine, long-term value by rewarding users who commit to projects through verified on-chain holdings.
+            MemeDrop has officially launched Phase 1: Holder Qualification. This model focuses on building genuine, long-term value by rewarding users who commit to projects through verified on-chain holdings. 
+            No more high-cost engagement APIs – just pure on-chain verification and real community support.
           </p>
         </div>
 

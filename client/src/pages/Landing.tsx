@@ -98,7 +98,7 @@ export default function Landing() {
               <span className="text-primary neon-text">Phase 1 is Live</span>
             </h1>
             <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto mb-12 leading-relaxed font-medium">
-              Revolutionize your project's growth with our new 100% On-chain Holder Qualification model. Reward loyal supporters based on verified holdings and duration.
+              Revolutionize your project's growth with our new 100% On-chain Holder Qualification model. Reward loyal supporters based on verified holdings and duration. Join the future of crypto marketing.
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center">

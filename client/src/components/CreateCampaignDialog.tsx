@@ -244,7 +244,7 @@ export function CreateCampaignDialog() {
                       </FormControl>
                       <SelectContent>
                         <SelectItem value="holder_qualification">Holder Qualification (Hold & Win)</SelectItem>
-                        <SelectItem value="engagement" disabled>Social Engagement (Coming Soon)</SelectItem>
+                        <SelectItem value="engagement">Social Engagement (Coming Soon)</SelectItem>
                       </SelectContent>
                     </Select>
                     <FormMessage />
@@ -326,7 +326,7 @@ export function CreateCampaignDialog() {
                   />
                 </div>
               </div>
-            ) : (
+            ) : form.watch("campaignType") === "engagement" ? (
               <>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <FormField
@@ -453,7 +453,7 @@ export function CreateCampaignDialog() {
                   ))}
                 </div>
               </>
-            )}
+            ) : null}
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <FormField
