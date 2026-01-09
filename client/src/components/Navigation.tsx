@@ -21,7 +21,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { SiJupiter } from "react-icons/si";
+import { SiJupyter } from "react-icons/si";
 
 export function Navigation() {
   const [location] = useLocation();
@@ -104,7 +104,7 @@ export function Navigation() {
                   <DropdownMenuItem asChild className="cursor-pointer focus:bg-primary/10 focus:text-primary">
                     <a href={APP_CONFIG.token.buyLinks.jupiter} target="_blank" rel="noreferrer" className="flex items-center gap-3 w-full py-2">
                       <div className="w-6 h-6 rounded bg-primary/10 flex items-center justify-center">
-                        <SiJupiter className="w-3.5 h-3.5 text-emerald-400" />
+                        <SiJupyter className="w-3.5 h-3.5 text-emerald-400" />
                       </div>
                       <span className="text-sm font-medium">Jupiter</span>
                       <ExternalLink className="w-3 h-3 ml-auto opacity-50" />
