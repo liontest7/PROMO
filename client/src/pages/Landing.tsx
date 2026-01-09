@@ -93,7 +93,8 @@ export default function Landing() {
       const res = await fetch("/api/stats/global");
       if (!res.ok) return null;
       return res.json();
-    }
+    },
+    refetchInterval: 30000, // Refresh every 30 seconds
   });
 
   return (
