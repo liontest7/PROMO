@@ -28,6 +28,7 @@ import {
 import { SiJupyter } from "react-icons/si";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
+import { PLATFORM_CONFIG } from "@shared/config";
 
 export function Navigation() {
   const [location] = useLocation();
@@ -128,8 +129,9 @@ export function Navigation() {
                 size="icon" 
                 className="w-8 h-8 rounded-full border border-white/5 hover:bg-white/5 text-muted-foreground hover:text-blue-400 transition-colors"
                 asChild
+                data-testid="nav-link-twitter"
               >
-                <a href="https://x.com/memedrop" target="_blank" rel="noreferrer">
+                <a href={PLATFORM_CONFIG.SOCIAL_LINKS.TWITTER} target="_blank" rel="noreferrer">
                   <Twitter className="w-4 h-4" />
                 </a>
               </Button>
@@ -138,8 +140,9 @@ export function Navigation() {
                 size="icon" 
                 className="w-8 h-8 rounded-full border border-white/5 hover:bg-white/5 text-muted-foreground hover:text-blue-500 transition-colors"
                 asChild
+                data-testid="nav-link-telegram"
               >
-                <a href="https://t.me/memedrop" target="_blank" rel="noreferrer">
+                <a href={PLATFORM_CONFIG.SOCIAL_LINKS.TELEGRAM} target="_blank" rel="noreferrer">
                   <Send className="w-4 h-4" />
                 </a>
               </Button>

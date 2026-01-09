@@ -327,11 +327,21 @@ export function CreateCampaignDialog() {
                   <div className="space-y-6 animate-in fade-in slide-in-from-top-4 duration-300">
                     <div className="p-4 rounded-xl bg-secondary/10 border border-secondary/20">
                       <h3 className="font-bold text-secondary flex items-center gap-2 mb-2 uppercase tracking-widest text-xs">
-                        <Coins className="w-4 h-4" /> Platform Fee
+                        <Coins className="w-4 h-4" /> Platform Fee & Costs
                       </h3>
-                      <p className="text-sm text-muted-foreground leading-relaxed">
-                        Creating a campaign requires a one-time burn of <strong>{PLATFORM_CONFIG.BURN_AMOUNT.toLocaleString()} ${PLATFORM_CONFIG.TOKEN_SYMBOL}</strong>. This fee ensures project quality and rewards the ecosystem.
-                      </p>
+                      <div className="space-y-3 text-sm text-muted-foreground leading-relaxed">
+                        <p>
+                          Creating a campaign requires a one-time burn of <strong>{PLATFORM_CONFIG.BURN_AMOUNT.toLocaleString()} ${PLATFORM_CONFIG.TOKEN_SYMBOL}</strong>.
+                        </p>
+                        <p>
+                          As an advertiser, you are responsible for:
+                          <ul className="list-disc ml-4 mt-1 space-y-1">
+                            <li>Funding the reward pool (deposited at launch)</li>
+                            <li>Platform setup fee ({PLATFORM_CONFIG.FEE_SOL} SOL)</li>
+                            <li>Transaction costs for distribution</li>
+                          </ul>
+                        </p>
+                      </div>
                     </div>
 
                     {/* Basic Info */}

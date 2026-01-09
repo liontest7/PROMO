@@ -14,6 +14,36 @@ import { useQuery } from "@tanstack/react-query";
 import { APP_CONFIG } from "@/config";
 import { PLATFORM_CONFIG } from "@shared/config";
 
+function Footer() {
+  return (
+    <footer className="py-16 bg-black border-t border-white/5" data-testid="footer-main">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 items-center gap-12 text-center md:text-left">
+          <div className="flex flex-col items-center md:items-start gap-4">
+            <div className="flex items-center gap-3">
+              <img src={APP_CONFIG.assets.logo} alt="Logo" className="w-10 h-10" />
+              <span className="font-display font-black text-2xl tracking-tighter">MEMEDROP</span>
+            </div>
+            <p className="text-xs text-muted-foreground max-w-xs font-medium uppercase tracking-widest leading-loose">
+              The leading Pay-Per-Action platform for the Solana ecosystem.
+            </p>
+          </div>
+          <div className="flex justify-center gap-12 font-black text-xs uppercase tracking-tighter">
+            <Link href="/earn" className="hover:text-primary transition-all" data-testid="footer-link-explore">Explore</Link>
+            <Link href="/about" className="hover:text-primary transition-all" data-testid="footer-link-about">About</Link>
+            <a href={PLATFORM_CONFIG.SOCIAL_LINKS.TWITTER} target="_blank" rel="noreferrer" className="hover:text-primary transition-all" data-testid="footer-link-twitter">Twitter</a>
+            <a href={PLATFORM_CONFIG.SOCIAL_LINKS.TELEGRAM} target="_blank" rel="noreferrer" className="hover:text-primary transition-all" data-testid="footer-link-telegram">Telegram</a>
+          </div>
+          <div className="flex flex-col items-center md:items-end gap-2">
+            <p className="text-xs text-muted-foreground font-bold">© 2026 MEMEDROP INC.</p>
+            <p className="text-[10px] text-muted-foreground/50">BUILDING ON SOLANA MAINNET-BETA</p>
+          </div>
+        </div>
+      </div>
+    </footer>
+  );
+}
+
 function EarnContentOnly() {
   const { data: campaigns, isLoading } = useCampaigns();
   const { isConnected } = useWallet();
@@ -103,6 +133,7 @@ export default function Landing() {
                 <Button 
                   size="lg" 
                   className="h-14 px-8 text-lg bg-primary text-primary-foreground font-black hover:bg-primary/90 shadow-2xl transition-all"
+                  data-testid="button-start-earning"
                 >
                   START EARNING <Coins className="ml-2 w-5 h-5" />
                 </Button>
@@ -112,6 +143,7 @@ export default function Landing() {
                 variant="outline" 
                 className="h-14 px-8 text-lg border-white/10 hover:bg-white/5 font-black uppercase"
                 onClick={() => connect('advertiser')}
+                data-testid="button-launch-project"
               >
                 Launch Project <Rocket className="ml-2 w-5 h-5" />
               </Button>
@@ -121,7 +153,7 @@ export default function Landing() {
       </section>
 
       {/* Featured Campaigns Section - MOVED UP AS REQUESTED */}
-      <section className="py-24 border-y border-white/5 bg-black/20">
+      <section className="py-24 border-y border-white/5 bg-black/20" data-testid="section-active-campaigns">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col md:flex-row justify-between items-end gap-6 mb-12">
             <div>
@@ -129,7 +161,7 @@ export default function Landing() {
               <p className="text-muted-foreground">Join these top-tier projects and start earning rewards today.</p>
             </div>
             <Link href="/earn">
-              <Button variant="ghost" className="text-primary hover:text-primary hover:bg-primary/10 group font-bold">
+              <Button variant="ghost" className="text-primary hover:text-primary hover:bg-primary/10 group font-bold" data-testid="button-view-all">
                 View All Projects <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </Button>
             </Link>
@@ -172,12 +204,12 @@ export default function Landing() {
                 </p>
                 <div className="grid grid-cols-2 gap-6">
                   <div className="p-6 bg-black/40 rounded-2xl border border-white/5">
-                    <p className="text-3xl font-black text-primary">15%</p>
-                    <p className="text-[10px] text-muted-foreground uppercase font-black tracking-tighter">Reward Boost</p>
+                    <p className="text-3xl font-black text-primary">0%</p>
+                    <p className="text-[10px] text-muted-foreground uppercase font-black tracking-tighter">Platform Fees</p>
                   </div>
                   <div className="p-6 bg-black/40 rounded-2xl border border-white/5">
                     <p className="text-3xl font-black text-secondary">BURN</p>
-                    <p className="text-[10px] text-muted-foreground uppercase font-black tracking-tighter">{PLATFORM_CONFIG.BURN_AMOUNT} Tokens/Project</p>
+                    <p className="text-[10px] text-muted-foreground uppercase font-black tracking-tighter">{PLATFORM_CONFIG.BURN_AMOUNT.toLocaleString()} Tokens/Project</p>
                   </div>
                 </div>
               </div>
@@ -192,17 +224,17 @@ export default function Landing() {
       </section>
 
       {/* Updated CTA Section */}
-      <section className="py-32 border-t border-white/5">
+      <section className="py-32 border-t border-white/5" data-testid="section-social-cta">
         <div className="container mx-auto px-4 text-center">
           <div className="max-w-3xl mx-auto space-y-12">
             <h2 className="text-5xl font-display font-black tracking-tighter italic uppercase underline decoration-primary decoration-4 underline-offset-8">Follow Our Community</h2>
             <p className="text-xl text-muted-foreground">Join thousands of users and get the latest updates on new high-reward campaigns.</p>
             <div className="flex flex-col sm:flex-row justify-center gap-6">
-              <Button size="lg" className="h-16 px-12 bg-[#0088cc] hover:bg-[#0088cc]/90 text-white font-black text-xl rounded-2xl shadow-xl shadow-blue-500/20" asChild>
-                <a href="https://t.me/yourtelegram" target="_blank" rel="noreferrer">JOIN TELEGRAM</a>
+              <Button size="lg" className="h-16 px-12 bg-[#0088cc] hover:bg-[#0088cc]/90 text-white font-black text-xl rounded-2xl shadow-xl shadow-blue-500/20" asChild data-testid="link-telegram">
+                <a href={PLATFORM_CONFIG.SOCIAL_LINKS.TELEGRAM} target="_blank" rel="noreferrer">JOIN TELEGRAM</a>
               </Button>
-              <Button size="lg" className="h-16 px-12 bg-white text-black hover:bg-gray-100 font-black text-xl rounded-2xl shadow-xl" asChild>
-                <a href="https://twitter.com/yourtwitter" target="_blank" rel="noreferrer">FOLLOW TWITTER (X)</a>
+              <Button size="lg" className="h-16 px-12 bg-white text-black hover:bg-gray-100 font-black text-xl rounded-2xl shadow-xl" asChild data-testid="link-twitter">
+                <a href={PLATFORM_CONFIG.SOCIAL_LINKS.TWITTER} target="_blank" rel="noreferrer">FOLLOW TWITTER (X)</a>
               </Button>
             </div>
           </div>
@@ -210,31 +242,7 @@ export default function Landing() {
       </section>
 
       {/* New Clean Footer */}
-      <footer className="py-16 bg-black border-t border-white/5">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-3 items-center gap-12 text-center md:text-left">
-            <div className="flex flex-col items-center md:items-start gap-4">
-              <div className="flex items-center gap-3">
-                <img src={APP_CONFIG.assets.logo} alt="Logo" className="w-10 h-10" />
-                <span className="font-display font-black text-2xl tracking-tighter">MEMEDROP</span>
-              </div>
-              <p className="text-xs text-muted-foreground max-w-xs font-medium uppercase tracking-widest leading-loose">
-                The leading Pay-Per-Action platform for the Solana ecosystem.
-              </p>
-            </div>
-            <div className="flex justify-center gap-12 font-black text-xs uppercase tracking-tighter">
-              <Link href="/earn" className="hover:text-primary transition-all">Explore</Link>
-              <Link href="/about" className="hover:text-primary transition-all">About</Link>
-              <a href="#" className="hover:text-primary transition-all">Terms</a>
-              <a href="#" className="hover:text-primary transition-all">Privacy</a>
-            </div>
-            <div className="flex flex-col items-center md:items-end gap-2">
-              <p className="text-xs text-muted-foreground font-bold">© 2026 MEMEDROP INC.</p>
-              <p className="text-[10px] text-muted-foreground/50">BUILDING ON SOLANA MAINNET-BETA</p>
-            </div>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }

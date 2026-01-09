@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Link } from "wouter";
 import { Navigation } from "@/components/Navigation";
 import { formatDistanceToNow } from "date-fns";
+import { cn } from "@/lib/utils";
 
 export default function CampaignDetails() {
   const [, params] = useRoute("/campaign/:id");
@@ -122,7 +123,7 @@ export default function CampaignDetails() {
 
             <section className="space-y-6">
               <div className="flex items-center justify-between">
-                <h2 className="text-2xl font-display font-bold">Participants</h2>
+                <h2 className="text-2xl font-display font-bold">Reward Proofs & Winners</h2>
                 <Badge variant="secondary" className="gap-1 px-3">
                   <Users className="w-3 h-3" /> {participants?.length || 0} Joined
                 </Badge>
@@ -138,7 +139,7 @@ export default function CampaignDetails() {
                           {p.user.walletAddress.substring(0, 2)}
                         </div>
                         <div>
-                          <p className="text-sm font-bold text-white font-mono">
+                          <p className="text-sm font-bold text-white font-mono" data-testid={`participant-address-${i}`}>
                             {p.user.walletAddress.substring(0, 6)}...{p.user.walletAddress.substring(p.user.walletAddress.length - 4)}
                           </p>
                           <p className="text-[10px] text-muted-foreground uppercase font-bold tracking-wider">
@@ -146,9 +147,21 @@ export default function CampaignDetails() {
                           </p>
                         </div>
                       </div>
-                      <Badge className="bg-primary/20 text-primary border-primary/30">
-                        {p.status === 'paid' ? 'PAID' : 'VERIFIED'}
-                      </Badge>
+                      <div className="flex items-center gap-3">
+                        {p.status === 'paid' && (
+                          <Button variant="ghost" size="sm" className="h-8 text-[10px] uppercase font-bold text-primary gap-1.5 bg-primary/5 hover:bg-primary/10 border border-primary/10" asChild>
+                            <a href={`https://solscan.io/tx/${p.transactionHash || '#'}`} target="_blank" rel="noreferrer">
+                              Proof <ExternalLink className="w-3 h-3" />
+                            </a>
+                          </Button>
+                        )}
+                        <Badge className={cn(
+                          "font-bold px-3 py-1",
+                          p.status === 'paid' ? "bg-primary/20 text-primary border-primary/30" : "bg-yellow-500/20 text-yellow-500 border-yellow-500/30"
+                        )}>
+                          {p.status === 'paid' ? 'PAID' : 'VERIFIED'}
+                        </Badge>
+                      </div>
                     </div>
                   ))
                 ) : (
