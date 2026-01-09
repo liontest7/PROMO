@@ -1,11 +1,12 @@
 import { db } from "./db";
 import { eq, desc } from "drizzle-orm";
 import {
-  users, campaigns, actions, executions,
+  users, campaigns, actions, executions, holderState,
   type User, type InsertUser,
   type Campaign, type InsertCampaign,
   type Action, type InsertAction,
-  type Execution, type InsertExecution
+  type Execution, type InsertExecution,
+  type HolderState, type InsertHolderState
 } from "@shared/schema";
 
 export interface IStorage {
@@ -32,6 +33,11 @@ export interface IStorage {
   getExecutionsByUser(userId: number): Promise<Execution[]>;
   updateExecutionStatus(id: number, status: "pending" | "verified" | "paid" | "rejected", txSignature?: string): Promise<Execution>;
   updateCampaignRemainingBudget(id: number, remainingBudget: string): Promise<Campaign>;
+
+  // Holder State
+  getHolderState(userId: number, campaignId: number): Promise<HolderState | undefined>;
+  createHolderState(state: InsertHolderState): Promise<HolderState>;
+  updateHolderClaimed(id: number): Promise<void>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -209,6 +215,21 @@ export class DatabaseStorage implements IStorage {
       .where(eq(campaigns.id, id))
       .returning();
     return campaign;
+  }
+
+  async getHolderState(userId: number, campaignId: number): Promise<HolderState | undefined> {
+    const [state] = await db.select().from(holderState)
+      .where(sql`${holderState.userId} = ${userId} AND ${holderState.campaignId} = ${campaignId}`);
+    return state;
+  }
+
+  async createHolderState(insertState: InsertHolderState): Promise<HolderState> {
+    const [state] = await db.insert(holderState).values(insertState).returning();
+    return state;
+  }
+
+  async updateHolderClaimed(id: number): Promise<void> {
+    await db.update(holderState).set({ claimed: true }).where(eq(holderState.id, id));
   }
 }
 

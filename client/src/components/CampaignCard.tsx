@@ -22,7 +22,7 @@ export function CampaignCard({ campaign, onActionClick, isOwner }: CampaignCardP
   const totalBudgetNum = Number(campaign.totalBudget);
   const remainingBudgetNum = Number(campaign.remainingBudget);
   const distributedNum = totalBudgetNum - remainingBudgetNum;
-  const percentComplete = (distributedNum / totalBudgetNum) * 100;
+  const percentComplete = totalBudgetNum > 0 ? (distributedNum / totalBudgetNum) * 100 : 0;
 
   const getIcon = (type: string) => {
     switch(type) {
@@ -161,11 +161,24 @@ export function CampaignCard({ campaign, onActionClick, isOwner }: CampaignCardP
           </div>
 
           {/* Requirements */}
-          {campaign.requirements && (campaign.requirements as any).minSolBalance && (
-            <div className="flex items-center gap-2 text-[10px] font-medium text-muted-foreground bg-primary/5 border border-primary/10 px-2 py-1.5 rounded-lg w-fit">
-              <ShieldCheck className="w-3.5 h-3.5 text-primary" />
-              <span>MIN {(campaign.requirements as any).minSolBalance} SOL BALANCE REQUIRED</span>
+          {campaign.campaignType === 'holder_qualification' ? (
+            <div className="space-y-2">
+              <div className="flex items-center gap-2 text-[10px] font-medium text-muted-foreground bg-primary/5 border border-primary/10 px-2 py-1.5 rounded-lg w-full">
+                <ShieldCheck className="w-3.5 h-3.5 text-primary" />
+                <span>HOLD {campaign.minHoldingAmount} {campaign.tokenName} FOR {campaign.minHoldingDuration} DAYS</span>
+              </div>
+              <div className="flex items-center gap-2 text-[10px] font-medium text-muted-foreground bg-secondary/5 border border-secondary/10 px-2 py-1.5 rounded-lg w-full">
+                <Coins className="w-3.5 h-3.5 text-secondary" />
+                <span>REWARD: {campaign.rewardPerWallet} {campaign.tokenName} PER WALLET</span>
+              </div>
             </div>
+          ) : (
+            campaign.requirements && (campaign.requirements as any).minSolBalance && (
+              <div className="flex items-center gap-2 text-[10px] font-medium text-muted-foreground bg-primary/5 border border-primary/10 px-2 py-1.5 rounded-lg w-fit">
+                <ShieldCheck className="w-3.5 h-3.5 text-primary" />
+                <span>MIN {(campaign.requirements as any).minSolBalance} SOL BALANCE REQUIRED</span>
+              </div>
+            )
           )}
 
           {/* Budget Progress */}
@@ -185,39 +198,49 @@ export function CampaignCard({ campaign, onActionClick, isOwner }: CampaignCardP
 
           {/* Actions List */}
           <div className="space-y-2 mt-4">
-            {campaign.actions.map((action) => (
-              <div 
-                key={action.id}
-                className="flex items-center justify-between p-3 rounded-xl bg-black/20 border border-white/5 hover:border-primary/20 transition-all group/action"
+            {campaign.campaignType === 'holder_qualification' ? (
+              <Button 
+                className="w-full bg-primary text-primary-foreground font-bold h-11"
+                onClick={() => onActionClick?.({ id: campaign.id, campaignId: campaign.id, type: 'website', title: 'Verify Holding', rewardAmount: campaign.rewardPerWallet || "0", url: "", maxExecutions: campaign.maxClaims || 0 })}
               >
-                <div className="flex items-center gap-3">
-                  <div className="p-2 rounded-lg bg-background/50 border border-white/5 group-hover/action:border-primary/30 transition-all">
-                    {getIcon(action.type)}
+                Check Eligibility
+                <ArrowRight className="ml-2 w-4 h-4" />
+              </Button>
+            ) : (
+              campaign.actions.map((action) => (
+                <div 
+                  key={action.id}
+                  className="flex items-center justify-between p-3 rounded-xl bg-black/20 border border-white/5 hover:border-primary/20 transition-all group/action"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 rounded-lg bg-background/50 border border-white/5 group-hover/action:border-primary/30 transition-all">
+                      {getIcon(action.type)}
+                    </div>
+                    <div>
+                      <p className="text-xs font-bold leading-none mb-1">{action.title}</p>
+                      <p className="text-[10px] text-muted-foreground uppercase font-medium">{action.type}</p>
+                    </div>
                   </div>
-                  <div>
-                    <p className="text-xs font-bold leading-none mb-1">{action.title}</p>
-                    <p className="text-[10px] text-muted-foreground uppercase font-medium">{action.type}</p>
-                  </div>
+                  
+                  {!isOwner && (
+                    <Button 
+                      size="sm" 
+                      onClick={() => onActionClick?.(action)}
+                      className="h-9 px-4 text-xs font-bold bg-primary/10 text-primary hover:bg-primary hover:text-primary-foreground border border-primary/20 shadow-sm transition-all"
+                    >
+                      {action.rewardAmount} {campaign.tokenName}
+                      <ArrowRight className="ml-2 w-3 h-3" />
+                    </Button>
+                  )}
+                  {isOwner && (
+                    <div className="text-right">
+                      <p className="text-xs font-bold text-primary">{action.rewardAmount}</p>
+                      <p className="text-[9px] text-muted-foreground font-bold">PER TASK</p>
+                    </div>
+                  )}
                 </div>
-                
-                {!isOwner && (
-                  <Button 
-                    size="sm" 
-                    onClick={() => onActionClick?.(action)}
-                    className="h-9 px-4 text-xs font-bold bg-primary/10 text-primary hover:bg-primary hover:text-primary-foreground border border-primary/20 shadow-sm transition-all"
-                  >
-                    {action.rewardAmount} {campaign.tokenName}
-                    <ArrowRight className="ml-2 w-3 h-3" />
-                  </Button>
-                )}
-                {isOwner && (
-                  <div className="text-right">
-                    <p className="text-xs font-bold text-primary">{action.rewardAmount}</p>
-                    <p className="text-[9px] text-muted-foreground font-bold">PER TASK</p>
-                  </div>
-                )}
-              </div>
-            ))}
+              ))
+            )}
           </div>
         </CardContent>
 

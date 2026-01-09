@@ -156,7 +156,46 @@ export async function registerRoutes(
       if (!user) return res.status(404).json({ message: "User not found" });
 
       const action = await storage.getAction(input.actionId);
-      if (!action) return res.status(404).json({ message: "Action not found" });
+      if (!action) {
+        // Handle direct campaign eligibility check for HOLDER_QUALIFICATION
+        const campaign = await storage.getCampaign(input.actionId); // Reusing ID for simplicity in MVP
+        if (campaign && campaign.campaignType === 'holder_qualification') {
+          let state = await storage.getHolderState(user.id, campaign.id);
+          
+          if (!state) {
+            // Check balance (mocked for Phase 1)
+            const balance = 1000; // Simulated wallet check
+            if (balance < parseFloat(campaign.minHoldingAmount || "0")) {
+              return res.json({ success: false, message: "Insufficient balance" });
+            }
+            state = await storage.createHolderState({
+              userId: user.id,
+              campaignId: campaign.id,
+              holdStartTimestamp: new Date(),
+              claimed: false
+            });
+            return res.json({ success: true, status: "holding", message: "Holding period started!" });
+          }
+
+          if (state.claimed) return res.json({ success: false, message: "Already claimed" });
+
+          const now = new Date();
+          const durationDays = (now.getTime() - state.holdStartTimestamp.getTime()) / (1000 * 60 * 60 * 24);
+          
+          if (durationDays < (campaign.minHoldingDuration || 0)) {
+            return res.json({ 
+              success: true, 
+              status: "waiting", 
+              remaining: (campaign.minHoldingDuration || 0) - durationDays,
+              message: "Still in holding period" 
+            });
+          }
+
+          // Ready to claim
+          return res.json({ success: true, status: "ready", message: "Eligibility verified! You can claim now." });
+        }
+        return res.status(404).json({ message: "Action or Campaign not found" });
+      }
 
       // Proof-of-Action Verification Logic (Cost-Effective)
       const proofObj = JSON.parse(input.proof || "{}");

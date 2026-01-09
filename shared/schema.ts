@@ -61,6 +61,14 @@ export const campaigns = pgTable("campaigns", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
+export const holderState = pgTable("holder_state", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").references(() => users.id).notNull(),
+  campaignId: integer("campaign_id").references(() => campaigns.id).notNull(),
+  holdStartTimestamp: timestamp("hold_start_timestamp").defaultNow().notNull(),
+  claimed: boolean("claimed").default(false).notNull(),
+});
+
 export const actions = pgTable("actions", {
   id: serial("id").primaryKey(),
   campaignId: integer("campaign_id").references(() => campaigns.id).notNull(),
@@ -96,6 +104,18 @@ export const campaignsRelations = relations(campaigns, ({ one, many }) => ({
   }),
   actions: many(actions),
   executions: many(executions),
+  holderStates: many(holderState),
+}));
+
+export const holderStateRelations = relations(holderState, ({ one }) => ({
+  user: one(users, {
+    fields: [holderState.userId],
+    references: [users.id],
+  }),
+  campaign: one(campaigns, {
+    fields: [holderState.campaignId],
+    references: [campaigns.id],
+  }),
 }));
 
 export const actionsRelations = relations(actions, ({ one, many }) => ({
@@ -155,6 +175,10 @@ export type InsertAction = z.infer<typeof insertActionSchema>;
 
 export type Execution = typeof executions.$inferSelect;
 export type InsertExecution = z.infer<typeof insertExecutionSchema>;
+
+export const insertHolderStateSchema = createInsertSchema(holderState).omit({ id: true });
+export type HolderState = typeof holderState.$inferSelect;
+export type InsertHolderState = z.infer<typeof insertHolderStateSchema>;
 
 // Request Types
 export type CreateCampaignRequest = InsertCampaign & {

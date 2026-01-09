@@ -163,8 +163,12 @@ export function CreateCampaignDialog() {
     const formattedValues = {
       ...values,
       creatorId: userId,
-      totalBudget: values.totalBudget.toString(),
-      actions: values.actions.map(a => ({
+      totalBudget: values.campaignType === 'holder_qualification' 
+        ? (Number(values.rewardPerWallet || 0) * Number(values.maxClaims || 0)).toString()
+        : values.totalBudget.toString(),
+      minHoldingAmount: values.minHoldingAmount?.toString() || null,
+      rewardPerWallet: values.rewardPerWallet?.toString() || null,
+      actions: values.campaignType === 'holder_qualification' ? [] : values.actions.map(a => ({
         ...a,
         rewardAmount: a.rewardAmount.toString(),
         maxExecutions: a.maxExecutions ? Number(a.maxExecutions) : null
@@ -213,6 +217,27 @@ export function CreateCampaignDialog() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <FormField
                 control={form.control}
+                name="campaignType"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Campaign Type</FormLabel>
+                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select type" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="holder_qualification">Holder Qualification (Hold & Win)</SelectItem>
+                        <SelectItem value="engagement" disabled>Social Engagement (Coming Soon)</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
                 name="title"
                 render={({ field }) => (
                   <FormItem>
@@ -224,20 +249,85 @@ export function CreateCampaignDialog() {
                   </FormItem>
                 )}
               />
-              <FormField
-                control={form.control}
-                name="totalBudget"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Total Budget</FormLabel>
-                    <FormControl>
-                      <Input type="number" placeholder="1000" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
             </div>
+
+            {form.watch("campaignType") === "holder_qualification" ? (
+              <div className="space-y-4 p-4 rounded-xl bg-primary/5 border border-primary/20">
+                <h3 className="font-semibold text-primary">Holding Requirements</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <FormField
+                    control={form.control}
+                    name="minHoldingAmount"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Min Holding Amount</FormLabel>
+                        <FormControl>
+                          <Input type="number" placeholder="1000" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="minHoldingDuration"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Min Duration (Days)</FormLabel>
+                        <FormControl>
+                          <Input type="number" placeholder="7" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <FormField
+                    control={form.control}
+                    name="rewardPerWallet"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Reward Per Wallet</FormLabel>
+                        <FormControl>
+                          <Input type="number" placeholder="10" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="maxClaims"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Max Participants</FormLabel>
+                        <FormControl>
+                          <Input type="number" placeholder="100" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="totalBudget"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Total Budget</FormLabel>
+                      <FormControl>
+                        <Input type="number" placeholder="1000" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+            )}
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <FormField
