@@ -109,10 +109,14 @@ export function CreateCampaignDialog() {
 
   // Sync totalBudget with calculated cost if user wants automatic calculation
   useEffect(() => {
-    if (totalCalculatedCost > 0) {
+    if (form.watch("campaignType") === "holder_qualification") {
+      const reward = Number(form.watch("rewardPerWallet")) || 0;
+      const claims = Number(form.watch("maxClaims")) || 0;
+      form.setValue("totalBudget", Number((reward * claims).toFixed(6)));
+    } else if (totalCalculatedCost > 0) {
       form.setValue("totalBudget", Number(totalCalculatedCost.toFixed(6)));
     }
-  }, [totalCalculatedCost, form]);
+  }, [totalCalculatedCost, form.watch("rewardPerWallet"), form.watch("maxClaims"), form.watch("campaignType"), form]);
 
   const fetchTokenMetadata = async (address: string) => {
     if (!address || address.length < 32) return;

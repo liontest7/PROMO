@@ -51,7 +51,9 @@ export default function Earn() {
     
     if (activeFilters.length === 0) return matchesSearch;
     
-    const matchesFilter = c.actions.some(a => activeFilters.includes(a.type));
+    const matchesFilter = activeFilters.length === 0 || 
+      (c.campaignType === 'holder_qualification' && activeFilters.includes('holder')) ||
+      c.actions.some(a => activeFilters.includes(a.type));
     return matchesSearch && matchesFilter;
   });
 
@@ -117,15 +119,20 @@ export default function Earn() {
                       )}
                     </div>
                     <div className="space-y-3">
-                      {['twitter', 'telegram', 'website'].map((type) => (
-                        <div key={type} className="flex items-center space-x-2">
+                      {[
+                        { id: 'holder', label: 'Holder Qualification' },
+                        { id: 'twitter', label: 'Twitter Follow' },
+                        { id: 'telegram', label: 'Join Telegram' },
+                        { id: 'website', label: 'Visit Website' }
+                      ].map((filter) => (
+                        <div key={filter.id} className="flex items-center space-x-2">
                           <Checkbox 
-                            id={type} 
-                            checked={activeFilters.includes(type)}
-                            onCheckedChange={() => toggleFilter(type)}
+                            id={filter.id} 
+                            checked={activeFilters.includes(filter.id)}
+                            onCheckedChange={() => toggleFilter(filter.id)}
                           />
-                          <Label htmlFor={type} className="text-sm font-medium capitalize cursor-pointer">
-                            {type}
+                          <Label htmlFor={filter.id} className="text-sm font-medium capitalize cursor-pointer">
+                            {filter.label}
                           </Label>
                         </div>
                       ))}
