@@ -121,8 +121,32 @@ export function Navigation() {
               </DropdownMenu>
             </div>
 
+            {/* Social Links */}
+            <div className="hidden lg:flex items-center gap-2 mr-2">
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                className="w-8 h-8 rounded-full border border-white/5 hover:bg-white/5 text-muted-foreground hover:text-blue-400 transition-colors"
+                asChild
+              >
+                <a href="https://x.com/memedrop" target="_blank" rel="noreferrer">
+                  <Twitter className="w-4 h-4" />
+                </a>
+              </Button>
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                className="w-8 h-8 rounded-full border border-white/5 hover:bg-white/5 text-muted-foreground hover:text-blue-500 transition-colors"
+                asChild
+              >
+                <a href="https://t.me/memedrop" target="_blank" rel="noreferrer">
+                  <Send className="w-4 h-4" />
+                </a>
+              </Button>
+            </div>
+
             {/* Replit Auth Section */}
-            {!isAuthenticated ? (
+            {isConnected && !isAuthenticated && (
               <Button 
                 variant="outline" 
                 size="sm"
@@ -132,7 +156,8 @@ export function Navigation() {
                 <Twitter className="w-4 h-4 text-blue-400" />
                 Connect X
               </Button>
-            ) : (
+            )}
+            {isConnected && isAuthenticated && (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" className="relative h-10 w-10 rounded-full border border-white/10 p-0 hover:bg-white/5">

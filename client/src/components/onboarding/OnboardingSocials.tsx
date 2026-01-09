@@ -60,30 +60,42 @@ export function OnboardingSocials() {
         </DialogHeader>
         
         <div className="space-y-4 py-4">
-          <div className="space-y-2">
-            <Label htmlFor="onboard-twitter" className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider">
-              <Twitter className="w-3.5 h-3.5 text-blue-400" /> Twitter Handle
+          <div className="space-y-3">
+            <Label className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-muted-foreground">
+              Social Account Verification
             </Label>
-            <Input
-              id="onboard-twitter"
-              placeholder="@username"
-              className="bg-black/40 border-white/10"
-              value={twitter}
-              onChange={(e) => setTwitter(e.target.value)}
-            />
+            
+            <div className="grid grid-cols-1 gap-3">
+              <Button 
+                variant="outline" 
+                className="w-full justify-start gap-3 bg-black/40 border-white/10 hover:bg-white/5 h-12"
+                onClick={() => window.location.href = "/api/login"}
+              >
+                <div className="w-8 h-8 rounded bg-blue-400/10 flex items-center justify-center">
+                  <Twitter className="w-4 h-4 text-blue-400" />
+                </div>
+                <div className="flex flex-col items-start text-left">
+                  <span className="text-sm font-bold">Connect Twitter (X)</span>
+                  <span className="text-[10px] text-muted-foreground">Required for X tasks</span>
+                </div>
+              </Button>
+
+              <Button 
+                variant="outline" 
+                className="w-full justify-start gap-3 bg-black/40 border-white/10 hover:bg-white/5 h-12"
+                disabled
+              >
+                <div className="w-8 h-8 rounded bg-blue-500/10 flex items-center justify-center">
+                  <Send className="w-4 h-4 text-blue-500" />
+                </div>
+                <div className="flex flex-col items-start text-left">
+                  <span className="text-sm font-bold">Connect Telegram</span>
+                  <span className="text-[10px] text-muted-foreground">Coming Soon</span>
+                </div>
+              </Button>
+            </div>
           </div>
-          <div className="space-y-2">
-            <Label htmlFor="onboard-telegram" className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider">
-              <Send className="w-3.5 h-3.5 text-blue-500" /> Telegram Username
-            </Label>
-            <Input
-              id="onboard-telegram"
-              placeholder="@username"
-              className="bg-black/40 border-white/10"
-              value={telegram}
-              onChange={(e) => setTelegram(e.target.value)}
-            />
-          </div>
+
           <div className="p-3 bg-primary/5 border border-primary/10 rounded-lg">
             <p className="text-[11px] leading-relaxed text-muted-foreground italic">
               Linking these accounts allows our system to automatically verify your actions, ensuring you get paid instantly without manual reviews.
@@ -91,24 +103,16 @@ export function OnboardingSocials() {
           </div>
         </div>
 
-        <DialogFooter className="flex-col sm:flex-row gap-2">
+        <DialogFooter>
           <Button 
             variant="ghost" 
             onClick={() => {
               localStorage.setItem(`onboarded_${walletAddress}`, "true");
               setOpen(false);
             }}
-            className="text-muted-foreground hover:text-foreground"
+            className="w-full text-muted-foreground hover:text-foreground"
           >
-            Skip for now
-          </Button>
-          <Button 
-            onClick={() => updateProfile.mutate({ twitterHandle: twitter, telegramHandle: telegram })}
-            disabled={updateProfile.isPending}
-            className="flex-1 bg-primary text-primary-foreground font-bold"
-          >
-            {updateProfile.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-            Connect & Continue
+            I'll connect later
           </Button>
         </DialogFooter>
       </DialogContent>
