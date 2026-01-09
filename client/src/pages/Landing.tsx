@@ -11,6 +11,8 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useToast } from "@/hooks/use-toast";
 import { useQuery } from "@tanstack/react-query";
 
+import { APP_CONFIG } from "@/config";
+
 function EarnContentOnly() {
   const { data: campaigns, isLoading } = useCampaigns();
   const { isConnected } = useWallet();
@@ -178,9 +180,9 @@ export default function Landing() {
           <div className="bg-gradient-to-br from-primary/10 to-secondary/10 rounded-3xl p-8 md:p-12 border border-white/10">
             <div className="grid md:grid-cols-2 gap-12 items-center">
               <div>
-                <h2 className="text-3xl font-display font-bold mb-6">Built for the $MEME Ecosystem</h2>
+                <h2 className="text-3xl font-display font-bold mb-6">Built for the ${APP_CONFIG.token.symbol} Ecosystem</h2>
                 <p className="text-lg text-muted-foreground mb-8">
-                  Our native token $MEME powers the entire platform. Hold $MEME to get higher rewards, or stake it as an advertiser to get premium placement.
+                  Our native token ${APP_CONFIG.token.symbol} powers the entire platform. Hold ${APP_CONFIG.token.symbol} to get higher rewards, or stake it as an advertiser to get premium placement.
                 </p>
                 <div className="flex gap-4">
                   <div className="text-center p-4 bg-black/20 rounded-2xl border border-white/5 flex-1">
@@ -195,9 +197,33 @@ export default function Landing() {
               </div>
               <div className="flex justify-center">
                 <div className="w-48 h-48 rounded-full bg-primary/20 flex items-center justify-center border-4 border-primary/30 shadow-[0_0_50px_rgba(34,197,94,0.2)]">
-                  <Coins className="w-24 h-24 text-primary" />
+                  <img src={APP_CONFIG.assets.logo} alt="Token" className="w-24 h-24 object-contain" />
                 </div>
               </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Character Hello Section */}
+      <section className="py-24 border-t border-white/5 overflow-hidden">
+        <div className="container mx-auto px-4">
+          <div className="max-w-4xl mx-auto flex flex-col md:flex-row items-center gap-12 bg-primary/5 border border-primary/10 rounded-3xl p-8 md:p-12 relative">
+            <div className="flex-1 text-center md:text-left">
+              <h2 className="text-3xl font-display font-bold mb-4 italic">Ready to start earning?</h2>
+              <p className="text-muted-foreground mb-8">Join thousands of users who are already earning rewards for supporting the best projects on Solana.</p>
+              <div className="flex flex-wrap justify-center md:justify-start gap-4">
+                <Button size="lg" className="bg-primary text-primary-foreground font-bold hover:bg-primary/90 px-8" asChild>
+                  <a href="/earn">Start Earning Now</a>
+                </Button>
+              </div>
+            </div>
+            <div className="w-48 h-48 md:w-64 md:h-64 relative group">
+              <img 
+                src={APP_CONFIG.assets.characterHello} 
+                alt="Meme Character" 
+                className="w-full h-full object-contain drop-shadow-[0_0_15px_rgba(34,197,94,0.3)] group-hover:scale-110 transition-transform duration-500"
+              />
             </div>
           </div>
         </div>
