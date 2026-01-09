@@ -431,7 +431,7 @@ export function CreateCampaignDialog() {
                   type="button" 
                   variant="outline" 
                   size="sm"
-                  onClick={() => append({ type: "website", title: "", url: "", rewardAmount: 0 })}
+                  onClick={() => append({ type: "website", title: "", url: "", rewardAmount: 0, maxExecutions: 100 })}
                   className="border-dashed border-primary/30 hover:border-primary text-primary"
                 >
                   <Plus className="mr-2 h-4 w-4" /> Add Action

@@ -8,7 +8,6 @@ import { OnboardingSocials } from "@/components/onboarding/OnboardingSocials";
 
 import Landing from "@/pages/Landing";
 import Earn from "@/pages/Earn";
-import Profile from "@/pages/Profile";
 import Dashboard from "@/pages/Dashboard";
 import AdvertiserDashboard from "@/pages/AdvertiserDashboard";
 import About from "@/pages/About";
