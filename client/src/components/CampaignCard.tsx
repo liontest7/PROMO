@@ -196,12 +196,20 @@ export function CampaignCard({ campaign, onActionClick, isOwner }: CampaignCardP
             <Progress value={percentComplete} className="h-1.5 bg-white/5 rounded-full" />
           </div>
 
-          {/* Actions List */}
           <div className="space-y-2 mt-4">
             {campaign.campaignType === 'holder_qualification' ? (
               <Button 
                 className="w-full bg-primary text-primary-foreground font-bold h-11"
-                onClick={() => onActionClick?.({ id: campaign.id, campaignId: campaign.id, type: 'website', title: 'Verify Holding', rewardAmount: campaign.rewardPerWallet || "0", url: "", maxExecutions: campaign.maxClaims || 0 })}
+                onClick={() => onActionClick?.({ 
+                  id: campaign.id, 
+                  campaignId: campaign.id, 
+                  type: 'website', 
+                  title: 'Verify Holding', 
+                  rewardAmount: campaign.rewardPerWallet || "0", 
+                  url: "", 
+                  maxExecutions: campaign.maxClaims || 0,
+                  currentExecutions: 0
+                })}
               >
                 Check Eligibility
                 <ArrowRight className="ml-2 w-4 h-4" />

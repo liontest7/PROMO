@@ -101,7 +101,7 @@ export function CreateCampaignDialog() {
   const watchedActions = form.watch("actions");
   const watchedTotalBudget = form.watch("totalBudget");
   
-  const totalCalculatedCost = watchedActions.reduce((acc, action) => {
+  const totalCalculatedCost = (watchedActions || []).reduce((acc, action) => {
     const reward = Number(action.rewardAmount) || 0;
     const executions = Number(action.maxExecutions) || 0;
     return acc + (reward * executions);
@@ -165,10 +165,10 @@ export function CreateCampaignDialog() {
       creatorId: userId,
       totalBudget: values.campaignType === 'holder_qualification' 
         ? (Number(values.rewardPerWallet || 0) * Number(values.maxClaims || 0)).toString()
-        : values.totalBudget.toString(),
+        : (values.totalBudget || 0).toString(),
       minHoldingAmount: values.minHoldingAmount?.toString() || null,
       rewardPerWallet: values.rewardPerWallet?.toString() || null,
-      actions: values.campaignType === 'holder_qualification' ? [] : values.actions.map(a => ({
+      actions: (values.campaignType === 'holder_qualification' || !values.actions) ? [] : values.actions.map(a => ({
         ...a,
         rewardAmount: a.rewardAmount.toString(),
         maxExecutions: a.maxExecutions ? Number(a.maxExecutions) : null
@@ -380,7 +380,7 @@ export function CreateCampaignDialog() {
                 <div>
                   <p className="text-muted-foreground">Total Tasks</p>
                   <p className="text-lg font-bold">
-                    {watchedActions.reduce((acc, a) => acc + (Number(a.maxExecutions) || 0), 0)}
+                    {(watchedActions || []).reduce((acc, a) => acc + (Number(a.maxExecutions) || 0), 0)}
                   </p>
                 </div>
               </div>
