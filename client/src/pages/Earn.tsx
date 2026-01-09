@@ -9,6 +9,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Search, Filter, X, Plus, Coins } from "lucide-react";
 import { type Action, type Campaign } from "@shared/schema";
 import { type Action as ActionType, type Campaign as CampaignType } from "@shared/schema";
+import { motion } from "framer-motion";
 import {
   Popover,
   PopoverContent,

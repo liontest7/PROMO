@@ -6,6 +6,7 @@ import { CampaignCard } from "@/components/CampaignCard";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { AlertCircle } from "lucide-react";
+import { motion } from "framer-motion";
 
 export default function AdvertiserDashboard() {
   const { walletAddress, userId } = useWallet();
