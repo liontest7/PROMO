@@ -90,31 +90,34 @@ export function Navigation() {
                     <ChevronDown className="w-4 h-4 transition-transform group-data-[state=open]:rotate-180" />
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-48 glass-card border-white/10 bg-background/95 backdrop-blur-xl">
+                <DropdownMenuContent align="end" className="w-56 glass-card border-white/10 bg-background/95 backdrop-blur-xl">
+                  <div className="p-2 text-[10px] font-black uppercase text-muted-foreground tracking-widest border-b border-white/5 mb-1">
+                    Buy $MEME on DEX
+                  </div>
                   <DropdownMenuItem asChild className="cursor-pointer focus:bg-primary/10 focus:text-primary">
                     <a href={APP_CONFIG.token.buyLinks.pumpFun} target="_blank" rel="noreferrer" className="flex items-center gap-3 w-full py-2">
-                      <div className="w-6 h-6 rounded bg-primary/10 flex items-center justify-center">
-                        <Coins className="w-3.5 h-3.5" />
+                      <div className="w-8 h-8 rounded bg-primary/10 flex items-center justify-center overflow-hidden">
+                        <img src="https://pump.fun/_next/static/media/logo.8354c000.svg" className="w-full h-full object-cover" alt="Pump.fun" />
                       </div>
-                      <span className="text-sm font-medium">Pump.fun</span>
+                      <span className="text-sm font-bold">Pump.fun</span>
                       <ExternalLink className="w-3 h-3 ml-auto opacity-50" />
                     </a>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild className="cursor-pointer focus:bg-primary/10 focus:text-primary">
                     <a href={APP_CONFIG.token.buyLinks.dexScanner} target="_blank" rel="noreferrer" className="flex items-center gap-3 w-full py-2">
-                      <div className="w-6 h-6 rounded bg-primary/10 flex items-center justify-center">
-                        <Coins className="w-3.5 h-3.5 text-blue-400" />
+                      <div className="w-8 h-8 rounded bg-primary/10 flex items-center justify-center overflow-hidden p-1">
+                        <img src="https://dexscreener.com/favicon.png" className="w-full h-full object-contain" alt="DexScreener" />
                       </div>
-                      <span className="text-sm font-medium">DEXScreener</span>
+                      <span className="text-sm font-bold">DEXScreener</span>
                       <ExternalLink className="w-3 h-3 ml-auto opacity-50" />
                     </a>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild className="cursor-pointer focus:bg-primary/10 focus:text-primary">
                     <a href={APP_CONFIG.token.buyLinks.jupiter} target="_blank" rel="noreferrer" className="flex items-center gap-3 w-full py-2">
-                      <div className="w-6 h-6 rounded bg-primary/10 flex items-center justify-center">
-                        <SiJupyter className="w-3.5 h-3.5 text-emerald-400" />
+                      <div className="w-8 h-8 rounded bg-primary/10 flex items-center justify-center overflow-hidden p-1">
+                        <img src="https://jup.ag/svg/jupiter-logo.svg" className="w-full h-full object-contain" alt="Jupiter" />
                       </div>
-                      <span className="text-sm font-medium">Jupiter</span>
+                      <span className="text-sm font-bold">Jupiter</span>
                       <ExternalLink className="w-3 h-3 ml-auto opacity-50" />
                     </a>
                   </DropdownMenuItem>
