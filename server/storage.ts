@@ -124,6 +124,28 @@ export class DatabaseStorage implements IStorage {
       .set({ status, transactionSignature: txSignature })
       .where(eq(executions.id, id))
       .returning();
+
+    // If verified, update user balance and campaign remaining budget
+    if (status === "verified" || status === "paid") {
+      const action = await this.getAction(execution.actionId);
+      if (action) {
+        const [user] = await db.select().from(users).where(eq(users.id, execution.userId));
+        if (user) {
+          const newBalance = (parseFloat(user.balance) + parseFloat(action.rewardAmount)).toString();
+          await db.update(users)
+            .set({ balance: newBalance, reputationScore: (user.reputationScore || 0) + 1 })
+            .where(eq(users.id, user.id));
+        }
+
+        const [campaign] = await db.select().from(campaigns).where(eq(campaigns.id, execution.campaignId));
+        if (campaign) {
+          const newRemaining = (parseFloat(campaign.remainingBudget) - parseFloat(action.rewardAmount)).toString();
+          await db.update(campaigns)
+            .set({ remainingBudget: newRemaining })
+            .where(eq(campaigns.id, campaign.id));
+        }
+      }
+    }
     return execution;
   }
 

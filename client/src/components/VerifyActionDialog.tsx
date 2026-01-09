@@ -41,8 +41,11 @@ export function VerifyActionDialog({ action, campaign, open, onOpenChange }: Ver
       const encodedMessage = new TextEncoder().encode(message);
       
       let signedMessage;
-      if (window.solana && window.solana.signMessage) {
-        signedMessage = await window.solana.signMessage(encodedMessage, "utf8");
+      // Use solanaInstance from previous step or find it again
+      const solanaInstance = (window as any).phantom?.solana || (window as any).solana;
+      
+      if (solanaInstance && solanaInstance.signMessage) {
+        signedMessage = await solanaInstance.signMessage(encodedMessage, "utf8");
       } else {
         throw new Error("Wallet does not support message signing");
       }
@@ -53,7 +56,8 @@ export function VerifyActionDialog({ action, campaign, open, onOpenChange }: Ver
           userWallet: walletAddress, 
           proof: JSON.stringify({
             signature: signedMessage.signature,
-            publicKey: signedMessage.publicKey.toString()
+            publicKey: signedMessage.publicKey.toString(),
+            proofText: proof // Include the optional proof text
           }) 
         },
         {
@@ -67,14 +71,17 @@ export function VerifyActionDialog({ action, campaign, open, onOpenChange }: Ver
           }
         }
       );
-    } catch (err) {
+    } catch (err: any) {
+      console.error("Verification error:", err);
       toast({
-        title: "Verification Canceled",
-        description: "You must sign the message to verify your action.",
+        title: "Verification Failed",
+        description: err.message || "You must sign the message to verify your action.",
         variant: "destructive"
       });
     }
   };
+
+  const isWebsiteAction = action.type === "website";
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -84,7 +91,9 @@ export function VerifyActionDialog({ action, campaign, open, onOpenChange }: Ver
             Complete Task <span className="text-primary text-sm font-mono bg-primary/10 px-2 py-0.5 rounded">+{action.rewardAmount} {campaign.tokenName}</span>
           </DialogTitle>
           <DialogDescription>
-            Follow the steps below to complete this action and earn rewards.
+            {isWebsiteAction 
+              ? "Visit the project website to earn rewards." 
+              : "Follow the steps below to complete this action and earn rewards."}
           </DialogDescription>
         </DialogHeader>
 
@@ -113,20 +122,31 @@ export function VerifyActionDialog({ action, campaign, open, onOpenChange }: Ver
 
           {step === "verify" && (
             <div className="space-y-4 animate-in slide-in-from-right">
-              <div className="space-y-2">
-                <Label>Verification Proof (Optional)</Label>
-                <Input 
-                  placeholder="e.g. Tweet URL or Telegram username" 
-                  value={proof}
-                  onChange={(e) => setProof(e.target.value)}
-                />
-                <p className="text-xs text-muted-foreground">Some actions require manual review or proof submission.</p>
+              {!isWebsiteAction && (
+                <div className="space-y-2">
+                  <Label>Verification Proof (Optional)</Label>
+                  <Input 
+                    placeholder={action.type === "twitter" ? "e.g. Tweet URL" : "e.g. Telegram username"} 
+                    value={proof}
+                    onChange={(e) => setProof(e.target.value)}
+                  />
+                  <p className="text-xs text-muted-foreground">Some actions require manual review or proof submission.</p>
+                </div>
+              )}
+              
+              <div className="p-4 bg-primary/5 rounded-lg border border-primary/10">
+                <p className="text-xs font-medium text-primary mb-1">Final Step: Wallet Verification</p>
+                <p className="text-[11px] text-muted-foreground leading-relaxed">
+                  Sign a secure message with your wallet to confirm you've completed the task. 
+                  {isWebsiteAction && " This proves your active participation."}
+                </p>
               </div>
+
               <Button onClick={handleVerify} disabled={isPending} className="w-full">
                 {isPending ? (
                   <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Verifying...</>
                 ) : (
-                  "Submit for Verification"
+                  "Verify & Claim Rewards"
                 )}
               </Button>
             </div>
