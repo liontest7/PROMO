@@ -237,7 +237,7 @@ export default function CampaignDetails() {
           </div>
 
           <div className="space-y-8">
-            <Card className="glass-card border-primary/20 shadow-2xl overflow-hidden sticky top-8">
+            <Card className="glass-card border-primary/20 shadow-2xl overflow-hidden">
               <CardHeader className="bg-primary/10 border-b border-primary/10">
                 <CardTitle className="text-sm uppercase tracking-widest text-primary flex items-center justify-between">
                   Campaign Info

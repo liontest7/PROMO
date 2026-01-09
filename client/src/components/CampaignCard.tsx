@@ -149,6 +149,11 @@ export function CampaignCard({ campaign, onActionClick, isOwner }: CampaignCardP
             </div>
           )}
 
+          <div className="bg-secondary/20 p-3 rounded-2xl border border-secondary/10 flex items-center justify-between">
+            <span className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">REWARD PER USER</span>
+            <span className="text-sm font-black text-secondary-foreground">{campaign.rewardPerWallet || '0'} {campaign.tokenName}</span>
+          </div>
+
           <div className="space-y-2">
             <div className="flex justify-between text-[10px] font-black uppercase tracking-widest mb-1">
               <span className="text-muted-foreground">PROGRESS ({percentComplete.toFixed(0)}%)</span>
