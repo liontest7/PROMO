@@ -26,7 +26,8 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
-import { Plus, Trash2, Rocket, Eye, CheckCircle2, Globe, Twitter, Send, Loader2 } from "lucide-react";
+import { Plus, Trash2, Rocket, Eye, CheckCircle2, Globe, Twitter, Send, Loader2, Coins } from "lucide-react";
+import { PLATFORM_CONFIG } from "@shared/config";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 // Form Schema
@@ -324,6 +325,15 @@ export function CreateCampaignDialog() {
 
                 {watchedType && (
                   <div className="space-y-6 animate-in fade-in slide-in-from-top-4 duration-300">
+                    <div className="p-4 rounded-xl bg-secondary/10 border border-secondary/20">
+                      <h3 className="font-bold text-secondary flex items-center gap-2 mb-2 uppercase tracking-widest text-xs">
+                        <Coins className="w-4 h-4" /> Platform Fee
+                      </h3>
+                      <p className="text-sm text-muted-foreground leading-relaxed">
+                        Creating a campaign requires a one-time burn of <strong>{PLATFORM_CONFIG.BURN_AMOUNT.toLocaleString()} ${PLATFORM_CONFIG.TOKEN_SYMBOL}</strong>. This fee ensures project quality and rewards the ecosystem.
+                      </p>
+                    </div>
+
                     {/* Basic Info */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <FormField

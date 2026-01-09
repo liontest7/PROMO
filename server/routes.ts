@@ -355,6 +355,15 @@ export async function registerRoutes(
     }
   });
 
+  app.get('/api/executions/campaign/:campaignId', async (req, res) => {
+    try {
+      const executions = await storage.getExecutionsByCampaign(parseInt(req.params.campaignId));
+      res.json(executions);
+    } catch (err) {
+      res.status(500).json({ message: "Failed to fetch participants" });
+    }
+  });
+
   app.get('/api/stats/global', async (req, res) => {
     try {
       const allCampaigns = await storage.getCampaigns();

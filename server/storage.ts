@@ -38,6 +38,7 @@ export interface IStorage {
   getHolderState(userId: number, campaignId: number): Promise<HolderState | undefined>;
   createHolderState(state: InsertHolderState): Promise<HolderState>;
   updateHolderClaimed(id: number): Promise<void>;
+  getExecutionsByCampaign(campaignId: number): Promise<(Execution & { user: { walletAddress: string } })[]>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -230,6 +231,27 @@ export class DatabaseStorage implements IStorage {
 
   async updateHolderClaimed(id: number): Promise<void> {
     await db.update(holderState).set({ claimed: true }).where(eq(holderState.id, id));
+  }
+
+  async getExecutionsByCampaign(campaignId: number): Promise<(Execution & { user: { walletAddress: string } })[]> {
+    const campaignExecutions = await db.select({
+      id: executions.id,
+      campaignId: executions.campaignId,
+      userId: executions.userId,
+      actionId: executions.actionId,
+      status: executions.status,
+      createdAt: executions.createdAt,
+      transactionSignature: executions.transactionSignature,
+      user: {
+        walletAddress: users.walletAddress
+      }
+    })
+    .from(executions)
+    .innerJoin(users, eq(executions.userId, users.id))
+    .where(eq(executions.campaignId, campaignId))
+    .orderBy(desc(executions.createdAt));
+    
+    return campaignExecutions as any;
   }
 }
 
