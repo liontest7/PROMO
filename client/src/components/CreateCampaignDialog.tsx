@@ -98,12 +98,42 @@ export function CreateCampaignDialog() {
   });
 
   function onSubmit(values: FormValues) {
-    // In real app, we would map walletAddress to user ID properly
-    // For now we assume user ID 1 or passed from session
-    createCampaign(values as any, {
+    if (!userId) {
+      toast({
+        title: "User Error",
+        description: "Your account could not be identified. Please reconnect your wallet.",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    // Ensure numeric values are properly handled
+    const formattedValues = {
+      ...values,
+      creatorId: userId,
+      totalBudget: values.totalBudget.toString(),
+      actions: values.actions.map(a => ({
+        ...a,
+        rewardAmount: a.rewardAmount.toString(),
+        maxExecutions: a.maxExecutions ? Number(a.maxExecutions) : null
+      }))
+    };
+
+    createCampaign(formattedValues as any, {
       onSuccess: () => {
         setOpen(false);
         form.reset();
+        toast({
+          title: "Success!",
+          description: "Your campaign has been launched successfully.",
+        });
+      },
+      onError: (error: any) => {
+        toast({
+          title: "Launch Failed",
+          description: error.message || "Something went wrong while creating the campaign.",
+          variant: "destructive"
+        });
       }
     });
   }

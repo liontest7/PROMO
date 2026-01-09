@@ -164,6 +164,10 @@ export async function registerRoutes(
       }
 
       if (isVerified) {
+        // Get action again to ensure we have latest rewardAmount
+        const freshAction = await storage.getAction(action.id);
+        const reward = freshAction ? freshAction.rewardAmount : action.rewardAmount;
+
         const execution = await storage.createExecution({
           actionId: action.id,
           campaignId: action.campaignId,
@@ -180,7 +184,7 @@ export async function registerRoutes(
         res.json({
           success: true,
           status: "paid",
-          message: "Action verified and rewards paid!",
+          message: `Action verified and ${reward} rewards paid!`,
           executionId: execution.id,
           txSignature
         });

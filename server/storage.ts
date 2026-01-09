@@ -134,21 +134,31 @@ export class DatabaseStorage implements IStorage {
       .where(eq(executions.id, id))
       .returning();
 
-    // If verified, update user balance and campaign remaining budget
+    // If verified or paid, update user balance and campaign remaining budget
     if (status === "verified" || status === "paid") {
       const action = await this.getAction(execution.actionId);
       if (action) {
         const [user] = await db.select().from(users).where(eq(users.id, execution.userId));
         if (user) {
-          const newBalance = (parseFloat(user.balance) + parseFloat(action.rewardAmount)).toString();
+          // Use more precise calculation to avoid floating point issues
+          const currentBalance = parseFloat(user.balance) || 0;
+          const reward = parseFloat(action.rewardAmount) || 0;
+          const newBalance = (currentBalance + reward).toFixed(6);
+          
           await db.update(users)
-            .set({ balance: newBalance, reputationScore: (user.reputationScore || 0) + 1 })
+            .set({ 
+              balance: newBalance, 
+              reputationScore: (user.reputationScore || 0) + 10 // Increase reputation more for completions
+            })
             .where(eq(users.id, user.id));
         }
 
         const [campaign] = await db.select().from(campaigns).where(eq(campaigns.id, execution.campaignId));
         if (campaign) {
-          const newRemaining = (parseFloat(campaign.remainingBudget) - parseFloat(action.rewardAmount)).toString();
+          const currentRemaining = parseFloat(campaign.remainingBudget) || 0;
+          const reward = parseFloat(action.rewardAmount) || 0;
+          const newRemaining = Math.max(0, currentRemaining - reward).toFixed(6);
+          
           await db.update(campaigns)
             .set({ remainingBudget: newRemaining })
             .where(eq(campaigns.id, campaign.id));
