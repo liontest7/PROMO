@@ -4,6 +4,7 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { WalletProvider, useWallet } from "@/hooks/use-wallet";
+import { OnboardingSocials } from "@/components/onboarding/OnboardingSocials";
 
 import Landing from "@/pages/Landing";
 import Earn from "@/pages/Earn";
@@ -55,6 +56,7 @@ function App() {
       <WalletProvider>
         <TooltipProvider>
           <Toaster />
+          <OnboardingSocials />
           <Router />
         </TooltipProvider>
       </WalletProvider>

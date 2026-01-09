@@ -7,7 +7,7 @@ import { Coins, Trophy, TrendingUp, Activity, CheckCircle, Twitter, Send, Loader
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { api } from "@shared/routes";
-import { formatDistanceToNow } from "date-fns";
+import { formatDistanceToNow, format } from "date-fns";
 import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { Label } from "@/components/ui/label";
@@ -152,37 +152,47 @@ export default function Dashboard() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
           {/* Stats Column */}
           <div className="lg:col-span-2 space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <Card className="glass-card border-primary/20 bg-primary/5 rounded-2xl">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              <Card className="glass-card border-primary/20 bg-primary/5 rounded-2xl md:col-span-2">
                 <CardHeader className="flex flex-row items-center justify-between pb-2">
-                  <CardTitle className="text-[11px] font-bold text-primary uppercase tracking-widest">Total Earnings</CardTitle>
+                  <CardTitle className="text-[11px] font-bold text-primary uppercase tracking-widest">Available Rewards</CardTitle>
                   <div className="p-2 rounded-lg bg-primary/20">
                     <Coins className="h-4 w-4 text-primary" />
                   </div>
                 </CardHeader>
                 <CardContent>
-                  <div className="text-3xl font-bold font-display tracking-tight">{stats?.totalEarned || "0.00"} SOL</div>
-                  {stats?.pendingRewards && Number(stats.pendingRewards) > 0 && (
-                    <div className="mt-2 flex items-center justify-between">
-                      <div className="flex flex-col">
-                        <span className="text-[10px] text-muted-foreground uppercase font-bold">Pending Rewards</span>
-                        <span className="text-sm font-bold text-yellow-500">{stats.pendingRewards} SOL</span>
+                  <div className="space-y-4">
+                    {stats?.tokenBalances && stats.tokenBalances.length > 0 ? (
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        {stats.tokenBalances.map((tb: any) => (
+                          <div key={tb.symbol} className="p-3 rounded-xl bg-white/5 border border-white/10">
+                            <div className="flex justify-between items-start mb-1">
+                              <span className="text-[10px] font-bold text-muted-foreground uppercase">{tb.symbol}</span>
+                              {Number(tb.pending) > 0 && (
+                                <span className="text-[9px] font-bold text-yellow-500 bg-yellow-500/10 px-1.5 py-0.5 rounded">PENDING: {tb.pending}</span>
+                              )}
+                            </div>
+                            <div className="text-xl font-bold font-display">{tb.balance}</div>
+                            <div className="text-[10px] text-muted-foreground">Total Earned: {tb.earned}</div>
+                          </div>
+                        ))}
                       </div>
+                    ) : (
+                      <div className="text-2xl font-bold font-display tracking-tight text-muted-foreground opacity-50 italic">No rewards yet</div>
+                    )}
+                    
+                    {stats?.tokenBalances?.some((tb: any) => Number(tb.pending) > 0) && (
                       <Button 
                         size="sm" 
                         variant="default"
-                        className="h-7 px-3 text-[10px] font-bold bg-primary hover:bg-primary/90"
+                        className="w-full mt-2 h-10 font-bold bg-primary hover:bg-primary/90"
                         onClick={() => claimAllMutation.mutate()}
                         disabled={claimAllMutation.isPending}
                       >
-                        {claimAllMutation.isPending ? <Loader2 className="h-3 w-3 animate-spin mr-1" /> : <Coins className="h-3 w-3 mr-1" />}
-                        CLAIM ALL
+                        {claimAllMutation.isPending ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <Coins className="h-4 w-4 mr-2" />}
+                        CLAIM ALL PENDING REWARDS
                       </Button>
-                    </div>
-                  )}
-                  <div className="flex items-center gap-1.5 mt-4">
-                    <span className="text-[10px] font-bold py-0.5 px-1.5 rounded bg-primary/20 text-primary">+12.5%</span>
-                    <span className="text-[10px] text-muted-foreground font-medium uppercase">vs last 7 days</span>
+                    )}
                   </div>
                 </CardContent>
               </Card>
@@ -194,18 +204,18 @@ export default function Dashboard() {
                 </CardHeader>
                 <CardContent>
                   <div className="text-2xl font-bold font-display">{stats?.tasksCompleted || 0}</div>
-                  <p className="text-xs text-muted-foreground mt-1">Across all campaigns</p>
+                  <p className="text-xs text-muted-foreground mt-1 text-primary font-bold">{stats?.reputation || 100} REP POINTS</p>
                 </CardContent>
               </Card>
 
               <Card className="glass-card border-white/5 rounded-2xl bg-white/[0.02]">
                 <CardHeader className="flex flex-row items-center justify-between pb-2">
-                  <CardTitle className="text-sm font-medium text-muted-foreground">Reputation Score</CardTitle>
-                  <Trophy className="h-4 w-4 text-yellow-500" />
+                  <CardTitle className="text-sm font-medium text-muted-foreground">SOL Balance</CardTitle>
+                  <Wallet className="h-4 w-4 text-primary" />
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl font-bold font-display">{stats?.reputation || 100}</div>
-                  <p className="text-xs text-muted-foreground mt-1">Top 10% of users</p>
+                  <div className="text-2xl font-bold font-display">{(Number(stats?.balance) || 0).toFixed(4)}</div>
+                  <p className="text-xs text-muted-foreground mt-1">Wallet Funds</p>
                 </CardContent>
               </Card>
             </div>
@@ -306,13 +316,23 @@ export default function Dashboard() {
               <CardContent>
                 <div className="space-y-4">
                   {executions && executions.length > 0 ? (
-                    executions.slice(0, 5).map((execution: any) => (
-                      <div key={execution.id} className="flex items-start gap-3 p-2 rounded-xl bg-white/5 hover:bg-white/10 transition-colors">
-                        <div className={`w-1.5 h-1.5 mt-2 rounded-full ${execution.status === 'paid' ? 'bg-primary' : 'bg-yellow-500'}`} />
-                        <div>
-                          <p className="text-xs font-medium">{execution.action?.title || 'Action Completed'}</p>
-                          <p className="text-[10px] text-muted-foreground">
-                            {execution.campaign?.title}
+                    executions.slice(0, 10).map((execution: any) => (
+                      <div key={execution.id} className="flex items-start justify-between gap-3 p-3 rounded-xl bg-white/5 hover:bg-white/10 transition-colors">
+                        <div className="flex items-start gap-3">
+                          <div className={`w-2 h-2 mt-1.5 rounded-full ${execution.status === 'paid' ? 'bg-primary shadow-[0_0_8px_rgba(34,197,94,0.5)]' : 'bg-yellow-500'}`} />
+                          <div>
+                            <p className="text-sm font-bold">{execution.action?.title || 'Action Completed'}</p>
+                            <p className="text-[10px] text-muted-foreground font-medium">
+                              {execution.campaign?.title} • {execution.action?.rewardAmount} {execution.campaign?.tokenName}
+                            </p>
+                          </div>
+                        </div>
+                        <div className="text-right">
+                          <p className="text-[10px] font-bold text-muted-foreground uppercase">
+                            {execution.createdAt ? format(new Date(execution.createdAt), 'MMM d, HH:mm') : 'Recently'}
+                          </p>
+                          <p className={`text-[9px] font-bold uppercase tracking-wider ${execution.status === 'paid' ? 'text-primary' : 'text-yellow-500'}`}>
+                            {execution.status}
                           </p>
                         </div>
                       </div>

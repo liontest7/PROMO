@@ -124,8 +124,15 @@ export class DatabaseStorage implements IStorage {
     return execution;
   }
 
-  async getExecutionsByUser(userId: number): Promise<Execution[]> {
-    return await db.select().from(executions).where(eq(executions.userId, userId));
+  async getExecutionsByUser(userId: number): Promise<(Execution & { action: Action; campaign: Campaign })[]> {
+    const userExecutions = await db.select().from(executions).where(eq(executions.userId, userId)).orderBy(desc(executions.createdAt));
+    const results = [];
+    for (const execution of userExecutions) {
+      const [action] = await db.select().from(actions).where(eq(actions.id, execution.actionId));
+      const [campaign] = await db.select().from(campaigns).where(eq(campaigns.id, execution.campaignId));
+      results.push({ ...execution, action, campaign });
+    }
+    return results;
   }
 
   async updateExecutionStatus(id: number, status: "pending" | "verified" | "paid" | "rejected", txSignature?: string): Promise<Execution> {

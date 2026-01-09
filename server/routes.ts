@@ -50,35 +50,37 @@ export async function registerRoutes(
     const user = await storage.getUserByWallet(req.params.walletAddress);
     if (!user) return res.status(404).json({ message: "User not found" });
 
-    const executions = await storage.getExecutionsByUser(user.id);
-    const completed = executions.filter(e => e.status === 'paid' || e.status === 'verified').length;
+    const rawExecutions = await storage.getExecutionsByUser(user.id);
+    const completed = rawExecutions.filter(e => e.status === 'paid' || e.status === 'verified').length;
     
-    // Calculate real total earned from paid executions
-    let totalEarned = 0;
-    const paidExecutions = executions.filter(e => e.status === 'paid');
-    for (const execution of paidExecutions) {
-      const action = await storage.getAction(execution.actionId);
-      if (action) {
-        totalEarned += Number(action.rewardAmount);
+    // Calculate balances and earnings per token
+    const tokenBalances: Record<string, { symbol: string, balance: string, earned: string, pending: string }> = {};
+    
+    for (const execution of rawExecutions) {
+      const { action, campaign, status } = execution;
+      if (!action || !campaign) continue;
+      
+      const symbol = campaign.tokenName;
+      if (!tokenBalances[symbol]) {
+        tokenBalances[symbol] = { symbol, balance: "0", earned: "0", pending: "0" };
       }
-    }
-
-    // Pending rewards for "Claim All" functionality
-    let pendingRewards = 0;
-    const verifiedExecutions = executions.filter(e => e.status === 'verified');
-    for (const execution of verifiedExecutions) {
-      const action = await storage.getAction(execution.actionId);
-      if (action) {
-        pendingRewards += Number(action.rewardAmount);
+      
+      const amount = Number(action.rewardAmount);
+      if (status === 'paid') {
+        tokenBalances[symbol].earned = (Number(tokenBalances[symbol].earned) + amount).toFixed(6);
+        tokenBalances[symbol].balance = (Number(tokenBalances[symbol].balance) + amount).toFixed(6);
+      } else if (status === 'verified') {
+        tokenBalances[symbol].pending = (Number(tokenBalances[symbol].pending) + amount).toFixed(6);
       }
     }
 
     res.json({
-      totalEarned: totalEarned.toFixed(6),
-      pendingRewards: pendingRewards.toFixed(6),
+      totalEarned: "0", // Legacy field, keeping for compatibility but frontend should use balances
+      pendingRewards: "0", // Legacy field
+      tokenBalances: Object.values(tokenBalances),
       tasksCompleted: completed,
       reputation: user.reputationScore,
-      balance: user.balance
+      balance: user.balance // SOL balance
     });
   });
 
