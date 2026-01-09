@@ -25,8 +25,20 @@ interface VerifyActionDialogProps {
 
 export function VerifyActionDialog({ action, campaign, open, onOpenChange }: VerifyActionDialogProps) {
   const verifyMutation = useVerifyAction();
-  const { walletAddress } = useWallet();
+  const { walletAddress, isConnected, connect } = useWallet();
   const { toast } = useToast();
+
+  useEffect(() => {
+    if (open && !isConnected) {
+      onOpenChange(false);
+      toast({
+        title: "Wallet Required",
+        description: "Please connect your wallet to verify tasks.",
+        variant: "destructive"
+      });
+      connect('user');
+    }
+  }, [open, isConnected]);
   const [proof, setProof] = useState("");
   const [step, setStep] = useState<"perform" | "verify" | "success">("perform");
   const [holdingStatus, setHoldingStatus] = useState<{ 

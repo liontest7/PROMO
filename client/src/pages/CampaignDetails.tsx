@@ -27,10 +27,46 @@ export default function CampaignDetails() {
     enabled: !!campaignId,
   });
 
+  const { isConnected, connect } = useWallet();
+
   const handleActionClick = (action: Action) => {
+    if (!isConnected) {
+      toast({
+        title: "Wallet Not Connected",
+        description: "Please connect your wallet to participate in campaigns and verify tasks.",
+        variant: "destructive"
+      });
+      connect('user');
+      return;
+    }
     if (campaign) {
       setSelectedAction({ action, campaign });
     }
+  };
+
+  const handleHolderClick = () => {
+    if (!isConnected) {
+      toast({
+        title: "Wallet Not Connected",
+        description: "Please connect your wallet to verify your holdings.",
+        variant: "destructive"
+      });
+      connect('user');
+      return;
+    }
+    console.log("Triggering holder verification from details...");
+    setSelectedAction({ 
+      action: { 
+        id: 0, 
+        campaignId: campaign.id, 
+        type: 'holder', 
+        title: 'Holder Verification', 
+        rewardAmount: campaign.rewardPerWallet || '0',
+        url: '',
+        maxExecutions: 1
+      } as any, 
+      campaign 
+    });
   };
 
   if (campaignLoading) {
@@ -105,21 +141,7 @@ export default function CampaignDetails() {
                     <CardContent className="p-0">
                       <Button 
                         className="w-full h-24 justify-between px-8 bg-transparent hover:bg-primary/5 text-primary transition-all border-0 rounded-none"
-                        onClick={() => {
-                          console.log("Triggering holder verification from details...");
-                          setSelectedAction({ 
-                            action: { 
-                              id: 0, 
-                              campaignId: campaign.id, 
-                              type: 'holder', 
-                              title: 'Holder Verification', 
-                              rewardAmount: campaign.rewardPerWallet || '0',
-                              url: '',
-                              maxExecutions: 1
-                            } as any, 
-                            campaign 
-                          });
-                        }}
+                        onClick={handleHolderClick}
                       >
                         <div className="flex items-center gap-6">
                           <div className="w-12 h-12 rounded-2xl bg-primary/20 flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
