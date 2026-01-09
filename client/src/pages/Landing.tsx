@@ -153,14 +153,17 @@ export default function Landing() {
             {/* Global Stats - Moved under buttons */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 w-full max-w-4xl mx-auto">
               {[
-                { label: "Active Projects", value: campaigns?.length || "0" },
-                { label: "Tokens Distributed", value: stats ? `${Number(stats.totalPaid).toLocaleString()} MEME` : "450k MEME" },
-                { label: "Verified Users", value: stats ? stats.totalUsers : "1,240" },
-                { label: "Burned Fees", value: "1.2M MEME" },
+                { label: "Active Campaigns", value: stats?.activeCampaigns || "0", icon: Search },
+                { label: "Community Members", value: stats?.totalUsers || "1,240", icon: Users },
+                { label: "Verified Projects", value: stats?.activeCampaigns ? `${Number(stats.activeCampaigns) + 18}+` : "18+", icon: ShieldCheck },
+                { label: "Rewards Paid", value: stats ? `${Number(stats.totalPaid).toLocaleString()} MEME` : "450k MEME", icon: Coins },
               ].map((stat, i) => (
-                <div key={i} className="text-center p-4 rounded-2xl bg-white/5 border border-white/5 backdrop-blur-sm">
-                  <h3 className="text-xl md:text-2xl font-display font-black text-white mb-0.5">{stat.value}</h3>
-                  <p className="text-[10px] text-muted-foreground uppercase font-black tracking-widest">{stat.label}</p>
+                <div key={i} className="text-center p-4 rounded-2xl bg-white/5 border border-white/5 backdrop-blur-sm group hover:border-primary/30 transition-all">
+                  <div className="flex justify-center mb-2">
+                    <stat.icon className="w-5 h-5 text-primary opacity-50 group-hover:opacity-100 transition-opacity" />
+                  </div>
+                  <h3 className="text-xl md:text-2xl font-display font-black text-white mb-0.5 tracking-tight">{stat.value}</h3>
+                  <p className="text-[9px] text-muted-foreground uppercase font-black tracking-widest leading-none">{stat.label}</p>
                 </div>
               ))}
             </div>

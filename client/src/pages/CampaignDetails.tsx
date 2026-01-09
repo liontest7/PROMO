@@ -249,7 +249,7 @@ export default function CampaignDetails() {
                   <div className="flex justify-between items-center text-sm">
                     <span className="text-muted-foreground font-medium">Network</span>
                     <span className="font-bold flex items-center gap-1.5">
-                      <img src="https://solscan.io/static/media/solana-sol-logo.9388df29.svg" alt="Solana" className="w-3 h-3" />
+                      <img src="https://raw.githubusercontent.com/solana-labs/token-list/main/assets/mainnet/So11111111111111111111111111111111111111112/logo.png" alt="Solana" className="w-4 h-4" />
                       Solana
                     </span>
                   </div>
@@ -263,7 +263,7 @@ export default function CampaignDetails() {
                   </div>
                 </div>
 
-                <div className="pt-6 border-t border-white/5 space-y-3">
+                <div className="pt-6 border-t border-white/5 space-y-4">
                   <div className="grid grid-cols-2 gap-2">
                     <Button variant="outline" className="gap-2 border-white/10 hover:bg-white/5" asChild>
                       <a href={campaign.websiteUrl || "#"} target="_blank" rel="noreferrer">
@@ -272,10 +272,21 @@ export default function CampaignDetails() {
                     </Button>
                     <Button variant="outline" className="gap-2 border-white/10 hover:bg-white/5" asChild>
                       <a href={campaign.twitterUrl || "#"} target="_blank" rel="noreferrer">
-                        Twitter <ExternalLink className="w-3 h-3" />
+                        Twitter <Twitter className="w-3 h-3" />
                       </a>
                     </Button>
                   </div>
+                  
+                  <Button 
+                    className="w-full gap-2 bg-[#1DA1F2] hover:bg-[#1DA1F2]/90 text-white font-black"
+                    onClick={() => {
+                      const text = encodeURIComponent(`Check out ${campaign.title} on MemeDrop! Complete tasks to earn ${campaign.tokenName} rewards. #Solana #MemeDrop`);
+                      const url = encodeURIComponent(window.location.href);
+                      window.open(`https://twitter.com/intent/tweet?text=${text}&url=${url}`, '_blank');
+                    }}
+                  >
+                    SHARE ON X <Twitter className="w-4 h-4" />
+                  </Button>
                 </div>
               </CardContent>
             </Card>
