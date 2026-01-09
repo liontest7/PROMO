@@ -6,6 +6,8 @@ import { z } from "zod";
 import { insertCampaignSchema, insertActionSchema } from "@shared/schema";
 import { setupAuth, registerAuthRoutes, isAuthenticated } from "./replit_integrations/auth";
 
+import { Connection, PublicKey } from "@solana/web3.js";
+
 export async function registerRoutes(
   httpServer: Server,
   app: Express
@@ -156,73 +158,89 @@ export async function registerRoutes(
       if (!user) return res.status(404).json({ message: "User not found" });
 
       const action = await storage.getAction(input.actionId);
-      if (!action) {
-        // Handle direct campaign eligibility check for HOLDER_QUALIFICATION
-        const campaign = await storage.getCampaign(input.actionId); // Reusing ID for simplicity in MVP
-        if (campaign && campaign.campaignType === 'holder_qualification') {
-          let state = await storage.getHolderState(user.id, campaign.id);
-          
-          if (!state) {
-            // Check balance (mocked for Phase 1)
-            const balance = 10; // Simulated wallet check (user has 10)
+        if (!action) {
+          // Handle direct campaign eligibility check for HOLDER_QUALIFICATION
+          const campaign = await storage.getCampaign(input.actionId); // Reusing ID for simplicity in MVP
+          if (campaign && campaign.campaignType === 'holder_qualification') {
+            let state = await storage.getHolderState(user.id, campaign.id);
+            
+            // Actual Solana balance check
+            let balance = 0;
+            try {
+              const connection = new Connection("https://api.mainnet-beta.solana.com");
+              const walletPublicKey = new PublicKey(input.userWallet);
+              const tokenPublicKey = new PublicKey(campaign.tokenAddress);
+              
+              const tokenAccounts = await connection.getParsedTokenAccountsByOwner(walletPublicKey, {
+                mint: tokenPublicKey
+              });
+              
+              if (tokenAccounts.value.length > 0) {
+                balance = tokenAccounts.value[0].account.data.parsed.info.tokenAmount.uiAmount || 0;
+              }
+            } catch (err) {
+              console.error("Solana balance check failed:", err);
+              balance = 0; 
+            }
+
             const required = parseFloat(campaign.minHoldingAmount || "0");
             
-            if (balance < required) {
+            if (!state) {
+              if (balance < required) {
+                return res.json({ 
+                  success: false, 
+                  status: "insufficient",
+                  currentBalance: balance,
+                  requiredBalance: required,
+                  message: `Insufficient balance: you hold ${balance} but need ${required}` 
+                });
+              }
+              state = await storage.createHolderState({
+                userId: user.id,
+                campaignId: campaign.id,
+                holdStartTimestamp: new Date(),
+                claimed: false
+              });
               return res.json({ 
-                success: false, 
-                status: "insufficient",
+                success: true, 
+                status: "holding", 
                 currentBalance: balance,
                 requiredBalance: required,
-                message: "Insufficient balance" 
+                holdDuration: 0,
+                message: "Holding period started!" 
               });
             }
-            state = await storage.createHolderState({
-              userId: user.id,
-              campaignId: campaign.id,
-              holdStartTimestamp: new Date(),
-              claimed: false
-            });
+
+            if (state.claimed) return res.json({ success: false, message: "Already claimed" });
+
+            const now = new Date();
+            const durationDays = (now.getTime() - state.holdStartTimestamp.getTime()) / (1000 * 60 * 60 * 24);
+            const minDuration = campaign.minHoldingDuration || 0;
+
+            if (durationDays < minDuration) {
+              return res.json({ 
+                success: true, 
+                status: "waiting", 
+                remaining: Math.max(0, minDuration - durationDays),
+                currentBalance: balance,
+                requiredBalance: required,
+                holdDuration: durationDays,
+                message: "Still in holding period" 
+              });
+            }
+
+            // Ready to claim
             return res.json({ 
               success: true, 
-              status: "holding", 
-              currentBalance: balance,
-              requiredBalance: required,
-              holdDuration: 0,
-              message: "Holding period started!" 
-            });
-          }
-
-          if (state.claimed) return res.json({ success: false, message: "Already claimed" });
-
-          const now = new Date();
-          const durationDays = (now.getTime() - state.holdStartTimestamp.getTime()) / (1000 * 60 * 60 * 24);
-          const balance = 1000; // Simulated wallet check
-          const required = parseFloat(campaign.minHoldingAmount || "0");
-
-          if (durationDays < (campaign.minHoldingDuration || 0)) {
-            return res.json({ 
-              success: true, 
-              status: "waiting", 
-              remaining: (campaign.minHoldingDuration || 0) - durationDays,
+              status: "ready", 
               currentBalance: balance,
               requiredBalance: required,
               holdDuration: durationDays,
-              message: "Still in holding period" 
+              message: "Eligibility verified! You can claim now." 
             });
           }
-
-          // Ready to claim
-          return res.json({ 
-            success: true, 
-            status: "ready", 
-            currentBalance: balance,
-            requiredBalance: required,
-            holdDuration: durationDays,
-            message: "Eligibility verified! You can claim now." 
-          });
+          return res.status(404).json({ message: "Action or Campaign not found" });
         }
-        return res.status(404).json({ message: "Action or Campaign not found" });
-      }
 
       // Proof-of-Action Verification Logic (Cost-Effective)
       const proofObj = JSON.parse(input.proof || "{}");
