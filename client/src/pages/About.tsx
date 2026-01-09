@@ -1,16 +1,26 @@
 import { motion } from "framer-motion";
 import { Navigation } from "@/components/Navigation";
-import { ShieldCheck, Rocket, Coins, Users, Zap, Globe, Target, BarChart3 } from "lucide-react";
+import { ShieldCheck, Rocket, Coins, Users, Zap, Globe, Target, BarChart3, Search } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
-
+import { useQuery } from "@tanstack/react-query";
 import { APP_CONFIG } from "@/config";
 
 export default function About() {
-  const stats = [
-    { label: "Active Campaigns", value: "24", icon: BarChart3 },
-    { label: "Community Members", value: "1,240", icon: Users },
-    { label: "Verified Projects", value: "18+", icon: Target },
-    { label: "Rewards Paid", value: "450k MEME", icon: Coins },
+  const { data: stats } = useQuery<{
+    totalUsers: number;
+    totalPaid: number;
+    activeCampaigns: number;
+    completedCampaigns: number;
+  }>({
+    queryKey: ["/api/stats"],
+    refetchInterval: 30000,
+  });
+
+  const statsItems = [
+    { label: "Active Projects", value: stats?.activeCampaigns || "0", icon: Search },
+    { label: "Completed Projects", value: stats?.completedCampaigns || "0", icon: ShieldCheck },
+    { label: "Total Users", value: stats?.totalUsers || "1,240", icon: Users },
+    { label: "Rewards Distributed", value: stats ? `${Number(stats.totalPaid).toLocaleString()} MEME` : "450k MEME", icon: Coins },
   ];
 
   return (
@@ -40,12 +50,12 @@ export default function About() {
 
         {/* Stats */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-24">
-          {stats.map((stat, i) => (
-            <Card key={i} className="glass-card border-white/5 bg-white/[0.02]">
+          {statsItems.map((stat, i) => (
+            <Card key={i} className="glass-card border-white/5 bg-white/[0.02] group hover:border-primary/30 transition-all">
               <CardContent className="p-6 text-center">
-                <stat.icon className="w-8 h-8 text-primary mx-auto mb-4" />
-                <h3 className="text-2xl font-display font-bold mb-1">{stat.value}</h3>
-                <p className="text-xs text-muted-foreground uppercase tracking-widest font-semibold">{stat.label}</p>
+                <stat.icon className="w-8 h-8 text-primary opacity-50 group-hover:opacity-100 transition-opacity mx-auto mb-4" />
+                <h3 className="text-2xl font-display font-black mb-1">{stat.value}</h3>
+                <p className="text-[10px] text-muted-foreground uppercase tracking-widest font-black">{stat.label}</p>
               </CardContent>
             </Card>
           ))}

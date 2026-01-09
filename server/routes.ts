@@ -371,6 +371,7 @@ export async function registerRoutes(
     try {
       const allCampaigns = await storage.getCampaigns();
       const activeCount = allCampaigns.filter(c => c.status === 'active').length;
+      const completedCount = allCampaigns.filter(c => c.status === 'completed' || c.status === 'expired').length;
       
       // Calculate real total users
       const users = await db.select().from(usersTable);
@@ -389,6 +390,7 @@ export async function registerRoutes(
       
       res.json({
         activeCampaigns: activeCount,
+        completedCampaigns: completedCount,
         totalUsers: totalUsersCount.toLocaleString(),
         totalPaid: totalPaidValue.toLocaleString(),
         totalBurned: totalBurned
