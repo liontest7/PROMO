@@ -6,8 +6,9 @@ import { CampaignCard } from "@/components/CampaignCard";
 import { VerifyActionDialog } from "@/components/VerifyActionDialog";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Search, Filter, X, Plus } from "lucide-react";
+import { Search, Filter, X, Plus, Coins } from "lucide-react";
 import { type Action, type Campaign } from "@shared/schema";
+import { type Action as ActionType, type Campaign as CampaignType } from "@shared/schema";
 import {
   Popover,
   PopoverContent,
@@ -144,7 +145,7 @@ export default function Earn() {
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredCampaigns?.map((campaign) => (
+            {filteredCampaigns?.map((campaign: CampaignType & { actions: ActionType[] }) => (
               <div key={campaign.id} className="glass-card border-white/5 bg-white/[0.02] rounded-2xl p-6 hover:bg-white/[0.04] transition-all group">
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex flex-col">
@@ -164,7 +165,7 @@ export default function Earn() {
                   <div className="p-2 rounded-lg bg-white/5 border border-white/10">
                     <p className="text-[10px] text-muted-foreground uppercase font-bold mb-1">Remaining</p>
                     <p className="text-sm font-mono font-bold text-foreground">
-                      {campaign.tokenBudget} {campaign.tokenName}
+                      {campaign.remainingBudget} {campaign.tokenName}
                     </p>
                   </div>
                   <div className="p-2 rounded-lg bg-white/5 border border-white/10">
@@ -177,7 +178,7 @@ export default function Earn() {
 
                 <CampaignCard 
                   campaign={campaign} 
-                  onActionClick={(action) => handleActionClick(action, campaign)}
+                  onActionClick={(action: ActionType) => handleActionClick(action, campaign)}
                 />
               </div>
             ))}
