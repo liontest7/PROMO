@@ -64,9 +64,10 @@ export async function registerRoutes(
     }
 
     res.json({
-      totalEarned: totalEarned.toString(),
+      totalEarned: totalEarned.toFixed(6),
       tasksCompleted: completed,
-      reputation: user.reputationScore
+      reputation: user.reputationScore,
+      balance: user.balance
     });
   });
 
@@ -146,23 +147,30 @@ export async function registerRoutes(
       if (!action) return res.status(404).json({ message: "Action not found" });
 
       // Verification Logic
-      // For website actions, we don't need a proof text, just the wallet signature
-      // For social actions, we check if proof (signature + optional text) is provided
       const proofObj = JSON.parse(input.proof || "{}");
-      const isVerified = !!proofObj.signature;
+      let isVerified = !!proofObj.signature;
+
+      // Smart Verification Simulation for social tasks
+      if (action.type === 'twitter' || action.type === 'telegram') {
+        console.log(`Smart verifying ${action.type} for user ${user.walletAddress}`);
+        // In real app, we would call Twitter/Telegram API here
+        // For now, we simulate success if a proofText is provided
+        if (!proofObj.proofText) {
+          isVerified = false;
+        }
+      }
 
       if (isVerified) {
-        // Auto-verify and pay for a smooth real experience
         const execution = await storage.createExecution({
           actionId: action.id,
           campaignId: action.campaignId,
           userId: user.id,
-          status: "verified" // Initial status as verified
+          status: "verified"
         } as any);
         
         await storage.incrementActionExecution(action.id);
         
-        // Immediately trigger the "paid" status to simulate instant rewards
+        // Auto-pay to simulate real experience for MVP
         const txSignature = "sol-" + Math.random().toString(36).substring(7);
         await storage.updateExecutionStatus(execution.id, "paid", txSignature);
 
@@ -177,7 +185,7 @@ export async function registerRoutes(
          res.json({
           success: false,
           status: "rejected",
-          message: "Verification failed: Invalid signature"
+          message: "Verification failed: Requirements not met"
         });
       }
     } catch (err) {

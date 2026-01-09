@@ -99,7 +99,18 @@ export const executionsRelations = relations(executions, ({ one }) => ({
 // === BASE SCHEMAS ===
 
 export const insertUserSchema = createInsertSchema(users).omit({ id: true, createdAt: true, reputationScore: true });
-export const insertCampaignSchema = createInsertSchema(campaigns).omit({ id: true, createdAt: true, remainingBudget: true, status: true });
+export const insertCampaignSchema = createInsertSchema(campaigns).omit({ 
+  id: true, 
+  createdAt: true, 
+  remainingBudget: true, 
+  status: true 
+}).extend({
+  bannerUrl: z.string().url().optional().or(z.literal("")),
+  logoUrl: z.string().url().optional().or(z.literal("")),
+  websiteUrl: z.string().url().optional().or(z.literal("")),
+  twitterUrl: z.string().url().optional().or(z.literal("")),
+  telegramUrl: z.string().url().optional().or(z.literal(""))
+});
 export const insertActionSchema = createInsertSchema(actions).omit({ id: true, currentExecutions: true });
 export const insertExecutionSchema = createInsertSchema(executions).omit({ id: true, createdAt: true, status: true });
 
