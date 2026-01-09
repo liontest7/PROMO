@@ -7,20 +7,20 @@ import { APP_CONFIG } from "@/config";
 
 export default function About() {
   const { data: stats } = useQuery<{
-    totalUsers: number;
-    totalPaid: number;
+    totalUsers: string;
+    totalPaid: string;
     activeCampaigns: number;
-    completedCampaigns: number;
+    totalVerifiedProjects: number;
   }>({
-    queryKey: ["/api/stats"],
+    queryKey: ["/api/stats/global"],
     refetchInterval: 30000,
   });
 
   const statsItems = [
-    { label: "Active Projects", value: stats?.activeCampaigns || "0", icon: Search },
-    { label: "Completed Projects", value: stats?.completedCampaigns || "0", icon: ShieldCheck },
-    { label: "Total Users", value: stats?.totalUsers || "1,240", icon: Users },
-    { label: "Rewards Distributed", value: stats ? `${Number(stats.totalPaid).toLocaleString()} MEME` : "450k MEME", icon: Coins },
+    { label: "Active Campaigns", value: stats?.activeCampaigns || "0", icon: Search },
+    { label: "Community Members", value: stats?.totalUsers || "1", icon: Users },
+    { label: "Verified Projects", value: stats?.totalVerifiedProjects || "0", icon: ShieldCheck },
+    { label: "Rewards Paid", value: stats ? `${stats.totalPaid} TOKENS` : "0.03 TOKENS", icon: Coins },
   ];
 
   return (

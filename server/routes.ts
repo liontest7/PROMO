@@ -371,7 +371,6 @@ export async function registerRoutes(
     try {
       const allCampaigns = await storage.getCampaigns();
       const activeCount = allCampaigns.filter(c => c.status === 'active').length;
-      const completedCount = allCampaigns.filter(c => c.status === 'completed' || c.status === 'expired').length;
       
       // Calculate real total users
       const users = await db.select().from(usersTable);
@@ -383,6 +382,7 @@ export async function registerRoutes(
         .innerJoin(actionsTable, eq(executionsTable.actionId, actionsTable.id))
         .where(eq(executionsTable.status, 'paid'));
       
+      // Total amount regardless of token type
       const totalPaidValue = paidExecutions.reduce((sum, e) => sum + Number(e.actions.rewardAmount), 0);
       
       // Use real burn data
@@ -390,7 +390,7 @@ export async function registerRoutes(
       
       res.json({
         activeCampaigns: activeCount,
-        completedCampaigns: completedCount,
+        totalVerifiedProjects: allCampaigns.length, // All projects ever created
         totalUsers: totalUsersCount.toLocaleString(),
         totalPaid: totalPaidValue.toLocaleString(),
         totalBurned: totalBurned

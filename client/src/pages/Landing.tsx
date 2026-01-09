@@ -155,8 +155,8 @@ export default function Landing() {
               {[
                 { label: "Active Campaigns", value: stats?.activeCampaigns || "0", icon: Search },
                 { label: "Community Members", value: stats?.totalUsers || "1,240", icon: Users },
-                { label: "Verified Projects", value: stats?.activeCampaigns ? `${Number(stats.activeCampaigns) + 18}+` : "18+", icon: ShieldCheck },
-                { label: "Rewards Paid", value: stats ? `${Number(stats.totalPaid).toLocaleString()} MEME` : "450k MEME", icon: Coins },
+                { label: "Verified Projects", value: stats?.totalVerifiedProjects || "0", icon: ShieldCheck },
+                { label: "Rewards Paid", value: stats ? `${Number(stats.totalPaid).toLocaleString()} TOKENS` : "450k MEME", icon: Coins },
               ].map((stat, i) => (
                 <div key={i} className="text-center p-4 rounded-2xl bg-white/5 border border-white/5 backdrop-blur-sm group hover:border-primary/30 transition-all">
                   <div className="flex justify-center mb-2">
