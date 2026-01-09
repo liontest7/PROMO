@@ -70,12 +70,16 @@ export function WalletProvider({ children }: { children: ReactNode }) {
     try {
       console.log("Connecting to Solana wallet...");
       // Try multiple ways to find the provider
-      const solanaInstance = (window as any).phantom?.solana || (window as any).solana;
+      const solanaInstance = 
+        (window as any).phantom?.solana || 
+        (window as any).solflare?.solana ||
+        (window as any).bybitWallet?.solana ||
+        (window as any).solana;
       
-      if (!solanaInstance) {
+      if (!solanaInstance || !solanaInstance.isPrimary && !solanaInstance.connect) {
         toast({
-          title: "Phantom Not Found",
-          description: "Please install the Phantom wallet extension or unlock it to continue.",
+          title: "Wallet Not Found",
+          description: "Please install a Solana wallet extension (Phantom, Solflare, etc.) or unlock it to continue.",
           variant: "destructive",
         });
         setIsLoading(false);
@@ -120,9 +124,11 @@ export function WalletProvider({ children }: { children: ReactNode }) {
       queryClient.invalidateQueries({ queryKey: [api.users.get.path, user.walletAddress] });
 
       // Handle real wallet disconnect
-      window.solana.on('disconnect', () => {
-        disconnect();
-      });
+      if (solanaInstance && solanaInstance.on) {
+        solanaInstance.on('disconnect', () => {
+          disconnect();
+        });
+      }
 
     } catch (error: any) {
       console.error("Connection error detail:", error);
