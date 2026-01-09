@@ -73,7 +73,7 @@ export function VerifyActionDialog({ action, campaign, open, onOpenChange }: Ver
           { 
             actionId: campaign.id,
             userWallet: walletAddress, 
-            proof: JSON.stringify({ type: 'holder_verification' }) 
+            proof: JSON.stringify({ type: 'holder_verification', wallet: walletAddress }) 
           },
           {
             onSuccess: (data: any) => {
@@ -91,19 +91,15 @@ export function VerifyActionDialog({ action, campaign, open, onOpenChange }: Ver
                   title: "Eligibility Verified!",
                   description: "You are eligible to claim your reward.",
                 });
+                setTimeout(() => {
+                  onOpenChange(false);
+                }, 2000);
               } else if (data.status === 'holding') {
                 toast({
                   title: "Holding Started",
                   description: "Your holding period has begun. Stay tuned!",
                 });
               } else if (data.status === 'insufficient') {
-                setHoldingStatus({
-                  status: data.status,
-                  remaining: data.remaining,
-                  currentBalance: data.currentBalance,
-                  requiredBalance: data.requiredBalance,
-                  holdDuration: data.holdDuration
-                });
                 toast({
                   title: "Insufficient Balance",
                   description: `You need at least ${data.requiredBalance} ${campaign.tokenName}.`,

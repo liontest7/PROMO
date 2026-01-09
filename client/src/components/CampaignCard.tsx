@@ -112,6 +112,17 @@ export function CampaignCard({ campaign, onActionClick, isOwner }: CampaignCardP
         </CardHeader>
 
         <CardContent className="flex-1 space-y-6 px-6">
+          <div className="grid grid-cols-2 gap-4 mb-4">
+            <div className="p-3 bg-white/5 rounded-2xl border border-white/5 text-center">
+              <p className="text-[9px] text-muted-foreground uppercase font-black tracking-widest mb-1">Total Pool</p>
+              <p className="text-sm font-black text-white">{totalBudgetNum.toLocaleString()} {campaign.tokenName}</p>
+            </div>
+            <div className="p-3 bg-primary/5 rounded-2xl border border-primary/10 text-center">
+              <p className="text-[9px] text-primary uppercase font-black tracking-widest mb-1">Remaining</p>
+              <p className="text-sm font-black text-primary">{remainingBudgetNum.toLocaleString()} {campaign.tokenName}</p>
+            </div>
+          </div>
+
           {campaign.campaignType === 'holder_qualification' ? (
             <div className="space-y-2 bg-primary/5 p-3 rounded-2xl border border-primary/10">
               <div className="flex items-center gap-2 text-[10px] font-black text-primary uppercase tracking-tighter">
