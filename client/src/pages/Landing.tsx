@@ -94,11 +94,11 @@ export default function Landing() {
               The #1 Solana Marketing Platform
             </span>
             <h1 className="text-6xl md:text-8xl font-display font-extrabold tracking-tighter mb-8 bg-gradient-to-br from-white via-white to-gray-600 bg-clip-text text-transparent">
-              Earn Crypto for <br />
-              <span className="text-primary neon-text">Real Actions</span>
+              Hold & Win <br />
+              <span className="text-primary neon-text">Passive Rewards</span>
             </h1>
             <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto mb-12 leading-relaxed font-medium">
-              The premier Solana engagement platform. Connect, complete tasks, and get paid instantly in project tokens.
+              The premier Solana marketing platform. Secure your project's growth with our new Holder Qualification model. Connect, hold, and earn.
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
