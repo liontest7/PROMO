@@ -94,11 +94,11 @@ export default function Landing() {
               The #1 Solana Marketing Platform
             </span>
             <h1 className="text-6xl md:text-8xl font-display font-extrabold tracking-tighter mb-8 bg-gradient-to-br from-white via-white to-gray-600 bg-clip-text text-transparent">
-              Hold & Win <br />
-              <span className="text-primary neon-text">Passive Rewards</span>
+              Holder Qualification <br />
+              <span className="text-primary neon-text">Phase 1 is Live</span>
             </h1>
             <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto mb-12 leading-relaxed font-medium">
-              The premier Solana marketing platform. Secure your project's growth with our new Holder Qualification model. Connect, hold, and earn.
+              Revolutionize your project's growth with our new 100% On-chain Holder Qualification model. Reward loyal supporters based on verified holdings and duration.
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center">

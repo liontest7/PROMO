@@ -224,8 +224,19 @@ export function CreateCampaignDialog() {
                 name="campaignType"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Campaign Type</FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                    <FormLabel>Campaign Category</FormLabel>
+                    <Select 
+                      onValueChange={(value) => {
+                        field.onChange(value);
+                        // Clear actions when switching to holder_qualification
+                        if (value === "holder_qualification") {
+                          form.setValue("actions", []);
+                        } else if (watchedActions.length === 0) {
+                          form.setValue("actions", [{ type: "website", title: "Visit Website", url: "", rewardAmount: 0.01, maxExecutions: 10 }]);
+                        }
+                      }} 
+                      defaultValue={field.value}
+                    >
                       <FormControl>
                         <SelectTrigger>
                           <SelectValue placeholder="Select type" />

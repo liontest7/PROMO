@@ -29,12 +29,11 @@ export default function About() {
             animate={{ opacity: 1, y: 0 }}
             className="text-5xl md:text-7xl font-display font-extrabold mb-6 bg-gradient-to-br from-white via-white to-gray-500 bg-clip-text text-transparent"
           >
-            Passive Growth <br />
-            <span className="text-primary">Hold & Win Revolution</span>
+            Holder Qualification <br />
+            <span className="text-primary">The Future of Crypto Growth</span>
           </motion.h1>
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-            MemeDrop is evolving. We've introduced the Holder Qualification model, allowing projects to build long-term value by rewarding loyal token holders. 
-            No more high-cost engagement APIs – just pure on-chain verification.
+            MemeDrop has officially launched Phase 1: Holder Qualification. This model focuses on building genuine, long-term value by rewarding users who commit to projects through verified on-chain holdings.
           </p>
         </div>
 
