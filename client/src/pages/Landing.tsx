@@ -128,7 +128,7 @@ export default function Landing() {
               MemeDrop is the ultimate engagement platform. Participate in top-tier Solana projects and get paid in native tokens for social tasks and holder verification.
             </p>
 
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <div className="flex flex-col sm:flex-row gap-4 justify-center mb-16">
               <Link href="/earn">
                 <Button 
                   size="lg" 
@@ -147,6 +147,21 @@ export default function Landing() {
               >
                 Launch Project <Rocket className="ml-2 w-5 h-5" />
               </Button>
+            </div>
+
+            {/* Global Stats - Moved under buttons */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 w-full max-w-4xl mx-auto">
+              {[
+                { label: "Active Projects", value: campaigns?.length || "0" },
+                { label: "Tokens Distributed", value: stats ? `${Number(stats.totalPaid).toLocaleString()} MEME` : "450k MEME" },
+                { label: "Verified Users", value: stats ? stats.totalUsers : "1,240" },
+                { label: "Burned Fees", value: "1.2M MEME" },
+              ].map((stat, i) => (
+                <div key={i} className="text-center p-4 rounded-2xl bg-white/5 border border-white/5 backdrop-blur-sm">
+                  <h3 className="text-xl md:text-2xl font-display font-black text-white mb-0.5">{stat.value}</h3>
+                  <p className="text-[10px] text-muted-foreground uppercase font-black tracking-widest">{stat.label}</p>
+                </div>
+              ))}
             </div>
           </motion.div>
         </div>
@@ -169,25 +184,6 @@ export default function Landing() {
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             <EarnContentOnly />
-          </div>
-        </div>
-      </section>
-
-      {/* Stats Section */}
-      <section className="py-12 bg-background">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-            {[
-              { label: "Active Projects", value: campaigns?.length || "0" },
-              { label: "Tokens Distributed", value: stats ? `${Number(stats.totalPaid).toLocaleString()} MEME` : "450k MEME" },
-              { label: "Verified Users", value: stats ? stats.totalUsers : "1,240" },
-              { label: "Burned Fees", value: "1.2M MEME" },
-            ].map((stat, i) => (
-              <div key={i} className="text-center p-6 rounded-3xl bg-white/5 border border-white/5">
-                <h3 className="text-3xl font-display font-black text-white mb-1">{stat.value}</h3>
-                <p className="text-xs text-muted-foreground uppercase font-black tracking-widest">{stat.label}</p>
-              </div>
-            ))}
           </div>
         </div>
       </section>
