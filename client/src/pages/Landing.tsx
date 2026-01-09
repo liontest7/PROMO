@@ -110,14 +110,14 @@ export default function Landing() {
             className="mt-24 grid grid-cols-2 md:grid-cols-4 gap-8 w-full max-w-4xl"
           >
             {[
-              { label: "Active Campaigns", value: "140+" },
-              { label: "Total Paid Out", value: "$2.4M" },
-              { label: "Verified Users", value: "85k+" },
+              { label: "Active Campaigns", value: "24" },
+              { label: "Total Distributed", value: "450k MEME" },
+              { label: "Verified Users", value: "1,240" },
               { label: "Avg. ROI", value: "320%" },
             ].map((stat, i) => (
               <div key={i} className="p-4 rounded-2xl bg-white/5 border border-white/5 backdrop-blur-sm">
-                <h3 className="text-3xl font-display font-bold text-white mb-1">{stat.value}</h3>
-                <p className="text-sm text-muted-foreground">{stat.label}</p>
+                <h3 className="text-2xl font-display font-bold text-white mb-1">{stat.value}</h3>
+                <p className="text-xs text-muted-foreground">{stat.label}</p>
               </div>
             ))}
           </motion.div>
@@ -128,7 +128,7 @@ export default function Landing() {
       <section className="py-24 bg-black/20 relative">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-display font-bold mb-4">Why Choose Promotion?</h2>
+            <h2 className="text-4xl font-display font-bold mb-4">Why Choose MemeDrop?</h2>
             <p className="text-muted-foreground max-w-xl mx-auto">The most transparent engagement platform on Solana.</p>
           </div>
 
@@ -154,9 +154,9 @@ export default function Landing() {
           <div className="bg-gradient-to-br from-primary/10 to-secondary/10 rounded-3xl p-8 md:p-12 border border-white/10">
             <div className="grid md:grid-cols-2 gap-12 items-center">
               <div>
-                <h2 className="text-3xl font-display font-bold mb-6">Built for the $PROMO Ecosystem</h2>
+                <h2 className="text-3xl font-display font-bold mb-6">Built for the $MEME Ecosystem</h2>
                 <p className="text-lg text-muted-foreground mb-8">
-                  Our native token $PROMO powers the entire platform. Hold $PROMO to get higher rewards, or stake it as an advertiser to get premium placement.
+                  Our native token $MEME powers the entire platform. Hold $MEME to get higher rewards, or stake it as an advertiser to get premium placement.
                 </p>
                 <div className="flex gap-4">
                   <div className="text-center p-4 bg-black/20 rounded-2xl border border-white/5 flex-1">

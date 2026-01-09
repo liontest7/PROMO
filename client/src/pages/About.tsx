@@ -5,10 +5,10 @@ import { Card, CardContent } from "@/components/ui/card";
 
 export default function About() {
   const stats = [
-    { label: "Platform Growth", value: "240%", icon: BarChart3 },
-    { label: "Community Members", value: "15k+", icon: Users },
-    { label: "Verified Projects", value: "85+", icon: Target },
-    { label: "Rewards Paid", value: "1.2M", icon: Coins },
+    { label: "Active Campaigns", value: "24", icon: BarChart3 },
+    { label: "Community Members", value: "1,240", icon: Users },
+    { label: "Verified Projects", value: "18+", icon: Target },
+    { label: "Rewards Paid", value: "450k MEME", icon: Coins },
   ];
 
   return (
@@ -24,10 +24,10 @@ export default function About() {
             className="text-5xl md:text-7xl font-display font-extrabold mb-6 bg-gradient-to-br from-white via-white to-gray-500 bg-clip-text text-transparent"
           >
             Revolutionizing <br />
-            <span className="text-primary">Solana Engagement</span>
+            <span className="text-primary">MemeDrop Ecosystem</span>
           </motion.h1>
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-            Promotion is the leading pay-per-action marketing platform built exclusively for the Solana ecosystem. 
+            MemeDrop is the leading pay-per-action marketing platform built exclusively for the Solana ecosystem. 
             We bridge the gap between innovative projects and high-quality community members.
           </p>
         </div>
@@ -38,8 +38,8 @@ export default function About() {
             <Card key={i} className="glass-card border-white/5 bg-white/[0.02]">
               <CardContent className="p-6 text-center">
                 <stat.icon className="w-8 h-8 text-primary mx-auto mb-4" />
-                <h3 className="text-3xl font-display font-bold mb-1">{stat.value}</h3>
-                <p className="text-sm text-muted-foreground uppercase tracking-widest font-semibold">{stat.label}</p>
+                <h3 className="text-2xl font-display font-bold mb-1">{stat.value}</h3>
+                <p className="text-xs text-muted-foreground uppercase tracking-widest font-semibold">{stat.label}</p>
               </CardContent>
             </Card>
           ))}
@@ -48,9 +48,9 @@ export default function About() {
         {/* Mission Section */}
         <div className="grid md:grid-cols-2 gap-16 items-center mb-24">
           <div>
-            <h2 className="text-4xl font-display font-bold mb-6">Why Choose Promotion?</h2>
+            <h2 className="text-4xl font-display font-bold mb-6">Why Choose MemeDrop?</h2>
             <p className="text-lg text-muted-foreground leading-relaxed mb-6">
-              In a landscape crowded with bots and inorganic growth, Promotion stands for authenticity. 
+              In a landscape crowded with bots and inorganic growth, MemeDrop stands for authenticity. 
               Our platform helps other projects grow by providing them with a community of verified users 
               who are genuinely interested in their success.
             </p>
@@ -94,7 +94,7 @@ export default function About() {
         <section className="py-20 border-t border-white/5">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-display font-bold mb-4">The Platform Token</h2>
-            <p className="text-muted-foreground">Powering the Promotion ecosystem.</p>
+            <p className="text-muted-foreground">Powering the MemeDrop ecosystem.</p>
           </div>
           <div className="grid md:grid-cols-3 gap-8">
             <Card className="glass-card border-primary/20 bg-primary/5">
