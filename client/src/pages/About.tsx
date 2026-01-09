@@ -63,10 +63,10 @@ export default function About() {
             <div className="bg-primary/5 border border-primary/10 p-6 rounded-2xl mb-8">
               <h3 className="text-xl font-bold text-primary mb-3">Value for Projects</h3>
               <ul className="space-y-2 text-muted-foreground list-disc list-inside">
-                <li>Acquire real, unique holders through task-based rewards.</li>
-                <li>Boost social engagement on Twitter and Telegram instantly.</li>
-                <li>Reduce marketing waste by paying only for verified actions.</li>
-                <li>Build a long-term community rather than just temporary hype.</li>
+                <li>Cultivate long-term holders through duration-based rewards.</li>
+                <li>Eliminate bot activity with wallet balance requirements.</li>
+                <li>Drastically reduce marketing costs by removing social API dependencies.</li>
+                <li>Build authentic community value through sustainable token holding.</li>
               </ul>
             </div>
             <div className="space-y-4">

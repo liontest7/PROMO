@@ -2,7 +2,7 @@ import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Navigation } from "@/components/Navigation";
 import { useWallet } from "@/hooks/use-wallet";
-import { Rocket, Coins, ShieldCheck, ArrowRight, Users, Search } from "lucide-react";
+import { Rocket, Coins, ShieldCheck, ArrowRight, Users, Search, Zap } from "lucide-react";
 import { motion } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
 import { useCampaigns } from "@/hooks/use-campaigns";
@@ -150,12 +150,12 @@ export default function Landing() {
             <p className="text-muted-foreground max-w-xl mx-auto">The most transparent engagement platform on Solana.</p>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-20">
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-20">
             {[
-              { title: "Real Users", desc: "Anti-bot verification ensures every action comes from a unique Solana wallet.", icon: Users },
-              { title: "On-Chain Proof", desc: "Transactions are recorded on Solana for immutable proof of payout.", icon: ShieldCheck },
-              { title: "Native Rewards", desc: "Projects pay directly in their own tokens, creating instant holders.", icon: Coins },
-              { title: "Instant Growth", desc: "Launch a campaign and see real-time engagement in minutes.", icon: Rocket }
+              { title: "Passive Rewards", desc: "Hold tokens to qualify for rewards without active engagement.", icon: Coins },
+              { title: "On-Chain Proof", desc: "Verifications are handled directly on the Solana blockchain for maximum transparency.", icon: ShieldCheck },
+              { title: "Anti-Bot Verification", desc: "Our holding requirements ensure rewards go to real project supporters, not bots.", icon: Users },
+              { title: "Instant Qualification", desc: "Start your holding period instantly and track your progress in real-time.", icon: Zap }
             ].map((item, i) => (
               <motion.div
                 key={i}

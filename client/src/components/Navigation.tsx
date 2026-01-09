@@ -69,7 +69,7 @@ export function Navigation() {
             )}
             
             {isConnected && role === "advertiser" && (
-              <NavLink href="/advertiser" icon={LayoutDashboard}>Campaigns</NavLink>
+              <NavLink href="/advertiser" icon={LayoutDashboard}>Dashboard</NavLink>
             )}
             <div className="ml-auto flex items-center gap-2">
               <NavLink href="/about" icon={ShieldCheck}>About</NavLink>
