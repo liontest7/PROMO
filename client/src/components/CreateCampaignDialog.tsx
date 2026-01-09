@@ -94,6 +94,7 @@ export function CreateCampaignDialog() {
 
   // Watch for changes to calculate derived values
   const watchedActions = form.watch("actions");
+  const watchedTotalBudget = form.watch("totalBudget");
   
   const totalCalculatedCost = watchedActions.reduce((acc, action) => {
     const reward = Number(action.rewardAmount) || 0;
