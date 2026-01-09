@@ -47,6 +47,11 @@ export const campaigns = pgTable("campaigns", {
   websiteUrl: text("website_url"), // Project website
   twitterUrl: text("twitter_url"), // Project Twitter
   telegramUrl: text("telegram_url"), // Project Telegram
+  campaignType: text("campaign_type", { enum: ["engagement", "holder_qualification"] }).default("engagement").notNull(),
+  minHoldingAmount: numeric("min_holding_amount"),
+  minHoldingDuration: integer("min_holding_duration"), // in days
+  rewardPerWallet: numeric("reward_per_wallet"),
+  maxClaims: integer("max_claims"),
   status: text("status", { enum: ["active", "completed", "paused"] }).default("active").notNull(),
   creatorId: integer("creator_id").references(() => users.id).notNull(),
   requirements: jsonb("requirements").$type<{

@@ -92,9 +92,14 @@ export class DatabaseStorage implements IStorage {
   }
 
   async createCampaign(insertCampaign: InsertCampaign): Promise<Campaign> {
+    const totalBudget = insertCampaign.campaignType === 'holder_qualification' 
+      ? (parseFloat(insertCampaign.rewardPerWallet || "0") * (insertCampaign.maxClaims || 0)).toString()
+      : insertCampaign.totalBudget;
+
     const [campaign] = await db.insert(campaigns).values({
       ...insertCampaign,
-      remainingBudget: insertCampaign.totalBudget,
+      totalBudget,
+      remainingBudget: totalBudget,
       status: "active"
     } as any).returning();
     return campaign;

@@ -32,11 +32,16 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 
 // Form Schema
 const formSchema = insertCampaignSchema.extend({
-  totalBudget: z.coerce.number().min(0.00001),
+  campaignType: z.enum(["engagement", "holder_qualification"]).default("engagement"),
+  totalBudget: z.coerce.number().min(0.00001).optional(),
+  minHoldingAmount: z.coerce.number().min(0).optional(),
+  minHoldingDuration: z.coerce.number().min(0).optional(),
+  rewardPerWallet: z.coerce.number().min(0).optional(),
+  maxClaims: z.coerce.number().min(1).optional(),
   actions: z.array(insertActionSchema.omit({ campaignId: true }).extend({
     rewardAmount: z.coerce.number().min(0.00001),
     maxExecutions: z.coerce.number().min(1)
-  })).min(1, "At least one action is required"),
+  })).optional(),
   creatorId: z.number().optional(),
   bannerUrl: z.string().url("Invalid banner URL").optional().or(z.literal("")),
   logoUrl: z.string().url("Invalid logo URL").optional().or(z.literal("")),
