@@ -9,10 +9,13 @@ import { Link } from "wouter";
 import { Navigation } from "@/components/Navigation";
 import { formatDistanceToNow } from "date-fns";
 import { cn } from "@/lib/utils";
+import { VerifyActionDialog } from "@/components/VerifyActionDialog";
+import { useState } from "react";
 
 export default function CampaignDetails() {
   const [, params] = useRoute("/campaign/:id");
   const campaignId = params?.id;
+  const [selectedAction, setSelectedAction] = useState<{ action: Action; campaign: Campaign } | null>(null);
 
   const { data: campaign, isLoading: campaignLoading } = useQuery<Campaign & { actions: Action[] }>({
     queryKey: [`/api/campaigns/${campaignId}`],
@@ -23,6 +26,10 @@ export default function CampaignDetails() {
     queryKey: [`/api/executions/campaign/${campaignId}`],
     enabled: !!campaignId,
   });
+
+  const handleActionClick = (action: Action) => {
+    setSelectedAction({ action, campaign });
+  };
 
   if (campaignLoading) {
     return (
@@ -77,6 +84,46 @@ export default function CampaignDetails() {
                 </div>
               </div>
             </div>
+
+            <section className="space-y-4">
+              <h2 className="text-2xl font-display font-bold">Campaign Tasks</h2>
+              <div className="grid gap-3">
+                {campaign.campaignType === 'holder_qualification' ? (
+                  <Button 
+                    className="w-full h-16 justify-between px-6 bg-primary/10 border-primary/20 text-primary hover:bg-primary hover:text-white transition-all"
+                    onClick={() => setSelectedAction({ action: { id: 0, campaignId: campaign.id, type: 'holder', title: 'Holder Verification', rewardAmount: campaign.rewardPerWallet || '0' } as any, campaign })}
+                  >
+                    <div className="flex items-center gap-4">
+                      <ShieldCheck className="w-6 h-6" />
+                      <div className="text-left">
+                        <p className="font-bold">Holder Verification</p>
+                        <p className="text-xs opacity-70">Hold {campaign.minHoldingAmount} {campaign.tokenName}</p>
+                      </div>
+                    </div>
+                    <Badge className="bg-primary text-primary-foreground font-black">START</Badge>
+                  </Button>
+                ) : (
+                  campaign.actions?.map((action) => (
+                    <Button 
+                      key={action.id}
+                      variant="outline"
+                      className="w-full h-14 justify-between px-6 border-white/5 bg-white/5 hover:bg-primary/10 hover:border-primary/20 transition-all group"
+                      onClick={() => handleActionClick(action)}
+                    >
+                      <div className="flex items-center gap-4">
+                        <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-all">
+                          {action.type === 'twitter' ? <Twitter className="w-4 h-4" /> : <ExternalLink className="w-4 h-4" />}
+                        </div>
+                        <span className="font-bold">{action.title}</span>
+                      </div>
+                      <Badge className="bg-primary/20 text-primary border-0 font-black">
+                        +{action.rewardAmount} {campaign.tokenName}
+                      </Badge>
+                    </Button>
+                  ))
+                )}
+              </div>
+            </section>
 
             <section className="space-y-4">
               <h2 className="text-2xl font-display font-bold">About the Project</h2>
@@ -192,7 +239,7 @@ export default function CampaignDetails() {
                   </div>
                   <div className="flex justify-between items-center text-sm">
                     <span className="text-muted-foreground font-medium">Reward</span>
-                    <span className="font-bold text-primary">{campaign.rewardPerWallet || campaign.totalBudget} {campaign.tokenName}</span>
+                    <span className="font-bold text-primary">{campaign.rewardPerWallet || '0'} {campaign.tokenName}</span>
                   </div>
                   <div className="flex justify-between items-center text-sm">
                     <span className="text-muted-foreground font-medium">Created</span>
@@ -201,11 +248,6 @@ export default function CampaignDetails() {
                 </div>
 
                 <div className="pt-6 border-t border-white/5 space-y-3">
-                  <Button variant="default" className="w-full h-12 bg-primary hover:bg-primary/90 font-black text-lg shadow-lg shadow-primary/20 group" asChild>
-                    <Link href="/earn">
-                      JOIN CAMPAIGN <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                    </Link>
-                  </Button>
                   <div className="grid grid-cols-2 gap-2">
                     <Button variant="outline" className="gap-2 border-white/10 hover:bg-white/5" asChild>
                       <a href={campaign.websiteUrl || "#"} target="_blank" rel="noreferrer">
@@ -238,6 +280,12 @@ export default function CampaignDetails() {
           </div>
         </div>
       </div>
+      <VerifyActionDialog 
+        open={!!selectedAction} 
+        onOpenChange={(open) => !open && setSelectedAction(null)}
+        action={selectedAction?.action ?? null}
+        campaign={selectedAction?.campaign ?? null}
+      />
     </div>
   );
 }

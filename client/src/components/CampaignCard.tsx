@@ -112,11 +112,43 @@ export function CampaignCard({ campaign, onActionClick, isOwner }: CampaignCardP
         </CardHeader>
 
         <CardContent className="flex-1 space-y-6 px-6">
-          {campaign.campaignType === 'holder_qualification' && (
+          {campaign.campaignType === 'holder_qualification' ? (
             <div className="space-y-2 bg-primary/5 p-3 rounded-2xl border border-primary/10">
               <div className="flex items-center gap-2 text-[10px] font-black text-primary uppercase tracking-tighter">
                 <ShieldCheck className="w-3.5 h-3.5" />
                 <span>HOLD {campaign.minHoldingAmount} {campaign.tokenName} FOR {campaign.minHoldingDuration} DAYS</span>
+              </div>
+            </div>
+          ) : (
+            <div className="space-y-2">
+              <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-3">Tasks</p>
+              <div className="grid grid-cols-1 gap-2">
+                {campaign.actions?.slice(0, 2).map((action) => (
+                  <Button 
+                    key={action.id}
+                    variant="outline" 
+                    size="sm"
+                    className="justify-between h-9 text-xs border-white/5 bg-white/5 hover:bg-primary/10 hover:border-primary/20 transition-all group/action"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      onActionClick?.(action);
+                    }}
+                  >
+                    <span className="flex items-center gap-2">
+                      {getIcon(action.type)}
+                      {action.title}
+                    </span>
+                    <Badge variant="secondary" className="bg-primary/20 text-primary border-0 text-[10px]">
+                      +{action.rewardAmount}
+                    </Badge>
+                  </Button>
+                ))}
+                {campaign.actions?.length > 2 && (
+                  <p className="text-[10px] text-center text-muted-foreground italic">
+                    +{campaign.actions.length - 2} more tasks
+                  </p>
+                )}
               </div>
             </div>
           )}
