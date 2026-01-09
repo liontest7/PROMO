@@ -16,7 +16,7 @@ import { Button } from "@/components/ui/button";
 import { type User as UserType } from "@shared/schema";
 
 export default function Dashboard() {
-  const { walletAddress, userId } = useWallet();
+  const { walletAddress, userId, solBalance } = useWallet();
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const { data: stats, isLoading: statsLoading } = useUserStats(walletAddress);
@@ -51,6 +51,7 @@ export default function Dashboard() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/users", walletAddress] });
+      queryClient.invalidateQueries({ queryKey: [api.users.stats.path, walletAddress] }); // Added this
       toast({ title: "Profile Updated", description: "Your social handles have been saved." });
     },
   });
@@ -214,7 +215,7 @@ export default function Dashboard() {
                   <Wallet className="h-4 w-4 text-primary" />
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl font-bold font-display">{(Number(stats?.balance) || 0).toFixed(4)}</div>
+                  <div className="text-2xl font-bold font-display">{solBalance !== null ? solBalance.toFixed(4) : "0.0000"}</div>
                   <p className="text-xs text-muted-foreground mt-1">Wallet Funds</p>
                 </CardContent>
               </Card>

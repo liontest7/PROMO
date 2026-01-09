@@ -1,8 +1,8 @@
 import { createContext, useContext, useState, ReactNode, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
-import { apiRequest } from "@/lib/queryClient";
 import { useQueryClient } from "@tanstack/react-query";
 import { api } from "@shared/routes";
+import { Connection, PublicKey, LAMPORTS_PER_SOL, clusterApiUrl } from "@solana/web3.js";
 
 interface WalletContextType {
   isConnected: boolean;
@@ -12,6 +12,7 @@ interface WalletContextType {
   connect: (role: "user" | "advertiser") => Promise<void>;
   disconnect: () => void;
   isLoading: boolean;
+  solBalance: number | null;
 }
 
 declare global {
@@ -27,8 +28,29 @@ export function WalletProvider({ children }: { children: ReactNode }) {
   const [userId, setUserId] = useState<number | null>(null);
   const [role, setRole] = useState<"user" | "advertiser" | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [solBalance, setSolBalance] = useState<number | null>(null);
   const { toast } = useToast();
   const queryClient = useQueryClient();
+
+  const fetchBalance = async (address: string) => {
+    try {
+      const connection = new Connection(clusterApiUrl("mainnet-beta"), "confirmed");
+      const publicKey = new PublicKey(address);
+      const balance = await connection.getBalance(publicKey);
+      setSolBalance(balance / LAMPORTS_PER_SOL);
+    } catch (error) {
+      console.error("Error fetching balance:", error);
+      // Fallback to devnet if mainnet fails (for development environment)
+      try {
+        const connection = new Connection(clusterApiUrl("devnet"), "confirmed");
+        const publicKey = new PublicKey(address);
+        const balance = await connection.getBalance(publicKey);
+        setSolBalance(balance / LAMPORTS_PER_SOL);
+      } catch (e) {
+        setSolBalance(0);
+      }
+    }
+  };
 
   // Load from local storage on mount
   useEffect(() => {
@@ -39,6 +61,7 @@ export function WalletProvider({ children }: { children: ReactNode }) {
       setWalletAddress(savedAddress);
       setRole(savedRole);
       if (savedId) setUserId(parseInt(savedId));
+      fetchBalance(savedAddress);
     }
   }, []);
 
@@ -81,6 +104,7 @@ export function WalletProvider({ children }: { children: ReactNode }) {
       setWalletAddress(user.walletAddress);
       setRole(user.role);
       setUserId(user.id);
+      fetchBalance(user.walletAddress);
       
       localStorage.setItem("wallet_address", user.walletAddress);
       localStorage.setItem("user_role", user.role);
@@ -120,6 +144,7 @@ export function WalletProvider({ children }: { children: ReactNode }) {
     setWalletAddress(null);
     setRole(null);
     setUserId(null);
+    setSolBalance(null);
     localStorage.removeItem("wallet_address");
     localStorage.removeItem("user_role");
     localStorage.removeItem("user_id");
@@ -139,7 +164,8 @@ export function WalletProvider({ children }: { children: ReactNode }) {
       role,
       connect,
       disconnect,
-      isLoading
+      isLoading,
+      solBalance
     }}>
       {children}
     </WalletContext.Provider>

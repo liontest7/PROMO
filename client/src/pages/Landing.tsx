@@ -9,6 +9,7 @@ import { useCampaigns } from "@/hooks/use-campaigns";
 import { CampaignCard } from "@/components/CampaignCard";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useToast } from "@/hooks/use-toast";
+import { useQuery } from "@tanstack/react-query";
 
 function EarnContentOnly() {
   const { data: campaigns, isLoading } = useCampaigns();
@@ -52,6 +53,15 @@ function EarnContentOnly() {
 
 export default function Landing() {
   const { connect } = useWallet();
+  const { data: campaigns } = useCampaigns();
+  const { data: stats } = useQuery({
+    queryKey: ["/api/stats/global"],
+    queryFn: async () => {
+      const res = await fetch("/api/stats/global");
+      if (!res.ok) return null;
+      return res.json();
+    }
+  });
 
   return (
     <div className="min-h-screen bg-background text-foreground overflow-hidden">
@@ -102,7 +112,6 @@ export default function Landing() {
             </div>
           </motion.div>
 
-          {/* Stats / Trust Badges */}
           <motion.div 
             initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
@@ -110,9 +119,9 @@ export default function Landing() {
             className="mt-24 grid grid-cols-2 md:grid-cols-4 gap-8 w-full max-w-4xl"
           >
             {[
-              { label: "Active Campaigns", value: "24" },
-              { label: "Total Distributed", value: "450k MEME" },
-              { label: "Verified Users", value: "1,240" },
+              { label: "Active Campaigns", value: campaigns?.length || "0" },
+              { label: "Total Distributed", value: stats ? `${Number(stats.totalPaid).toLocaleString()} MEME` : "450k MEME" },
+              { label: "Verified Users", value: stats ? stats.totalUsers : "1,240" },
               { label: "Avg. ROI", value: "320%" },
             ].map((stat, i) => (
               <div key={i} className="p-4 rounded-2xl bg-white/5 border border-white/5 backdrop-blur-sm">
