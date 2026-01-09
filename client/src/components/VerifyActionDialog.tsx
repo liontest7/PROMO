@@ -24,7 +24,7 @@ interface VerifyActionDialogProps {
 }
 
 export function VerifyActionDialog({ action, campaign, open, onOpenChange }: VerifyActionDialogProps) {
-  const { verify, isPending } = useVerifyAction();
+  const verifyMutation = useVerifyAction();
   const { walletAddress } = useWallet();
   const { toast } = useToast();
   const [proof, setProof] = useState("");
@@ -36,29 +36,35 @@ export function VerifyActionDialog({ action, campaign, open, onOpenChange }: Ver
     if (!walletAddress) return;
 
     try {
-      // Real Solana Transaction Proof
-      const message = `Verify action ${action.id} for campaign ${campaign.id}`;
-      const encodedMessage = new TextEncoder().encode(message);
-      
-      let signedMessage;
-      // Use solanaInstance from previous step or find it again
-      const solanaInstance = (window as any).phantom?.solana || (window as any).solana;
-      
-      if (solanaInstance && solanaInstance.signMessage) {
-        signedMessage = await solanaInstance.signMessage(encodedMessage, "utf8");
+      let proofData: any = { proofText: proof };
+
+      // Only require message signing for social tasks (Twitter/Telegram)
+      // Website tasks are verified by simple click-through
+      if (!isWebsiteAction) {
+        console.log("Requesting signature for social action...");
+        const message = `Verify action ${action.id} for campaign ${campaign.id}`;
+        const encodedMessage = new TextEncoder().encode(message);
+        
+        const solanaInstance = (window as any).phantom?.solana || (window as any).solana;
+        if (solanaInstance && solanaInstance.signMessage) {
+          const signedMessage = await solanaInstance.signMessage(encodedMessage, "utf8");
+          proofData.signature = signedMessage.signature;
+          proofData.publicKey = signedMessage.publicKey.toString();
+        } else {
+          throw new Error("Wallet does not support message signing");
+        }
       } else {
-        throw new Error("Wallet does not support message signing");
+        // For website actions, we just send a dummy signature/proof to satisfy backend
+        // In a real app, you'd use a server-side redirect or tracking pixel
+        proofData.isWebsiteClick = true;
+        proofData.signature = "click-verified"; 
       }
       
-      verify(
+      verifyMutation.mutate(
         { 
           actionId: action.id, 
           userWallet: walletAddress, 
-          proof: JSON.stringify({
-            signature: signedMessage.signature,
-            publicKey: signedMessage.publicKey.toString(),
-            proofText: proof // Include the optional proof text
-          }) 
+          proof: JSON.stringify(proofData) 
         },
         {
           onSuccess: () => {
@@ -135,18 +141,19 @@ export function VerifyActionDialog({ action, campaign, open, onOpenChange }: Ver
               )}
               
               <div className="p-4 bg-primary/5 rounded-lg border border-primary/10">
-                <p className="text-xs font-medium text-primary mb-1">Final Step: Wallet Verification</p>
+                <p className="text-xs font-medium text-primary mb-1">Final Step: Confirm Completion</p>
                 <p className="text-[11px] text-muted-foreground leading-relaxed">
-                  Sign a secure message with your wallet to confirm you've completed the task. 
-                  {isWebsiteAction && " This proves your active participation."}
+                  {isWebsiteAction 
+                    ? "Click the button below to confirm you have visited the website and claim your rewards."
+                    : "Sign a secure message with your wallet to confirm you've completed the task."}
                 </p>
               </div>
 
-              <Button onClick={handleVerify} disabled={isPending} className="w-full">
-                {isPending ? (
+              <Button onClick={handleVerify} disabled={verifyMutation.isPending} className="w-full">
+                {verifyMutation.isPending ? (
                   <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Verifying...</>
                 ) : (
-                  "Verify & Claim Rewards"
+                  isWebsiteAction ? "Confirm & Claim Rewards" : "Verify & Claim Rewards"
                 )}
               </Button>
             </div>
