@@ -24,11 +24,16 @@ import { useToast } from "@/hooks/use-toast";
 import { Link } from "wouter";
 
 export default function Earn() {
-  const { isConnected } = useWallet();
+  const { isConnected, walletAddress } = useWallet();
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedAction, setSelectedAction] = useState<{ action: Action; campaign: Campaign } | null>(null);
   const [activeFilters, setActiveFilters] = useState<string[]>([]);
   const { toast } = useToast();
+
+  const { data: user } = useQuery<any>({
+    queryKey: ["/api/users", walletAddress],
+    enabled: !!walletAddress,
+  });
 
   const { data: campaigns, isLoading } = useCampaigns();
 
@@ -54,7 +59,7 @@ export default function Earn() {
     if (!matchesTab) return false;
 
     // Reputation Filter (Simulated for Phase 2 readiness)
-    const userReputation = user?.reputation || 0;
+    const userReputation = user?.reputationScore || 0;
     const reputationRequirement = (c as any).minReputation || 0;
     if (userReputation < reputationRequirement) return false;
 
