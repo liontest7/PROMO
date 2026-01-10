@@ -11,8 +11,23 @@ import { users as usersTable, campaigns as campaignsTable, actions as actionsTab
 import { eq, desc } from "drizzle-orm";
 import rateLimit from "express-rate-limit";
 
-import { ADMIN_CONFIG } from "@shared/config";
+import { ADMIN_CONFIG, CONFIG } from "@shared/config";
 import fetch from "node-fetch";
+
+async function getSolanaConnection() {
+  const endpoints = CONFIG.SOLANA_RPC_ENDPOINTS || ["https://api.mainnet-beta.solana.com"];
+  for (const endpoint of endpoints) {
+    try {
+      const connection = new Connection(endpoint, 'confirmed');
+      // Simple health check
+      await connection.getSlot();
+      return connection;
+    } catch (err) {
+      console.warn(`RPC Failover: ${endpoint} failed, trying next...`);
+    }
+  }
+  throw new Error("All Solana RPC endpoints failed");
+}
 
 const apiLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
@@ -214,7 +229,7 @@ export async function registerRoutes(
           let state = await storage.getHolderState(user.id, campaign.id);
           let balance = 0;
           try {
-            const connection = new Connection("https://api.mainnet-beta.solana.com");
+            const connection = await getSolanaConnection();
             const walletPublicKey = new PublicKey(input.userWallet);
             const tokenPublicKey = new PublicKey(campaign.tokenAddress);
             const tokenAccounts = await connection.getParsedTokenAccountsByOwner(walletPublicKey, {
