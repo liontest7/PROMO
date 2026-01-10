@@ -170,17 +170,13 @@ export default function About() {
               <h2 className="text-4xl font-display font-bold mb-4">The Deflationary Ecosystem</h2>
               <p className="text-muted-foreground">Powering the MemeDrop economy with real utility.</p>
             </div>
-            <motion.div
-              animate={{ y: [0, -10, 0] }}
-              transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-              className="w-24 h-24 shrink-0"
-            >
+            <div className="w-32 h-32 shrink-0">
               <img 
-                src="https://i.ibb.co/VWVv3R6W/Logo-Meme-Drop-Squer.png" 
-                alt="MemeDrop Character" 
+                src="https://i.ibb.co/nM5YkVjq/1.png" 
+                alt="MemeDrop Mascot" 
                 className="w-full h-full object-contain drop-shadow-[0_0_15px_rgba(34,197,94,0.4)]" 
               />
-            </motion.div>
+            </div>
           </div>
           <div className="grid md:grid-cols-3 gap-8">
             <Card className="glass-card border-primary/20 bg-primary/5">
