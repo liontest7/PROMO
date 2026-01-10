@@ -6,26 +6,25 @@ export function AirdropAnimation() {
     <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
       <motion.div
         initial={{ 
-          y: "-30%", 
+          y: "-40%", // Start further up
           x: "80%", 
-          opacity: 0,
+          opacity: 1, // Start fully opaque
           rotate: -15
         }}
         animate={{ 
-          // Path that starts above and ends completely below the section (150%)
-          y: ["-30%", "20%", "50%", "80%", "150%"],
-          // Wider horizontal movement for a more pronounced S-shape
-          x: ["80%", "0%", "100%", "0%", "80%"],
-          // Stay fully opaque while visible in the section
-          opacity: [0, 0.4, 0.4, 0.4, 0],
+          // Constant vertical speed: evenly spaced values for y
+          y: ["-40%", "5%", "50%", "95%", "140%"],
+          // Balanced horizontal sway
+          x: ["80%", "10%", "90%", "10%", "80%"],
+          // No opacity changes during the middle of the descent
+          opacity: [1, 1, 1, 1, 1],
           rotate: [-15, 15, -15, 15, -15]
         }}
         transition={{
-          duration: 25,
+          duration: 30, // Even slower for constant, calm feel
           repeat: Infinity,
-          ease: "linear",
-          // Opacity control: fade in quickly at top, fade out at very bottom
-          times: [0, 0.1, 0.5, 0.9, 1]
+          ease: "linear", // CRITICAL for uniform motion
+          times: [0, 0.25, 0.5, 0.75, 1] // Uniform time segments
         }}
         className="absolute w-48 h-48 md:w-64 md:h-64"
       >
