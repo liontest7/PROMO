@@ -13,7 +13,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
-import { Loader2, CheckCircle, ExternalLink, ShoppingCart, Info } from "lucide-react";
+import { Loader2, CheckCircle, ExternalLink, Info } from "lucide-react";
 import { Turnstile } from "@marsidev/react-turnstile";
 
 interface VerifyActionDialogProps {
@@ -222,21 +222,33 @@ export function VerifyActionDialog({ action, campaign, open, onOpenChange, onSuc
                 <Button 
                   onClick={handleVerify} 
                   disabled={verifyMutation.isPending || !turnstileToken} 
-                  className="w-full h-16 bg-[#00D1FF] hover:bg-[#00D1FF]/90 text-black rounded-2xl font-black uppercase tracking-widest text-sm"
+                  className="w-full h-16 bg-[#00D1FF] hover:bg-[#00D1FF]/90 text-black rounded-2xl font-black uppercase tracking-widest text-sm shadow-[0_0_20px_rgba(0,209,255,0.3)]"
                 >
                   {verifyMutation.isPending ? <Loader2 className="animate-spin" /> : "REFRESH"}
                 </Button>
                 
-                <Button 
-                  variant="ghost" 
-                  className="w-full h-12 text-white/40 hover:text-white font-black uppercase tracking-widest text-[10px] gap-2"
-                  onClick={() => window.open(`https://jup.ag/swap/SOL-${campaign.tokenAddress}`, '_blank')}
-                >
-                  <ShoppingCart className="w-3 h-3" /> BUY ${campaign.tokenName}
-                </Button>
+                <div className="space-y-4 pt-2">
+                  <p className="text-[10px] font-black text-center text-white/20 uppercase tracking-[0.3em]">Quick Links</p>
+                  <div className="flex justify-center items-center gap-6">
+                    <button onClick={() => window.open(`https://jup.ag/swap/SOL-${campaign.tokenAddress}`, '_blank')} className="opacity-40 hover:opacity-100 transition-all hover:scale-110 flex flex-col items-center gap-1">
+                      <div className="w-8 h-8 flex items-center justify-center bg-[#19FB9B] rounded-full">
+                        <span className="text-[8px] font-black text-black">JUP</span>
+                      </div>
+                      <span className="text-[8px] font-black text-white/40">JUPITER</span>
+                    </button>
+                    <button onClick={() => window.open(`https://dexscreener.com/solana/${campaign.tokenAddress}`, '_blank')} className="opacity-40 hover:opacity-100 transition-all hover:scale-110 flex flex-col items-center gap-1">
+                      <img src="https://dexscreener.com/favicon.ico" className="w-8 h-8 grayscale invert" alt="DexScreener" />
+                      <span className="text-[8px] font-black text-white/40">DEX</span>
+                    </button>
+                    <button onClick={() => window.open(`https://pump.fun/coin/${campaign.tokenAddress}`, '_blank')} className="opacity-40 hover:opacity-100 transition-all hover:scale-110 flex flex-col items-center gap-1">
+                      <img src="https://pump.fun/favicon.ico" className="w-8 h-8" alt="Pump.fun" />
+                      <span className="text-[8px] font-black text-white/40">PUMP</span>
+                    </button>
+                  </div>
+                </div>
               </div>
 
-              <div className="flex items-start gap-3 p-4 bg-white/[0.02] rounded-2xl border border-white/5">
+              <div className="flex items-start gap-3 p-4 bg-white/[0.02] rounded-2xl border border-white/5 mt-4">
                 <Info className="w-4 h-4 text-white/20 mt-0.5" />
                 <p className="text-[10px] leading-relaxed text-white/30 font-medium">
                   Holding requirement ensures authentic community participation. Verification is checked directly on the Solana blockchain.
