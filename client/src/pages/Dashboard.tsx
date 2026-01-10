@@ -164,7 +164,7 @@ export default function Dashboard() {
             <div className="flex flex-col p-6 rounded-[2rem] bg-black/40 border border-white/10 hover:border-primary/50 transition-all group/card shadow-lg backdrop-blur-md">
               <span className="text-[10px] font-black text-white/40 uppercase tracking-[0.3em] mb-2">Protocol Reputation</span>
               <div className="flex items-center gap-3">
-                <span className="text-4xl font-black font-display text-primary drop-shadow-[0_0_15px_rgba(34,197,94,0.5)]">{stats?.reputation || 100}</span>
+                <span className="text-4xl font-black font-display text-primary drop-shadow-[0_0_15px_rgba(34,197,94,0.5)]">{stats?.reputation || 0}</span>
                 <Trophy className="w-5 h-5 text-primary opacity-50 group-hover/card:opacity-100 transition-opacity" />
               </div>
             </div>
@@ -174,7 +174,7 @@ export default function Dashboard() {
                 {rankChange === "up" && <ArrowUpRight className="w-5 h-5 text-primary animate-bounce-slow" />}
               </div>
               <div className="flex items-center gap-3">
-                <span className="text-4xl font-black font-display text-white">#{Math.max(1, (stats as any)?.totalUsers || 100) - (stats?.reputation || 0)}</span>
+                <span className="text-4xl font-black font-display text-white">#{Math.max(1, (stats as any)?.totalUsers || 1) - (stats?.reputation || 0)}</span>
                 {rankChange === "up" && <span className="text-sm font-black text-primary font-display border border-primary/30 bg-primary/20 px-2 rounded-lg">+3</span>}
               </div>
             </div>
