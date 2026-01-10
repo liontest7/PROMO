@@ -131,8 +131,8 @@ export default function About() {
               { 
                 phase: "Phase 2: Growth", 
                 title: "Engagement & Expansion", 
-                items: ["Social Media API (Twitter/X & Telegram)", "Automated Verified Action Tracking", "Multi-Asset Reward Support"],
-                status: "pending"
+                items: ["Anti-Bot Protection (Turnstile Live)", "Weekly & Monthly Leaderboards (Live)", "Reputation System for Advertisers", "Social Media API Verification"],
+                status: "active"
               },
               { 
                 phase: "Phase 3: Ecosystem", 
