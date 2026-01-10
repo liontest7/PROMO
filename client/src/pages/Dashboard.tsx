@@ -312,9 +312,9 @@ export default function Dashboard() {
                         side="bottom" 
                         align="end"
                         sideOffset={10}
-                        className="border border-white/20 bg-black text-white p-4 rounded-xl shadow-[0_20px_50px_rgba(0,0,0,1)] w-64 z-[999] backdrop-blur-3xl"
+                        className="border border-white/20 bg-black text-white p-4 rounded-xl shadow-[0_20px_50px_rgba(0,0,0,1)] w-64 z-[9999] backdrop-blur-3xl pointer-events-none"
                       >
-                        <div className="space-y-3 relative z-[1000]">
+                        <div className="space-y-3 relative z-[10000]">
                           <p className="text-xs font-black uppercase tracking-widest text-primary border-b border-primary/20 pb-2">Sentinel Tier Benefits</p>
                           <ul className="space-y-2">
                             {[
@@ -424,12 +424,12 @@ export default function Dashboard() {
                   <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-all duration-700">
                     <Send className="w-12 h-12" />
                   </div>
-                  <div className="relative z-10 text-center space-y-3">
-                    <div className="flex items-center justify-center gap-2 mb-1">
+                  <div className="relative z-10 text-left space-y-3">
+                    <div className="flex items-center gap-2 mb-1">
                       <div className="p-1.5 rounded-lg bg-blue-600/20 border border-blue-600/30">
                         <Send className="w-4 h-4 text-blue-500" />
                       </div>
-                      <span className="text-[11px] font-black uppercase tracking-widest text-white italic">TG COMMS</span>
+                      <span className="text-[11px] font-black uppercase tracking-widest text-white italic">TG IDENTITY</span>
                     </div>
                     <Button 
                       variant="outline"
@@ -438,7 +438,7 @@ export default function Dashboard() {
                     >
                       INITIATE SECURE LINK
                     </Button>
-                    <p className="text-[9px] text-white/40 italic font-black uppercase tracking-widest">
+                    <p className="text-[9px] text-white/40 italic text-center font-black uppercase tracking-widest">
                       OFFLINE ENCRYPTION
                     </p>
                   </div>
