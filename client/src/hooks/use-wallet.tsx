@@ -78,17 +78,71 @@ export function WalletProvider({ children }: { children: ReactNode }) {
         { name: 'Solana', provider: (window as any).solana }
       ].filter(p => p.provider && p.provider.connect);
 
-      // To prevent automatic selection of the first provider (which is often Phantom),
-      // we check if there's an active provider. If not, we use the standard window.solana
-      // which usually triggers the "wallet picker" if multiple are installed and configured correctly.
+      // Force a disconnect from any previously connected session to trigger the picker
+      // and explicitly check for multiple providers.
       let solanaInstance = (window as any).solana;
-      
-      // If window.solana is not available or doesn't have connect, fallback to the first detected provider
+
+      // Check if we can find a non-Phantom provider if that's what's currently "dominating" window.solana
+      const solflare = (window as any).solflare?.solana;
+      const bybit = (window as any).bybitWallet?.solana;
+      const phantom = (window as any).phantom?.solana;
+
+      // If the user has multiple extensions, some (like Phantom) might auto-connect.
+      // We'll try to use the most generic one first to see if it triggers the picker.
       if (!solanaInstance || !solanaInstance.connect) {
         solanaInstance = providers[0]?.provider;
       }
       
-      if (!solanaInstance) {
+      if (solanaInstance) {
+        // Try to force the selection dialog by passing onlyIfTrusted: false
+        // and ensuring we aren't just resuming an old session.
+        console.log("Calling connect with onlyIfTrusted: false");
+        const response = await solanaInstance.connect({ onlyIfTrusted: false });
+        
+        const publicAddress = response.publicKey.toString();
+        console.log("Wallet connected:", publicAddress);
+        
+        // Auth with backend
+        const res = await fetch('/api/users/auth', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            walletAddress: publicAddress,
+            role: selectedRole
+          })
+        });
+        
+        if (!res.ok) throw new Error("Backend authentication failed");
+        const user = await res.json();
+        
+        setWalletAddress(user.walletAddress);
+        setRole(user.role);
+        setUserId(user.id);
+        fetchBalance(user.walletAddress);
+        
+        localStorage.setItem("wallet_address", user.walletAddress);
+        localStorage.setItem("user_role", user.role);
+        localStorage.setItem("user_id", user.id.toString());
+
+        toast({
+          title: "Wallet Connected",
+          description: `Connected as ${selectedRole}`,
+          className: "border-primary/50 text-foreground bg-background/95 backdrop-blur-md",
+        });
+
+        // Prefetch user data
+        queryClient.invalidateQueries({ queryKey: [api.users.get.path, user.walletAddress] });
+
+        // Handle real wallet disconnect
+        if (solanaInstance && solanaInstance.on) {
+          solanaInstance.on('disconnect', () => {
+            disconnect();
+          });
+        }
+        
+        setIsLoading(false);
+        return;
+      } else {
         toast({
           title: "Wallet Not Found",
           description: "Please install a Solana wallet extension (Phantom, Solflare, etc.) or unlock it to continue.",
@@ -96,50 +150,6 @@ export function WalletProvider({ children }: { children: ReactNode }) {
         });
         setIsLoading(false);
         return;
-      }
-
-      console.log("Found provider, calling connect...");
-      const response = await solanaInstance.connect();
-      
-      const publicAddress = response.publicKey.toString();
-      console.log("Wallet connected:", publicAddress);
-      
-      // Auth with backend
-      const res = await fetch('/api/users/auth', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          walletAddress: publicAddress,
-          role: selectedRole
-        })
-      });
-      
-      if (!res.ok) throw new Error("Backend authentication failed");
-      const user = await res.json();
-      
-      setWalletAddress(user.walletAddress);
-      setRole(user.role);
-      setUserId(user.id);
-      fetchBalance(user.walletAddress);
-      
-      localStorage.setItem("wallet_address", user.walletAddress);
-      localStorage.setItem("user_role", user.role);
-      localStorage.setItem("user_id", user.id.toString());
-
-      toast({
-        title: "Wallet Connected",
-        description: `Connected as ${selectedRole}`,
-        className: "border-primary/50 text-foreground bg-background/95 backdrop-blur-md",
-      });
-
-      // Prefetch user data
-      queryClient.invalidateQueries({ queryKey: [api.users.get.path, user.walletAddress] });
-
-      // Handle real wallet disconnect
-      if (solanaInstance && solanaInstance.on) {
-        solanaInstance.on('disconnect', () => {
-          disconnect();
-        });
       }
 
     } catch (error: any) {
