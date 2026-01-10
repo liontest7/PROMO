@@ -15,7 +15,6 @@ export const PLATFORM_CONFIG = {
     SYSTEM_PERCENT: 10,
     SYSTEM_WALLET: "DajB37qp74UzwND3N1rVWtLdxr55nhvuK2D4x476zmns"
   },
-  SOCIAL_LINKS: {
     TELEGRAM: "https://t.me/Dropy_Sol",
     TWITTER: "https://x.com/Dropy_Sol",
     DISCORD: "https://discord.gg/Dropy_Sol",
