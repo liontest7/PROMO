@@ -212,30 +212,30 @@ export default function CampaignDetails() {
                         </div>
 
                         {/* Middle: Stats & Progress */}
-                        <div className="flex-1 flex items-center justify-between md:px-8 gap-8 w-full border-y md:border-y-0 md:border-x border-white/10 py-4 md:py-0">
+                        <div className="flex-1 flex items-center justify-between md:px-6 gap-6 w-full border-y md:border-y-0 md:border-x border-white/10 py-4 md:py-0">
                           {isConnected ? (
                             <>
-                              <div className="space-y-3 flex-1 min-w-0">
+                              <div className="space-y-2.5 flex-1 min-w-0">
                                 <div className="flex flex-col items-center gap-1.5">
-                                  <div className="flex justify-between w-full items-center text-[12px] font-black uppercase tracking-widest text-white">
+                                  <div className="flex justify-between w-full items-center text-[11px] font-black uppercase tracking-widest text-white/90">
                                     <span>Progress</span>
                                     <span className="text-primary">0%</span>
                                   </div>
-                                  <div className="relative h-3 w-full bg-white/10 rounded-full overflow-hidden border border-white/5">
-                                    <div className="absolute inset-y-0 left-0 bg-primary w-[5%] transition-all duration-1000 shadow-[0_0_12px_rgba(var(--primary),0.8)]" />
+                                  <div className="relative h-2.5 w-full bg-white/10 rounded-full overflow-hidden border border-white/5">
+                                    <div className="absolute inset-y-0 left-0 bg-primary w-[5%] transition-all duration-1000 shadow-[0_0_10px_rgba(var(--primary),0.8)]" />
                                   </div>
                                 </div>
                               </div>
-                              <div className="shrink-0 flex flex-col items-center gap-1 min-w-[120px]">
-                                <p className="text-[12px] font-black text-white/90 uppercase tracking-widest leading-none">Your Balance</p>
-                                <p className="text-xl font-black text-white font-mono leading-none mt-1">
-                                  {Number(walletBalance || 0).toLocaleString()} <span className="text-[11px] text-primary font-bold uppercase ml-0.5 tracking-tighter">${campaign.tokenName}</span>
+                              <div className="shrink-0 flex flex-col items-center gap-1 min-w-[100px]">
+                                <p className="text-[11px] font-black text-white/90 uppercase tracking-widest leading-none">Your Balance</p>
+                                <p className="text-lg font-black text-white font-mono leading-none mt-1">
+                                  0 <span className="text-[10px] text-primary font-bold uppercase ml-0.5 tracking-tighter">${campaign.tokenName}</span>
                                 </p>
                               </div>
                             </>
                           ) : (
                             <div className="flex-1 text-center py-1">
-                              <p className="text-[10px] font-black text-white/20 uppercase tracking-[0.2em] italic">Connect wallet to view status</p>
+                              <p className="text-[11px] font-black text-white/20 uppercase tracking-[0.2em] italic">Connect wallet to view status</p>
                             </div>
                           )}
                         </div>
@@ -244,11 +244,11 @@ export default function CampaignDetails() {
                         <div className="shrink-0">
                           <Button 
                             className={cn(
-                              "font-black h-10 px-6 rounded-xl text-[10px] shadow-2xl transition-all min-w-[140px] uppercase tracking-widest group/btn bg-primary text-primary-foreground hover:scale-[1.02] active:scale-[0.98] shadow-primary/30"
+                              "font-black h-10 px-5 rounded-xl text-[10px] shadow-2xl transition-all min-w-[130px] uppercase tracking-widest group/btn bg-primary text-primary-foreground hover:scale-[1.02] active:scale-[0.98] shadow-primary/30"
                             )}
                             onClick={handleHolderClick}
                           >
-                            <div className="flex items-center gap-2">
+                            <div className="flex items-center gap-1.5">
                               {isConnected ? "Check Status" : "Verify & Start"}
                               <ArrowRight className="w-3.5 h-3.5 group-hover/btn:translate-x-0.5 transition-transform" />
                             </div>
