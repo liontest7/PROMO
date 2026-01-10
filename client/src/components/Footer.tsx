@@ -149,7 +149,10 @@ export function Footer() {
               <span className="text-[10px] font-black text-white/50 group-hover:text-primary transition-colors uppercase tracking-[0.15em]">System Operational</span>
             </div>
             <div className="hidden sm:block w-px h-3 bg-white/10" />
-            <a href="#" className="text-[10px] text-muted-foreground/60 hover:text-white transition-colors uppercase tracking-widest font-black">Privacy & Terms</a>
+            <div className="flex items-center gap-4">
+              <Link href="/privacy" className="text-[10px] text-muted-foreground/60 hover:text-white transition-colors uppercase tracking-widest font-black">Privacy</Link>
+              <Link href="/terms" className="text-[10px] text-muted-foreground/60 hover:text-white transition-colors uppercase tracking-widest font-black">Terms</Link>
+            </div>
           </div>
         </div>
       </div>

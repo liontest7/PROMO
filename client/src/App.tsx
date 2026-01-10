@@ -29,7 +29,6 @@ import Landing from "@/pages/Landing";
 import Earn from "@/pages/Earn";
 import Dashboard from "@/pages/Dashboard";
 import AdvertiserDashboard from "@/pages/AdvertiserDashboard";
-
 import About from "@/pages/About";
 import CampaignDetails from "@/pages/CampaignDetails";
 import Admin from "@/pages/Admin";
@@ -67,6 +66,10 @@ const PageWrapper = ({ children }: { children: React.ReactNode }) => (
   </motion.div>
 );
 
+import Terms from "@/pages/Terms";
+import Privacy from "@/pages/Privacy";
+import { TermsModal } from "@/components/TermsModal";
+
 function Router() {
   return (
     <AnimatePresence mode="wait">
@@ -79,6 +82,12 @@ function Router() {
         </Route>
         <Route path="/earn">
           <PageWrapper><Earn /></PageWrapper>
+        </Route>
+        <Route path="/terms">
+          <PageWrapper><Terms /></PageWrapper>
+        </Route>
+        <Route path="/privacy">
+          <PageWrapper><Privacy /></PageWrapper>
         </Route>
         
         {/* User Routes */}
@@ -117,6 +126,7 @@ function App() {
             <Toaster />
             <ScrollToTop />
             <OnboardingSocials />
+            <TermsModal />
             <div className="flex flex-col min-h-screen">
               <div className="flex-grow">
                 <Router />
