@@ -14,6 +14,7 @@ interface WalletContextType {
   disconnect: () => void;
   isLoading: boolean;
   solBalance: number | null;
+  walletBalance: number | null;
   showSelector: boolean;
   setShowSelector: (show: boolean) => void;
   pendingRole: "user" | "advertiser" | null;
@@ -33,6 +34,7 @@ export function WalletProvider({ children }: { children: ReactNode }) {
   const [role, setRole] = useState<"user" | "advertiser" | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [solBalance, setSolBalance] = useState<number | null>(null);
+  const [walletBalance, setWalletBalance] = useState<number | null>(null);
   const [showSelector, setShowSelector] = useState(false);
   const [pendingRole, setPendingRole] = useState<"user" | "advertiser" | null>(null);
   const { toast } = useToast();
@@ -207,6 +209,7 @@ export function WalletProvider({ children }: { children: ReactNode }) {
       disconnect,
       isLoading,
       solBalance,
+      walletBalance,
       showSelector,
       setShowSelector,
       pendingRole

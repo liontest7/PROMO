@@ -193,103 +193,106 @@ export function VerifyActionDialog({ action, campaign, open, onOpenChange }: Ver
 
         <div className="py-6 space-y-6">
           {isHolderCampaign ? (
-            <div className="space-y-4">
+            <div className="space-y-6">
               {holdingStatus ? (
-                <div className="p-4 bg-primary/5 rounded-lg border border-primary/10 text-center space-y-4">
-                  <div className="grid grid-cols-2 gap-4 text-left">
-                    <div className="space-y-1">
-                      <p className="text-[10px] text-muted-foreground uppercase tracking-widest">Your Balance</p>
+                <div className="space-y-6">
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="bg-white/5 p-4 rounded-2xl border border-white/5">
+                      <p className="text-[10px] font-black text-white/30 uppercase tracking-widest mb-1">Your Balance</p>
                       <p className={cn(
-                        "text-lg font-bold",
+                        "text-lg font-black font-mono",
                         (holdingStatus.currentBalance || 0) >= (holdingStatus.requiredBalance || 0) ? "text-primary" : "text-destructive"
                       )}>
-                        {holdingStatus.currentBalance?.toLocaleString()} {campaign.tokenName}
+                        {holdingStatus.currentBalance?.toLocaleString()} ${campaign.tokenName}
                       </p>
                     </div>
-                    <div className="space-y-1">
-                      <p className="text-[10px] text-muted-foreground uppercase tracking-widest">Required</p>
-                      <p className="text-lg font-bold">
-                        {holdingStatus.requiredBalance?.toLocaleString()} {campaign.tokenName}
+                    <div className="bg-white/5 p-4 rounded-2xl border border-white/5">
+                      <p className="text-[10px] font-black text-white/30 uppercase tracking-widest mb-1">Required</p>
+                      <p className="text-lg font-black font-mono text-white">
+                        {holdingStatus.requiredBalance?.toLocaleString()} ${campaign.tokenName}
                       </p>
                     </div>
                   </div>
 
-                  {holdingStatus.status === 'insufficient' ? (
-                    <div className="space-y-3 pt-2">
-                      <div className="p-3 bg-destructive/10 border border-destructive/20 rounded-lg">
-                        <p className="text-xs text-destructive font-bold">Ineligible: Insufficient Tokens</p>
-                        <p className="text-[10px] text-muted-foreground mt-1 leading-relaxed">
-                          You need to acquire at least {(holdingStatus.requiredBalance || 0) - (holdingStatus.currentBalance || 0)} more {campaign.tokenName} to qualify.
-                        </p>
-                      </div>
-                      <Button variant="default" className="w-full h-12 bg-primary hover:bg-primary/90 font-black gap-2" asChild>
-                        <a href={`https://dexscreener.com/solana/${campaign.tokenAddress}`} target="_blank" rel="noreferrer">
-                          <ExternalLink className="w-4 h-4" /> BUY {campaign.tokenName} NOW
-                        </a>
-                      </Button>
+                  <div className="space-y-4">
+                    <div className="flex justify-between items-center text-[10px] font-black uppercase tracking-widest">
+                      <span className="text-white/30">Holding Duration</span>
+                      <span className="text-primary font-black">
+                        {holdingStatus.holdDuration !== undefined ? formatDuration(holdingStatus.holdDuration) : "0s"} / {campaign.minHoldingDuration} DAYS
+                      </span>
                     </div>
-                  ) : (
-                    <div className="space-y-3 pt-2">
-                      <div className="p-3 bg-primary/10 border border-primary/20 rounded-lg">
-                        <p className="text-xs text-primary font-bold">
-                          {holdingStatus.status === 'holding' ? "Holding Started!" : "Still Holding..."}
-                        </p>
-                        <div className="mt-2 space-y-2">
-                          <div className="flex justify-between text-[10px]">
-                            <span className="text-muted-foreground uppercase font-bold">Duration</span>
-                            <span className="text-primary font-black">
-                              {holdingStatus.holdDuration !== undefined ? formatDuration(holdingStatus.holdDuration) : "0s"} / {campaign.minHoldingDuration} DAYS
-                            </span>
-                          </div>
-                          <div className="w-full bg-white/5 h-1.5 rounded-full overflow-hidden">
-                            <div 
-                              className="bg-primary h-full transition-all duration-500" 
-                              style={{ width: `${Math.min(100, (holdingStatus.holdDuration || 0) / (campaign.minHoldingDuration || 1) * 100)}%` }}
-                            />
-                          </div>
-                          {holdingStatus.remaining !== undefined && (
-                            <p className="text-[9px] text-muted-foreground text-center font-bold uppercase tracking-wider">
-                              {formatDuration(holdingStatus.remaining)} remaining for rewards
-                            </p>
-                          )}
-                        </div>
-                      </div>
-                      <p className="text-[10px] text-muted-foreground italic">
-                        Rewards will be available for claiming once the 24h holding period is complete.
+                    <div className="relative h-3 w-full bg-white/5 rounded-full overflow-hidden">
+                      <div 
+                        className="absolute inset-y-0 left-0 bg-primary transition-all duration-1000 shadow-[0_0_15px_rgba(var(--primary),0.6)]" 
+                        style={{ width: `${Math.min(100, (holdingStatus.holdDuration || 0) / (campaign.minHoldingDuration || 1) * 100)}%` }}
+                      />
+                    </div>
+                    {holdingStatus.remaining !== undefined && holdingStatus.status === 'holding' && (
+                      <p className="text-[10px] text-white/20 text-center font-black uppercase tracking-widest">
+                        {formatDuration(holdingStatus.remaining)} remaining for rewards
                       </p>
+                    )}
+                  </div>
+
+                  {holdingStatus.status === 'insufficient' && (
+                    <div className="space-y-4 pt-2">
+                      <div className="flex items-center gap-3 text-white/40 text-[10px] font-black uppercase tracking-widest">
+                        <div className="h-[1px] flex-1 bg-white/5" />
+                        BUY FROM
+                        <div className="h-[1px] flex-1 bg-white/5" />
+                      </div>
+                      <div className="flex justify-center gap-4">
+                        <a href={`https://pump.fun/${campaign.tokenAddress}`} target="_blank" rel="noreferrer" className="w-12 h-12 rounded-full bg-white/5 border border-white/10 flex items-center justify-center hover:bg-[#FF8C00]/20 hover:border-[#FF8C00]/40 transition-all">
+                          <img src={CONFIG.ui.walletIcons.pumpfun} className="w-6 h-6 rounded-sm" />
+                        </a>
+                        <a href={`https://jup.ag/swap/SOL-${campaign.tokenAddress}`} target="_blank" rel="noreferrer" className="w-12 h-12 rounded-full bg-white/5 border border-white/10 flex items-center justify-center hover:bg-[#BEF32C]/20 hover:border-[#BEF32C]/40 transition-all">
+                          <img src={CONFIG.ui.walletIcons.jupiter} className="w-6 h-6" />
+                        </a>
+                        <a href={`https://dexscreener.com/solana/${campaign.tokenAddress}`} target="_blank" rel="noreferrer" className="w-12 h-12 rounded-full bg-white/5 border border-white/10 flex items-center justify-center hover:bg-blue-500/20 hover:border-blue-500/40 transition-all">
+                          <img src={CONFIG.ui.walletIcons.bybit} className="w-6 h-6 rounded-sm grayscale group-hover:grayscale-0" />
+                        </a>
+                      </div>
                     </div>
                   )}
+
+                  <Button 
+                    onClick={handleVerify} 
+                    disabled={verifyMutation.isPending} 
+                    className="w-full h-14 bg-primary hover:bg-primary/90 font-black uppercase tracking-widest rounded-2xl"
+                  >
+                    {verifyMutation.isPending ? (
+                      <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Verifying...</>
+                    ) : (
+                      holdingStatus.status === 'ready' ? "CLAIM REWARDS" : "REFRESH STATUS"
+                    )}
+                  </Button>
                 </div>
               ) : (
-                <div className="space-y-4">
-                  <div className="p-4 bg-primary/5 rounded-lg border border-primary/10">
-                    <p className="text-xs font-medium text-primary mb-1">Holder Requirements</p>
-                    <div className="space-y-2">
-                      <div className="flex justify-between text-[11px]">
-                        <span className="text-muted-foreground">Minimum Hold:</span>
-                        <span className="font-bold">{campaign.minHoldingAmount} {campaign.tokenName}</span>
-                      </div>
-                      <div className="flex justify-between text-[11px]">
-                        <span className="text-muted-foreground">Holding Period:</span>
-                        <span className="font-bold">{campaign.minHoldingDuration} Days</span>
-                      </div>
+                <div className="space-y-6">
+                  <div className="bg-white/5 p-6 rounded-2xl border border-white/10 space-y-4">
+                    <div className="flex justify-between items-center">
+                      <p className="text-[10px] font-black text-white/30 uppercase tracking-widest">Min. Required</p>
+                      <p className="text-sm font-black text-white font-mono">{campaign.minHoldingAmount} ${campaign.tokenName}</p>
                     </div>
-                    <p className="text-[10px] text-muted-foreground mt-3 leading-relaxed border-t border-white/5 pt-2 italic">
-                      Verifying your balance will record a snapshot of your wallet and start the reward timer.
-                    </p>
+                    <div className="flex justify-between items-center">
+                      <p className="text-[10px] font-black text-white/30 uppercase tracking-widest">Hold Period</p>
+                      <p className="text-sm font-black text-white font-mono">{campaign.minHoldingDuration} Days</p>
+                    </div>
+                    <div className="pt-4 border-t border-white/5">
+                      <p className="text-[10px] text-white/20 italic leading-relaxed text-center font-black uppercase tracking-widest">
+                        Rewards are distributed after the holding <br/> period is successfully completed.
+                      </p>
+                    </div>
                   </div>
-                  <Button onClick={handleVerify} disabled={verifyMutation.isPending} className="w-full h-12 bg-primary hover:bg-primary/90 font-black">
-                    {verifyMutation.isPending ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> SCANNING WALLET...</> : "VERIFY & START HOLDING"}
-                  </Button>
+                  
                   <Button 
-                    variant="ghost" 
-                    size="sm" 
-                    className="w-full text-[10px] text-muted-foreground font-bold hover:text-primary transition-colors"
-                    asChild
+                    onClick={handleVerify} 
+                    disabled={verifyMutation.isPending} 
+                    className="w-full h-14 bg-primary hover:bg-primary/90 font-black uppercase tracking-widest rounded-2xl shadow-xl shadow-primary/20"
                   >
-                    <a href={`https://dexscreener.com/solana/${campaign.tokenAddress}`} target="_blank" rel="noreferrer">
-                      VIEW PROJECT ON DEXSCREENER
-                    </a>
+                    {verifyMutation.isPending ? (
+                      <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> SCANNING WALLET...</>
+                    ) : "VERIFY & START"}
                   </Button>
                 </div>
               )}
