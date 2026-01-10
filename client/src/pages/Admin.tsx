@@ -51,6 +51,22 @@ export default function AdminDashboard() {
     }
   });
 
+  const updateBlockStatusMutation = useMutation({
+    mutationFn: async ({ userId, isBlocked }: { userId: number, isBlocked: boolean }) => {
+      const res = await fetch(`/api/admin/users/${userId}/block`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ isBlocked })
+      });
+      if (!res.ok) throw new Error('Failed to update block status');
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/users"] });
+      toast({ title: "Success", description: "User block status updated" });
+    }
+  });
+
   if (loadingUsers || loadingCampaigns || loadingExecutions) {
     return (
       <div className="flex h-screen items-center justify-center">
@@ -121,11 +137,20 @@ export default function AdminDashboard() {
                     </Badge>
                   </TableCell>
                   <TableCell>{user.reputationScore}</TableCell>
-                  <TableCell>
+                  <TableCell className="text-right flex justify-end gap-2">
+                    <Button 
+                      size="sm" 
+                      variant={user.isBlocked ? "destructive" : "outline"}
+                      className="h-8 text-xs"
+                      onClick={() => updateBlockStatusMutation.mutate({ userId: user.id, isBlocked: !user.isBlocked })}
+                    >
+                      {user.isBlocked ? "Unblock" : "Block"}
+                    </Button>
                     {user.role !== 'admin' && (
                       <Button 
                         size="sm" 
-                        variant="outline"
+                        variant="ghost"
+                        className="h-8 text-xs"
                         onClick={() => updateRoleMutation.mutate({ userId: user.id, role: 'admin' })}
                       >
                         Make Admin

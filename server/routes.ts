@@ -451,6 +451,29 @@ export async function registerRoutes(
     }
   });
 
+  app.post('/api/admin/users/:id/block', async (req, res) => {
+    try {
+      const { isBlocked } = req.body;
+      const user = await storage.updateUserBlockStatus(parseInt(req.params.id), isBlocked);
+      res.json(user);
+    } catch (err) {
+      res.status(500).json({ message: "Failed to update block status" });
+    }
+  });
+
+  app.patch('/api/admin/campaigns/:id/budget', async (req, res) => {
+    try {
+      const { totalBudget } = req.body;
+      const [campaign] = await db.update(campaignsTable)
+        .set({ totalBudget, remainingBudget: totalBudget })
+        .where(eq(campaignsTable.id, parseInt(req.params.id)))
+        .returning();
+      res.json(campaign);
+    } catch (err) {
+      res.status(500).json({ message: "Failed to update budget" });
+    }
+  });
+
   // Seed Data
   // seed(); // Commented out to prevent mock data on restart if database has real data
 

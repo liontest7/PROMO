@@ -30,6 +30,7 @@ export const users = pgTable("users", {
   balance: numeric("balance").default("0").notNull(),
   twitterHandle: text("twitter_handle"),
   telegramHandle: text("telegram_handle"),
+  isBlocked: boolean("is_blocked").default(false).notNull(),
   replitId: text("replit_id"), // Added to link with Replit Auth
   createdAt: timestamp("created_at").defaultNow(),
 });
