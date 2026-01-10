@@ -60,25 +60,25 @@ export function TermsModal() {
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && handleClose()}>
       <DialogContent className="max-w-2xl max-h-[90vh] glass-card border-white/10 flex flex-col p-0 overflow-hidden shadow-[0_0_50px_rgba(34,197,94,0.1)]">
-        <button 
-          onClick={handleClose}
-          className="absolute right-6 top-6 text-muted-foreground hover:text-white transition-colors z-50"
-        >
-          <X className="w-5 h-5" />
-        </button>
-
-        <DialogHeader className="p-10 border-b border-white/5 bg-gradient-to-b from-primary/10 to-transparent">
-          <div className="flex justify-center mb-6">
-            <div className="w-20 h-20 rounded-3xl bg-primary/20 flex items-center justify-center border border-primary/30 shadow-[0_0_30px_rgba(34,197,94,0.2)]">
-              <ShieldCheck className="w-10 h-10 text-primary" />
+        <DialogHeader className="p-10 border-b border-white/5 bg-gradient-to-br from-primary/10 via-transparent to-transparent relative">
+          <div className="flex items-center justify-between gap-8">
+            <div className="flex-1 text-left">
+              <DialogTitle className="font-display font-black text-4xl uppercase tracking-tighter italic text-white">
+                Legal Agreement
+              </DialogTitle>
+              <p className="text-sm text-muted-foreground mt-3 font-bold uppercase tracking-widest leading-relaxed max-w-[280px]">
+                Please read and accept our Terms to continue.
+              </p>
+            </div>
+            <div className="shrink-0 relative">
+              <div className="absolute inset-0 bg-primary/20 blur-2xl rounded-full" />
+              <img 
+                src={PLATFORM_CONFIG.ASSETS.LEGAL_BANNER} 
+                alt="Legal mascot"
+                className="w-32 h-32 object-contain relative z-10 drop-shadow-[0_0_20px_rgba(34,197,94,0.3)]"
+              />
             </div>
           </div>
-          <DialogTitle className="font-display font-black text-4xl uppercase tracking-tighter italic text-white text-center">
-            Legal Agreement
-          </DialogTitle>
-          <p className="text-sm text-muted-foreground text-center mt-3 font-bold uppercase tracking-widest">
-            Please read and accept our Terms to continue.
-          </p>
         </DialogHeader>
 
         <div className="flex-1 overflow-hidden p-0 relative bg-black/40">
