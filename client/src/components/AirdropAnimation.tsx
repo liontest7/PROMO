@@ -6,24 +6,24 @@ export function AirdropAnimation() {
     <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
       <motion.div
         initial={{ 
-          y: "-10%", 
+          y: "-20%", 
           x: "80%", 
           opacity: 0,
           rotate: -20
         }}
         animate={{ 
-          // Large S-shaped path
-          y: ["-10%", "20%", "50%", "80%", "110%"],
+          // Large S-shaped path that goes fully off-screen at the bottom
+          y: ["-20%", "20%", "50%", "80%", "120%"],
           x: ["80%", "20%", "80%", "20%", "80%"],
           opacity: [0, 1, 1, 1, 0],
           rotate: [-20, 20, -20, 20, -20]
         }}
         transition={{
-          duration: 15,
+          duration: 18,
           repeat: Infinity,
-          ease: "easeInOut",
-          // Use a custom times array to control the segments of the S
-          times: [0, 0.25, 0.5, 0.75, 1]
+          ease: "linear",
+          // Control visibility so it's only hidden at the very start/end of the cycle
+          times: [0, 0.1, 0.5, 0.9, 1]
         }}
         className="absolute w-32 h-32 md:w-48 md:h-48"
       >
