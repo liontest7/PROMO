@@ -10,13 +10,25 @@ import { Connection, PublicKey } from "@solana/web3.js";
 import { db } from "./db";
 import { users as usersTable, campaigns as campaignsTable, actions as actionsTable, executions as executionsTable } from "@shared/schema";
 import { eq, desc, sql } from "drizzle-orm";
+import rateLimit from "express-rate-limit";
 
 import { ADMIN_CONFIG } from "@shared/config";
+
+const apiLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // Limit each IP to 100 requests per windowMs
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { message: "Too many requests from this IP, please try again after 15 minutes" }
+});
 
 export async function registerRoutes(
   httpServer: Server,
   app: Express
 ): Promise<Server> {
+  // Apply rate limiting to all /api routes
+  app.use("/api", apiLimiter);
+
   // Setup Auth
   await setupAuth(app);
   registerAuthRoutes(app);
