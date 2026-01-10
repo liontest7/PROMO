@@ -1,6 +1,6 @@
-import { useRoute } from "wouter";
+import { useRoute, useParams, useLocation } from "wouter";
 import { useQuery } from "@tanstack/react-query";
-import { Campaign, Action, Execution } from "@shared/schema";
+import { Campaign, Action, Execution, CampaignWithActions } from "@shared/schema";
 import { Loader2, ArrowLeft, ExternalLink, ShieldCheck, Coins, Users, CheckCircle, ArrowRight, Twitter, Send, Zap, Globe, Share2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -16,16 +16,18 @@ import { useToast } from "@/hooks/use-toast";
 import { CONFIG } from "@shared/config";
 
 export default function CampaignDetails() {
-  const [, params] = useRoute("/campaign/:id");
-  const campaignId = params?.id;
-  const [selectedAction, setSelectedAction] = useState<{ action: Action; campaign: Campaign } | null>(null);
+  const { id, symbol } = useParams();
+  const { isConnected, walletAddress, connect } = useWallet();
   const { toast } = useToast();
-  const { isConnected, connect } = useWallet();
+  const [, setLocation] = useLocation();
+  const [selectedAction, setSelectedAction] = useState<{ action: Action; campaign: Campaign } | null>(null);
 
-  const { data: campaign, isLoading: campaignLoading } = useQuery<(Campaign & { actions: Action[] }) | undefined>({
-    queryKey: [`/api/campaigns/${campaignId}`],
-    enabled: !!campaignId,
+  const { data: campaign, isLoading: campaignLoading } = useQuery<CampaignWithActions | undefined>({
+    queryKey: symbol ? [`/api/campaigns/symbol/${symbol}`] : [`/api/campaigns/${id}`],
+    enabled: !!(id || symbol),
   });
+
+  const campaignId = campaign?.id;
 
   const { data: participants, isLoading: participantsLoading } = useQuery<(Execution & { user: { walletAddress: string } })[]>({
     queryKey: [`/api/executions/campaign/${campaignId}`],
@@ -137,7 +139,8 @@ export default function CampaignDetails() {
                   className="rounded-xl border-white/10 bg-white/5 hover:bg-white/10 text-white h-10 w-10"
                   onClick={() => {
                     const text = encodeURIComponent(`Check out ${campaign.title} on MemeDrop! #Solana`);
-                    window.open(`https://twitter.com/intent/tweet?text=${text}&url=${encodeURIComponent(window.location.href)}`, '_blank');
+                    const shareUrl = `${window.location.origin}/c/${campaign.tokenName}`;
+                    window.open(`https://twitter.com/intent/tweet?text=${text}&url=${encodeURIComponent(shareUrl)}`, '_blank');
                   }}
                 >
                   <Twitter className="w-4 h-4" />
@@ -147,7 +150,8 @@ export default function CampaignDetails() {
                   size="icon" 
                   className="rounded-xl border-white/10 bg-white/5 hover:bg-white/10 text-white h-10 w-10"
                   onClick={() => {
-                    navigator.clipboard.writeText(window.location.href);
+                    const shareUrl = `${window.location.origin}/c/${campaign.tokenName}`;
+                    navigator.clipboard.writeText(shareUrl);
                     toast({ title: "Link copied!" });
                   }}
                 >

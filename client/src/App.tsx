@@ -93,6 +93,9 @@ function Router() {
         <Route path="/campaign/:id">
           <PageWrapper><CampaignDetails /></PageWrapper>
         </Route>
+        <Route path="/c/:symbol">
+          <PageWrapper><CampaignDetails /></PageWrapper>
+        </Route>
         <Route path="/admin">
           <ProtectedRoute component={Admin} allowedRole="admin" />
         </Route>
