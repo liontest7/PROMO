@@ -438,7 +438,7 @@ export default function Dashboard() {
                     >
                       INITIATE SECURE LINK
                     </Button>
-                    <p className="text-[9px] text-white/40 italic text-center font-black uppercase tracking-widest">
+                    <p className="text-[9px] text-white/40 italic text-center font-black uppercase tracking-widest leading-none">
                       OFFLINE ENCRYPTION
                     </p>
                   </div>
