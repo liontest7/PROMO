@@ -46,4 +46,10 @@ export const PLATFORM_CONFIG = {
   },
 };
 
+export const ADMIN_CONFIG = {
+  superAdminWallets: [
+    "DajB37qp74UzwND3N1rVWtLdxr55nhvuK2D4x476zmns"
+  ]
+};
+
 export const CONFIG = PLATFORM_CONFIG;

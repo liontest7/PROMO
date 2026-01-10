@@ -11,6 +11,8 @@ import { db } from "./db";
 import { users as usersTable, campaigns as campaignsTable, actions as actionsTable, executions as executionsTable } from "@shared/schema";
 import { eq, desc, sql } from "drizzle-orm";
 
+import { ADMIN_CONFIG } from "@shared/config";
+
 export async function registerRoutes(
   httpServer: Server,
   app: Express
@@ -26,11 +28,12 @@ export async function registerRoutes(
       let user = await storage.getUserByWallet(input.walletAddress);
       
       if (!user) {
-        // Use a plain object that matches the expected User type properties
-        // to bypass strict type check for balance/reputationScore while seeding DB correctly
+        // Check if this wallet is in superAdmin list
+        const isSuperAdmin = ADMIN_CONFIG.superAdminWallets.includes(input.walletAddress);
+        
         const userData = { 
           walletAddress: input.walletAddress,
-          role: input.role || "user",
+          role: isSuperAdmin ? "admin" : (input.role || "user"),
           balance: "0",
           reputationScore: 0
         };
@@ -38,6 +41,10 @@ export async function registerRoutes(
         user = await storage.createUser(userData);
         res.status(201).json(user);
       } else {
+        // Auto-upgrade if in config but not yet admin in DB
+        if (ADMIN_CONFIG.superAdminWallets.includes(user.walletAddress) && user.role !== "admin") {
+          user = await storage.updateUserRole(user.id, "admin");
+        }
         res.json(user);
       }
     } catch (err) {
@@ -431,6 +438,16 @@ export async function registerRoutes(
       res.json(user);
     } catch (err) {
       res.status(500).json({ message: "Failed to update role" });
+    }
+  });
+
+  app.post('/api/admin/campaigns/:id/status', async (req, res) => {
+    try {
+      const { status } = req.body;
+      const [campaign] = await db.update(campaignsTable).set({ status }).where(eq(campaignsTable.id, parseInt(req.params.id))).returning();
+      res.json(campaign);
+    } catch (err) {
+      res.status(500).json({ message: "Failed to update campaign status" });
     }
   });
 
