@@ -186,13 +186,8 @@ export default function Dashboard() {
             {/* Token Portfolios */}
             <section>
               <div className="flex items-center gap-4 mb-6">
-                <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center border border-primary/30">
-                  <Coins className="w-6 h-6 text-primary" />
-                </div>
-                <div>
-                  <h2 className="text-2xl font-black font-display uppercase italic tracking-tighter leading-none text-white">Token Portfolios</h2>
-                  <div className="h-0.5 w-16 bg-primary mt-2 rounded-full shadow-[0_0_10px_rgba(34,197,94,0.3)]" />
-                </div>
+                <h2 className="text-2xl font-black font-display uppercase italic tracking-tighter leading-none text-white">Token Portfolios</h2>
+                <div className="h-0.5 flex-1 bg-white/10 mt-2 rounded-full" />
               </div>
               
               {stats?.tokenBalances && stats.tokenBalances.length > 0 ? (
@@ -249,13 +244,8 @@ export default function Dashboard() {
             {/* Recent Activity */}
             <section>
               <div className="flex items-center gap-4 mb-6">
-                <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center border border-primary/30">
-                  <Activity className="w-6 h-6 text-primary" />
-                </div>
-                <div>
-                  <h2 className="text-2xl font-black font-display uppercase italic tracking-tighter leading-none text-white">Verification Logs</h2>
-                  <div className="h-0.5 w-16 bg-primary mt-2 rounded-full shadow-[0_0_10px_rgba(34,197,94,0.3)]" />
-                </div>
+                <h2 className="text-2xl font-black font-display uppercase italic tracking-tighter leading-none text-white">Verification Logs</h2>
+                <div className="h-0.5 flex-1 bg-white/10 mt-2 rounded-full" />
               </div>
               <Card className="glass-card border border-white/10 bg-white/[0.02] rounded-[2rem] overflow-hidden shadow-lg">
                 <CardContent className="p-0">
@@ -309,24 +299,21 @@ export default function Dashboard() {
             <Card className="glass-card border border-primary/30 bg-primary/5 rounded-[2.5rem] overflow-hidden relative group p-0.5 shadow-xl">
               <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(34,197,94,0.3),transparent_70%)] opacity-70" />
               <CardHeader className="relative z-10 p-8 pb-4">
-                <div className="flex items-center justify-between mb-4">
-                  <div className="w-12 h-12 rounded-xl bg-primary flex items-center justify-center shadow-[0_0_30px_rgba(34,197,94,0.5)] border-2 border-white/20 animate-bounce-slow">
-                    <Star className="w-6 h-6 text-primary-foreground fill-primary-foreground" />
-                  </div>
+                <div className="flex items-center justify-end mb-2">
                   <TooltipProvider delayDuration={0}>
                     <Tooltip>
                       <TooltipTrigger asChild>
-                        <Button variant="ghost" size="icon" className="w-8 h-8 rounded-full border border-primary/30 bg-primary/10 text-primary hover:bg-primary/20 cursor-help">
+                        <Button variant="ghost" size="icon" className="w-8 h-8 rounded-full border border-primary/30 bg-primary/10 text-primary hover:bg-primary/20 cursor-help translate-y-2">
                           <HelpCircle className="w-4 h-4" />
                         </Button>
                       </TooltipTrigger>
                       <TooltipContent 
                         side="left" 
                         align="start"
-                        className="glass-card border-primary/30 bg-black/95 p-4 rounded-xl shadow-[0_10px_40px_rgba(0,0,0,0.8)] w-64 z-[100]"
+                        className="glass-card border border-primary/30 bg-black p-4 rounded-xl shadow-[0_10px_40px_rgba(0,0,0,0.9)] w-64 z-[100]"
                       >
                         <div className="space-y-3">
-                          <p className="text-[10px] font-black uppercase tracking-widest text-primary border-b border-primary/20 pb-2">Sentinel Tier Benefits</p>
+                          <p className="text-xs font-black uppercase tracking-widest text-primary border-b border-primary/20 pb-2">Sentinel Tier Benefits</p>
                           <ul className="space-y-2">
                             {[
                               "Priority Action Verification",
@@ -334,8 +321,8 @@ export default function Dashboard() {
                               "High-Yield Project Access",
                               "Governance Voting Multipliers"
                             ].map((benefit, i) => (
-                              <li key={i} className="flex items-start gap-3 text-[9px] font-black text-white/80 uppercase tracking-widest leading-tight">
-                                <div className="w-1.5 h-1.5 rounded-full bg-primary/60 mt-0.5 shrink-0" />
+                              <li key={i} className="flex items-start gap-3 text-[10px] font-black text-white uppercase tracking-widest leading-tight">
+                                <div className="w-1.5 h-1.5 rounded-full bg-primary mt-0.5 shrink-0" />
                                 {benefit}
                               </li>
                             ))}
@@ -358,17 +345,22 @@ export default function Dashboard() {
                     <span className="text-[9px] font-black text-white/40 uppercase tracking-widest">Evolution Progress</span>
                     <span className="text-2xl font-black font-display text-primary italic tracking-tight drop-shadow-md">{progress}%</span>
                   </div>
-                  <div className="w-full h-6 rounded-full bg-black/90 overflow-hidden p-1.5 border border-white/10 shadow-inner">
+                  <div className="w-full h-8 rounded-full bg-black/90 overflow-hidden p-1.5 border border-white/10 shadow-inner relative">
                     <div 
                       className="h-full bg-primary shadow-[0_0_20px_rgba(34,197,94,0.8)] rounded-full transition-all duration-1000 relative overflow-hidden" 
                       style={{ width: `${progress}%` }}
                     >
                       <div className="absolute inset-0 bg-[linear-gradient(90deg,transparent_0%,rgba(255,255,255,0.4)_50%,transparent_100%)] animate-shimmer" />
                     </div>
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <span className="text-[10px] font-black text-white uppercase tracking-[0.2em] drop-shadow-md">
+                        {tasksCompleted % 10} / 10 ACTIONS
+                      </span>
+                    </div>
                   </div>
                   <div className="flex justify-between items-center text-[10px] font-black uppercase tracking-widest text-white/60">
                     <span className="flex items-center gap-2 bg-white/5 px-2 py-1 rounded-md border border-white/10"><Badge className="h-4 px-2 bg-white/10 text-white border-white/20 text-[9px]">LVL {level}</Badge> INITIATE</span>
-                    <span className="text-primary font-display italic text-sm">TARGET: {nextMilestone}</span>
+                    <ArrowUpRight className="w-5 h-5 text-primary/40" />
                     <span className="flex items-center gap-2 bg-primary/10 px-2 py-1 rounded-md border border-primary/20">SENTINEL <Badge className="h-4 px-2 bg-primary text-primary-foreground border-none text-[9px]">LVL {level + 1}</Badge></span>
                   </div>
                 </div>
