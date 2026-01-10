@@ -195,81 +195,60 @@ export default function CampaignDetails() {
 
               <div className="grid gap-4">
                 {campaign.campaignType === 'holder_qualification' ? (
-                  <Card className="glass-card border-primary/20 bg-primary/5 overflow-hidden group hover:border-primary/40 transition-all rounded-3xl">
-                    <CardContent className="p-8 md:p-10">
-                      <div className="flex flex-col gap-8 w-full">
-                        {/* Header Section */}
-                        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
-                          <div className="flex items-center gap-5">
-                            <div className="w-14 h-14 rounded-2xl bg-primary/20 flex items-center justify-center shrink-0 shadow-lg shadow-primary/5 border border-primary/10">
-                              <ShieldCheck className="w-8 h-8 text-primary" />
-                            </div>
-                            <div className="space-y-1">
-                              <h3 className="text-2xl font-black uppercase tracking-tight text-white">Holder Verification</h3>
-                              <p className="text-sm font-bold text-white/50">Hold {Number(campaign.minHoldingAmount).toLocaleString()} ${campaign.tokenName} to qualify</p>
-                            </div>
+                  <Card className="glass-card border-white/5 bg-white/5 overflow-hidden group hover:border-primary/20 transition-all rounded-2xl">
+                    <CardContent className="p-0">
+                      <div className="flex flex-col md:flex-row items-center gap-6 p-6 md:px-8 md:py-6 w-full min-h-[100px]">
+                        {/* Left: Icon & Title */}
+                        <div className="flex items-center gap-4 shrink-0">
+                          <div className="w-12 h-12 rounded-xl bg-primary/20 flex items-center justify-center shrink-0 border border-primary/10">
+                            <ShieldCheck className="w-6 h-6 text-primary" />
                           </div>
-                          <div className="flex items-center gap-3 bg-white/5 px-4 py-2 rounded-xl border border-white/5 shrink-0">
-                            <RefreshCw className="w-3.5 h-3.5 text-primary animate-spin-slow" />
-                            <span className="text-[10px] font-black text-white/40 uppercase tracking-widest">Live status</span>
+                          <div className="space-y-0.5">
+                            <h3 className="text-base font-black uppercase tracking-tight text-white">Holder Verification</h3>
+                            <p className="text-[10px] font-bold text-white/40 uppercase tracking-widest leading-none">Hold {Number(campaign.minHoldingAmount).toLocaleString()} ${campaign.tokenName}</p>
                           </div>
                         </div>
 
-                        {/* Middle Section: Progress & Info */}
-                        <div className="grid md:grid-cols-2 gap-8 items-center bg-white/[0.02] border border-white/5 rounded-2xl p-6">
+                        {/* Middle: Stats & Progress */}
+                        <div className="flex-1 flex items-center justify-between md:px-8 gap-8 w-full border-y md:border-y-0 md:border-x border-white/5 py-4 md:py-0">
                           {isConnected ? (
                             <>
-                              <div className="space-y-4">
-                                <div className="flex justify-between items-center text-[10px] font-black uppercase tracking-widest">
-                                  <span className="text-white/30 italic">Requirement</span>
-                                  <span className="text-primary">{campaign.minHoldingDuration} Days Holding</span>
+                              <div className="space-y-1.5 flex-1 min-w-0">
+                                <div className="flex justify-between items-center text-[9px] font-black uppercase tracking-widest text-white/30">
+                                  <span>Progress</span>
+                                  <span className="text-white/50">0%</span>
                                 </div>
-                                <div className="space-y-2">
-                                  <div className="flex justify-between items-end">
-                                    <p className="text-[10px] font-black text-white/20 uppercase tracking-widest flex items-center gap-1.5">
-                                      Your Balance
-                                    </p>
-                                    <p className="text-lg font-black text-white font-mono">
-                                      {Number(walletBalance || 0).toLocaleString()} <span className="text-xs text-white/40">${campaign.tokenName}</span>
-                                    </p>
-                                  </div>
-                                  <div className="relative h-2 w-full bg-white/5 rounded-full overflow-hidden">
-                                    <div className="absolute inset-y-0 left-0 bg-primary w-[5%] transition-all duration-1000 shadow-[0_0_15px_rgba(var(--primary),0.6)]" />
-                                  </div>
+                                <div className="relative h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
+                                  <div className="absolute inset-y-0 left-0 bg-primary w-[5%] transition-all duration-1000 shadow-[0_0_8px_rgba(var(--primary),0.6)]" />
                                 </div>
                               </div>
-                              <div className="flex flex-col items-center md:items-end gap-1">
-                                <p className="text-[10px] font-black text-white/20 uppercase tracking-widest">Qualification Progress</p>
-                                <p className="text-3xl font-black text-white uppercase tracking-tighter">0% <span className="text-xs text-white/30 ml-1">Complete</span></p>
+                              <div className="shrink-0 text-right">
+                                <p className="text-[9px] font-black text-white/20 uppercase tracking-widest">Balance</p>
+                                <p className="text-sm font-black text-white font-mono leading-none">
+                                  {Number(walletBalance || 0).toLocaleString()} <span className="text-[10px] text-white/40">${campaign.tokenName}</span>
+                                </p>
                               </div>
                             </>
                           ) : (
-                            <div className="md:col-span-2 py-4 flex items-center justify-center text-center">
-                              <div className="space-y-2">
-                                <p className="italic text-white/30 text-sm font-black uppercase tracking-[0.3em]">Status Hidden</p>
-                                <p className="text-[10px] text-white/20 font-bold uppercase tracking-widest">Connect wallet to track your progress and claim rewards</p>
-                              </div>
+                            <div className="flex-1 text-center py-1">
+                              <p className="text-[10px] font-black text-white/20 uppercase tracking-[0.2em] italic">Connect wallet to view status</p>
                             </div>
                           )}
                         </div>
                         
-                        {/* Footer Section: Action Button */}
-                        <div className="flex flex-col items-center gap-4">
+                        {/* Right: Action Button */}
+                        <div className="shrink-0">
                           <Button 
                             className={cn(
-                              "font-black h-14 px-12 rounded-2xl text-base shadow-2xl transition-all min-w-[280px] uppercase tracking-[0.15em] group/btn",
-                              isConnected 
-                                ? "bg-primary text-primary-foreground hover:scale-[1.02] active:scale-[0.98] shadow-primary/40" 
-                                : "bg-white text-black hover:bg-white/90 shadow-white/10"
+                              "font-black h-10 px-6 rounded-xl text-[10px] shadow-2xl transition-all min-w-[140px] uppercase tracking-widest group/btn bg-primary text-primary-foreground hover:scale-[1.02] active:scale-[0.98] shadow-primary/30"
                             )}
                             onClick={handleHolderClick}
                           >
-                            <div className="flex items-center gap-3">
-                              {isConnected ? "Verify Eligibility" : "Connect & Verify Wallet"}
-                              <ArrowRight className="w-5 h-5 group-hover/btn:translate-x-1 transition-transform" />
+                            <div className="flex items-center gap-2">
+                              {isConnected ? "Check Status" : "Verify & Start"}
+                              <ArrowRight className="w-3.5 h-3.5 group-hover/btn:translate-x-0.5 transition-transform" />
                             </div>
                           </Button>
-                          <p className="text-[10px] font-bold text-white/20 uppercase tracking-widest italic">Verification is instant and secured by blockchain</p>
                         </div>
                       </div>
                     </CardContent>
