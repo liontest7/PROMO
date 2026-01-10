@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Wallet, CheckCircle2 } from "lucide-react";
+import { X, Wallet, CheckCircle2 } from "lucide-react";
 import { CONFIG } from "@shared/config";
+import { DialogClose } from "@/components/ui/dialog";
 
 interface WalletProvider {
   name: string;
@@ -71,6 +72,10 @@ export function WalletSelector({ open, onOpenChange, onSelect }: WalletSelectorP
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[420px] border-white/20 bg-background/60 backdrop-blur-3xl p-0 overflow-hidden rounded-3xl shadow-2xl shadow-black/70">
+        <DialogClose className="absolute right-6 top-6 z-50 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground">
+          <X className="h-6 w-6 text-white" />
+          <span className="sr-only">Close</span>
+        </DialogClose>
         <div 
           className="absolute inset-0 z-0 opacity-[0.15] pointer-events-none bg-cover bg-center"
           style={{ backgroundImage: `url(${CONFIG.ui.walletSelectorBg})` }}
