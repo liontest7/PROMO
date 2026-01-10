@@ -15,7 +15,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
-import { Loader2, CheckCircle, ExternalLink } from "lucide-react";
+import { Loader2, CheckCircle, ExternalLink, ShieldCheck, RefreshCw } from "lucide-react";
 
 interface VerifyActionDialogProps {
   action: Action | null;
@@ -178,110 +178,122 @@ export function VerifyActionDialog({ action, campaign, open, onOpenChange }: Ver
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md glass-card border-primary/20">
-        <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
-            {isHolderCampaign ? "Verify Eligibility" : <>Complete Task <span className="text-primary text-sm font-mono bg-primary/10 px-2 py-0.5 rounded">+{action.rewardAmount} {campaign.tokenName}</span></>}
+      <DialogContent className="sm:max-w-md bg-background/95 backdrop-blur-xl border-white/10 rounded-[2rem] shadow-[0_0_50px_rgba(0,0,0,0.5)] overflow-hidden p-0">
+        <DialogHeader className="p-8 pb-4">
+          <DialogTitle className="text-2xl font-black uppercase tracking-tight text-white">
+            {isHolderCampaign ? "Eligibility Check" : <>Complete Task <span className="text-primary text-sm font-mono bg-primary/10 px-2 py-0.5 rounded">+{action.rewardAmount} {campaign.tokenName}</span></>}
           </DialogTitle>
-          <DialogDescription>
+          <DialogDescription className="text-white/40 font-bold uppercase tracking-widest text-[10px]">
             {isHolderCampaign 
-              ? `Hold ${campaign.minHoldingAmount} ${campaign.tokenName} for ${campaign.minHoldingDuration} days to claim.`
+              ? `Verification for ${campaign.tokenName} rewards`
               : (isWebsiteAction 
-                ? "Visit the project website to earn rewards." 
-                : "Follow the steps below to complete this action and earn rewards.")}
+                ? "Visit project website" 
+                : "Social task verification")}
           </DialogDescription>
         </DialogHeader>
 
-        <div className="py-6 space-y-6">
+        <div className="px-8 pb-8 space-y-6">
           {isHolderCampaign ? (
             <div className="space-y-6">
               {holdingStatus ? (
-                <div className="space-y-6">
+                <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
                   <div className="grid grid-cols-2 gap-4">
-                    <div className="bg-white/5 p-4 rounded-2xl border border-white/5">
-                      <p className="text-[10px] font-black text-white/30 uppercase tracking-widest mb-1">Your Balance</p>
+                    <div className="bg-white/5 p-5 rounded-3xl border border-white/5 shadow-inner">
+                      <p className="text-[10px] font-black text-white/30 uppercase tracking-widest mb-2">Your Wallet</p>
                       <p className={cn(
-                        "text-lg font-black font-mono",
+                        "text-xl font-black font-mono leading-none",
                         (holdingStatus.currentBalance || 0) >= (holdingStatus.requiredBalance || 0) ? "text-primary" : "text-destructive"
                       )}>
-                        {holdingStatus.currentBalance?.toLocaleString()} ${campaign.tokenName}
+                        {holdingStatus.currentBalance?.toLocaleString()} <span className="text-[10px] opacity-40 font-sans">${campaign.tokenName}</span>
                       </p>
                     </div>
-                    <div className="bg-white/5 p-4 rounded-2xl border border-white/5">
-                      <p className="text-[10px] font-black text-white/30 uppercase tracking-widest mb-1">Required</p>
-                      <p className="text-lg font-black font-mono text-white">
-                        {holdingStatus.requiredBalance?.toLocaleString()} ${campaign.tokenName}
+                    <div className="bg-white/5 p-5 rounded-3xl border border-white/5 shadow-inner">
+                      <p className="text-[10px] font-black text-white/30 uppercase tracking-widest mb-2">Required</p>
+                      <p className="text-xl font-black font-mono text-white leading-none">
+                        {holdingStatus.requiredBalance?.toLocaleString()} <span className="text-[10px] opacity-40 font-sans">${campaign.tokenName}</span>
                       </p>
                     </div>
                   </div>
 
-                  <div className="space-y-4">
-                    <div className="flex justify-between items-center text-[10px] font-black uppercase tracking-widest">
-                      <span className="text-white/30">Holding Duration</span>
-                      <span className="text-primary font-black">
-                        {holdingStatus.holdDuration !== undefined ? formatDuration(holdingStatus.holdDuration) : "0s"} / {campaign.minHoldingDuration} DAYS
-                      </span>
+                  <div className="space-y-4 bg-white/[0.02] p-6 rounded-3xl border border-white/5">
+                    <div className="flex justify-between items-center">
+                      <div className="space-y-1">
+                        <p className="text-[10px] font-black text-white/30 uppercase tracking-widest">Holding Progress</p>
+                        <p className="text-2xl font-black text-white">
+                          {holdingStatus.holdDuration !== undefined ? Math.floor((holdingStatus.holdDuration || 0) / (campaign.minHoldingDuration || 1) * 100) : 0}%
+                        </p>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-[10px] font-black text-white/30 uppercase tracking-widest">Hold Time</p>
+                        <p className="text-sm font-black text-primary">
+                          {holdingStatus.holdDuration !== undefined ? formatDuration(holdingStatus.holdDuration) : "0s"}
+                        </p>
+                      </div>
                     </div>
-                    <div className="relative h-3 w-full bg-white/5 rounded-full overflow-hidden">
+                    <div className="relative h-2 w-full bg-white/5 rounded-full overflow-hidden">
                       <div 
-                        className="absolute inset-y-0 left-0 bg-primary transition-all duration-1000 shadow-[0_0_15px_rgba(var(--primary),0.6)]" 
+                        className="absolute inset-y-0 left-0 bg-primary transition-all duration-1000 shadow-[0_0_20px_rgba(var(--primary),0.6)]" 
                         style={{ width: `${Math.min(100, (holdingStatus.holdDuration || 0) / (campaign.minHoldingDuration || 1) * 100)}%` }}
                       />
                     </div>
                     {holdingStatus.remaining !== undefined && holdingStatus.status === 'holding' && (
-                      <p className="text-[10px] text-white/20 text-center font-black uppercase tracking-widest">
-                        {formatDuration(holdingStatus.remaining)} remaining for rewards
-                      </p>
+                      <div className="flex items-center gap-2 justify-center py-2 bg-primary/5 rounded-xl border border-primary/10">
+                        <Loader2 className="w-3 h-3 text-primary animate-spin" />
+                        <p className="text-[10px] text-primary font-black uppercase tracking-widest">
+                          {formatDuration(holdingStatus.remaining)} UNTIL ELIGIBLE
+                        </p>
+                      </div>
                     )}
                   </div>
 
-                  {holdingStatus.status === 'insufficient' && (
-                    <div className="space-y-4 pt-2">
-                      <div className="flex items-center gap-3 text-white/40 text-[10px] font-black uppercase tracking-widest">
-                        <div className="h-[1px] flex-1 bg-white/5" />
-                        BUY FROM
-                        <div className="h-[1px] flex-1 bg-white/5" />
-                      </div>
-                      <div className="flex justify-center gap-4">
-                        <a href={`https://pump.fun/${campaign.tokenAddress}`} target="_blank" rel="noreferrer" className="w-12 h-12 rounded-full bg-white/5 border border-white/10 flex items-center justify-center hover:bg-[#FF8C00]/20 hover:border-[#FF8C00]/40 transition-all">
-                          <img src={CONFIG.ui.walletIcons.pumpfun} className="w-6 h-6 rounded-sm" />
-                        </a>
-                        <a href={`https://jup.ag/swap/SOL-${campaign.tokenAddress}`} target="_blank" rel="noreferrer" className="w-12 h-12 rounded-full bg-white/5 border border-white/10 flex items-center justify-center hover:bg-[#BEF32C]/20 hover:border-[#BEF32C]/40 transition-all">
-                          <img src={CONFIG.ui.walletIcons.jupiter} className="w-6 h-6" />
-                        </a>
-                        <a href={`https://dexscreener.com/solana/${campaign.tokenAddress}`} target="_blank" rel="noreferrer" className="w-12 h-12 rounded-full bg-white/5 border border-white/10 flex items-center justify-center hover:bg-blue-500/20 hover:border-blue-500/40 transition-all">
-                          <img src={CONFIG.ui.walletIcons.dexscreener} className="w-6 h-6 rounded-sm grayscale group-hover:grayscale-0" />
-                        </a>
-                      </div>
+                  <div className="space-y-4">
+                    <div className="flex items-center gap-3 text-white/20 text-[10px] font-black uppercase tracking-widest">
+                      <div className="h-[1px] flex-1 bg-white/5" />
+                      Buy ${campaign.tokenName}
+                      <div className="h-[1px] flex-1 bg-white/5" />
                     </div>
-                  )}
+                    <div className="flex justify-center gap-6">
+                      <a href={`https://pump.fun/${campaign.tokenAddress}`} target="_blank" rel="noreferrer" className="w-14 h-14 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center hover:bg-[#FF8C00]/20 hover:border-[#FF8C00]/40 transition-all shadow-xl group">
+                        <img src={CONFIG.ui.walletIcons.pumpfun} className="w-7 h-7 rounded-sm transition-transform group-hover:scale-110" />
+                      </a>
+                      <a href={`https://jup.ag/swap/SOL-${campaign.tokenAddress}`} target="_blank" rel="noreferrer" className="w-14 h-14 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center hover:bg-[#BEF32C]/20 hover:border-[#BEF32C]/40 transition-all shadow-xl group">
+                        <img src={CONFIG.ui.walletIcons.jupiter} className="w-7 h-7 transition-transform group-hover:scale-110" />
+                      </a>
+                      <a href={`https://dexscreener.com/solana/${campaign.tokenAddress}`} target="_blank" rel="noreferrer" className="w-14 h-14 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center hover:bg-blue-500/20 hover:border-blue-500/40 transition-all shadow-xl group">
+                        <img src={CONFIG.ui.walletIcons.dexscreener} className="w-7 h-7 rounded-sm transition-transform group-hover:scale-110" />
+                      </a>
+                    </div>
+                  </div>
 
                   <Button 
                     onClick={handleVerify} 
                     disabled={verifyMutation.isPending} 
-                    className="w-full h-14 bg-primary hover:bg-primary/90 font-black uppercase tracking-widest rounded-2xl"
+                    className="w-full h-16 bg-primary hover:bg-primary/90 text-primary-foreground font-black uppercase tracking-[0.2em] rounded-[1.5rem] shadow-2xl shadow-primary/20 transition-all active:scale-95"
                   >
                     {verifyMutation.isPending ? (
-                      <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Verifying...</>
+                      <><Loader2 className="mr-2 h-5 w-5 animate-spin" /> SCANNING...</>
                     ) : (
                       holdingStatus.status === 'ready' ? "CLAIM REWARDS" : "REFRESH STATUS"
                     )}
                   </Button>
                 </div>
               ) : (
-                <div className="space-y-6">
-                  <div className="bg-white/5 p-6 rounded-2xl border border-white/10 space-y-4">
-                    <div className="flex justify-between items-center">
-                      <p className="text-[10px] font-black text-white/30 uppercase tracking-widest">Min. Required</p>
-                      <p className="text-sm font-black text-white font-mono">{campaign.minHoldingAmount} ${campaign.tokenName}</p>
+                <div className="space-y-6 animate-in fade-in duration-500">
+                  <div className="bg-white/5 p-8 rounded-[2rem] border border-white/10 space-y-6 relative overflow-hidden group">
+                    <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
+                      <ShieldCheck className="w-32 h-32" />
                     </div>
-                    <div className="flex justify-between items-center">
-                      <p className="text-[10px] font-black text-white/30 uppercase tracking-widest">Hold Period</p>
-                      <p className="text-sm font-black text-white font-mono">{campaign.minHoldingDuration} Days</p>
-                    </div>
-                    <div className="pt-4 border-t border-white/5">
-                      <p className="text-[10px] text-white/20 italic leading-relaxed text-center font-black uppercase tracking-widest">
-                        Rewards are distributed after the holding <br/> period is successfully completed.
+                    <div className="space-y-4 relative z-10">
+                      <div className="flex justify-between items-center border-b border-white/5 pb-4">
+                        <p className="text-[11px] font-black text-white/30 uppercase tracking-widest">Requirement</p>
+                        <p className="text-lg font-black text-white font-mono">{Number(campaign.minHoldingAmount).toLocaleString()} ${campaign.tokenName}</p>
+                      </div>
+                      <div className="flex justify-between items-center border-b border-white/5 pb-4">
+                        <p className="text-[11px] font-black text-white/30 uppercase tracking-widest">Hold Duration</p>
+                        <p className="text-lg font-black text-white font-mono">{campaign.minHoldingDuration} Days</p>
+                      </div>
+                      <p className="text-[11px] text-white/30 italic leading-relaxed text-center font-bold uppercase tracking-widest pt-2">
+                        Proof of holding is verified <br/> directly on the blockchain
                       </p>
                     </div>
                   </div>
@@ -289,11 +301,11 @@ export function VerifyActionDialog({ action, campaign, open, onOpenChange }: Ver
                   <Button 
                     onClick={handleVerify} 
                     disabled={verifyMutation.isPending} 
-                    className="w-full h-14 bg-primary hover:bg-primary/90 font-black uppercase tracking-widest rounded-2xl shadow-xl shadow-primary/20"
+                    className="w-full h-16 bg-primary hover:bg-primary/90 text-primary-foreground font-black uppercase tracking-[0.2em] rounded-[1.5rem] shadow-2xl shadow-primary/40 transition-all active:scale-95"
                   >
                     {verifyMutation.isPending ? (
-                      <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> SCANNING WALLET...</>
-                    ) : "VERIFY & START"}
+                      <><Loader2 className="mr-2 h-5 w-5 animate-spin" /> AUTHENTICATING...</>
+                    ) : "START VERIFICATION"}
                   </Button>
                 </div>
               )}
