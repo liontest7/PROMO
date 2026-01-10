@@ -246,9 +246,14 @@ export default function CampaignDetails() {
             <section className="space-y-4">
               <div className="flex items-center justify-between">
                 <h2 className="text-xl font-display font-black text-white tracking-tight uppercase">Campaign Tasks</h2>
-                <div className="flex items-center gap-2 bg-primary/10 px-4 py-2 rounded-xl border border-primary/20">
-                  <span className="text-xs font-black text-primary uppercase tracking-widest">Rewards</span>
-                  <span className="text-lg font-black text-primary">{campaign.rewardPerWallet || '0'} ${campaign.tokenName}</span>
+                <div className="flex flex-col items-end gap-1">
+                  <div className="flex items-center gap-2 bg-primary/10 px-4 py-2 rounded-xl border border-primary/20">
+                    <span className="text-xs font-black text-primary uppercase tracking-widest">Rewards</span>
+                    <span className="text-lg font-black text-primary">{campaign.rewardPerWallet || '0'} ${campaign.tokenName}</span>
+                  </div>
+                  <p className="text-[8px] text-muted-foreground uppercase font-bold tracking-widest">
+                    Verified by Dropy Anti-Fraud System
+                  </p>
                 </div>
               </div>
 

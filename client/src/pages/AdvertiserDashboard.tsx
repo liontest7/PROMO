@@ -52,6 +52,16 @@ export default function AdvertiserDashboard() {
               </TooltipProvider>
             </div>
             <p className="text-muted-foreground mt-1">Manage your active campaigns and track performance.</p>
+            <div className="mt-4 flex items-center gap-4">
+              <div className="bg-orange-500/10 border border-orange-500/20 px-4 py-2 rounded-xl">
+                <p className="text-[8px] text-orange-500 font-black uppercase tracking-widest">Permanent Burn</p>
+                <p className="text-sm font-black text-white">{PLATFORM_CONFIG.TOKENOMICS.BURN_PERCENT}% per Launch</p>
+              </div>
+              <div className="bg-primary/10 border border-primary/20 px-4 py-2 rounded-xl">
+                <p className="text-[8px] text-primary font-black uppercase tracking-widest">Reward Pool Contribution</p>
+                <p className="text-sm font-black text-white">{PLATFORM_CONFIG.TOKENOMICS.REWARDS_PERCENT}% per Launch</p>
+              </div>
+            </div>
           </div>
           <CreateCampaignDialog />
         </div>

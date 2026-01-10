@@ -49,6 +49,17 @@ export default function Leaderboard() {
                   Hall <span className="text-primary">of Fame</span>
                 </h1>
                 <p className="text-white uppercase tracking-[0.5em] text-xs md:text-sm font-black italic">Top Ecosystem Contributors • Real-time Sync</p>
+                <div className="mt-6 flex flex-col items-center gap-2">
+                  <div className="bg-primary/10 border border-primary/20 px-6 py-3 rounded-2xl backdrop-blur-md">
+                    <p className="text-[10px] text-primary font-black uppercase tracking-[0.2em] mb-1">Weekly Prize Pool</p>
+                    <p className="text-2xl font-black text-white flex items-baseline gap-2">
+                      {(PLATFORM_CONFIG.TOKENOMICS.CREATION_FEE * 0.4).toLocaleString()} <span className="text-xs text-primary">$DROP</span>
+                    </p>
+                  </div>
+                  <p className="text-[9px] text-muted-foreground uppercase tracking-widest font-bold">
+                    40% of all campaign fees distributed weekly to Top 3
+                  </p>
+                </div>
               </div>
               
               {/* Character Trophy positioned to the right and lower */}
