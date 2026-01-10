@@ -15,9 +15,18 @@ export const APP_CONFIG = {
     address: "EPjFW33rdvq2zhpks87j3jt7jjh8p7wlwnvxy3cb68", // Placeholder for user to edit
     price: 0.42,
     buyLinks: {
-      pumpFun: "https://pump.fun/",
-      dexScanner: "https://dexscreener.com/solana/",
-      jupiter: "https://jup.ag/swap/SOL-MEME",
+      pumpFun: {
+        url: "https://pump.fun/",
+        logo: "https://i.ibb.co/60pBq969/pump-logo.png"
+      },
+      dexScanner: {
+        url: "https://dexscreener.com/solana/",
+        logo: "https://dexscreener.com/favicon.png"
+      },
+      jupiter: {
+        url: "https://jup.ag/swap/SOL-MEME",
+        logo: "https://jup.ag/svg/jupiter-logo.svg"
+      },
     },
   },
   socials: {
