@@ -37,8 +37,9 @@ export function TermsModal() {
 
   const handleScroll = (event: React.UIEvent<HTMLDivElement>) => {
     const { scrollTop, scrollHeight, clientHeight } = event.currentTarget;
-    // Require scrolling to within 5px of the bottom for stricter verification
-    if (scrollHeight - scrollTop <= clientHeight + 5) {
+    // Strict bottom detection: within 2 pixels of the actual scrollable bottom
+    const isAtBottom = Math.abs(scrollHeight - scrollTop - clientHeight) < 2;
+    if (isAtBottom) {
       setHasReadToBottom(true);
     }
   };
@@ -73,12 +74,12 @@ export function TermsModal() {
                 Please read and accept our Terms to continue.
               </p>
             </div>
-            <div className="shrink-0 relative pr-10">
+            <div className="shrink-0 relative pr-12">
               <div className="absolute inset-0 bg-primary/10 blur-[20px] rounded-full scale-110" />
               <img 
                 src={PLATFORM_CONFIG.ASSETS.LEGAL_BANNER} 
                 alt="Legal mascot"
-                className="w-36 h-36 object-contain relative z-10 drop-shadow-[0_0_20px_rgba(34,197,94,0.3)]"
+                className="w-44 h-44 object-contain relative z-10 drop-shadow-[0_0_20px_rgba(34,197,94,0.3)]"
               />
             </div>
           </div>
