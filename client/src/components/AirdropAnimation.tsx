@@ -6,19 +6,21 @@ export function AirdropAnimation() {
     <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
       <motion.div
         initial={{ 
-          y: "-20%", 
+          y: "-30%", 
           x: "80%", 
           opacity: 1,
           rotate: -15
         }}
         animate={{ 
-          // Extended descent to 140% to ensure it fully exits the section bottom
-          y: ["-20%", "20%", "60%", "100%", "140%"],
-          x: ["80%", "0%", "100%", "0%", "80%"],
-          rotate: [-15, 15, -15, 15, -15]
+          // Extended descent to 160% to ensure it fully exits the section bottom before reset
+          y: ["-30%", "20%", "60%", "100%", "160%"],
+          // Balanced horizontal sway
+          x: ["80%", "10%", "90%", "10%", "80%"],
+          rotate: [-15, 15, -15, 15, -15],
+          opacity: [1, 1, 1, 1, 1]
         }}
         transition={{
-          duration: 20, // Slightly faster speed as requested
+          duration: 30, // Calmer speed as requested
           repeat: Infinity,
           ease: "linear",
           times: [0, 0.25, 0.5, 0.75, 1]
@@ -28,8 +30,11 @@ export function AirdropAnimation() {
         <img 
           src={PLATFORM_CONFIG.ASSETS.MAIN_LOGO} 
           alt="Falling Mascot" 
-          className="w-full h-full object-contain mix-blend-normal bg-transparent"
-          style={{ filter: "none" }} // Ensure no filters/shadows create circles
+          className="w-full h-full object-contain"
+          style={{ 
+            filter: "drop-shadow(0 30px 60px rgba(0,0,0,0.3))",
+            backgroundColor: "transparent"
+          }} 
         />
       </motion.div>
     </div>
