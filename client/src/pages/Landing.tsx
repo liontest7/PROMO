@@ -12,6 +12,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useQuery } from "@tanstack/react-query";
 
 import { PLATFORM_CONFIG } from "@shared/config";
+import { FloatingLogo } from "@/components/FloatingLogo";
 
 function EarnContentOnly() {
   const { data: campaigns, isLoading } = useCampaigns();
@@ -68,6 +69,7 @@ export default function Landing() {
 
   return (
     <div className="min-h-screen bg-background text-foreground relative">
+      <FloatingLogo />
       <header>
         <title>Dropy - The #1 Solana Marketing Platform</title>
         <meta name="description" content={`Connect, complete tasks, and earn crypto rewards instantly on Solana. The premier engagement platform for real users and authentic growth.`} />
