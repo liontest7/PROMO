@@ -135,47 +135,47 @@ export default function Dashboard() {
       
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-10">
         {/* Profile Header - Optimized Size */}
-        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 p-6 rounded-[2rem] bg-white/[0.04] border border-white/10 backdrop-blur-3xl relative overflow-hidden group shadow-lg">
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 p-8 rounded-[2.5rem] bg-white/[0.04] border border-white/10 backdrop-blur-3xl relative overflow-hidden group shadow-xl">
           <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-transparent to-transparent opacity-60" />
-          <div className="relative z-10 flex flex-col md:flex-row items-center gap-6">
+          <div className="relative z-10 flex flex-col md:flex-row items-center gap-8">
             <div className="relative">
-              <div className="w-20 h-20 rounded-full bg-gradient-to-tr from-primary via-primary/60 to-primary/20 p-1 shadow-[0_0_20px_rgba(34,197,94,0.3)]">
-                <div className="w-full h-full rounded-full bg-background flex items-center justify-center overflow-hidden border-2 border-background">
-                  <img src={PLATFORM_CONFIG.ASSETS.MAIN_LOGO} className="w-12 h-12 object-contain hover:scale-110 transition-transform duration-500" alt="Level Avatar" />
+              <div className="w-28 h-28 rounded-full bg-gradient-to-tr from-primary via-primary/60 to-primary/20 p-1.5 shadow-[0_0_40px_rgba(34,197,94,0.4)]">
+                <div className="w-full h-full rounded-full bg-background flex items-center justify-center overflow-hidden border-4 border-background">
+                  <img src={PLATFORM_CONFIG.ASSETS.MAIN_LOGO} className="w-16 h-16 object-contain hover:scale-110 transition-transform duration-500" alt="Level Avatar" />
                 </div>
               </div>
-              <Badge className="absolute -bottom-2 left-1/2 -translate-x-1/2 px-3 py-1 bg-primary text-primary-foreground font-black text-[9px] rounded-full border-2 border-background shadow-lg uppercase tracking-widest">
+              <Badge className="absolute -bottom-3 left-1/2 -translate-x-1/2 px-5 py-2 bg-primary text-primary-foreground font-black text-xs rounded-full border-4 border-background shadow-xl uppercase tracking-widest">
                 LVL {level}
               </Badge>
             </div>
             
-            <div className="text-center md:text-left space-y-1">
-              <div className="flex flex-col md:flex-row items-center gap-2">
-                <h1 className="text-2xl font-display font-black tracking-tight uppercase italic leading-none text-white drop-shadow-sm">
-                  {walletAddress?.slice(0, 6)}<span className="text-primary">...</span>{walletAddress?.slice(-6)}
+            <div className="text-center md:text-left space-y-2">
+              <div className="flex flex-col md:flex-row items-center gap-3">
+                <h1 className="text-3xl font-display font-black tracking-tighter uppercase italic leading-none text-white drop-shadow-sm">
+                  {walletAddress?.slice(0, 8)}<span className="text-primary">...</span>{walletAddress?.slice(-8)}
                 </h1>
-                <Badge className="bg-primary/20 text-primary border border-primary/40 text-[9px] font-black uppercase px-2 py-0.5 tracking-widest rounded-md">PLATINUM NODE</Badge>
+                <Badge className="bg-primary/20 text-primary border-2 border-primary/40 text-[10px] font-black uppercase px-3 py-0.5 tracking-widest rounded-lg">PLATINUM NODE</Badge>
               </div>
-              <p className="text-white/60 font-black uppercase tracking-widest text-[10px] bg-white/5 inline-block px-2 py-0.5 rounded-full border border-white/10">Protocol Status: Active & Verified</p>
+              <p className="text-white/60 font-black uppercase tracking-[0.2em] text-[11px] bg-white/5 inline-block px-3 py-1 rounded-full border border-white/10">Protocol Status: Active & Verified</p>
             </div>
           </div>
           
-          <div className="relative z-10 grid grid-cols-2 gap-4 lg:min-w-[320px]">
-            <div className="flex flex-col p-4 rounded-2xl bg-black/40 border border-white/10 hover:border-primary/50 transition-all group/card shadow-md backdrop-blur-md">
-              <span className="text-[9px] font-black text-white/40 uppercase tracking-widest mb-1">Protocol Reputation</span>
-              <div className="flex items-center gap-2">
-                <span className="text-3xl font-black font-display text-primary drop-shadow-[0_0_10px_rgba(34,197,94,0.4)]">{stats?.reputation || 100}</span>
-                <Trophy className="w-4 h-4 text-primary opacity-50 group-hover/card:opacity-100 transition-opacity" />
+          <div className="relative z-10 grid grid-cols-2 gap-4 lg:min-w-[360px]">
+            <div className="flex flex-col p-6 rounded-[2rem] bg-black/40 border border-white/10 hover:border-primary/50 transition-all group/card shadow-lg backdrop-blur-md">
+              <span className="text-[10px] font-black text-white/40 uppercase tracking-[0.3em] mb-2">Protocol Reputation</span>
+              <div className="flex items-center gap-3">
+                <span className="text-4xl font-black font-display text-primary drop-shadow-[0_0_15px_rgba(34,197,94,0.5)]">{stats?.reputation || 100}</span>
+                <Trophy className="w-5 h-5 text-primary opacity-50 group-hover/card:opacity-100 transition-opacity" />
               </div>
             </div>
-            <div className="flex flex-col p-4 rounded-2xl bg-black/40 border border-white/10 hover:border-primary/50 transition-all group/card shadow-md backdrop-blur-md">
-              <div className="flex justify-between items-start mb-1">
-                <span className="text-[9px] font-black text-white/40 uppercase tracking-widest">Network Rank</span>
-                {rankChange === "up" && <ArrowUpRight className="w-4 h-4 text-primary animate-bounce-slow" />}
+            <div className="flex flex-col p-6 rounded-[2rem] bg-black/40 border border-white/10 hover:border-primary/50 transition-all group/card shadow-lg backdrop-blur-md">
+              <div className="flex justify-between items-start mb-2">
+                <span className="text-[10px] font-black text-white/40 uppercase tracking-[0.3em]">Network Rank</span>
+                {rankChange === "up" && <ArrowUpRight className="w-5 h-5 text-primary animate-bounce-slow" />}
               </div>
-              <div className="flex items-center gap-2">
-                <span className="text-3xl font-black font-display text-white">#{Math.max(1, 100 - (stats?.reputation || 0))}</span>
-                {rankChange === "up" && <span className="text-xs font-black text-primary font-display border border-primary/30 bg-primary/20 px-1.5 rounded-md">+3</span>}
+              <div className="flex items-center gap-3">
+                <span className="text-4xl font-black font-display text-white">#{Math.max(1, (stats as any)?.totalUsers || 100) - (stats?.reputation || 0)}</span>
+                {rankChange === "up" && <span className="text-sm font-black text-primary font-display border border-primary/30 bg-primary/20 px-2 rounded-lg">+3</span>}
               </div>
             </div>
           </div>
@@ -234,12 +234,12 @@ export default function Dashboard() {
                   ))}
                 </div>
               ) : (
-                <div className="flex flex-col items-center justify-center p-16 rounded-[2.5rem] bg-white/[0.02] border-2 border-dashed border-white/10 group hover:border-primary/40 transition-all duration-500 shadow-inner">
-                  <div className="p-6 rounded-2xl bg-white/5 mb-6 group-hover:bg-primary/20 transition-all duration-500 shadow-lg border border-white/5">
-                    <Activity className="w-12 h-12 text-muted-foreground opacity-30 group-hover:text-primary group-hover:opacity-100 transition-all duration-500" />
+                <div className="flex flex-col items-center justify-center p-12 rounded-[2.5rem] bg-white/[0.02] border border-dashed border-white/10 group hover:border-primary/40 transition-all duration-500 shadow-inner">
+                  <div className="p-4 rounded-xl bg-white/5 mb-4 group-hover:bg-primary/20 transition-all duration-500 shadow-lg border border-white/5">
+                    <Activity className="w-8 h-8 text-muted-foreground opacity-30 group-hover:text-primary group-hover:opacity-100 transition-all duration-500" />
                   </div>
-                  <p className="text-xl font-display font-black uppercase tracking-[0.2em] text-white/20 italic mb-6">Data Pipeline Empty</p>
-                  <Button variant="default" className="bg-primary text-primary-foreground font-black uppercase tracking-widest text-xs px-8 py-6 rounded-lg shadow-lg hover:shadow-primary/40 transition-all transform hover:-translate-y-1" asChild>
+                  <p className="text-base font-display font-black uppercase tracking-[0.2em] text-white/20 italic mb-6 text-center">Data Pipeline Empty</p>
+                  <Button variant="default" className="bg-primary text-primary-foreground font-black uppercase tracking-widest text-[10px] h-10 px-6 rounded-lg shadow-lg hover:shadow-primary/40 transition-all transform hover:-translate-y-0.5" asChild>
                     <Link href="/earn">Engage Network Tasks</Link>
                   </Button>
                 </div>
@@ -313,14 +313,18 @@ export default function Dashboard() {
                   <div className="w-12 h-12 rounded-xl bg-primary flex items-center justify-center shadow-[0_0_30px_rgba(34,197,94,0.5)] border-2 border-white/20 animate-bounce-slow">
                     <Star className="w-6 h-6 text-primary-foreground fill-primary-foreground" />
                   </div>
-                  <TooltipProvider>
+                  <TooltipProvider delayDuration={0}>
                     <Tooltip>
                       <TooltipTrigger asChild>
-                        <Button variant="ghost" size="icon" className="w-8 h-8 rounded-full border border-primary/30 bg-primary/10 text-primary hover:bg-primary/20">
+                        <Button variant="ghost" size="icon" className="w-8 h-8 rounded-full border border-primary/30 bg-primary/10 text-primary hover:bg-primary/20 cursor-help">
                           <HelpCircle className="w-4 h-4" />
                         </Button>
                       </TooltipTrigger>
-                      <TooltipContent className="glass-card border-primary/30 bg-black/90 p-4 rounded-xl shadow-2xl w-64">
+                      <TooltipContent 
+                        side="left" 
+                        align="start"
+                        className="glass-card border-primary/30 bg-black/95 p-4 rounded-xl shadow-[0_10px_40px_rgba(0,0,0,0.8)] w-64 z-[100]"
+                      >
                         <div className="space-y-3">
                           <p className="text-[10px] font-black uppercase tracking-widest text-primary border-b border-primary/20 pb-2">Sentinel Tier Benefits</p>
                           <ul className="space-y-2">
@@ -341,7 +345,7 @@ export default function Dashboard() {
                     </Tooltip>
                   </TooltipProvider>
                 </div>
-                <CardTitle className="text-3xl font-black font-display uppercase leading-none italic tracking-tighter text-white">Ecosystem<br/><span className="text-primary drop-shadow-[0_0_10px_rgba(34,197,94,0.4)]">Impact</span></CardTitle>
+                <CardTitle className="text-3xl font-black font-display uppercase leading-none italic tracking-tighter text-white">Ecosystem <span className="text-primary drop-shadow-[0_0_10px_rgba(34,197,94,0.4)]">Impact</span></CardTitle>
               </CardHeader>
               <CardContent className="relative z-10 p-8 pt-0 space-y-8">
                 <div className="flex items-baseline gap-3">
@@ -362,10 +366,10 @@ export default function Dashboard() {
                       <div className="absolute inset-0 bg-[linear-gradient(90deg,transparent_0%,rgba(255,255,255,0.4)_50%,transparent_100%)] animate-shimmer" />
                     </div>
                   </div>
-                  <div className="flex justify-between items-center text-[8px] font-black uppercase tracking-widest text-white/40">
-                    <span className="flex items-center gap-1.5 bg-white/5 px-1.5 py-0.5 rounded-md border border-white/10"><Badge className="h-3 px-1.5 bg-white/10 text-white border-white/20 text-[7px]">LVL {level}</Badge> INITIATE</span>
-                    <span className="text-primary font-display italic text-xs">TARGET: {nextMilestone}</span>
-                    <span className="flex items-center gap-1.5 bg-primary/10 px-1.5 py-0.5 rounded-md border border-primary/20">SENTINEL <Badge className="h-3 px-1.5 bg-primary text-primary-foreground border-none text-[7px]">LVL {level + 1}</Badge></span>
+                  <div className="flex justify-between items-center text-[10px] font-black uppercase tracking-widest text-white/60">
+                    <span className="flex items-center gap-2 bg-white/5 px-2 py-1 rounded-md border border-white/10"><Badge className="h-4 px-2 bg-white/10 text-white border-white/20 text-[9px]">LVL {level}</Badge> INITIATE</span>
+                    <span className="text-primary font-display italic text-sm">TARGET: {nextMilestone}</span>
+                    <span className="flex items-center gap-2 bg-primary/10 px-2 py-1 rounded-md border border-primary/20">SENTINEL <Badge className="h-4 px-2 bg-primary text-primary-foreground border-none text-[9px]">LVL {level + 1}</Badge></span>
                   </div>
                 </div>
               </CardContent>
