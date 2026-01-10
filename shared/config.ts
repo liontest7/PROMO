@@ -29,6 +29,8 @@ export const PLATFORM_CONFIG = {
       "https://i.ibb.co/pBnZXZps/20260109-2049-Image-Generation-remix-01kej1dxwve5s9jwddtakxjtga.png",
     LEGAL_BANNER:
       "https://i.ibb.co/Wv7S6FnP/20260110-1153-Image-Generation-remix-01kekn4z79ebt8j4bctxwdx91c.png",
+    PRIVACY_BANNER:
+      "https://i.ibb.co/hFY8hK9v/20260110-1301-Image-Generation-remix-01keks0yejfjy9dp3qyxkkjbnt.png",
   },
   ui: {
     walletSelectorBg:

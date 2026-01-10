@@ -18,16 +18,23 @@ export default function PrivacyPolicy() {
 
         <div className="max-w-4xl mx-auto relative z-10">
           <div className="glass-card p-8 md:p-16 border-white/10 rounded-[32px] shadow-[0_0_100px_rgba(0,0,0,0.5)]">
-            <div className="flex flex-col items-center text-center mb-16">
-              <div className="w-20 h-20 rounded-3xl bg-primary/10 flex items-center justify-center border border-primary/20 mb-6 shadow-[0_0_30px_rgba(34,197,94,0.1)]">
-                <Lock className="w-10 h-10 text-primary" />
+            <div className="flex items-center justify-between gap-8 mb-16">
+              <div className="flex-1 text-left">
+                <h1 className="font-display font-black text-5xl md:text-6xl mb-4 uppercase tracking-tighter italic text-white">
+                  Privacy <span className="text-primary">Policy</span>
+                </h1>
+                <div className="flex items-center gap-2 text-muted-foreground/60 font-black uppercase tracking-[0.2em] text-[10px]">
+                  <Eye className="w-3 h-3" />
+                  Last Updated: January 10, 2026
+                </div>
               </div>
-              <h1 className="font-display font-black text-5xl md:text-6xl mb-4 uppercase tracking-tighter italic text-white">
-                Privacy <span className="text-primary">Policy</span>
-              </h1>
-              <div className="flex items-center gap-2 text-muted-foreground/60 font-black uppercase tracking-[0.2em] text-[10px]">
-                <Eye className="w-3 h-3" />
-                Last Updated: January 10, 2026
+              <div className="shrink-0 relative">
+                <div className="absolute inset-0 bg-primary/10 blur-3xl rounded-full scale-150" />
+                <img 
+                  src={PLATFORM_CONFIG.ASSETS.PRIVACY_BANNER} 
+                  alt="Privacy banner"
+                  className="w-32 h-32 md:w-40 md:h-40 object-contain relative z-10 drop-shadow-[0_0_20px_rgba(34,197,94,0.3)]"
+                />
               </div>
             </div>
             
@@ -116,7 +123,6 @@ export default function PrivacyPolicy() {
           </div>
         </div>
       </main>
-      <Footer />
     </div>
   );
 }
