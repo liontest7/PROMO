@@ -8,6 +8,22 @@ import { OnboardingSocials } from "@/components/onboarding/OnboardingSocials";
 import { ScrollToTop } from "@/components/ScrollToTop";
 import { motion, AnimatePresence } from "framer-motion";
 import { Footer } from "@/components/Footer";
+import { ErrorBoundary } from "react-error-boundary";
+
+function ErrorFallback({ error, resetErrorBoundary }: { error: Error; resetErrorBoundary: () => void }) {
+  return (
+    <div className="min-h-screen flex flex-col items-center justify-center p-4 text-center bg-background">
+      <h2 className="text-2xl font-bold mb-4 text-foreground">Something went wrong</h2>
+      <pre className="text-sm bg-muted p-4 rounded mb-4 max-w-full overflow-auto text-destructive">{error.message}</pre>
+      <button
+        onClick={resetErrorBoundary}
+        className="px-4 py-2 bg-primary text-primary-foreground rounded-md hover:opacity-90 transition-opacity"
+      >
+        Try again
+      </button>
+    </div>
+  );
+}
 
 import Landing from "@/pages/Landing";
 import Earn from "@/pages/Earn";
@@ -91,21 +107,23 @@ function Router() {
 
 function App() {
   return (
-    <QueryClientProvider client={queryClient}>
-      <WalletProvider>
-        <TooltipProvider>
-          <Toaster />
-          <ScrollToTop />
-          <OnboardingSocials />
-          <div className="flex flex-col min-h-screen">
-            <div className="flex-grow">
-              <Router />
+    <ErrorBoundary FallbackComponent={ErrorFallback}>
+      <QueryClientProvider client={queryClient}>
+        <WalletProvider>
+          <TooltipProvider>
+            <Toaster />
+            <ScrollToTop />
+            <OnboardingSocials />
+            <div className="flex flex-col min-h-screen">
+              <div className="flex-grow">
+                <Router />
+              </div>
+              <Footer />
             </div>
-            <Footer />
-          </div>
-        </TooltipProvider>
-      </WalletProvider>
-    </QueryClientProvider>
+          </TooltipProvider>
+        </WalletProvider>
+      </QueryClientProvider>
+    </ErrorBoundary>
   );
 }
 
