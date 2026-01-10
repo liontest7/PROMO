@@ -1,5 +1,5 @@
 import { useRoute, useParams, useLocation } from "wouter";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Campaign, Action, Execution, CampaignWithActions } from "@shared/schema";
 import { Loader2, ArrowLeft, ExternalLink, ShieldCheck, Coins, Users, CheckCircle, ArrowRight, Twitter, Send, Zap, Globe, Share2, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -11,7 +11,7 @@ import { Navigation } from "@/components/Navigation";
 import { formatDistanceToNow } from "date-fns";
 import { cn } from "@/lib/utils";
 import { VerifyActionDialog } from "@/components/VerifyActionDialog";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useWallet } from "@/hooks/use-wallet";
 import { useToast } from "@/hooks/use-toast";
 import { CONFIG } from "@shared/config";
@@ -21,6 +21,7 @@ export default function CampaignDetails() {
   const { isConnected, walletAddress, connect, walletBalance } = useWallet();
   const { toast } = useToast();
   const [, setLocation] = useLocation();
+  const queryClient = useQueryClient();
   const [selectedAction, setSelectedAction] = useState<{ action: Action; campaign: Campaign } | null>(null);
 
   // Auto-refresh holding status
