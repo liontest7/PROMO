@@ -51,6 +51,11 @@ export function SuccessCard({
           if (el) {
             el.style.boxShadow = 'none';
           }
+          // Ensure all styles are applied for high-quality export
+          const images = clonedDoc.getElementsByTagName('img');
+          Array.from(images).forEach(img => {
+            img.style.display = 'block';
+          });
         }
       });
       const link = document.createElement("a");
