@@ -6,30 +6,33 @@ export function AirdropAnimation() {
     <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
       <motion.div
         initial={{ 
-          y: "-20%", 
+          y: "-30%", 
           x: "80%", 
           opacity: 0,
           rotate: -15
         }}
         animate={{ 
-          // Smooth S-shaped path that goes fully off-screen at the bottom (140%)
-          y: ["-20%", "20%", "60%", "100%", "140%"],
-          x: ["80%", "10%", "90%", "10%", "80%"],
-          opacity: [0, 1, 1, 1, 0],
+          // Path that starts above and ends completely below the section (150%)
+          y: ["-30%", "20%", "50%", "80%", "150%"],
+          // Wider horizontal movement for a more pronounced S-shape
+          x: ["80%", "0%", "100%", "0%", "80%"],
+          // Stay fully opaque while visible in the section
+          opacity: [0, 0.4, 0.4, 0.4, 0],
           rotate: [-15, 15, -15, 15, -15]
         }}
         transition={{
-          duration: 25, // Slower for a calmer feel
+          duration: 25,
           repeat: Infinity,
-          ease: "easeInOut", // Smoother transitions between points
-          times: [0, 0.15, 0.5, 0.85, 1]
+          ease: "linear",
+          // Opacity control: fade in quickly at top, fade out at very bottom
+          times: [0, 0.1, 0.5, 0.9, 1]
         }}
-        className="absolute w-40 h-40 md:w-56 md:h-56"
+        className="absolute w-48 h-48 md:w-64 md:h-64"
       >
         <img 
           src={PLATFORM_CONFIG.ASSETS.MAIN_LOGO} 
           alt="Falling Mascot" 
-          className="w-full h-full object-contain opacity-30 drop-shadow-[0_30px_60px_rgba(0,0,0,0.3)] blur-[0.3px]"
+          className="w-full h-full object-contain drop-shadow-[0_40px_80px_rgba(0,0,0,0.5)]"
         />
       </motion.div>
     </div>
