@@ -151,19 +151,30 @@ export default function Landing() {
               </Button>
             </div>
 
-            {/* Global Stats - Updated UI */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 w-full max-w-4xl mx-auto">
-              {[
-                { label: "Active Campaigns", value: stats?.activeCampaigns || "0" },
-                { label: "Community Members", value: stats?.totalUsers || "1,240" },
-                { label: "Verified Projects", value: stats?.totalVerifiedProjects || "0" },
-                { label: "Rewards Paid (Tokens)", value: stats ? stats.totalPaid : "450k" },
-              ].map((stat, i) => (
-                <div key={i} className="text-center p-4 rounded-2xl bg-white/5 border border-white/5 backdrop-blur-sm group hover:border-primary/30 transition-all flex flex-col justify-center min-h-[100px]">
-                  <h3 className="text-xl md:text-3xl font-display font-black text-white mb-1 tracking-tighter">{stat.value}</h3>
-                  <p className="text-[9px] md:text-[10px] text-muted-foreground uppercase font-black tracking-widest leading-tight">{stat.label}</p>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-20 max-w-6xl mx-auto">
+              <div className="p-8 rounded-[2.5rem] bg-white/5 border border-white/10 backdrop-blur-xl hover:border-primary/50 transition-all group">
+                <div className="w-14 h-14 rounded-2xl bg-primary/20 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                  <Coins className="w-8 h-8 text-primary" />
                 </div>
-              ))}
+                <h3 className="text-2xl font-black mb-3 italic uppercase tracking-tighter">For Investors</h3>
+                <p className="text-muted-foreground leading-relaxed">Benefit from a <strong>deflationary supply</strong>. Every campaign burns tokens, driving long-term value for $MEME holders.</p>
+              </div>
+              
+              <div className="p-8 rounded-[2.5rem] bg-white/5 border border-white/10 backdrop-blur-xl hover:border-secondary/50 transition-all group">
+                <div className="w-14 h-14 rounded-2xl bg-secondary/20 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                  <Zap className="w-8 h-8 text-secondary" />
+                </div>
+                <h3 className="text-2xl font-black mb-3 italic uppercase tracking-tighter">For Users</h3>
+                <p className="text-muted-foreground leading-relaxed">Turn your engagement into <strong>real rewards</strong>. Complete verified tasks and earn tokens from top Solana projects.</p>
+              </div>
+
+              <div className="p-8 rounded-[2.5rem] bg-white/5 border border-white/10 backdrop-blur-xl hover:border-primary/50 transition-all group">
+                <div className="w-14 h-14 rounded-2xl bg-primary/20 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                  <Rocket className="w-8 h-8 text-primary" />
+                </div>
+                <h3 className="text-2xl font-black mb-3 italic uppercase tracking-tighter">For Projects</h3>
+                <p className="text-muted-foreground leading-relaxed">Scale your community with <strong>verified holders</strong>. Increase trust and long-term retention through proof-of-skin.</p>
+              </div>
             </div>
           </motion.div>
         </div>

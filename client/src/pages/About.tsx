@@ -64,53 +64,55 @@ export default function About() {
           ))}
         </div>
 
-        {/* Mission Section */}
-        <div className="grid md:grid-cols-2 gap-16 items-center mb-24">
-          <div>
-            <h2 className="text-4xl font-display font-bold mb-6">Phase 1: Pure On-Chain Growth</h2>
-            <p className="text-lg text-muted-foreground leading-relaxed mb-6">
-              MemeDrop is starting with a focus on high-conviction growth. Our Phase 1 launch brings 100% on-chain holder verification, ensuring that rewards go to real supporters who hold your tokens.
-            </p>
-            <div className="bg-primary/5 border border-primary/10 p-6 rounded-2xl mb-8">
-              <h3 className="text-xl font-bold text-primary mb-3">Phase 1 Features</h3>
-              <ul className="space-y-2 text-muted-foreground list-disc list-inside">
-                <li>Verify holdings directly on Solana Mainnet.</li>
-                <li>Duration-based rewards for long-term loyalty.</li>
-                <li>Bot-resistant participation through balance checks.</li>
-                <li>Zero social API dependency for maximum privacy.</li>
-              </ul>
-            </div>
-
-            <div className="space-y-4">
-              {[
-                { icon: Rocket, title: "Accelerate Growth", desc: "Get high-quality exposure and real social engagement instantly." },
-                { icon: ShieldCheck, title: "Verified Actions", desc: "Every task is verified on-chain and through digital signatures." },
-                { icon: Zap, title: "Instant Payouts", desc: "No waiting periods. Earn tokens directly to your wallet." },
-              ].map((item, i) => (
-                <div key={i} className="flex gap-4">
-                  <div className="p-2 h-fit rounded-lg bg-primary/10">
-                    <item.icon className="w-5 h-5 text-primary" />
+        {/* Detailed Value Proposition */}
+        <section className="py-20">
+          <div className="grid md:grid-cols-2 gap-16 items-center">
+            <div>
+              <h2 className="text-5xl font-display font-black mb-8 italic uppercase tracking-tighter">Why MemeDrop?</h2>
+              <div className="space-y-8">
+                <div className="flex gap-6">
+                  <div className="w-12 h-12 rounded-xl bg-primary/20 flex items-center justify-center shrink-0">
+                    <ShieldCheck className="w-6 h-6 text-primary" />
                   </div>
                   <div>
-                    <h4 className="font-bold">{item.title}</h4>
-                    <p className="text-sm text-muted-foreground">{item.desc}</p>
+                    <h4 className="text-xl font-bold mb-2">Verified On-Chain Growth</h4>
+                    <p className="text-muted-foreground">Stop paying for bots. Our Phase 1 verification ensures that every participant is a real holder, creating a high-quality community for your project.</p>
                   </div>
                 </div>
-              ))}
+                <div className="flex gap-6">
+                  <div className="w-12 h-12 rounded-xl bg-secondary/20 flex items-center justify-center shrink-0">
+                    <Coins className="w-6 h-6 text-secondary" />
+                  </div>
+                  <div>
+                    <h4 className="text-xl font-bold mb-2">Sustainable Tokenomics</h4>
+                    <p className="text-muted-foreground">Every campaign requires a $MEME burn. This creates a direct link between platform usage and token scarcity, benefiting all long-term investors.</p>
+                  </div>
+                </div>
+                <div className="flex gap-6">
+                  <div className="w-12 h-12 rounded-xl bg-primary/20 flex items-center justify-center shrink-0">
+                    <Users className="w-6 h-6 text-primary" />
+                  </div>
+                  <div>
+                    <h4 className="text-xl font-bold mb-2">Passive & Active Rewards</h4>
+                    <p className="text-muted-foreground">Users earn by being active. Holders earn through the deflationary nature of the token. It's a win-win ecosystem built on the speed of Solana.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="bg-gradient-to-br from-primary/10 to-secondary/10 rounded-[3rem] p-12 border border-white/10 relative">
+              <div className="space-y-6">
+                <div className="p-6 bg-black/40 rounded-2xl border border-white/5 backdrop-blur-md">
+                  <h4 className="text-primary font-black mb-1 uppercase tracking-widest text-xs">For Projects</h4>
+                  <p className="text-lg font-bold">"MemeDrop helped us filter out 90% of bot activity and focus our rewards on real diamond-hand holders."</p>
+                </div>
+                <div className="p-6 bg-black/40 rounded-2xl border border-white/5 backdrop-blur-md translate-x-4">
+                  <h4 className="text-secondary font-black mb-1 uppercase tracking-widest text-xs">For Investors</h4>
+                  <p className="text-lg font-bold">"Watching the supply burn with every new project onboarded gives me massive confidence in the $MEME floor."</p>
+                </div>
+              </div>
             </div>
           </div>
-          <div className="relative">
-            <div className="aspect-square rounded-3xl overflow-hidden bg-gradient-to-br from-primary/20 to-secondary/20 border border-white/10 flex items-center justify-center p-8 group">
-              <img 
-                src={APP_CONFIG.assets.characterQuestion} 
-                alt="About Us" 
-                className="w-full h-full object-contain drop-shadow-[0_0_20px_rgba(34,197,94,0.3)] group-hover:scale-105 transition-transform duration-500" 
-              />
-            </div>
-            {/* Abstract glow */}
-            <div className="absolute inset-0 bg-primary/20 blur-[120px] -z-10" />
-          </div>
-        </div>
+        </section>
 
         {/* Roadmap Section */}
         <section className="py-20 mb-24">
