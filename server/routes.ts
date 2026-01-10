@@ -409,15 +409,10 @@ export async function registerRoutes(
   app.get('/api/leaderboard', async (req, res) => {
     try {
       const { timeframe } = req.query; // all_time, monthly, weekly
-      // Ensure we fetch users regardless of point count to show real participation
-      const leaders = await storage.getAllUsers();
+      // Use getLeaderboard which already handles reputation and creation date sorting
+      const leaders = await storage.getLeaderboard();
       
-      const filtered = leaders
-        .filter(u => u.role === 'user')
-        .sort((a, b) => (b.reputationScore || 0) - (a.reputationScore || 0) || new Date(a.createdAt!).getTime() - new Date(b.createdAt!).getTime())
-        .slice(0, 100);
-
-      const formatted = await Promise.all(filtered.map(async (u, i) => {
+      const formatted = await Promise.all(leaders.map(async (u, i) => {
         const userExecutions = await storage.getExecutionsByUser(u.id);
         const completedCount = userExecutions.filter(e => e.status === 'paid' || e.status === 'verified').length;
         
