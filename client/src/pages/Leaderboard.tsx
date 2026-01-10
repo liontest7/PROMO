@@ -43,28 +43,28 @@ export default function Leaderboard() {
           
           <div className="relative z-10 max-w-4xl mx-auto">
             <div className="flex flex-col items-center justify-center relative py-10">
-              <div className="text-center space-y-4">
-                <h1 className="text-7xl md:text-8xl font-display font-black uppercase italic tracking-tighter leading-none text-white drop-shadow-[0_0_30px_rgba(255,255,255,0.1)]">
+              <div className="text-center space-y-6">
+                <h1 className="text-7xl md:text-9xl font-display font-black uppercase italic tracking-tighter leading-none text-white drop-shadow-[0_0_30px_rgba(255,255,255,0.1)]">
                   Hall <span className="text-primary">of Fame</span>
                 </h1>
-                <p className="text-white uppercase tracking-[0.5em] text-xs font-black italic">Top Ecosystem Contributors • Real-time Sync</p>
+                <p className="text-white uppercase tracking-[0.5em] text-sm md:text-xl font-black italic">Top Ecosystem Contributors • Real-time Sync</p>
               </div>
               
               {/* Character Trophy positioned to the right and lower */}
-              <div className="absolute -bottom-4 right-0 md:right-[-40px] transform translate-y-1/4">
+              <div className="absolute -bottom-16 right-0 md:right-[-120px] transform translate-y-1/2">
                 <div className="relative group">
-                  <div className="absolute inset-0 bg-primary/20 blur-2xl rounded-full opacity-50 group-hover:opacity-100 transition-opacity" />
+                  <div className="absolute inset-0 bg-primary/20 blur-3xl rounded-full opacity-50 group-hover:opacity-100 transition-opacity" />
                   <img 
                     src="https://i.ibb.co/5Xd708DM/20260110-2035-Dropy-Wins-Trophy-remix-01kemjzex0f9xvh2emrc9tk4jy.png" 
                     alt="Dropy Trophy" 
-                    className="w-40 h-40 md:w-48 md:h-48 object-contain relative z-10 drop-shadow-[0_0_40px_rgba(34,197,94,0.4)] hover:scale-110 transition-transform duration-500"
+                    className="w-56 h-56 md:w-80 md:h-80 object-contain relative z-10 drop-shadow-[0_0_40px_rgba(34,197,94,0.4)] hover:scale-110 transition-transform duration-500 scale-x-[-1]"
                   />
                 </div>
               </div>
             </div>
           </div>
 
-          <div className="flex justify-center gap-3 mt-12 relative z-10">
+          <div className="flex justify-center gap-4 mt-20 relative z-10">
             {[
               { id: "weekly", label: "Weekly", icon: Clock },
               { id: "monthly", label: "Monthly", icon: Calendar },
@@ -78,13 +78,13 @@ export default function Leaderboard() {
                   setCurrentPage(1);
                 }}
                 className={cn(
-                  "rounded-2xl font-black uppercase tracking-widest text-[10px] h-10 px-6 transition-all",
+                  "rounded-2xl font-black uppercase tracking-[0.2em] text-sm h-12 px-10 transition-all",
                   timeframe === t.id 
                     ? "bg-primary text-white shadow-[0_0_20px_rgba(34,197,94,0.4)] border-primary" 
                     : "bg-white/5 border-white/10 text-white hover:text-white hover:bg-white/10"
                 )}
               >
-                <t.icon className="w-3.5 h-3.5 mr-2" />
+                <t.icon className="w-5 h-5 mr-2" />
                 {t.label}
               </Button>
             ))}
