@@ -383,7 +383,7 @@ export function VerifyActionDialog({ action, campaign, open, onOpenChange, onSuc
                     </p>
                   </div>
 
-                  <div className="flex justify-center py-2">
+                  <div className="flex justify-center py-2 min-h-[65px]">
                     <Turnstile
                       sitekey={import.meta.env.VITE_TURNSTILE_SITE_KEY}
                       onVerify={(token) => setTurnstileToken(token)}
