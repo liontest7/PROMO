@@ -15,16 +15,18 @@ import { useWallet } from "@/hooks/use-wallet";
 import { useToast } from "@/hooks/use-toast";
 
 export default function CampaignDetails() {
-  const [, params] = useRoute("/campaign/:id");
-  const campaignId = params?.id;
+  const [, params] = useRoute("/campaign/:tokenSymbol");
+  const tokenSymbol = params?.tokenSymbol;
   const [selectedAction, setSelectedAction] = useState<{ action: Action; campaign: Campaign } | null>(null);
   const { toast } = useToast();
   const { isConnected, connect } = useWallet();
 
   const { data: campaign, isLoading: campaignLoading } = useQuery<(Campaign & { actions: Action[] }) | undefined>({
-    queryKey: [`/api/campaigns/${campaignId}`],
-    enabled: !!campaignId,
+    queryKey: [`/api/campaigns/symbol/${tokenSymbol}`],
+    enabled: !!tokenSymbol,
   });
+
+  const campaignId = campaign?.id;
 
   const { data: participants, isLoading: participantsLoading } = useQuery<(Execution & { user: { walletAddress: string } })[]>({
     queryKey: [`/api/executions/campaign/${campaignId}`],

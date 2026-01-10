@@ -124,6 +124,13 @@ export async function registerRoutes(
     res.json(campaign);
   });
 
+  app.get('/api/campaigns/symbol/:symbol', async (req, res) => {
+    const campaigns = await storage.getCampaigns();
+    const campaign = campaigns.find(c => c.tokenName.toLowerCase() === req.params.symbol.toLowerCase());
+    if (!campaign) return res.status(404).json({ message: "Campaign not found" });
+    res.json(campaign);
+  });
+
   app.post(api.campaigns.create.path, async (req, res) => {
     try {
       // Manually parse to handle the extended schema with actions
