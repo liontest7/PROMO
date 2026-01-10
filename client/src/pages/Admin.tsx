@@ -7,9 +7,10 @@ import {
   TableHeader, 
   TableRow 
 } from "@/components/ui/table";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { 
   Users, 
   Megaphone, 
@@ -17,10 +18,17 @@ import {
   ShieldAlert,
   Loader2,
   Activity,
-  ArrowUpRight
+  ArrowUpRight,
+  TrendingUp,
+  Clock,
+  ExternalLink,
+  ShieldCheck,
+  Ban,
+  UserCheck
 } from "lucide-react";
 import { queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import { format } from "date-fns";
 
 export default function AdminDashboard() {
   const { toast } = useToast();
@@ -35,6 +43,16 @@ export default function AdminDashboard() {
 
   const { data: executions, isLoading: loadingExecutions } = useQuery<any[]>({
     queryKey: ["/api/admin/executions"],
+  });
+
+  const { data: adminStats, isLoading: loadingStats } = useQuery<{
+    totalUsers: number;
+    activeCampaigns: number;
+    totalExecutions: number;
+    totalRewardsPaid: number;
+    blockedUsers: number;
+  }>({
+    queryKey: ["/api/admin/stats"],
   });
 
   const updateRoleMutation = useMutation({
@@ -69,20 +87,29 @@ export default function AdminDashboard() {
     }
   });
 
-  const { data: adminStats, isLoading: loadingStats } = useQuery<{
-    totalUsers: number;
-    activeCampaigns: number;
-    totalExecutions: number;
-    totalRewardsPaid: number;
-    blockedUsers: number;
-  }>({
-    queryKey: ["/api/admin/stats"],
+  const updateCampaignStatusMutation = useMutation({
+    mutationFn: async ({ campaignId, status }: { campaignId: number, status: string }) => {
+      const res = await fetch(`/api/admin/campaigns/${campaignId}/status`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status })
+      });
+      if (!res.ok) throw new Error('Failed to update campaign status');
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/campaigns"] });
+      toast({ title: "Success", description: "Campaign status updated" });
+    }
   });
 
   if (loadingUsers || loadingCampaigns || loadingExecutions || loadingStats) {
     return (
-      <div className="flex h-screen items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      <div className="flex h-screen items-center justify-center bg-background">
+        <div className="flex flex-col items-center gap-4">
+          <Loader2 className="h-10 w-10 animate-spin text-primary" />
+          <p className="text-sm font-bold animate-pulse text-primary tracking-widest uppercase">Initializing Admin Console...</p>
+        </div>
       </div>
     );
   }
@@ -94,115 +121,340 @@ export default function AdminDashboard() {
   const totalExecutionsCount = adminStats?.totalExecutions || 0;
 
   return (
-    <div className="container mx-auto py-10 space-y-8">
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
-        <div>
-          <h1 className="text-4xl font-display font-black tracking-tighter uppercase italic">
-            Admin <span className="text-primary">Console</span>
-          </h1>
-          <p className="text-muted-foreground mt-1">Professional Management & Real-time Operations</p>
+    <div className="min-h-screen bg-background text-foreground pb-20">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
+        {/* Header Section */}
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
+          <div>
+            <div className="flex items-center gap-3 mb-2">
+              <Badge variant="outline" className="px-3 py-1 flex gap-2 items-center border-primary/30 bg-primary/5 text-primary">
+                <ShieldCheck className="h-3 w-3" />
+                <span className="text-[10px] font-black uppercase tracking-widest">Master Admin</span>
+              </Badge>
+              <Badge variant="outline" className="px-3 py-1 flex gap-2 items-center border-green-500/30 bg-green-500/5 text-green-500">
+                <Activity className="h-3 w-3 animate-pulse" />
+                <span className="text-[10px] font-black uppercase tracking-widest">Network Live</span>
+              </Badge>
+            </div>
+            <h1 className="text-5xl font-display font-black tracking-tighter uppercase italic leading-none">
+              Admin <span className="text-primary">Terminal</span>
+            </h1>
+            <p className="text-muted-foreground mt-3 font-medium text-sm">Real-time ecosystem management and protocol oversight.</p>
+          </div>
+          
+          <div className="flex items-center gap-4 p-4 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-sm">
+            <div className="flex flex-col items-end">
+              <span className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-1">Total Protocol Value</span>
+              <span className="text-2xl font-black font-display text-primary">{(totalRewardsPaid * 0.42).toFixed(2)} SOL</span>
+            </div>
+            <div className="w-12 h-12 rounded-xl bg-primary/20 flex items-center justify-center">
+              <TrendingUp className="w-6 h-6 text-primary" />
+            </div>
+          </div>
         </div>
-        <div className="flex gap-2">
-          <Badge variant="outline" className="px-3 py-1 flex gap-2 items-center border-primary/30 bg-primary/5">
-            <Activity className="h-3 w-3 text-primary animate-pulse" />
-            System Live
-          </Badge>
+
+        {/* Quick Stats Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <Card className="glass-card border-white/5 bg-white/[0.02] hover-elevate transition-all rounded-2xl">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-[11px] font-black uppercase tracking-widest text-muted-foreground">Total Users</CardTitle>
+              <div className="p-2 rounded-lg bg-blue-500/10">
+                <Users className="h-4 w-4 text-blue-400" />
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="text-3xl font-black font-display">{totalUsersCount}</div>
+              <div className="flex items-center gap-2 mt-2">
+                <Badge variant="outline" className="text-[9px] font-bold border-destructive/20 text-destructive bg-destructive/5">
+                  {blockedUsersCount} BLOCKED
+                </Badge>
+                <span className="text-[10px] text-muted-foreground font-bold">ACTIVE PROTOCOL</span>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="glass-card border-white/5 bg-white/[0.02] hover-elevate transition-all rounded-2xl">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-[11px] font-black uppercase tracking-widest text-muted-foreground">Campaigns</CardTitle>
+              <div className="p-2 rounded-lg bg-orange-500/10">
+                <Megaphone className="h-4 w-4 text-orange-400" />
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="text-3xl font-black font-display">{campaigns?.length || 0}</div>
+              <div className="flex items-center gap-2 mt-2">
+                <Badge variant="outline" className="text-[9px] font-bold border-primary/20 text-primary bg-primary/5">
+                  {activeCampaignsCount} ACTIVE
+                </Badge>
+                <span className="text-[10px] text-muted-foreground font-bold uppercase">MANAGED</span>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="glass-card border-white/5 bg-white/[0.02] hover-elevate transition-all rounded-2xl">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-[11px] font-black uppercase tracking-widest text-muted-foreground">Total Task Load</CardTitle>
+              <div className="p-2 rounded-lg bg-green-500/10">
+                <CheckCircle className="h-4 w-4 text-green-400" />
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="text-3xl font-black font-display">{totalExecutionsCount}</div>
+              <div className="flex items-center gap-2 mt-2">
+                <span className="flex h-2 w-2 rounded-full bg-green-500 animate-pulse" />
+                <span className="text-[10px] text-muted-foreground font-bold uppercase">REAL-TIME VERIFIED</span>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="glass-card border-primary/20 bg-primary/5 hover-elevate transition-all rounded-2xl">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-[11px] font-black uppercase tracking-widest text-primary">Protocol Payouts</CardTitle>
+              <div className="p-2 rounded-lg bg-primary/20">
+                <ArrowUpRight className="h-4 w-4 text-primary" />
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="text-3xl font-black font-display text-primary">{totalRewardsPaid.toLocaleString()}</div>
+              <p className="text-[10px] text-primary/60 mt-1 uppercase font-black tracking-widest">Distributed Tokens</p>
+            </CardContent>
+          </Card>
         </div>
-      </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <Card className="bg-white/5 border-white/10 hover:bg-white/10 transition-colors">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Users</CardTitle>
-            <Users className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{totalUsersCount}</div>
-            <p className="text-[10px] text-muted-foreground mt-1 uppercase tracking-wider">{blockedUsersCount} blocked</p>
-          </CardContent>
-        </Card>
-        <Card className="bg-white/5 border-white/10 hover:bg-white/10 transition-colors">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Campaigns</CardTitle>
-            <Megaphone className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{campaigns?.length || 0}</div>
-            <p className="text-[10px] text-primary mt-1 uppercase tracking-wider font-bold">{activeCampaignsCount} active</p>
-          </CardContent>
-        </Card>
-        <Card className="bg-white/5 border-white/10 hover:bg-white/10 transition-colors">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Executions</CardTitle>
-            <CheckCircle className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{totalExecutionsCount}</div>
-            <p className="text-[10px] text-muted-foreground mt-1 uppercase tracking-wider">Total tasks done</p>
-          </CardContent>
-        </Card>
-        <Card className="bg-white/5 border-white/10 hover:bg-white/10 transition-colors">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Rewards Paid</CardTitle>
-            <ArrowUpRight className="h-4 w-4 text-primary" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-primary">{totalRewardsPaid.toLocaleString()}</div>
-            <p className="text-[10px] text-muted-foreground mt-1 uppercase tracking-wider">Token distribution</p>
-          </CardContent>
-        </Card>
-      </div>
+        {/* Main Console Area */}
+        <Tabs defaultValue="users" className="w-full">
+          <div className="flex items-center justify-between mb-6">
+            <TabsList className="bg-white/5 border border-white/10 p-1 rounded-xl">
+              <TabsTrigger value="users" className="rounded-lg px-6 font-bold uppercase text-[10px] tracking-widest data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+                Protocol Users
+              </TabsTrigger>
+              <TabsTrigger value="campaigns" className="rounded-lg px-6 font-bold uppercase text-[10px] tracking-widest data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+                Active Campaigns
+              </TabsTrigger>
+              <TabsTrigger value="executions" className="rounded-lg px-6 font-bold uppercase text-[10px] tracking-widest data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+                Live Feed
+              </TabsTrigger>
+            </TabsList>
+          </div>
 
-      <Card className="bg-white/5 border-white/10">
-        <CardHeader>
-          <CardTitle>User Management</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Wallet</TableHead>
-                <TableHead>Role</TableHead>
-                <TableHead>Reputation</TableHead>
-                <TableHead>Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {users?.map((user: any) => (
-                <TableRow key={user.id}>
-                  <TableCell className="font-mono text-xs">{user.walletAddress}</TableCell>
-                  <TableCell>
-                    <Badge variant={user.role === 'admin' ? 'destructive' : 'secondary'}>
-                      {user.role}
-                    </Badge>
-                  </TableCell>
-                  <TableCell>{user.reputationScore}</TableCell>
-                  <TableCell className="text-right flex justify-end gap-2">
-                    <Button 
-                      size="sm" 
-                      variant={user.isBlocked ? "destructive" : "outline"}
-                      className="h-8 text-xs"
-                      onClick={() => updateBlockStatusMutation.mutate({ userId: user.id, isBlocked: !user.isBlocked })}
-                    >
-                      {user.isBlocked ? "Unblock" : "Block"}
-                    </Button>
-                    {user.role !== 'admin' && (
-                      <Button 
-                        size="sm" 
-                        variant="ghost"
-                        className="h-8 text-xs"
-                        onClick={() => updateRoleMutation.mutate({ userId: user.id, role: 'admin' })}
-                      >
-                        Make Admin
-                      </Button>
-                    )}
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </CardContent>
-      </Card>
+          <TabsContent value="users">
+            <Card className="glass-card border-white/10 bg-white/[0.01] rounded-2xl overflow-hidden">
+              <CardHeader className="border-b border-white/5 bg-white/[0.02]">
+                <CardTitle className="text-xl">Protocol Users</CardTitle>
+                <CardDescription>Monitor wallet activity and manage access control.</CardDescription>
+              </CardHeader>
+              <CardContent className="p-0">
+                <Table>
+                  <TableHeader className="bg-white/[0.02]">
+                    <TableRow className="border-white/5 hover:bg-transparent">
+                      <TableHead className="text-[10px] font-black uppercase text-muted-foreground tracking-widest">Wallet Identifier</TableHead>
+                      <TableHead className="text-[10px] font-black uppercase text-muted-foreground tracking-widest">Permission Level</TableHead>
+                      <TableHead className="text-[10px] font-black uppercase text-muted-foreground tracking-widest">Trust Score</TableHead>
+                      <TableHead className="text-[10px] font-black uppercase text-muted-foreground tracking-widest">Joined Protocol</TableHead>
+                      <TableHead className="text-right text-[10px] font-black uppercase text-muted-foreground tracking-widest pr-8">Actions</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {users?.map((user: any) => (
+                      <TableRow key={user.id} className="border-white/5 hover:bg-white/[0.02] transition-colors">
+                        <TableCell className="font-mono text-[11px] font-bold py-4">
+                          <span className="text-primary mr-1 opacity-50">#</span>
+                          {user.walletAddress}
+                        </TableCell>
+                        <TableCell>
+                          <Badge 
+                            variant={user.role === 'admin' ? 'default' : 'secondary'}
+                            className={user.role === 'admin' ? 'bg-red-500/10 text-red-500 border-red-500/20 text-[10px] font-black uppercase' : 'text-[10px] font-black uppercase'}
+                          >
+                            {user.role}
+                          </Badge>
+                        </TableCell>
+                        <TableCell>
+                          <div className="flex items-center gap-2">
+                            <span className="text-sm font-bold font-display">{user.reputationScore}</span>
+                            <div className="w-12 h-1.5 rounded-full bg-white/5 overflow-hidden">
+                              <div 
+                                className="h-full bg-primary" 
+                                style={{ width: `${Math.min(100, (user.reputationScore / 500) * 100)}%` }}
+                              />
+                            </div>
+                          </div>
+                        </TableCell>
+                        <TableCell className="text-xs text-muted-foreground font-medium">
+                          {user.createdAt ? format(new Date(user.createdAt), 'MMM d, yyyy') : 'Genesis'}
+                        </TableCell>
+                        <TableCell className="text-right pr-8">
+                          <div className="flex justify-end gap-2">
+                            <Button 
+                              size="sm" 
+                              variant={user.isBlocked ? "default" : "outline"}
+                              className={user.isBlocked 
+                                ? "h-8 bg-green-500/10 text-green-500 border-green-500/20 hover:bg-green-500/20 px-4 font-bold text-[10px] uppercase" 
+                                : "h-8 border-red-500/20 text-red-400 hover:bg-red-500/10 px-4 font-bold text-[10px] uppercase"}
+                              onClick={() => updateBlockStatusMutation.mutate({ userId: user.id, isBlocked: !user.isBlocked })}
+                            >
+                              {user.isBlocked ? <UserCheck className="w-3 h-3 mr-1" /> : <Ban className="w-3 h-3 mr-1" />}
+                              {user.isBlocked ? "Unblock" : "Block User"}
+                            </Button>
+                            {user.role !== 'admin' && (
+                              <Button 
+                                size="sm" 
+                                variant="ghost"
+                                className="h-8 text-[10px] font-black uppercase hover:bg-primary/10 hover:text-primary"
+                                onClick={() => updateRoleMutation.mutate({ userId: user.id, role: 'admin' })}
+                              >
+                                Upgrade to Admin
+                              </Button>
+                            )}
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="campaigns">
+            <Card className="glass-card border-white/10 bg-white/[0.01] rounded-2xl overflow-hidden">
+              <CardHeader className="border-b border-white/5 bg-white/[0.02]">
+                <CardTitle className="text-xl">Protocol Campaigns</CardTitle>
+                <CardDescription>Oversight of all active and historical project listings.</CardDescription>
+              </CardHeader>
+              <CardContent className="p-0">
+                <Table>
+                  <TableHeader className="bg-white/[0.02]">
+                    <TableRow className="border-white/5 hover:bg-transparent">
+                      <TableHead className="text-[10px] font-black uppercase text-muted-foreground tracking-widest">Project</TableHead>
+                      <TableHead className="text-[10px] font-black uppercase text-muted-foreground tracking-widest">Token Info</TableHead>
+                      <TableHead className="text-[10px] font-black uppercase text-muted-foreground tracking-widest">Budget Utilization</TableHead>
+                      <TableHead className="text-[10px] font-black uppercase text-muted-foreground tracking-widest">Status</TableHead>
+                      <TableHead className="text-right text-[10px] font-black uppercase text-muted-foreground tracking-widest pr-8">Actions</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {campaigns?.map((campaign: any) => (
+                      <TableRow key={campaign.id} className="border-white/5 hover:bg-white/[0.02] transition-colors">
+                        <TableCell className="py-4">
+                          <div className="flex items-center gap-3">
+                            <div className="w-8 h-8 rounded bg-white/5 border border-white/10 overflow-hidden">
+                              {campaign.logoUrl && <img src={campaign.logoUrl} className="w-full h-full object-cover" />}
+                            </div>
+                            <span className="font-bold text-sm">{campaign.title}</span>
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          <div className="flex flex-col">
+                            <span className="text-xs font-black text-primary uppercase">${campaign.tokenName}</span>
+                            <span className="text-[10px] font-mono text-muted-foreground">{campaign.tokenAddress.slice(0, 4)}...{campaign.tokenAddress.slice(-4)}</span>
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          <div className="flex flex-col gap-1 w-32">
+                            <div className="flex justify-between text-[10px] font-bold">
+                              <span>{campaign.remainingBudget}</span>
+                              <span className="text-muted-foreground">/ {campaign.totalBudget}</span>
+                            </div>
+                            <div className="w-full h-1.5 rounded-full bg-white/5 overflow-hidden">
+                              <div 
+                                className="h-full bg-primary" 
+                                style={{ width: `${(Number(campaign.remainingBudget) / Number(campaign.totalBudget)) * 100}%` }}
+                              />
+                            </div>
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          <Badge 
+                            variant="outline" 
+                            className={campaign.status === 'active' 
+                              ? 'bg-green-500/10 text-green-500 border-green-500/20 text-[9px] font-black uppercase' 
+                              : 'bg-white/10 text-white/50 border-white/20 text-[9px] font-black uppercase'}
+                          >
+                            {campaign.status}
+                          </Badge>
+                        </TableCell>
+                        <TableCell className="text-right pr-8">
+                          <div className="flex justify-end gap-2">
+                            <Button size="sm" variant="ghost" className="h-8 w-8 p-0" asChild>
+                              <a href={`/campaign/${campaign.id}`} target="_blank">
+                                <ExternalLink className="h-3 w-3" />
+                              </a>
+                            </Button>
+                            <Button 
+                              size="sm" 
+                              variant="outline" 
+                              className="h-8 text-[10px] font-black uppercase border-white/10"
+                              onClick={() => updateCampaignStatusMutation.mutate({ 
+                                campaignId: campaign.id, 
+                                status: campaign.status === 'active' ? 'paused' : 'active' 
+                              })}
+                            >
+                              {campaign.status === 'active' ? 'Pause' : 'Activate'}
+                            </Button>
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="executions">
+            <Card className="glass-card border-white/10 bg-white/[0.01] rounded-2xl overflow-hidden">
+              <CardHeader className="border-b border-white/5 bg-white/[0.02]">
+                <CardTitle className="text-xl">Protocol Event Log</CardTitle>
+                <CardDescription>Real-time audit trail of all task verifications and payouts.</CardDescription>
+              </CardHeader>
+              <CardContent className="p-0">
+                <Table>
+                  <TableHeader className="bg-white/[0.02]">
+                    <TableRow className="border-white/5 hover:bg-transparent">
+                      <TableHead className="text-[10px] font-black uppercase text-muted-foreground tracking-widest">Protocol User</TableHead>
+                      <TableHead className="text-[10px] font-black uppercase text-muted-foreground tracking-widest">Operation</TableHead>
+                      <TableHead className="text-[10px] font-black uppercase text-muted-foreground tracking-widest">Status</TableHead>
+                      <TableHead className="text-[10px] font-black uppercase text-muted-foreground tracking-widest text-right pr-8">Timestamp</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {executions?.map((execution: any) => (
+                      <TableRow key={execution.id} className="border-white/5 hover:bg-white/[0.02] transition-colors">
+                        <TableCell className="py-4">
+                          <div className="flex items-center gap-2">
+                            <div className="w-2 h-2 rounded-full bg-primary shadow-[0_0_8px_rgba(34,197,94,0.4)]" />
+                            <span className="font-mono text-[11px] font-bold">{execution.user?.walletAddress?.slice(0, 12)}...</span>
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          <div className="flex flex-col">
+                            <span className="text-xs font-bold">{execution.action?.title}</span>
+                            <span className="text-[10px] text-muted-foreground font-medium uppercase tracking-tighter">PROJECT: {execution.campaign?.title}</span>
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          <Badge 
+                            variant="outline" 
+                            className={execution.status === 'paid' 
+                              ? 'bg-primary/10 text-primary border-primary/20 text-[9px] font-black uppercase' 
+                              : 'bg-yellow-500/10 text-yellow-500 border-yellow-500/20 text-[9px] font-black uppercase'}
+                          >
+                            {execution.status}
+                          </Badge>
+                        </TableCell>
+                        <TableCell className="text-right pr-8 text-xs font-mono text-muted-foreground">
+                          {execution.createdAt ? format(new Date(execution.createdAt), 'HH:mm:ss') : 'LIVE'}
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </CardContent>
+            </Card>
+          </TabsContent>
+        </Tabs>
+      </div>
     </div>
   );
 }
