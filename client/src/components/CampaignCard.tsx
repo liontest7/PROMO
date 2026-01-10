@@ -52,53 +52,53 @@ export function CampaignCard({ campaign, onActionClick, isOwner }: CampaignCardP
       className="h-full"
     >
       <Card className="glass-card h-full flex flex-col hover:border-primary/30 transition-all duration-300 group overflow-hidden relative border-white/5 bg-background/40 backdrop-blur-md rounded-3xl">
-        <Link href={`/campaign/${campaign.id}`}>
-          <div className="relative h-40 w-full overflow-hidden cursor-pointer">
-            {campaign.bannerUrl ? (
-              <img 
-                src={campaign.bannerUrl} 
-                alt={campaign.title} 
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
-              />
-            ) : (
-              <div className="w-full h-full bg-gradient-to-br from-primary/20 to-secondary/20" />
-            )}
-            <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-background/40 to-transparent" />
-            
-            <div className="absolute top-4 right-4 flex gap-2">
-              <Badge variant={campaign.status === 'active' ? 'default' : 'secondary'} className="uppercase text-[10px] tracking-widest font-black shadow-2xl">
-                {campaign.status}
-              </Badge>
-            </div>
+        <div className="relative h-40 w-full overflow-hidden">
+          {campaign.bannerUrl ? (
+            <img 
+              src={campaign.bannerUrl} 
+              alt={campaign.title} 
+              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
+            />
+          ) : (
+            <div className="w-full h-full bg-gradient-to-br from-primary/20 to-secondary/20" />
+          )}
+          <Link href={`/campaign/${campaign.id}`} className="absolute inset-0 cursor-pointer">
+            <div className="w-full h-full bg-gradient-to-t from-background/90 via-background/40 to-transparent" />
+          </Link>
 
-            <div className="absolute bottom-4 right-4 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-              {campaign.websiteUrl && (
-                <Button size="icon" variant="secondary" className="h-8 w-8 rounded-full bg-background/80 backdrop-blur-md border border-white/10" asChild>
-                  <a href={campaign.websiteUrl} target="_blank" rel="noreferrer" onClick={(e) => e.stopPropagation()}>
-                    <Globe className="w-3.5 h-3.5" />
-                  </a>
-                </Button>
-              )}
-              {campaign.twitterUrl && (
-                <Button size="icon" variant="secondary" className="h-8 w-8 rounded-full bg-background/80 backdrop-blur-md border border-white/10" asChild>
-                  <a href={campaign.twitterUrl} target="_blank" rel="noreferrer" onClick={(e) => e.stopPropagation()}>
-                    <Twitter className="w-3.5 h-3.5" />
-                  </a>
-                </Button>
-              )}
-              {campaign.telegramUrl && (
-                <Button size="icon" variant="secondary" className="h-8 w-8 rounded-full bg-background/80 backdrop-blur-md border border-white/10" asChild>
-                  <a href={campaign.telegramUrl} target="_blank" rel="noreferrer" onClick={(e) => e.stopPropagation()}>
-                    <Send className="w-3.5 h-3.5" />
-                  </a>
-                </Button>
-              )}
-              <Button size="icon" variant="secondary" className="h-8 w-8 rounded-full bg-background/80 backdrop-blur-md border border-white/10" onClick={handleCopyLink}>
-                {copied ? <Check className="w-3.5 h-3.5 text-green-500" /> : <Share2 className="w-3.5 h-3.5" />}
-              </Button>
-            </div>
+          <div className="absolute top-4 right-4 flex gap-2 z-20">
+            <Badge variant={campaign.status === 'active' ? 'default' : 'secondary'} className="uppercase text-[10px] tracking-widest font-black shadow-2xl">
+              {campaign.status}
+            </Badge>
           </div>
-        </Link>
+
+          <div className="absolute bottom-4 right-4 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-20">
+            {campaign.websiteUrl && (
+              <Button size="icon" variant="secondary" className="h-8 w-8 rounded-full bg-background/80 backdrop-blur-md border border-white/10" asChild>
+                <a href={campaign.websiteUrl} target="_blank" rel="noreferrer" onClick={(e) => e.stopPropagation()}>
+                  <Globe className="w-3.5 h-3.5" />
+                </a>
+              </Button>
+            )}
+            {campaign.twitterUrl && (
+              <Button size="icon" variant="secondary" className="h-8 w-8 rounded-full bg-background/80 backdrop-blur-md border border-white/10" asChild>
+                <a href={campaign.twitterUrl} target="_blank" rel="noreferrer" onClick={(e) => e.stopPropagation()}>
+                  <Twitter className="w-3.5 h-3.5" />
+                </a>
+              </Button>
+            )}
+            {campaign.telegramUrl && (
+              <Button size="icon" variant="secondary" className="h-8 w-8 rounded-full bg-background/80 backdrop-blur-md border border-white/10" asChild>
+                <a href={campaign.telegramUrl} target="_blank" rel="noreferrer" onClick={(e) => e.stopPropagation()}>
+                  <Send className="w-3.5 h-3.5" />
+                </a>
+              </Button>
+            )}
+            <Button size="icon" variant="secondary" className="h-8 w-8 rounded-full bg-background/80 backdrop-blur-md border border-white/10" onClick={handleCopyLink}>
+              {copied ? <Check className="w-3.5 h-3.5 text-green-500" /> : <Share2 className="w-3.5 h-3.5" />}
+            </Button>
+          </div>
+        </div>
 
         <CardHeader className="pb-1 relative pt-10 px-6">
           <div className="absolute -top-10 left-6 w-20 h-24 flex flex-col gap-2">
