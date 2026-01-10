@@ -16,7 +16,8 @@ export default function Leaderboard() {
 
   const { data: leaders, isLoading } = useQuery<any[]>({
     queryKey: ["/api/leaderboard", timeframe],
-    staleTime: 10000
+    refetchInterval: 5000,
+    staleTime: 0
   });
 
   if (isLoading) {
@@ -57,7 +58,7 @@ export default function Leaderboard() {
                   <img 
                     src="https://i.ibb.co/5Xd708DM/20260110-2035-Dropy-Wins-Trophy-remix-01kemjzex0f9xvh2emrc9tk4jy.png" 
                     alt="Dropy Trophy" 
-                    className="w-48 h-48 md:w-64 md:h-64 object-contain relative z-10 drop-shadow-[0_0_40px_rgba(34,197,94,0.4)] hover:scale-110 transition-transform duration-500 scale-x-[-1]"
+                    className="w-48 h-48 md:w-64 md:h-64 object-contain relative z-10 drop-shadow-[0_0_40px_rgba(34,197,94,0.4)] scale-x-[-1]"
                   />
                 </div>
               </div>

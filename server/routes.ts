@@ -409,22 +409,37 @@ export async function registerRoutes(
   app.get('/api/leaderboard', async (req, res) => {
     try {
       const { timeframe } = req.query; // all_time, monthly, weekly
-      // Use getLeaderboard which already handles reputation and creation date sorting
-      const leaders = await storage.getLeaderboard();
       
-      const formatted = await Promise.all(leaders.map(async (u, i) => {
+      // Explicitly fetch all users with 'user' role
+      const allUsers = await storage.getAllUsers();
+      const leaders = allUsers.filter(u => u.role === 'user');
+      
+      console.log(`[Leaderboard API] Total users in DB: ${allUsers.length}, Users with 'user' role: ${leaders.length}`);
+      
+      // Sort: Reputation first, then registration date
+      leaders.sort((a, b) => {
+        const scoreA = a.reputationScore || 0;
+        const scoreB = b.reputationScore || 0;
+        if (scoreB !== scoreA) return scoreB - scoreA;
+        return new Date(a.createdAt || 0).getTime() - new Date(b.createdAt || 0).getTime();
+      });
+
+      const limitedLeaders = leaders.slice(0, 100);
+      
+      const formatted = await Promise.all(limitedLeaders.map(async (u, i) => {
         const userExecutions = await storage.getExecutionsByUser(u.id);
         const completedCount = userExecutions.filter(e => e.status === 'paid' || e.status === 'verified').length;
         
         return {
           rank: i + 1,
-          name: u.walletAddress.slice(0, 4) + "..." + u.walletAddress.slice(-4),
-          fullWallet: u.walletAddress,
+          name: u.walletAddress ? (u.walletAddress.slice(0, 4) + "..." + u.walletAddress.slice(-4)) : "Unknown",
+          fullWallet: u.walletAddress || "",
           points: u.reputationScore || 0,
-          avatar: u.walletAddress.slice(0, 2).toUpperCase(),
+          avatar: u.walletAddress ? u.walletAddress.slice(0, 2).toUpperCase() : "?",
           tasks: completedCount
         };
       }));
+      
       res.json(formatted);
     } catch (err) {
       console.error("Leaderboard API error:", err);
