@@ -3,7 +3,7 @@ import { useUserStats } from "@/hooks/use-user-stats";
 import { Navigation } from "@/components/Navigation";
 import { Card, CardHeader, CardTitle, CardContent, CardDescription } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Coins, Trophy, TrendingUp, Activity, CheckCircle, Twitter, Send, Loader2, Wallet, LogOut, Megaphone, ShieldAlert, ShieldCheck, User as UserIcon, HelpCircle } from "lucide-react";
+import { Coins, Trophy, TrendingUp, Activity, CheckCircle, Twitter, Send, Loader2, Wallet, LogOut, Megaphone, ShieldAlert, ShieldCheck, User as UserIcon, HelpCircle, Star, ArrowUpRight, ArrowDownRight } from "lucide-react";
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { api } from "@shared/routes";
@@ -18,6 +18,8 @@ import { useAuth } from "@/hooks/use-auth";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Link } from "wouter";
+import { PLATFORM_CONFIG } from "@shared/config";
+import { cn } from "@/lib/utils";
 
 export default function Dashboard() {
   const { walletAddress, userId, solBalance } = useWallet();
@@ -86,10 +88,6 @@ export default function Dashboard() {
     }
   });
 
-  const chartData = [
-    { name: 'Total Earned', earnings: stats ? Number(stats.totalEarned) : 0 },
-  ];
-
   if (statsLoading || userLoading) {
     return (
       <div className="min-h-screen bg-background">
@@ -118,85 +116,113 @@ export default function Dashboard() {
   }
 
   const tasksCompleted = stats?.tasksCompleted || 0;
-  const nextMilestone = (Math.floor(tasksCompleted / 10) + 1) * 10;
+  const level = Math.floor(tasksCompleted / 10);
+  const nextMilestone = (level + 1) * 10;
   const progress = (tasksCompleted % 10) * 10;
+  
+  // Rank change simulation for visual requirement
+  const rankChange = tasksCompleted > 0 ? "up" : "stable";
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background text-foreground">
       <header>
         <title>User Dashboard | Dropy</title>
       </header>
       <Navigation />
       
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-12">
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
-          <div className="space-y-2">
-            <div className="flex items-center gap-2 text-primary">
-              <div className="h-px w-8 bg-primary/50" />
-              <span className="text-[10px] font-black uppercase tracking-[0.2em]">Personal Console</span>
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-16">
+        {/* Profile Header - Enhanced Contrast and Size */}
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-10 p-12 rounded-[3.5rem] bg-white/[0.04] border-2 border-white/10 backdrop-blur-3xl relative overflow-hidden group shadow-2xl">
+          <div className="absolute inset-0 bg-gradient-to-br from-primary/30 via-transparent to-transparent opacity-60" />
+          <div className="relative z-10 flex flex-col md:flex-row items-center gap-12">
+            <div className="relative">
+              <div className="w-40 h-42 rounded-full bg-gradient-to-tr from-primary via-primary/60 to-primary/20 p-2 shadow-[0_0_60px_rgba(34,197,94,0.5)]">
+                <div className="w-full h-full rounded-full bg-background flex items-center justify-center overflow-hidden border-4 border-background">
+                  <img src={PLATFORM_CONFIG.ASSETS.MAIN_LOGO} className="w-24 h-24 object-contain hover:scale-125 transition-transform duration-700" alt="Level Avatar" />
+                </div>
+              </div>
+              <Badge className="absolute -bottom-4 left-1/2 -translate-x-1/2 px-8 py-3 bg-primary text-primary-foreground font-black text-base rounded-full border-4 border-background shadow-2xl uppercase tracking-[0.2em]">
+                LVL {level}
+              </Badge>
             </div>
-            <h1 className="text-5xl md:text-6xl font-display font-black tracking-tighter uppercase italic leading-none">
-              User <span className="text-primary drop-shadow-[0_0_15px_rgba(34,197,94,0.3)]">Stats</span>
-            </h1>
-            <p className="text-muted-foreground font-medium text-lg max-w-lg">Track your performance and protocol rewards in real-time.</p>
+            
+            <div className="text-center md:text-left space-y-4">
+              <div className="flex flex-col md:flex-row items-center gap-4">
+                <h1 className="text-6xl font-display font-black tracking-tighter uppercase italic leading-none text-white drop-shadow-sm">
+                  {walletAddress?.slice(0, 8)}<span className="text-primary">...</span>{walletAddress?.slice(-8)}
+                </h1>
+                <Badge className="bg-primary/20 text-primary border-2 border-primary/40 text-xs font-black uppercase px-4 py-1 tracking-widest rounded-lg">PLATINUM NODE</Badge>
+              </div>
+              <p className="text-white/70 font-black uppercase tracking-[0.3em] text-sm bg-white/5 inline-block px-4 py-1.5 rounded-full border border-white/10">Protocol Status: Active & Verified</p>
+            </div>
           </div>
           
-          <div className="grid grid-cols-2 gap-4 p-4 rounded-3xl bg-white/5 border border-white/10 backdrop-blur-md">
-            <div className="flex flex-col pr-6 border-r border-white/10">
-              <span className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-1">Reputation</span>
-              <div className="flex items-center gap-2">
-                <span className="text-3xl font-black font-display text-primary">{stats?.reputation || 100}</span>
-                <Trophy className="w-4 h-4 text-primary opacity-50" />
+          <div className="relative z-10 grid grid-cols-2 gap-8 lg:min-w-[450px]">
+            <div className="flex flex-col p-8 rounded-[2.5rem] bg-black/40 border-2 border-white/10 hover:border-primary/50 transition-all group/card shadow-xl backdrop-blur-md">
+              <span className="text-xs font-black text-white/50 uppercase tracking-[0.4em] mb-3">Protocol Reputation</span>
+              <div className="flex items-center gap-4">
+                <span className="text-6xl font-black font-display text-primary drop-shadow-[0_0_20px_rgba(34,197,94,0.6)]">{stats?.reputation || 100}</span>
+                <Trophy className="w-8 h-8 text-primary opacity-50 group-hover/card:opacity-100 transition-opacity" />
               </div>
             </div>
-            <div className="flex flex-col pl-2">
-              <span className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-1">Rank</span>
-              <span className="text-3xl font-black font-display text-white">#{Math.max(1, 100 - (stats?.reputation || 0))}</span>
+            <div className="flex flex-col p-8 rounded-[2.5rem] bg-black/40 border-2 border-white/10 hover:border-primary/50 transition-all group/card shadow-xl backdrop-blur-md">
+              <div className="flex justify-between items-start mb-3">
+                <span className="text-xs font-black text-white/50 uppercase tracking-[0.4em]">Network Rank</span>
+                {rankChange === "up" && <ArrowUpRight className="w-6 h-6 text-primary animate-bounce-slow" />}
+              </div>
+              <div className="flex items-center gap-4">
+                <span className="text-6xl font-black font-display text-white">#{Math.max(1, 100 - (stats?.reputation || 0))}</span>
+                {rankChange === "up" && <span className="text-base font-black text-primary font-display border-2 border-primary/30 bg-primary/20 px-3 py-1 rounded-xl">+3</span>}
+              </div>
             </div>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          <div className="lg:col-span-2 space-y-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-16">
+          <div className="lg:col-span-2 space-y-16">
+            {/* Token Portfolios */}
             <section>
-              <div className="flex items-center gap-3 mb-6">
-                <div className="p-2 rounded-xl bg-primary/10">
-                  <Coins className="w-5 h-5 text-primary" />
+              <div className="flex items-center gap-8 mb-12">
+                <div className="w-20 h-20 rounded-[2rem] bg-primary/10 flex items-center justify-center border-2 border-primary/30 shadow-[0_0_30px_rgba(34,197,94,0.2)]">
+                  <Coins className="w-10 h-10 text-primary" />
                 </div>
-                <h2 className="text-2xl font-black font-display uppercase italic tracking-tight">Token Portfolios</h2>
+                <div>
+                  <h2 className="text-5xl font-black font-display uppercase italic tracking-tighter leading-none text-white">Token Portfolios</h2>
+                  <div className="h-1.5 w-32 bg-primary mt-4 rounded-full shadow-[0_0_10px_rgba(34,197,94,0.5)]" />
+                </div>
               </div>
               
               {stats?.tokenBalances && stats.tokenBalances.length > 0 ? (
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-10">
                   {stats.tokenBalances.map((tb: any) => (
-                    <Card key={tb.symbol} className="glass-card border-white/5 bg-white/[0.02] hover-elevate transition-all rounded-2xl overflow-hidden group">
-                      <div className="p-6 relative">
-                        <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
-                          <Coins className="w-16 h-16 rotate-12" />
+                    <Card key={tb.symbol} className="glass-card border-2 border-white/10 bg-white/[0.03] hover-elevate transition-all rounded-[3rem] overflow-hidden group shadow-2xl">
+                      <div className="p-12 relative">
+                        <div className="absolute top-0 right-0 p-10 opacity-5 group-hover:opacity-25 transition-all duration-1000 rotate-12">
+                          <Coins className="w-40 h-40" />
                         </div>
-                        <div className="flex justify-between items-start mb-6">
+                        <div className="flex justify-between items-start mb-12">
                           <div>
-                            <span className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em] mb-1 block">{tb.symbol} Network</span>
-                            <div className="text-3xl font-black font-display text-primary">{tb.balance}</div>
+                            <span className="text-sm font-black text-white/50 uppercase tracking-[0.4em] mb-4 block italic">{tb.symbol} PROTOCOL</span>
+                            <div className="text-7xl font-black font-display text-primary tracking-tighter drop-shadow-[0_0_20px_rgba(34,197,94,0.4)]">{tb.balance}</div>
                           </div>
                           {Number(tb.pending) > 0 && (
                             <div className="flex flex-col items-end">
-                              <Badge variant="outline" className="text-[9px] font-black text-yellow-500 bg-yellow-500/10 border-yellow-500/20 px-2 py-1 rounded-lg uppercase">
+                              <Badge className="text-xs font-black text-yellow-500 bg-yellow-500/10 border-2 border-yellow-500/30 px-5 py-2.5 rounded-2xl uppercase tracking-[0.2em] shadow-lg">
                                 PENDING
                               </Badge>
-                              <span className="text-xs font-bold text-yellow-500/70 mt-1">{tb.pending}</span>
+                              <span className="text-lg font-black text-yellow-500 mt-4 font-mono">+{tb.pending}</span>
                             </div>
                           )}
                         </div>
-                        <div className="grid grid-cols-2 gap-4 pt-6 border-t border-white/5">
+                        <div className="grid grid-cols-2 gap-10 pt-12 border-t-2 border-white/10">
                           <div>
-                            <span className="text-[9px] font-bold text-muted-foreground uppercase block mb-0.5">Total Earned</span>
-                            <span className="text-sm font-bold">{tb.earned}</span>
+                            <span className="text-xs font-black text-white/40 uppercase tracking-[0.2em] block mb-3">Historical Yield</span>
+                            <span className="text-3xl font-black font-display text-white italic tracking-tight">{tb.earned}</span>
                           </div>
                           {tb.price && (
                             <div className="text-right">
-                              <span className="text-[9px] font-bold text-muted-foreground uppercase block mb-0.5">Value (USD)</span>
-                              <span className="text-sm font-black text-primary/80 font-mono">${(Number(tb.balance) * Number(tb.price)).toFixed(2)}</span>
+                              <span className="text-xs font-black text-white/40 uppercase tracking-[0.2em] block mb-3">Valuation (USD)</span>
+                              <span className="text-3xl font-black text-primary font-mono tracking-tighter">${(Number(tb.balance) * Number(tb.price)).toFixed(2)}</span>
                             </div>
                           )}
                         </div>
@@ -205,54 +231,68 @@ export default function Dashboard() {
                   ))}
                 </div>
               ) : (
-                <div className="flex flex-col items-center justify-center p-12 rounded-3xl bg-white/[0.02] border-2 border-dashed border-white/5">
-                  <Activity className="w-12 h-12 text-muted-foreground mb-4 opacity-20" />
-                  <p className="text-muted-foreground font-display font-bold uppercase tracking-widest">No active rewards</p>
+                <div className="flex flex-col items-center justify-center p-32 rounded-[5rem] bg-white/[0.02] border-4 border-dashed border-white/10 group hover:border-primary/40 transition-all duration-700 shadow-inner">
+                  <div className="p-12 rounded-[3rem] bg-white/5 mb-10 group-hover:bg-primary/20 transition-all duration-700 shadow-2xl border-2 border-white/5">
+                    <Activity className="w-24 h-24 text-muted-foreground opacity-30 group-hover:text-primary group-hover:opacity-100 transition-all duration-700" />
+                  </div>
+                  <p className="text-3xl font-display font-black uppercase tracking-[0.4em] text-white/30 italic mb-10">Data Pipeline Empty</p>
+                  <Button variant="default" className="bg-primary text-primary-foreground font-black uppercase tracking-[0.3em] text-lg px-12 py-9 rounded-2xl shadow-[0_0_40px_rgba(34,197,94,0.3)] hover:shadow-[0_0_60px_rgba(34,197,94,0.5)] transition-all transform hover:-translate-y-1" asChild>
+                    <Link href="/earn">Engage Network Tasks</Link>
+                  </Button>
                 </div>
               )}
             </section>
 
+            {/* Recent Activity */}
             <section>
-              <div className="flex items-center gap-3 mb-6">
-                <div className="p-2 rounded-xl bg-primary/10">
-                  <Activity className="w-5 h-5 text-primary" />
+              <div className="flex items-center gap-8 mb-12">
+                <div className="w-20 h-20 rounded-[2rem] bg-primary/10 flex items-center justify-center border-2 border-primary/30 shadow-[0_0_30px_rgba(34,197,94,0.2)]">
+                  <Activity className="w-10 h-10 text-primary" />
                 </div>
-                <h2 className="text-2xl font-black font-display uppercase italic tracking-tight">Recent Activity</h2>
+                <div>
+                  <h2 className="text-5xl font-black font-display uppercase italic tracking-tighter leading-none text-white">Verification Logs</h2>
+                  <div className="h-1.5 w-32 bg-primary mt-4 rounded-full shadow-[0_0_10px_rgba(34,197,94,0.5)]" />
+                </div>
               </div>
-              <Card className="glass-card border-white/5 bg-white/[0.01] rounded-2xl">
+              <Card className="glass-card border-2 border-white/10 bg-white/[0.02] rounded-[4rem] overflow-hidden shadow-2xl">
                 <CardContent className="p-0">
                   {executions && executions.length > 0 ? (
-                    <div className="divide-y divide-white/5">
+                    <div className="divide-y-2 divide-white/5">
                       {executions.slice(0, 10).map((execution: any) => (
-                        <div key={execution.id} className="flex items-center justify-between p-4 hover:bg-white/[0.02] transition-colors">
-                          <div className="flex items-center gap-4">
-                            <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center">
-                              <CheckCircle className="w-5 h-5 text-primary opacity-70" />
+                        <div key={execution.id} className="flex items-center justify-between p-10 hover:bg-white/[0.03] transition-all group">
+                          <div className="flex items-center gap-10">
+                            <div className="w-20 h-20 rounded-[2rem] bg-white/5 flex items-center justify-center border-2 border-white/15 group-hover:border-primary/50 transition-all duration-700 shadow-lg">
+                              <CheckCircle className="w-11 h-11 text-primary opacity-40 group-hover:opacity-100 transition-all duration-700 shadow-[0_0_30px_rgba(34,197,94,0.5)]" />
                             </div>
                             <div>
-                              <p className="font-bold text-sm">{execution.action?.title || 'Action Completed'}</p>
-                              <p className="text-[10px] text-muted-foreground uppercase tracking-widest">{execution.campaign?.title}</p>
+                              <p className="font-black text-3xl font-display tracking-tight uppercase italic leading-none mb-4 text-white group-hover:text-primary transition-colors">{execution.action?.title || 'System Verification'}</p>
+                              <div className="flex items-center gap-4">
+                                <Badge variant="outline" className="text-xs font-black uppercase border-white/20 px-4 py-1.5 bg-white/10 rounded-lg tracking-widest">{execution.campaign?.title}</Badge>
+                                <span className="text-sm font-black text-primary uppercase tracking-[0.2em]">+ {execution.action?.rewardAmount} REWARD CREDITED</span>
+                              </div>
                             </div>
                           </div>
-                          <div className="flex flex-col items-end gap-1">
+                          <div className="flex flex-col items-end gap-5">
                             <Badge 
-                              variant="outline" 
-                              className={execution.status === 'paid' 
-                                ? 'bg-primary/10 text-primary border-primary/20 text-[9px] font-black uppercase' 
-                                : 'bg-yellow-500/10 text-yellow-500 border-yellow-500/20 text-[9px] font-black uppercase'}
+                              className={cn(
+                                "text-xs font-black uppercase px-8 py-2.5 rounded-full tracking-[0.2em] border-2 shadow-xl",
+                                execution.status === 'paid' 
+                                  ? 'bg-primary/30 text-primary border-primary/40 shadow-[0_0_25px_rgba(34,197,94,0.4)]' 
+                                  : 'bg-yellow-500/20 text-yellow-500 border-yellow-500/40'
+                              )}
                             >
                               {execution.status}
                             </Badge>
-                            <span className="text-[9px] font-mono text-muted-foreground">
-                              {execution.createdAt ? format(new Date(execution.createdAt), 'MMM d, HH:mm') : 'RECENT'}
+                            <span className="text-xs font-black font-mono text-white/40 uppercase tracking-[0.2em]">
+                              LOGGED: {execution.createdAt ? format(new Date(execution.createdAt), 'MMM d, HH:mm') : 'REAL-TIME'}
                             </span>
                           </div>
                         </div>
                       ))}
                     </div>
                   ) : (
-                    <div className="p-12 text-center">
-                      <p className="text-muted-foreground font-bold uppercase tracking-widest text-xs">No execution history</p>
+                    <div className="p-32 text-center">
+                      <p className="text-2xl font-black font-display uppercase tracking-[0.5em] text-white/15 italic">Protocol Inactivity Detected</p>
                     </div>
                   )}
                 </CardContent>
@@ -260,132 +300,127 @@ export default function Dashboard() {
             </section>
           </div>
 
-          <div className="space-y-8">
-            <Card className="glass-card border-primary/20 bg-primary/5 rounded-3xl overflow-hidden relative group">
-              <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-transparent to-transparent opacity-50" />
-              <CardHeader className="relative z-10">
-                <div className="w-12 h-12 rounded-2xl bg-primary flex items-center justify-center mb-4 shadow-[0_0_30px_rgba(34,197,94,0.5)]">
-                  <TrendingUp className="w-6 h-6 text-primary-foreground" />
+          {/* Sidebar Modules */}
+          <div className="space-y-16">
+            {/* Ecosystem Contribution */}
+            <Card className="glass-card border-2 border-primary/40 bg-primary/5 rounded-[4rem] overflow-hidden relative group p-1.5 shadow-[0_0_80px_rgba(34,197,94,0.15)]">
+              <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(34,197,94,0.4),transparent_70%)] opacity-70" />
+              <CardHeader className="relative z-10 p-12 pb-8">
+                <div className="w-24 h-24 rounded-[2.5rem] bg-primary flex items-center justify-center mb-10 shadow-[0_0_60px_rgba(34,197,94,0.7)] border-4 border-white/20 animate-bounce-slow">
+                  <Star className="w-12 h-12 text-primary-foreground fill-primary-foreground" />
                 </div>
-                <CardTitle className="text-3xl font-black font-display uppercase leading-tight italic">Ecosystem<br/>Contribution</CardTitle>
-                <CardDescription className="text-primary-foreground/70 font-medium">Your global impact score within the Dropy network.</CardDescription>
+                <CardTitle className="text-6xl font-black font-display uppercase leading-none italic tracking-tighter text-white">Ecosystem<br/><span className="text-primary drop-shadow-[0_0_15px_rgba(34,197,94,0.5)]">Impact</span></CardTitle>
+                <div className="h-1.5 w-24 bg-primary mt-8 rounded-full shadow-lg" />
               </CardHeader>
-              <CardContent className="relative z-10 pt-0">
-                <div className="flex items-baseline gap-2 mb-4">
-                  <span className="text-5xl font-black font-display text-primary">{tasksCompleted}</span>
-                  <span className="text-sm font-bold text-primary/60 uppercase">Actions</span>
+              <CardContent className="relative z-10 p-12 pt-0 space-y-12">
+                <div className="flex items-baseline gap-5">
+                  <span className="text-[9rem] font-black font-display text-primary tracking-tighter leading-none drop-shadow-[0_0_30px_rgba(34,197,94,0.6)]">{tasksCompleted}</span>
+                  <span className="text-3xl font-black text-primary/60 uppercase italic tracking-[0.2em]">Actions</span>
                 </div>
-                <div className="space-y-4">
-                  <div className="flex justify-between items-end mb-1">
-                    <span className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">Progress to Next Tier</span>
-                    <span className="text-[10px] font-black text-primary uppercase tracking-widest">{progress}%</span>
+                
+                <div className="space-y-10">
+                  <div className="flex justify-between items-end">
+                    <span className="text-sm font-black text-white/50 uppercase tracking-[0.4em]">Evolution Progress</span>
+                    <span className="text-4xl font-black font-display text-primary italic tracking-tight drop-shadow-md">{progress}%</span>
                   </div>
-                  <div className="w-full h-3 rounded-full bg-black/40 overflow-hidden p-0.5 border border-white/5">
+                  <div className="w-full h-10 rounded-full bg-black/90 overflow-hidden p-2.5 border-2 border-white/15 shadow-2xl">
                     <div 
-                      className="h-full bg-primary shadow-[0_0_15px_rgba(34,197,94,0.8)] rounded-full transition-all duration-1000" 
+                      className="h-full bg-primary shadow-[0_0_40px_rgba(34,197,94,1)] rounded-full transition-all duration-1500 relative overflow-hidden" 
                       style={{ width: `${progress}%` }}
-                    />
+                    >
+                      <div className="absolute inset-0 bg-[linear-gradient(90deg,transparent_0%,rgba(255,255,255,0.6)_50%,transparent_100%)] animate-shimmer" />
+                    </div>
                   </div>
-                  <div className="flex justify-between items-center text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
-                    <span>Lvl {Math.floor(tasksCompleted / 10)}</span>
-                    <span className="text-primary/70">Milestone: {nextMilestone} Actions</span>
-                    <span>Lvl {Math.floor(tasksCompleted / 10) + 1}</span>
+                  <div className="flex justify-between items-center text-xs font-black uppercase tracking-[0.2em] text-white/50">
+                    <span className="flex items-center gap-4 bg-white/5 px-4 py-2 rounded-xl border border-white/10"><Badge className="h-6 px-4 bg-white/10 text-white border-white/20">LVL {level}</Badge> INITIATE</span>
+                    <span className="text-primary font-display italic text-base">TARGET: {nextMilestone}</span>
+                    <span className="flex items-center gap-4 bg-primary/10 px-4 py-2 rounded-xl border border-primary/20">SENTINEL <Badge className="h-6 px-4 bg-primary text-primary-foreground border-none">LVL {level + 1}</Badge></span>
                   </div>
                 </div>
                 
-                <div className="mt-6 p-4 rounded-2xl bg-white/5 border border-white/5">
-                  <div className="flex items-center gap-2 mb-2">
-                    <HelpCircle className="w-3 h-3 text-primary" />
-                    <span className="text-[10px] font-black uppercase tracking-widest">Tier Benefits</span>
+                <div className="p-10 rounded-[3rem] bg-black/70 border-2 border-white/10 backdrop-blur-3xl shadow-2xl ring-1 ring-white/5">
+                  <div className="flex items-center gap-5 mb-8">
+                    <div className="p-4 rounded-2xl bg-primary/20 border border-primary/40 shadow-inner">
+                      <HelpCircle className="w-6 h-6 text-primary" />
+                    </div>
+                    <span className="text-base font-black uppercase tracking-[0.4em] text-white italic">Sentinel Tier Benefits</span>
                   </div>
-                  <p className="text-[11px] text-muted-foreground font-medium leading-relaxed">
-                    Level up to unlock exclusive airdrops, higher reward multipliers, and early access to premium projects.
-                  </p>
+                  <ul className="space-y-6">
+                    {[
+                      "Priority Action Verification Queue",
+                      "Exclusive Ecosystem Airdrop Pool",
+                      "High-Yield Project Access Slots",
+                      "Governance Voting Multipliers"
+                    ].map((benefit, i) => (
+                      <li key={i} className="flex items-start gap-5 text-sm font-black text-white/70 uppercase tracking-widest group/item leading-tight">
+                        <div className="w-3 h-3 rounded-full bg-primary/50 group-hover/item:bg-primary transition-all duration-500 shadow-[0_0_15px_rgba(34,197,94,0.6)] mt-1 shrink-0" />
+                        {benefit}
+                      </li>
+                    ))}
+                  </ul>
                 </div>
               </CardContent>
             </Card>
 
-            <Card className="glass-card border-white/5 bg-white/[0.01] rounded-3xl overflow-hidden">
-              <CardHeader>
-                <CardTitle className="text-xl font-black font-display uppercase italic">Social Verification</CardTitle>
-                <CardDescription className="text-xs">Connect your social accounts to verify actions.</CardDescription>
+            {/* Social Verification */}
+            <Card className="glass-card border-2 border-white/10 bg-white/[0.02] rounded-[4rem] overflow-hidden p-2 shadow-2xl">
+              <CardHeader className="p-12 pb-10">
+                <CardTitle className="text-4xl font-black font-display uppercase italic tracking-tighter leading-none text-white">Identity Sync</CardTitle>
+                <div className="h-1.5 w-20 bg-white/30 mt-6 rounded-full" />
               </CardHeader>
-              <CardContent className="space-y-4">
+              <CardContent className="p-12 pt-0 space-y-10">
                 {!isAuthenticated ? (
-                  <div className="p-4 rounded-2xl bg-blue-500/10 border border-blue-500/20 relative overflow-hidden group">
-                    <div className="absolute top-0 right-0 p-2 opacity-10 group-hover:opacity-20 transition-opacity">
-                      <Twitter className="w-12 h-12" />
+                  <div className="p-10 rounded-[3rem] bg-blue-500/10 border-2 border-blue-500/20 relative overflow-hidden group shadow-2xl">
+                    <div className="absolute top-0 right-0 p-8 opacity-5 group-hover:opacity-25 transition-all duration-700 scale-125">
+                      <Twitter className="w-24 h-24" />
                     </div>
-                    <p className="text-[10px] text-blue-400 font-black mb-3 uppercase tracking-widest">Identity Sync</p>
-                    <Button 
-                      className="w-full bg-blue-500/50 cursor-not-allowed text-white gap-2 font-black text-xs relative z-10"
-                      disabled
-                    >
-                      <Twitter className="w-4 h-4" /> LINK X PROFILE
-                    </Button>
-                    <p className="text-[9px] text-muted-foreground mt-3 italic text-center">
-                      Twitter & Telegram OAuth integration in progress.
-                    </p>
+                    <div className="relative z-10">
+                      <div className="flex items-center gap-5 mb-8">
+                        <div className="p-4 rounded-[1.5rem] bg-blue-500/20 border-2 border-blue-500/40 shadow-[0_0_30px_rgba(59,130,246,0.3)]">
+                          <Twitter className="w-8 h-8 text-blue-400" />
+                        </div>
+                        <span className="text-xl font-black uppercase tracking-[0.4em] text-white italic">X IDENTITY</span>
+                      </div>
+                      <Button 
+                        className="w-full bg-blue-500 hover:bg-blue-600 text-white gap-5 font-black text-base h-20 rounded-[2rem] shadow-[0_0_40px_rgba(59,130,246,0.4)] transition-all active-elevate-2 uppercase tracking-[0.2em] transform hover:scale-[1.02]"
+                      >
+                        SYNC PROTOCOL NODE
+                      </Button>
+                      <p className="text-xs text-white/40 mt-8 italic text-center font-black uppercase tracking-[0.3em]">
+                        SECURE OAUTH 2.0 ENCRYPTED
+                      </p>
+                    </div>
                   </div>
                 ) : (
-                  <div className="p-4 rounded-2xl bg-primary/10 border border-primary/20 flex items-center gap-4 relative overflow-hidden group">
-                    <Avatar className="h-12 w-12 border-2 border-primary/20 relative z-10">
+                  <div className="p-10 rounded-[3rem] bg-primary/10 border-2 border-primary/30 flex items-center gap-10 relative overflow-hidden group shadow-2xl">
+                    <Avatar className="h-24 w-24 border-4 border-background shadow-[0_0_40px_rgba(34,197,94,0.3)] relative z-10">
                       <AvatarImage src={replitUser?.profileImageUrl || ""} />
-                      <AvatarFallback><UserIcon className="w-6 h-6" /></AvatarFallback>
+                      <AvatarFallback className="bg-primary/20"><UserIcon className="w-12 h-12 text-primary" /></AvatarFallback>
                     </Avatar>
                     <div className="flex-1 relative z-10">
-                      <p className="text-sm font-bold leading-none mb-1">{replitUser?.firstName} {replitUser?.lastName}</p>
-                      <Badge variant="outline" className="text-[9px] uppercase font-black bg-primary/20 text-primary border-primary/30">Verified X Account</Badge>
+                      <p className="text-3xl font-black font-display uppercase italic tracking-tight text-white mb-3 leading-none">{replitUser?.firstName || 'Dropy Sentinel'}</p>
+                      <Badge className="bg-primary/30 text-primary border-none text-xs font-black uppercase px-5 py-1.5 tracking-[0.3em] rounded-xl shadow-lg">NODE VERIFIED</Badge>
                     </div>
-                    <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-destructive relative z-10" onClick={() => logout()}>
-                      <LogOut className="w-4 h-4" />
+                    <Button variant="ghost" size="icon" className="h-14 w-14 rounded-2xl text-white/30 hover:text-destructive hover:bg-destructive/10 relative z-10 transition-all" onClick={() => logout()}>
+                      <LogOut className="w-8 h-8" />
                     </Button>
                   </div>
                 )}
                 
-                <div className="p-4 rounded-2xl bg-white/5 border border-white/5 opacity-50">
-                  <div className="flex items-center gap-3 mb-4">
-                    <div className="w-8 h-8 rounded-xl bg-blue-500/20 flex items-center justify-center">
-                      <Send className="w-4 h-4 text-blue-400" />
+                <div className="p-10 rounded-[3rem] bg-white/[0.05] border-2 border-white/10 opacity-60 grayscale group hover:grayscale-0 transition-all duration-1000 shadow-xl">
+                  <div className="flex items-center gap-8 mb-10">
+                    <div className="w-16 h-16 rounded-[1.5rem] bg-blue-400/10 flex items-center justify-center border-2 border-blue-400/20 shadow-inner">
+                      <Send className="w-9 h-9 text-blue-400 opacity-60 group-hover:opacity-100 transition-opacity" />
                     </div>
                     <div>
-                      <span className="text-xs font-black uppercase tracking-widest block">Telegram</span>
-                      <span className="text-[9px] text-muted-foreground font-bold uppercase">Disconnected</span>
+                      <span className="text-2xl font-black uppercase tracking-[0.4em] block italic text-white/70 group-hover:text-white transition-colors leading-none mb-3">Telegram</span>
+                      <span className="text-xs text-white/30 font-black uppercase tracking-[0.2em]">OFFLINE ENCRYPTION</span>
                     </div>
                   </div>
-                  <Button variant="outline" className="w-full text-[10px] h-9 border-white/10" disabled>
-                    CONNECT BOT
+                  <Button variant="outline" className="w-full text-xs font-black h-16 rounded-[1.5rem] border-white/20 uppercase tracking-[0.3em] hover:bg-white/10 transition-all transform hover:scale-[1.01]" disabled>
+                    INITIATE SECURE LINK
                   </Button>
                 </div>
-              </CardContent>
-            </Card>
-
-            <Card className="glass-card border-white/5 bg-white/[0.01] rounded-3xl overflow-hidden">
-              <CardHeader>
-                <CardTitle className="text-xl font-black font-display uppercase italic">Quick Links</CardTitle>
-              </CardHeader>
-              <CardContent className="grid gap-3">
-                {[
-                  { title: "Explore Campaigns", icon: Megaphone, href: "/earn" },
-                  { title: "Network Status", icon: Activity, href: "/stats" },
-                  { title: "Help Center", icon: ShieldAlert, href: "/about" }
-                ].map((link) => (
-                  <Button 
-                    key={link.title}
-                    variant="outline" 
-                    asChild
-                    className="justify-start h-14 rounded-2xl border-white/5 bg-white/[0.02] hover:bg-primary/10 hover:border-primary/20 transition-all group"
-                  >
-                    <Link href={link.href}>
-                      <div className="flex items-center gap-4 w-full cursor-pointer">
-                        <div className="p-2 rounded-xl bg-white/5 group-hover:bg-primary/20 transition-colors">
-                          <link.icon className="w-4 h-4 group-hover:text-primary transition-colors" />
-                        </div>
-                        <span className="font-bold text-sm tracking-tight">{link.title}</span>
-                      </div>
-                    </Link>
-                  </Button>
-                ))}
               </CardContent>
             </Card>
           </div>

@@ -62,16 +62,17 @@ export function Navigation() {
 
             <div className="hidden md:flex items-center gap-3">
               <NavLink href="/earn" icon={Coins}>Earn Rewards</NavLink>
+              <NavLink href="/about" icon={ShieldCheck}>About Us</NavLink>
+              
               {isConnected && (
                 <>
                   <NavLink href="/dashboard" icon={Trophy}>My Dashboard</NavLink>
-                  <NavLink href="/about" icon={ShieldCheck}>About Us</NavLink>
                   {(role === "advertiser" || (role as any) === "admin") && (
                     <Button 
                       variant="ghost" 
                       size="icon" 
                       asChild 
-                      className="h-10 w-10 rounded-full bg-primary/10 text-primary hover:bg-primary/20 transition-all border border-primary/20 ml-2"
+                      className="h-10 w-10 rounded-full bg-primary/10 text-primary hover:bg-primary/20 transition-all border border-primary/20 ml-2 p-0 flex items-center justify-center shrink-0 overflow-hidden"
                       title={role === "advertiser" ? "Admin Console" : "Admin Panel"}
                     >
                       <Link href={role === "advertiser" ? "/advertiser" : "/admin"} className="flex items-center justify-center w-full h-full">
