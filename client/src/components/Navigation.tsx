@@ -55,7 +55,7 @@ export function Navigation() {
             <div className="w-16 h-16 overflow-visible">
               <img src={PLATFORM_CONFIG.ASSETS.MAIN_LOGO} alt="Logo" className="w-full h-full object-contain scale-125 group-hover:scale-150 transition-transform duration-500" />
             </div>
-            <span className="font-display font-black text-3xl tracking-tighter bg-gradient-to-r from-white via-white to-gray-400 bg-clip-text text-transparent">
+            <span className="font-display font-black text-3xl tracking-tighter bg-gradient-to-r from-white via-white to-gray-400 bg-clip-text text-transparent group-hover:scale-110 transition-transform duration-500 origin-left">
               MEMEDROP
             </span>
           </Link>
@@ -96,7 +96,7 @@ export function Navigation() {
                   <DropdownMenuItem asChild className="cursor-pointer focus:bg-primary/10 focus:text-primary">
                     <a href={PLATFORM_CONFIG.TOKEN_DETAILS.BUY_LINKS.PUMP_FUN} target="_blank" rel="noreferrer" className="flex items-center gap-3 w-full py-2">
                       <div className="w-8 h-8 rounded bg-primary/10 flex items-center justify-center overflow-hidden">
-                        <img src="https://i.ibb.co/60pBq969/pump-logo.png" className="w-full h-full object-cover" alt="Pump.fun" />
+                        <img src={PLATFORM_CONFIG.TOKEN_DETAILS.BUY_LINKS.PUMP_FUN_LOGO} className="w-full h-full object-cover" alt="Pump.fun" />
                       </div>
                       <span className="text-sm font-bold">Pump.fun</span>
                       <ExternalLink className="w-3 h-3 ml-auto opacity-50" />
