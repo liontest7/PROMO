@@ -147,15 +147,15 @@ export default function Dashboard() {
   return (
     <div className="min-h-screen bg-background text-foreground">
       <header>
-        <title>User Dashboard | MemeDrop</title>
+        <title>User Dashboard | Dropy</title>
       </header>
       <Navigation />
       
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-12">
           <div>
-            <h1 className="text-4xl font-display font-bold mb-2">My Profile & Dashboard</h1>
-            <p className="text-muted-foreground">Manage your social accounts and track your performance.</p>
+            <h1 className="text-4xl font-display font-bold mb-2 italic uppercase tracking-tighter">My <span className="text-primary">Dropy</span></h1>
+            <p className="text-muted-foreground font-medium">Track your earnings and verified actions across the Dropy ecosystem.</p>
           </div>
           <div className="p-4 rounded-2xl bg-primary/5 border border-primary/10 backdrop-blur-sm">
             <p className="text-[10px] font-bold text-primary uppercase tracking-widest mb-1">Current Wallet</p>

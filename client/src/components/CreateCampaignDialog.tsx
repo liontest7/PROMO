@@ -338,7 +338,7 @@ export function CreateCampaignDialog() {
                         <p>
                           As an advertiser, you are responsible for:
                           <ul className="list-disc ml-4 mt-1 space-y-1">
-                            <li>Funding the reward pool (deposited into MemeDrop System Escrow)</li>
+                            <li>Funding the reward pool (deposited into Dropy System Escrow)</li>
                             <li>Platform setup fee ({PLATFORM_CONFIG.FEE_SOL} SOL)</li>
                             <li>Transaction costs for distribution</li>
                           </ul>

@@ -34,7 +34,7 @@ export function CampaignCard({ campaign, onActionClick, isOwner }: CampaignCardP
   };
 
   const shareUrl = `${window.location.origin}/c/${campaign.tokenName}`;
-  const shareText = `Check out this airdrop on MemeDrop: ${campaign.title}! Earn ${campaign.tokenName} by completing simple tasks.`;
+  const shareText = `Check out this airdrop on Dropy: ${campaign.title}! Earn ${campaign.tokenName} by completing simple tasks.`;
 
   const handleCopyLink = (e: React.MouseEvent) => {
     e.preventDefault();

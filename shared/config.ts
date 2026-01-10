@@ -3,9 +3,9 @@ export const PLATFORM_CONFIG = {
   TOKEN_SYMBOL: "Dropy",
   FEE_SOL: 0.05,
   SOCIAL_LINKS: {
-    TELEGRAM: "https://t.me/MemeDrop_Sol",
-    TWITTER: "https://x.com/MemeDrop_Sol",
-    DISCORD: "https://discord.gg/MemeDrop_Sol",
+    TELEGRAM: "https://t.me/Dropy_Sol",
+    TWITTER: "https://x.com/Dropy_Sol",
+    DISCORD: "https://discord.gg/Dropy_Sol",
   },
   TOKEN_DETAILS: {
     NAME: "Dropy Token",

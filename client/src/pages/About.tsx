@@ -38,10 +38,10 @@ export default function About() {
           <motion.h1 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="text-5xl md:text-7xl font-display font-extrabold mb-6 bg-gradient-to-br from-white via-white to-gray-500 bg-clip-text text-transparent"
+            className="text-5xl md:text-7xl font-display font-extrabold mb-6 bg-gradient-to-br from-white via-white to-gray-500 bg-clip-text text-transparent italic uppercase tracking-tighter"
           >
-            Holder Qualification <br />
-            <span className="text-primary">The Future of Crypto Growth</span>
+            Dropy <br />
+            <span className="text-primary">The Future of Growth</span>
           </motion.h1>
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
             {PLATFORM_CONFIG.TOKEN_SYMBOL} has officially launched Phase 1: Holder Qualification. This model focuses on building genuine, long-term value by rewarding users who commit to projects through verified on-chain holdings. 
@@ -167,8 +167,8 @@ export default function About() {
         <section className="py-20 border-t border-white/5">
           <div className="flex flex-col md:flex-row items-center justify-center gap-6 mb-16">
             <div className="text-center md:text-left">
-              <h2 className="text-4xl font-display font-bold mb-4">The Deflationary Ecosystem</h2>
-              <p className="text-muted-foreground">Powering the MemeDrop economy with real utility.</p>
+              <h2 className="text-4xl font-display font-bold mb-4 italic uppercase tracking-tighter">The <span className="text-primary">Dropy</span> Ecosystem</h2>
+              <p className="text-muted-foreground">Powering the Dropy economy with real utility.</p>
             </div>
             <div className="w-32 h-32 shrink-0">
               <img 

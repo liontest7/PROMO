@@ -16,14 +16,14 @@ export default function AdvertiserDashboard() {
   return (
     <div className="min-h-screen bg-background text-foreground">
       <header>
-        <title>Advertiser Dashboard | MemeDrop</title>
+        <title>Advertiser Dashboard | Dropy</title>
       </header>
       <Navigation />
       
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="flex justify-between items-center mb-10">
           <div>
-            <h1 className="text-3xl font-display font-bold">Advertiser Dashboard</h1>
+            <h1 className="text-3xl font-display font-bold italic uppercase tracking-tighter"><span className="text-primary">Dropy</span> Admin</h1>
             <p className="text-muted-foreground mt-1">Manage your active campaigns and track performance.</p>
           </div>
           <CreateCampaignDialog />

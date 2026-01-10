@@ -30,13 +30,32 @@ export function SuccessCard({
     if (!cardRef.current) return;
     setIsDownloading(true);
     try {
+      // Ensure all images are loaded
+      const images = cardRef.current.getElementsByTagName('img');
+      await Promise.all(Array.from(images).map(img => {
+        if (img.complete) return Promise.resolve();
+        return new Promise((resolve, reject) => {
+          img.onload = resolve;
+          img.onerror = reject;
+        });
+      }));
+
       const canvas = await html2canvas(cardRef.current, {
-        backgroundColor: null,
-        scale: 2,
+        backgroundColor: "#0a0a0a",
+        scale: 3,
+        useCORS: true,
+        allowTaint: true,
+        logging: false,
+        onclone: (clonedDoc) => {
+          const el = clonedDoc.querySelector('[ref="cardRef"]') as HTMLElement;
+          if (el) {
+            el.style.boxShadow = 'none';
+          }
+        }
       });
       const link = document.createElement("a");
-      link.download = `MemeDrop-Success-${tokenName}.png`;
-      link.href = canvas.toDataURL("image/png");
+      link.download = `Dropy-Success-${tokenName}.png`;
+      link.href = canvas.toDataURL("image/png", 1.0);
       link.click();
     } catch (err) {
       console.error("Failed to download card:", err);
@@ -46,7 +65,7 @@ export function SuccessCard({
   };
 
   const handleShareTwitter = () => {
-    const text = `I just earned ${rewardAmount} $${tokenName} on @MemeDrop_Sol by completing "${actionTitle}" for ${campaignTitle}! 🚀\n\nJoin the revolution: ${window.location.origin}`;
+    const text = `I just earned ${rewardAmount} $${tokenName} on @Dropy_Sol by completing "${actionTitle}" for ${campaignTitle}! 🚀\n\nJoin the revolution: ${window.location.origin}`;
     window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`, "_blank");
   };
 
@@ -58,6 +77,10 @@ export function SuccessCard({
           <div 
             ref={cardRef}
             className="relative overflow-hidden rounded-[32px] bg-[#0a0a0a] border border-white/10 p-8 shadow-[0_0_50px_rgba(34,197,94,0.2)]"
+            style={{ 
+              backgroundImage: 'radial-gradient(circle at 50% 50%, rgba(34, 197, 94, 0.05) 0%, transparent 100%)',
+              backgroundSize: 'cover'
+            }}
           >
             {/* Background Glows */}
             <div className="absolute -top-20 -right-20 w-40 h-40 bg-primary/20 blur-[60px] rounded-full" />
@@ -85,7 +108,7 @@ export function SuccessCard({
                   <p className="text-xl font-bold text-white">{campaignTitle}</p>
                 </div>
                 
-                <div className="bg-primary/5 border border-primary/20 rounded-2xl p-4">
+                <div className="bg-primary/10 border border-primary/20 rounded-2xl p-4 shadow-inner shadow-primary/5">
                   <p className="text-[10px] font-black text-primary uppercase tracking-[0.2em] mb-1">Earnings</p>
                   <p className="text-4xl font-display font-black text-primary">
                     +{rewardAmount} <span className="text-lg">${tokenName}</span>
@@ -98,9 +121,9 @@ export function SuccessCard({
                 </div>
               </div>
 
-              <div className="flex items-center gap-2">
-                <img src={PLATFORM_CONFIG.ASSETS.MAIN_LOGO} alt="MemeDrop" className="w-5 h-5" />
-                <span className="text-[10px] font-black uppercase tracking-widest text-white/40">Verified by MemeDrop</span>
+              <div className="flex items-center gap-2 mt-2">
+                <img src={PLATFORM_CONFIG.ASSETS.MAIN_LOGO} alt="Dropy Logo" className="w-6 h-6 object-contain" />
+                <span className="text-[12px] font-black uppercase tracking-widest text-primary/80">Verified by Dropy</span>
               </div>
             </div>
           </div>

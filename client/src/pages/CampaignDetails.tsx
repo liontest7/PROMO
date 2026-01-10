@@ -215,7 +215,7 @@ export default function CampaignDetails() {
                   size="icon" 
                   className="rounded-xl border-white/10 bg-white/5 hover:bg-white/10 text-white h-10 w-10"
                   onClick={() => {
-                    const text = encodeURIComponent(`Check out ${campaign.title} on MemeDrop! #Solana`);
+                    const text = encodeURIComponent(`Check out ${campaign.title} on Dropy! #Solana #Dropy`);
                     const shareUrl = `${window.location.origin}/c/${campaign.tokenName}`;
                     window.open(`https://twitter.com/intent/tweet?text=${text}&url=${encodeURIComponent(shareUrl)}`, '_blank');
                   }}
