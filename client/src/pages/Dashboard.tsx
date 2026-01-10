@@ -173,21 +173,34 @@ export default function Dashboard() {
                 <CardContent>
                   <div className="space-y-4">
                     {stats?.tokenBalances && stats.tokenBalances.length > 0 ? (
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                         {stats.tokenBalances.map((tb: any) => (
-                          <div key={tb.symbol} className="p-3 rounded-xl bg-white/5 border border-white/10 hover-elevate transition-all">
-                            <div className="flex justify-between items-start mb-1">
-                              <span className="text-[10px] font-bold text-muted-foreground uppercase">{tb.symbol}</span>
+                          <div key={tb.symbol} className="p-4 rounded-2xl bg-white/5 border border-white/10 hover-elevate transition-all group relative overflow-hidden">
+                            <div className="absolute top-0 right-0 p-2 opacity-10 group-hover:opacity-20 transition-opacity">
+                              <Coins className="w-12 h-12 rotate-12" />
+                            </div>
+                            <div className="flex justify-between items-start mb-3">
+                              <div className="flex flex-col">
+                                <span className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-1">{tb.symbol} Assets</span>
+                                <div className="text-2xl font-black font-display text-primary">{tb.balance}</div>
+                              </div>
                               {Number(tb.pending) > 0 && (
-                                <Badge variant="outline" className="text-[9px] font-bold text-yellow-500 bg-yellow-500/10 border-yellow-500/20 px-1.5 py-0.5 rounded uppercase">
-                                  PENDING: {tb.pending}
+                                <Badge variant="outline" className="text-[9px] font-black text-yellow-500 bg-yellow-500/10 border-yellow-500/20 px-2 py-1 rounded-lg uppercase tracking-tight">
+                                  {tb.pending} PENDING
                                 </Badge>
                               )}
                             </div>
-                            <div className="text-xl font-bold font-display text-primary">{tb.balance}</div>
-                            <div className="flex justify-between items-center mt-1">
-                              <div className="text-[10px] text-muted-foreground">Total Earned: {tb.earned}</div>
-                              {tb.price && <div className="text-[9px] text-primary/60 font-mono">${(Number(tb.balance) * Number(tb.price)).toFixed(2)}</div>}
+                            <div className="space-y-2">
+                              <div className="flex justify-between items-center">
+                                <span className="text-[10px] font-bold text-muted-foreground uppercase">Lifetime Earnings</span>
+                                <span className="text-xs font-bold text-foreground">{tb.earned} {tb.symbol}</span>
+                              </div>
+                              {tb.price && (
+                                <div className="flex justify-between items-center pt-2 border-t border-white/5">
+                                  <span className="text-[10px] font-bold text-muted-foreground uppercase">Estimated Value</span>
+                                  <span className="text-sm font-black text-primary/80 font-mono">${(Number(tb.balance) * Number(tb.price)).toFixed(2)}</span>
+                                </div>
+                              )}
                             </div>
                           </div>
                         ))}

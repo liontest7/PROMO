@@ -65,9 +65,18 @@ export function Navigation() {
             <NavLink href="/earn" icon={Coins}>Earn Rewards</NavLink>
             
             {isConnected && (role === "user" || role === "advertiser" || role === "admin") && (
-              <NavLink href={role === "advertiser" ? "/advertiser" : role === "admin" ? "/admin" : "/dashboard"} icon={role === "advertiser" ? LayoutDashboard : role === "admin" ? ShieldAlert : Trophy}>
-                {role === "advertiser" ? "Admin Console" : role === "admin" ? "Admin Panel" : "My Dashboard"}
-              </NavLink>
+              <div className="flex items-center gap-2">
+                <NavLink href="/dashboard" icon={Trophy}>My Dashboard</NavLink>
+                {(role === "advertiser" || role === "admin") && (
+                  <NavLink 
+                    href={role === "advertiser" ? "/advertiser" : "/admin"} 
+                    icon={role === "advertiser" ? LayoutDashboard : ShieldAlert}
+                    className="bg-primary/10 text-primary hover:bg-primary/20"
+                  >
+                    {role === "advertiser" ? "Admin Console" : "Admin Panel"}
+                  </NavLink>
+                )}
+              </div>
             )}
             <div className="ml-1 flex items-center gap-3">
               <NavLink href="/about" icon={ShieldCheck}>About Us</NavLink>
