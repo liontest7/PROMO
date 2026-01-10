@@ -75,7 +75,17 @@ export function WalletProvider({ children }: { children: ReactNode }) {
     
     setIsLoading(true);
     try {
-      const response = await solanaInstance.connect({ onlyIfTrusted: false });
+      console.log("Selected wallet instance:", solanaInstance);
+      
+      // Some providers might be nested or have different connect structures
+      const provider = solanaInstance.connect ? solanaInstance : (solanaInstance.solana || solanaInstance);
+      
+      if (!provider || typeof provider.connect !== 'function') {
+        throw new Error("Invalid wallet provider. Please try again or refresh.");
+      }
+
+      console.log("Found provider, calling connect...");
+      const response = await provider.connect({ onlyIfTrusted: false });
       const publicAddress = response.publicKey.toString();
       
       const res = await fetch('/api/users/auth', {

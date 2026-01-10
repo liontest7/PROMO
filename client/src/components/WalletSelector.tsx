@@ -32,14 +32,14 @@ export function WalletSelector({ open, onOpenChange, onSelect }: WalletSelectorP
         { 
           name: 'Phantom', 
           provider: phantomProvider,
-          icon: "https://raw.githubusercontent.com/solana-labs/wallet-adapter/master/packages/wallets/phantom/src/phantom.svg",
+          icon: "https://phantom.app/favicon.ico",
           installUrl: "https://phantom.app/",
           detected: !!phantomProvider
         },
         { 
           name: 'Solflare', 
           provider: solflareProvider,
-          icon: "https://raw.githubusercontent.com/solana-labs/wallet-adapter/master/packages/wallets/solflare/src/solflare.svg",
+          icon: "https://solflare.com/favicon.ico",
           installUrl: "https://solflare.com/",
           detected: !!solflareProvider
         },
