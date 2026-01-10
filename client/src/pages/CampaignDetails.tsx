@@ -1,51 +1,120 @@
-import { useRoute, useParams, useLocation } from "wouter";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { Campaign, Action, Execution, CampaignWithActions } from "@shared/schema";
-import { Loader2, ArrowLeft, ExternalLink, ShieldCheck, Coins, Users, CheckCircle, ArrowRight, Twitter, Send, Zap, Globe, Share2, RefreshCw } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Navigation } from "@/components/Navigation";
+import { useParams, Link } from "wouter";
+import { useCampaigns } from "@/hooks/use-campaigns";
+import { useWallet } from "@/hooks/use-wallet";
+import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { Link } from "wouter";
-import { Navigation } from "@/components/Navigation";
-import { formatDistanceToNow } from "date-fns";
-import { cn } from "@/lib/utils";
-import { VerifyActionDialog } from "@/components/VerifyActionDialog";
-import { useState, useEffect } from "react";
-import { useWallet } from "@/hooks/use-wallet";
+import { Skeleton } from "@/components/ui/skeleton";
 import { useToast } from "@/hooks/use-toast";
-import { CONFIG } from "@shared/config";
+import { 
+  Twitter, 
+  MessageCircle, 
+  Globe, 
+  ArrowLeft, 
+  ShieldCheck, 
+  Zap, 
+  ExternalLink, 
+  CheckCircle2, 
+  Coins,
+  Send,
+  Lock,
+  Loader2,
+  Clock,
+  ChevronRight,
+  TrendingUp,
+  Share2
+} from "lucide-react";
+import { formatDistanceToNow } from "date-fns";
+import { motion, AnimatePresence } from "framer-motion";
+import { PLATFORM_CONFIG } from "@shared/config";
+import { api } from "@shared/routes";
+import { SuccessCard } from "@/components/SuccessCard";
+import confetti from "canvas-confetti";
 
 export default function CampaignDetails() {
   const { id, symbol } = useParams();
-  const { isConnected, walletAddress, connect, walletBalance } = useWallet();
+  const { isConnected, walletAddress, connect } = useWallet();
   const { toast } = useToast();
-  const [, setLocation] = useLocation();
   const queryClient = useQueryClient();
-  const [selectedAction, setSelectedAction] = useState<{ action: Action; campaign: Campaign } | null>(null);
 
-  const { data: campaign, isLoading: campaignLoading } = useQuery<CampaignWithActions | undefined>({
+  const [celebrationData, setCelebrationData] = useState<{
+    isOpen: boolean;
+    campaignTitle: string;
+    rewardAmount: string;
+    tokenName: string;
+    actionTitle: string;
+  }>({
+    isOpen: false,
+    campaignTitle: "",
+    rewardAmount: "",
+    tokenName: "",
+    actionTitle: ""
+  });
+
+  const { data: campaign, isLoading: campaignLoading } = useQuery<any>({
     queryKey: symbol ? [`/api/campaigns/symbol/${symbol}`] : [`/api/campaigns/${id}`],
     enabled: !!(id || symbol),
   });
 
-  // Auto-refresh holding status
-  useEffect(() => {
-    if (!isConnected || !campaign) return;
-    
-    const interval = setInterval(() => {
-      // Invalidate the executions query to trigger a refresh
-      queryClient.invalidateQueries({ queryKey: [`/api/executions/campaign/${campaign.id}`] });
-    }, 30000); // Every 30 seconds
+  const { data: participants, isLoading: participantsLoading } = useQuery<any[]>({
+    queryKey: [`/api/executions/campaign/${campaign?.id}`],
+    enabled: !!campaign?.id,
+  });
 
-    return () => clearInterval(interval);
-  }, [isConnected, campaign?.id, queryClient]);
+  const verifyMutation = useMutation({
+    mutationFn: async (actionId: number) => {
+      const res = await fetch(api.actions.verify.path, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ 
+          actionId, 
+          userWallet: walletAddress,
+          handle: "" 
+        }),
+      });
+      if (!res.ok) {
+        const err = await res.json();
+        throw new Error(err.message || "Verification failed");
+      }
+      return res.json();
+    },
+    onSuccess: (data, actionId) => {
+      queryClient.invalidateQueries({ queryKey: [`/api/executions/campaign/${campaign?.id}`] });
+      
+      const action = campaign?.actions.find((a: any) => a.id === actionId);
+      
+      if (action) {
+        confetti({
+          particleCount: 150,
+          spread: 70,
+          origin: { y: 0.6 },
+          colors: ['#22c55e', '#ffffff', '#10b981']
+        });
 
-  const campaignId = campaign?.id;
+        setCelebrationData({
+          isOpen: true,
+          campaignTitle: campaign?.title || "",
+          rewardAmount: action.rewardAmount.toString(),
+          tokenName: campaign?.tokenName || "",
+          actionTitle: action.title
+        });
+      }
 
-  const { data: participants, isLoading: participantsLoading } = useQuery<(Execution & { user: { walletAddress: string } })[]>({
-    queryKey: [`/api/executions/campaign/${campaignId}`],
-    enabled: !!campaignId,
+      toast({ 
+        title: "Action Verified!", 
+        description: "Your task has been successfully verified." 
+      });
+    },
+    onError: (error: any) => {
+      toast({ 
+        title: "Verification Failed", 
+        description: error.message, 
+        variant: "destructive" 
+      });
+    }
   });
 
   const handleActionClick = (action: Action) => {
@@ -243,13 +312,12 @@ export default function CampaignDetails() {
                         {/* Right: Action Button */}
                         <div className="shrink-0">
                           <Button 
-                            className={cn(
-                              "font-black h-10 px-5 rounded-xl text-[10px] shadow-2xl transition-all min-w-[130px] uppercase tracking-widest group/btn bg-primary text-primary-foreground hover:scale-[1.02] active:scale-[0.98] shadow-primary/30"
-                            )}
-                            onClick={handleHolderClick}
+                            className="font-black h-10 px-5 rounded-xl text-[10px] shadow-2xl transition-all min-w-[130px] uppercase tracking-widest group/btn bg-primary text-primary-foreground hover:scale-[1.02] active:scale-[0.98] shadow-primary/30"
+                            onClick={() => verifyMutation.mutate(0)}
+                            disabled={verifyMutation.isPending}
                           >
                             <div className="flex items-center gap-1.5">
-                              {isConnected ? "Check Status" : "Verify & Start"}
+                              {verifyMutation.isPending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : (isConnected ? "Check Status" : "Verify & Start")}
                               <ArrowRight className="w-3.5 h-3.5 group-hover/btn:translate-x-0.5 transition-transform" />
                             </div>
                           </Button>
@@ -258,12 +326,13 @@ export default function CampaignDetails() {
                     </CardContent>
                   </Card>
                 ) : (
-                  campaign.actions?.map((action) => (
+                  campaign.actions?.map((action: any) => (
                     <Card key={action.id} className="glass-card border-white/5 bg-white/5 overflow-hidden group hover:border-primary/30 transition-all rounded-2xl">
                       <CardContent className="p-0">
                         <Button 
                           className="w-full h-20 justify-between px-8 bg-transparent hover:bg-primary/5 transition-all border-0 rounded-none"
-                          onClick={() => handleActionClick(action)}
+                          onClick={() => verifyMutation.mutate(action.id)}
+                          disabled={verifyMutation.isPending}
                         >
                           <div className="flex items-center gap-5">
                             <div className="w-10 h-10 rounded-lg bg-white/5 flex items-center justify-center text-white/50 group-hover:bg-primary group-hover:text-white transition-all border border-white/5">
@@ -280,7 +349,7 @@ export default function CampaignDetails() {
                               <p className="text-sm font-black text-primary">+{action.rewardAmount}</p>
                             </div>
                             <div className="bg-white/5 text-white font-black px-5 py-2.5 rounded-lg text-xs group-hover:bg-primary group-hover:text-white transition-all border border-white/10">
-                              COMPLETE
+                              {verifyMutation.isPending && verifyMutation.variables === action.id ? <Loader2 className="w-4 h-4 animate-spin" /> : "COMPLETE"}
                             </div>
                           </div>
                         </Button>
@@ -290,6 +359,15 @@ export default function CampaignDetails() {
                 )}
               </div>
             </section>
+
+            <SuccessCard 
+              isOpen={celebrationData.isOpen}
+              onClose={() => setCelebrationData(prev => ({ ...prev, isOpen: false }))}
+              campaignTitle={celebrationData.campaignTitle}
+              rewardAmount={celebrationData.rewardAmount}
+              tokenName={celebrationData.tokenName}
+              actionTitle={celebrationData.actionTitle}
+            />
 
             {/* Market Overview Section */}
             <section className="space-y-4">
