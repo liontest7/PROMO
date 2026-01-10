@@ -175,15 +175,20 @@ export default function Dashboard() {
                     {stats?.tokenBalances && stats.tokenBalances.length > 0 ? (
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         {stats.tokenBalances.map((tb: any) => (
-                          <div key={tb.symbol} className="p-3 rounded-xl bg-white/5 border border-white/10">
+                          <div key={tb.symbol} className="p-3 rounded-xl bg-white/5 border border-white/10 hover-elevate transition-all">
                             <div className="flex justify-between items-start mb-1">
                               <span className="text-[10px] font-bold text-muted-foreground uppercase">{tb.symbol}</span>
                               {Number(tb.pending) > 0 && (
-                                <span className="text-[9px] font-bold text-yellow-500 bg-yellow-500/10 px-1.5 py-0.5 rounded">PENDING: {tb.pending}</span>
+                                <Badge variant="outline" className="text-[9px] font-bold text-yellow-500 bg-yellow-500/10 border-yellow-500/20 px-1.5 py-0.5 rounded uppercase">
+                                  PENDING: {tb.pending}
+                                </Badge>
                               )}
                             </div>
-                            <div className="text-xl font-bold font-display">{tb.balance}</div>
-                            <div className="text-[10px] text-muted-foreground">Total Earned: {tb.earned}</div>
+                            <div className="text-xl font-bold font-display text-primary">{tb.balance}</div>
+                            <div className="flex justify-between items-center mt-1">
+                              <div className="text-[10px] text-muted-foreground">Total Earned: {tb.earned}</div>
+                              {tb.price && <div className="text-[9px] text-primary/60 font-mono">${(Number(tb.balance) * Number(tb.price)).toFixed(2)}</div>}
+                            </div>
                           </div>
                         ))}
                       </div>

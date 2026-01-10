@@ -64,9 +64,9 @@ export function Navigation() {
           <div className="hidden md:flex items-center gap-3">
             <NavLink href="/earn" icon={Coins}>Earn Rewards</NavLink>
             
-            {isConnected && (role === "user" || role === "advertiser" || (role as any) === "admin") && (
-              <NavLink href={role === "advertiser" ? "/advertiser" : (role as any) === "admin" ? "/admin" : "/dashboard"} icon={role === "advertiser" ? LayoutDashboard : (role as any) === "admin" ? ShieldAlert : Trophy}>
-                {role === "advertiser" ? "Admin Console" : (role as any) === "admin" ? "Admin Panel" : "My Dashboard"}
+            {isConnected && (role === "user" || role === "advertiser" || role === "admin") && (
+              <NavLink href={role === "advertiser" ? "/advertiser" : role === "admin" ? "/admin" : "/dashboard"} icon={role === "advertiser" ? LayoutDashboard : role === "admin" ? ShieldAlert : Trophy}>
+                {role === "advertiser" ? "Admin Console" : role === "admin" ? "Admin Panel" : "My Dashboard"}
               </NavLink>
             )}
             <div className="ml-1 flex items-center gap-3">
