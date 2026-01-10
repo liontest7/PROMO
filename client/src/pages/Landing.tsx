@@ -131,11 +131,11 @@ export default function Landing() {
               ].map((stat, i) => (
                 <div key={i} className="relative text-center p-4 rounded-2xl bg-white/5 border border-white/5 backdrop-blur-sm group hover:border-primary/30 transition-all flex flex-col justify-center min-h-[100px]">
                   {stat.mascot && (
-                    <div className="absolute -top-16 left-1/2 -translate-x-1/2 w-20 h-20 pointer-events-none">
+                    <div className="absolute -top-20 left-1/2 -translate-x-1/2 w-28 h-28 pointer-events-none z-20">
                       <img 
                         src="https://i.ibb.co/nM5YkVjq/1.png" 
                         alt="" 
-                        className="w-full h-full object-contain drop-shadow-[0_0_15px_rgba(34,197,94,0.6)]" 
+                        className="w-full h-full object-contain drop-shadow-[0_0_20px_rgba(34,197,94,0.7)]" 
                       />
                     </div>
                   )}
