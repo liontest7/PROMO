@@ -194,8 +194,8 @@ export default function Landing() {
               <div className="flex justify-center relative">
                 <div className="w-[400px] h-[400px] rounded-full bg-primary/20 flex items-center justify-center border-[12px] border-primary/10">
                   <motion.img 
-                    src={APP_CONFIG.assets.logo} 
-                    alt="Token" 
+                    src="https://i.ibb.co/8DwGd5Z1/Untitled-design.png" 
+                    alt="MemeDrop Character" 
                     animate={{ y: [0, -30, 0] }}
                     transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
                     className="w-80 h-80 object-contain drop-shadow-[0_0_60px_rgba(34,197,94,0.7)]" 
