@@ -52,6 +52,7 @@ export default function PrivacyPolicy() {
                       "Public Solana wallet addresses",
                       "Social media handles for verification",
                       "Anti-bot verification data (Cloudflare)",
+                      "IP-Wallet association tracking for fraud prevention",
                       "Anonymous session analytics",
                       "On-chain transaction history"
                     ].map((item, idx) => (

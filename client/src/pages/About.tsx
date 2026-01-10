@@ -124,20 +124,20 @@ export default function About() {
             {[
               { 
                 phase: "Phase 1: Foundation", 
-                title: "Launch & Holder Qualification", 
-                items: ["Secure Platform Launch & UI/UX Audit", "Verified On-chain Holder Model (Phase 1 Live)", "$MEME Burn Utility on Campaign Creation"],
+                title: "Launch & Stability", 
+                items: ["Secure Platform Launch & UI/UX Audit", "RPC Failover System (Live)", "Verified On-chain Holder Model (Live)", "50/40/10 Fee Tokenomics (Live)"],
                 status: "active"
               },
               { 
                 phase: "Phase 2: Growth", 
-                title: "Engagement & Expansion", 
-                items: ["Anti-Bot Protection (Turnstile Live)", "Weekly & Monthly Leaderboards (Live)", "Reputation System for Advertisers", "Social Media API Verification"],
+                title: "Engagement & Security", 
+                items: ["Anti-Fraud IP/Wallet Tracking (Live)", "Anti-Bot Protection (Turnstile Live)", "Weekly Rewards Leaderboard (Live)", "Social Media API Verification"],
                 status: "active"
               },
               { 
                 phase: "Phase 3: Ecosystem", 
-                title: "DEX & Advanced Tools", 
-                items: ["Direct DEX Liquidity Incentives", "Staking Rewards for $MEME Holders", "Permissionless Campaign Factory"],
+                title: "Advanced Tools & Scaling", 
+                items: ["Direct DEX Liquidity Incentives", "Staking Rewards for $MEME Holders", "Permissionless Campaign Factory", "Automated Airdrop Escrow Contracts"],
                 status: "pending"
               }
             ].map((step, i) => (

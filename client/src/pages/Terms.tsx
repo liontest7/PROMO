@@ -74,6 +74,7 @@ export default function TermsOfService() {
                   <ul className="grid grid-cols-1 md:grid-cols-2 gap-3">
                     {[
                       "Sybil attacks or multi-wallet abuse",
+                      "Multi-wallet association from single IP",
                       "Use of bots, scripts, or automated tools",
                       "Spoofing identities or social actions",
                       "Exploiting bugs or protocol manipulation"
