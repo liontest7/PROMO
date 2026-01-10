@@ -28,7 +28,6 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
 import { Plus, Trash2, Rocket, Eye, CheckCircle2, Globe, Twitter, Send, Loader2, Coins } from "lucide-react";
-import { PLATFORM_CONFIG } from "@shared/config";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 // Form Schema
@@ -456,182 +455,168 @@ export function CreateCampaignDialog() {
                       )} />
                       <FormField control={form.control} name="minWalletAgeDays" render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="text-primary font-bold">Anti-Bot: Min Wallet Age (Days)</FormLabel>
+                          <FormLabel className="text-primary font-bold">Min Wallet Age (Days)</FormLabel>
                           <FormControl><Input type="number" {...field} className="bg-primary/5" /></FormControl>
                           <FormMessage />
                         </FormItem>
                       )} />
                     </div>
 
-                    {watchedType === "engagement" && (
-                      <div className="space-y-4 pt-4 border-t border-white/5">
-                        <div className="flex justify-between items-center">
-                          <h3 className="font-semibold text-lg text-primary">Task Flow</h3>
-                          <Button type="button" variant="outline" size="sm" onClick={() => append({ type: "website", title: "Visit Website", url: "", rewardAmount: 0.01, maxExecutions: 100 })} className="border-dashed border-primary/30 text-primary">
-                            <Plus className="mr-2 h-4 w-4" /> Add Action
-                          </Button>
+                    <div className="space-y-4">
+                      <div className="flex justify-between items-center">
+                        <h3 className="font-semibold text-lg text-primary">Task Flow</h3>
+                        <Button 
+                          type="button" 
+                          variant="outline" 
+                          size="sm" 
+                          onClick={() => append({ type: "website", title: "Visit Website", url: "", rewardAmount: 0.01, maxExecutions: 10 })}
+                          disabled={watchedType === "holder_qualification"}
+                        >
+                          <Plus className="w-4 h-4 mr-2" /> Add Task
+                        </Button>
+                      </div>
+                      
+                      {fields.length === 0 && watchedType === "engagement" && (
+                        <div className="text-center py-12 border-2 border-dashed border-primary/10 rounded-2xl bg-primary/5">
+                          <p className="text-sm text-muted-foreground">No tasks added yet. Click "Add Task" to begin.</p>
                         </div>
-                        <div className="space-y-3">
-                          {fields.map((field, index) => (
-                            <div key={field.id} className="p-4 rounded-xl border border-white/10 bg-white/5 space-y-4 relative group hover:border-primary/30 transition-colors">
-                              <Button type="button" variant="ghost" size="icon" className="absolute top-2 right-2 h-7 w-7 rounded-full bg-destructive/10 text-destructive hover:bg-destructive hover:text-white opacity-0 group-hover:opacity-100 transition-opacity" onClick={() => remove(index)}>
-                                <Trash2 className="h-3.5 w-3.5" />
-                              </Button>
-                              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <FormField control={form.control} name={`actions.${index}.type`} render={({ field }) => (
-                                  <FormItem>
-                                    <FormLabel>Action Type</FormLabel>
+                      )}
+
+                      <div className="space-y-4">
+                        {fields.map((field, index) => (
+                          <div key={field.id} className="p-4 rounded-2xl bg-primary/5 border border-primary/20 space-y-4">
+                            <div className="flex justify-between items-start gap-4">
+                              <FormField
+                                control={form.control}
+                                name={`actions.${index}.type`}
+                                render={({ field }) => (
+                                  <FormItem className="flex-1">
                                     <Select onValueChange={(v) => { field.onChange(v); form.setValue(`actions.${index}.title`, getActionDefaultTitle(v)); }} defaultValue={field.value}>
-                                      <FormControl><SelectTrigger><SelectValue placeholder="Select type" /></SelectTrigger></FormControl>
+                                      <FormControl><SelectTrigger><SelectValue placeholder="Action Type" /></SelectTrigger></FormControl>
                                       <SelectContent>
-                                        <SelectItem value="website">Visit Website</SelectItem>
-                                        <SelectItem value="twitter_follow">Follow on Twitter</SelectItem>
-                                        <SelectItem value="twitter_retweet">Retweet Post</SelectItem>
-                                        <SelectItem value="telegram_join">Join Telegram</SelectItem>
-                                        <SelectItem value="custom">Custom Task</SelectItem>
+                                        <SelectItem value="website">Website Visit</SelectItem>
+                                        <SelectItem value="twitter_follow">Twitter Follow</SelectItem>
+                                        <SelectItem value="twitter_retweet">Twitter Retweet</SelectItem>
+                                        <SelectItem value="telegram_join">Telegram Join</SelectItem>
                                       </SelectContent>
                                     </Select>
-                                    <FormMessage />
                                   </FormItem>
-                                )} />
-                                <FormField control={form.control} name={`actions.${index}.title`} render={({ field }) => (
-                                  <FormItem><FormLabel>Action Title</FormLabel><FormControl><Input placeholder="e.g. Follow us" {...field} /></FormControl><FormMessage /></FormItem>
-                                )} />
-                              </div>
-                              <FormField control={form.control} name={`actions.${index}.url`} render={({ field }) => (
-                                <FormItem><FormLabel>Verification URL</FormLabel><FormControl><Input placeholder="https://..." {...field} /></FormControl><FormMessage /></FormItem>
-                              )} />
-                              <div className="grid grid-cols-2 gap-4">
-                                <FormField control={form.control} name={`actions.${index}.rewardAmount`} render={({ field }) => (
-                                  <FormItem><FormLabel>Reward</FormLabel><FormControl><Input type="number" step="0.00001" {...field} /></FormControl><FormMessage /></FormItem>
-                                )} />
-                                <FormField control={form.control} name={`actions.${index}.maxExecutions`} render={({ field }) => (
-                                  <FormItem><FormLabel>Max Completions</FormLabel><FormControl><Input type="number" {...field} /></FormControl><FormMessage /></FormItem>
-                                )} />
-                              </div>
+                                )}
+                              />
+                              <Button type="button" variant="ghost" size="icon" className="text-destructive" onClick={() => remove(index)}>
+                                <Trash2 className="w-4 h-4" />
+                              </Button>
                             </div>
-                          ))}
-                        </div>
+
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                              <FormField control={form.control} name={`actions.${index}.title`} render={({ field }) => (
+                                <FormItem><FormLabel>Task Title</FormLabel><FormControl><Input {...field} /></FormControl></FormItem>
+                              )} />
+                              <FormField control={form.control} name={`actions.${index}.url`} render={({ field }) => (
+                                <FormItem><FormLabel>Target URL</FormLabel><FormControl><Input placeholder="https://..." {...field} /></FormControl></FormItem>
+                              )} />
+                            </div>
+
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                              <FormField control={form.control} name={`actions.${index}.rewardAmount`} render={({ field }) => (
+                                <FormItem><FormLabel>Reward per User</FormLabel><FormControl><Input type="number" step="0.00001" {...field} /></FormControl></FormItem>
+                              )} />
+                              <FormField control={form.control} name={`actions.${index}.maxExecutions`} render={({ field }) => (
+                                <FormItem><FormLabel>Max Participants</FormLabel><FormControl><Input type="number" {...field} /></FormControl></FormItem>
+                              )} />
+                            </div>
+                          </div>
+                        ))}
                       </div>
-                    )}
-                    
-                    <Button 
-                      type="submit" 
-                      className="w-full h-14 bg-primary text-primary-foreground font-bold text-xl hover:shadow-[0_0_30px_rgba(34,197,94,0.4)] transition-all"
-                      disabled={watchedType === "engagement" || isPending}
-                    >
-                      {watchedType === "engagement" ? "Coming Soon" : "Review Campaign"}
-                      {watchedType === "engagement" ? null : <Eye className="ml-2 h-5 w-5" />}
-                    </Button>
-                    {watchedType === "engagement" && (
-                      <p className="text-center text-xs text-muted-foreground italic mt-2">
-                        Social Engagement is currently in development. Phase 2 coming soon.
-                      </p>
-                    )}
+                    </div>
                   </div>
                 )}
+
+                <div className="flex gap-4 pt-4 border-t border-primary/10">
+                  <Button type="submit" className="flex-1 h-12 font-bold text-lg" disabled={isPending}>
+                    {isPending ? <Loader2 className="animate-spin mr-2" /> : <Rocket className="mr-2" />}
+                    Preview Campaign
+                  </Button>
+                </div>
               </form>
             </Form>
           ) : (
-            <div className="space-y-6 animate-in zoom-in-95 duration-200">
-              <div className="relative rounded-2xl overflow-hidden border border-white/10 aspect-video bg-black/40">
+            <div className="space-y-8 animate-in fade-in zoom-in-95 duration-300">
+              <div className="relative aspect-[3/1] rounded-2xl overflow-hidden bg-primary/5 border border-primary/20">
                 {form.getValues("bannerUrl") ? (
                   <img src={form.getValues("bannerUrl")} className="w-full h-full object-cover" alt="Banner" />
                 ) : (
-                  <div className="w-full h-full flex items-center justify-center text-muted-foreground">No Banner Image</div>
+                  <div className="w-full h-full flex items-center justify-center text-muted-foreground italic">No banner image</div>
                 )}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent" />
                 <div className="absolute bottom-4 left-4 flex items-center gap-4">
-                  <div className="w-16 h-16 rounded-xl overflow-hidden border-2 border-primary/50 bg-black">
-                    {form.getValues("logoUrl") ? <img src={form.getValues("logoUrl")} className="w-full h-full object-cover" alt="Logo" /> : <div className="w-full h-full flex items-center justify-center font-bold text-primary">{form.getValues("tokenName")?.[0]}</div>}
+                  <div className="w-16 h-16 rounded-xl overflow-hidden bg-background border-2 border-primary/20 shadow-xl">
+                    {form.getValues("logoUrl") ? (
+                      <img src={form.getValues("logoUrl")} className="w-full h-full object-cover" alt="Logo" />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center bg-primary/10 text-primary font-bold">{form.getValues("tokenName")?.slice(0, 1)}</div>
+                    )}
                   </div>
-                  <div>
-                    <h2 className="text-xl font-bold text-white">{form.getValues("title")}</h2>
-                    <p className="text-sm text-primary font-mono">{form.getValues("tokenName")}</p>
+                  <div className="bg-black/60 backdrop-blur-md p-3 rounded-xl border border-white/10">
+                    <h2 className="text-xl font-display text-white">{form.getValues("title")}</h2>
+                    <p className="text-xs text-primary font-bold uppercase tracking-widest">{form.getValues("tokenName")}</p>
                   </div>
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-2 p-4 rounded-xl bg-white/5 border border-white/10">
-                  <p className="text-xs text-muted-foreground uppercase tracking-widest">Platform Burn / Fee</p>
-                  <p className="text-lg font-bold text-destructive">5,000 MEME</p>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="p-4 rounded-2xl bg-primary/5 border border-primary/20 text-center">
+                  <p className="text-[10px] text-muted-foreground uppercase tracking-widest mb-1">Total Budget</p>
+                  <p className="text-xl font-bold">{form.getValues("totalBudget")} {form.getValues("tokenName")}</p>
                 </div>
-                <div className="space-y-2 p-4 rounded-xl bg-primary/10 border border-primary/20">
-                  <p className="text-xs text-primary uppercase tracking-widest">Reward Pool Deposit</p>
-                  <p className="text-lg font-bold text-primary">
-                    {Number(form.getValues("totalBudget")).toLocaleString(undefined, { maximumFractionDigits: 6 })} {form.getValues("tokenName")}
+                <div className="p-4 rounded-2xl bg-primary/5 border border-primary/20 text-center">
+                  <p className="text-[10px] text-muted-foreground uppercase tracking-widest mb-1">Participants</p>
+                  <p className="text-xl font-bold">
+                    {watchedType === "holder_qualification" 
+                      ? form.getValues("maxClaims") 
+                      : (watchedActions || []).reduce((acc, a) => acc + (Number(a.maxExecutions) || 0), 0)
+                    }
                   </p>
+                </div>
+                <div className="p-4 rounded-2xl bg-primary/5 border border-primary/20 text-center">
+                  <p className="text-[10px] text-muted-foreground uppercase tracking-widest mb-1">Type</p>
+                  <Badge className="mt-1">{watchedType === "holder_qualification" ? "HOLDER QUAL" : "ENGAGEMENT"}</Badge>
                 </div>
               </div>
 
               <div className="space-y-4">
-                <h3 className="font-semibold text-primary">Campaign Details</h3>
-                <div className="grid grid-cols-2 gap-x-12 gap-y-4 text-sm">
-                  <div className="flex justify-between border-b border-white/5 pb-2">
-                    <span className="text-muted-foreground">Type</span>
-                    <span className="font-medium">{form.getValues("campaignType") === 'holder_qualification' ? 'Holder Check' : 'Social Tasks'}</span>
+                <h3 className="font-bold text-primary uppercase tracking-widest text-xs flex items-center gap-2">
+                  <Eye className="w-4 h-4" /> Requirements Review
+                </h3>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  <div className="p-3 rounded-xl bg-white/5 border border-white/10">
+                    <span className="text-[8px] uppercase text-muted-foreground block mb-1">Min SOL Balance</span>
+                    <span className="text-sm font-bold">{form.getValues("minSolBalance")} SOL</span>
                   </div>
-                  <div className="flex justify-between border-b border-white/5 pb-2">
-                    <span className="text-muted-foreground">Token</span>
-                    <span className="font-medium font-mono">{form.getValues("tokenName")}</span>
+                  <div className="p-3 rounded-xl bg-white/5 border border-white/10">
+                    <span className="text-[8px] uppercase text-muted-foreground block mb-1">Wallet Age</span>
+                    <span className="text-sm font-bold">{form.getValues("minWalletAgeDays")} Days</span>
                   </div>
-                  {form.getValues("campaignType") === 'holder_qualification' && (
+                  {watchedType === "holder_qualification" && (
                     <>
-                      <div className="flex justify-between border-b border-white/5 pb-2">
-                        <span className="text-muted-foreground">Min Holding</span>
-                        <span className="font-medium">{form.getValues("minHoldingAmount")}</span>
+                      <div className="p-3 rounded-xl bg-white/5 border border-white/10">
+                        <span className="text-[8px] uppercase text-muted-foreground block mb-1">Hold Amount</span>
+                        <span className="text-sm font-bold">{form.getValues("minHoldingAmount")}</span>
                       </div>
-                      <div className="flex justify-between border-b border-white/5 pb-2">
-                        <span className="text-muted-foreground">Min Days</span>
-                        <span className="font-medium">{form.getValues("minHoldingDuration")}</span>
+                      <div className="p-3 rounded-xl bg-white/5 border border-white/10">
+                        <span className="text-[8px] uppercase text-muted-foreground block mb-1">Hold Duration</span>
+                        <span className="text-sm font-bold">{form.getValues("minHoldingDuration")} Days</span>
                       </div>
                     </>
                   )}
-                  <div className="flex justify-between border-b border-white/5 pb-2">
-                    <span className="text-muted-foreground">Anti-Bot Balance</span>
-                    <span className="font-medium">{form.getValues("minSolBalance")} SOL</span>
-                  </div>
                 </div>
               </div>
 
-              <div className="flex gap-2">
-                <div className="flex gap-4">
-                  {form.getValues("websiteUrl") && <Globe className="w-5 h-5 text-muted-foreground" />}
-                  {form.getValues("twitterUrl") && <Twitter className="w-5 h-5 text-muted-foreground" />}
-                  {form.getValues("telegramUrl") && <Send className="w-5 h-5 text-muted-foreground" />}
-                </div>
-              </div>
-
-              <div className="flex gap-4 pt-6 items-center">
+              <div className="flex gap-4">
                 <Button variant="outline" className="flex-1 h-12" onClick={() => setStep("edit")}>Back to Edit</Button>
-                <div className="flex-[2] flex flex-col gap-2">
-                  <Button 
-                    className="w-full h-12 bg-primary text-primary-foreground font-bold text-lg hover:shadow-primary/40" 
-                    onClick={async () => {
-                      const isValid = await form.trigger();
-                      if (!isValid) {
-                        const errors = form.formState.errors;
-                        const errorFields = Object.keys(errors).join(", ");
-                        toast({
-                          title: "Form Incomplete",
-                          description: `Please fix the following fields: ${errorFields}`,
-                          variant: "destructive"
-                        });
-                        return;
-                      }
-                      form.handleSubmit(onSubmit)();
-                    }}
-                    disabled={isPending}
-                  >
-                    {isPending ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Confirming...</> : "Confirm & Launch"}
-                  </Button>
-                  {Object.keys(form.formState.errors).length > 0 && (
-                    <p className="text-[10px] text-destructive text-center font-bold">
-                      Validation errors detected. Check fields.
-                    </p>
-                  )}
-                </div>
+                <Button className="flex-1 h-12 font-bold" onClick={form.handleSubmit(onSubmit)} disabled={isPending}>
+                  {isPending ? <Loader2 className="animate-spin mr-2" /> : <Rocket className="mr-2" />}
+                  Launch Campaign Now
+                </Button>
               </div>
             </div>
           )}
