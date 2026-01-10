@@ -208,24 +208,28 @@ export function VerifyActionDialog({ action, campaign, open, onOpenChange, onSuc
                     {holdingStatus?.status === 'verified' ? '100%' : '0%'}
                   </p>
                 </div>
-                <div className="h-2 w-full bg-white/5 rounded-full overflow-hidden">
+                <div className="relative h-4 w-full bg-white/5 rounded-full overflow-hidden border border-white/10">
                   <div 
-                    className="h-full bg-primary transition-all duration-1000" 
+                    className="h-full bg-gradient-to-r from-primary/80 to-primary transition-all duration-1000 flex items-center justify-center" 
                     style={{ width: holdingStatus?.status === 'verified' ? '100%' : '0%' }}
-                  />
+                  >
+                    {holdingStatus?.status === 'verified' && (
+                      <span className="text-[8px] font-black text-primary-foreground uppercase">Verified</span>
+                    )}
+                  </div>
                 </div>
                 {holdingStatus && (
-                  <div className="pt-2 space-y-2 border-t border-white/5">
-                    <div className="flex justify-between text-[9px] font-bold uppercase tracking-wider">
-                      <span className="text-white/30">Hold Duration</span>
-                      <span className="text-white/60">{holdingStatus.holdDuration || 0} Days Required</span>
-                    </div>
-                    {holdingStatus.remaining !== undefined && (
-                      <div className="flex justify-between text-[9px] font-bold uppercase tracking-wider">
-                        <span className="text-white/30">Time Remaining</span>
-                        <span className="text-primary">{holdingStatus.remaining} Blocks</span>
+                  <div className="pt-2 space-y-3 border-t border-white/5">
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="space-y-1">
+                        <span className="text-[8px] font-black text-white/20 uppercase tracking-widest block">Hold Required</span>
+                        <span className="text-[10px] font-bold text-white/60">{holdingStatus.holdDuration || 0} Days</span>
                       </div>
-                    )}
+                      <div className="space-y-1 text-right">
+                        <span className="text-[8px] font-black text-white/20 uppercase tracking-widest block">Remaining</span>
+                        <span className="text-[10px] font-bold text-primary">{holdingStatus.remaining !== undefined ? `${holdingStatus.remaining} Blocks` : '---'}</span>
+                      </div>
+                    </div>
                   </div>
                 )}
               </div>
@@ -242,7 +246,7 @@ export function VerifyActionDialog({ action, campaign, open, onOpenChange, onSuc
                 <Button 
                   onClick={handleVerify} 
                   disabled={verifyMutation.isPending || !turnstileToken} 
-                  className="w-full h-16 bg-primary hover:bg-primary/90 text-primary-foreground rounded-2xl font-black uppercase tracking-widest text-sm shadow-[0_0_20px_rgba(var(--primary),0.3)]"
+                  className="w-full h-16 bg-primary hover:bg-primary/90 text-primary-foreground rounded-2xl font-black uppercase tracking-widest text-sm shadow-[0_0_20px_rgba(34,197,94,0.3)] transition-all hover:scale-[1.02] active:scale-[0.98]"
                 >
                   {verifyMutation.isPending ? <Loader2 className="animate-spin" /> : "REFRESH"}
                 </Button>
@@ -251,15 +255,17 @@ export function VerifyActionDialog({ action, campaign, open, onOpenChange, onSuc
                   <p className="text-[10px] font-black text-center text-white/20 uppercase tracking-[0.3em]">Quick Links</p>
                   <div className="flex justify-center items-center gap-6">
                     <button onClick={() => window.open(`${CONFIG.TOKEN_DETAILS.BUY_LINKS.JUPITER}${campaign.tokenAddress}`, '_blank')} className="opacity-40 hover:opacity-100 transition-all hover:scale-110 flex flex-col items-center gap-1">
-                      <img src={CONFIG.ui.walletIcons.jupiter} className="w-8 h-8" alt="Jupiter" />
+                      <div className="w-8 h-8 flex items-center justify-center bg-[#19FB9B] rounded-full">
+                        <span className="text-[8px] font-black text-black">JUP</span>
+                      </div>
                       <span className="text-[8px] font-black text-white/40">JUPITER</span>
                     </button>
                     <button onClick={() => window.open(`https://dexscreener.com/solana/${campaign.tokenAddress}`, '_blank')} className="opacity-40 hover:opacity-100 transition-all hover:scale-110 flex flex-col items-center gap-1">
-                      <img src={CONFIG.ui.walletIcons.dexscreener} className="w-8 h-8 grayscale invert" alt="DexScreener" />
+                      <img src="https://dexscreener.com/favicon.ico" className="w-8 h-8 grayscale invert" alt="DexScreener" />
                       <span className="text-[8px] font-black text-white/40">DEX</span>
                     </button>
                     <button onClick={() => window.open(`https://pump.fun/coin/${campaign.tokenAddress}`, '_blank')} className="opacity-40 hover:opacity-100 transition-all hover:scale-110 flex flex-col items-center gap-1">
-                      <img src={CONFIG.ui.walletIcons.pumpfun} className="w-8 h-8" alt="Pump.fun" />
+                      <img src="https://pump.fun/favicon.ico" className="w-8 h-8" alt="Pump.fun" />
                       <span className="text-[8px] font-black text-white/40">PUMP</span>
                     </button>
                   </div>

@@ -58,8 +58,8 @@ export const PLATFORM_CONFIG = {
       solflare: "https://solflare.com/favicon.ico",
       bybit: "https://www.bybit.com/favicon.ico",
       pumpfun: "https://i.ibb.co/gMb1wq1s/pump-fun-logo.webp",
-      jupiter: "https://i.ibb.co/68XwV1kS/jupiter-logo.webp",
-      dexscreener: "https://i.ibb.co/6R2M3Lp7/dex-screener-logo.webp",
+      jupiter: "https://jup.ag/favicon.ico",
+      dexscreener: "https://dexscreener.com/favicon.ico",
     },
   },
   CONSTANTS: {
