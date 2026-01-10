@@ -9,7 +9,7 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-3 items-center gap-12 text-center md:text-left">
           <div className="flex flex-col items-center md:items-start gap-4">
             <div className="flex items-center gap-3">
-              <img src={APP_CONFIG.assets.logo} alt="Logo" className="w-10 h-10" />
+              <img src={PLATFORM_CONFIG.ASSETS.MAIN_LOGO} alt="Logo" className="w-10 h-10 object-contain" />
               <span className="font-display font-black text-2xl tracking-tighter text-white">MEMEDROP</span>
             </div>
             <p className="text-xs text-muted-foreground max-w-xs font-medium uppercase tracking-widest leading-loose">

@@ -172,7 +172,7 @@ export default function About() {
             </div>
             <div className="w-32 h-32 shrink-0">
               <img 
-                src="https://i.ibb.co/nM5YkVjq/1.png" 
+                src={PLATFORM_CONFIG.ASSETS.ABOUT_MASCOT} 
                 alt="MemeDrop Mascot" 
                 className="w-full h-full object-contain drop-shadow-[0_0_15px_rgba(34,197,94,0.4)]" 
               />

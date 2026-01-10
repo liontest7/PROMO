@@ -133,7 +133,7 @@ export default function Landing() {
                   {stat.mascot && (
                     <div className="absolute -top-[4.5rem] left-1/2 -translate-x-1/2 w-24 h-24 pointer-events-none z-20">
                       <img 
-                        src="https://i.ibb.co/nM5YkVjq/1.png" 
+                        src={PLATFORM_CONFIG.ASSETS.LANDING_MASCOT} 
                         alt="" 
                         className="w-full h-full object-contain drop-shadow-[0_0_18px_rgba(34,197,94,0.65)]" 
                       />
@@ -194,8 +194,8 @@ export default function Landing() {
               <div className="flex justify-center relative">
                 <div className="w-[400px] h-[400px] rounded-full bg-primary/20 flex items-center justify-center border-[12px] border-primary/10">
                   <motion.img 
-                    src="https://i.ibb.co/8DwGd5Z1/Untitled-design.png" 
-                    alt="MemeDrop Character" 
+                    src={PLATFORM_CONFIG.ASSETS.MAIN_LOGO} 
+                    alt="MemeDrop Mascot" 
                     animate={{ y: [0, -30, 0] }}
                     transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
                     className="w-80 h-80 object-contain drop-shadow-[0_0_60px_rgba(34,197,94,0.7)]" 
