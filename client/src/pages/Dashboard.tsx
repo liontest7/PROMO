@@ -33,7 +33,7 @@ export default function Dashboard() {
     enabled: !!walletAddress,
   });
 
-  const { user: replitUser, isAuthenticated, linkAccount, logout } = useAuth();
+  const { user: replitUser, isAuthenticated, logout } = useAuth();
 
   useEffect(() => {
     if (user) {
@@ -41,13 +41,6 @@ export default function Dashboard() {
       setTelegram(user.telegramHandle || "");
     }
   }, [user]);
-
-  // Auto-link account if authenticated with Replit but not linked in DB
-  useEffect(() => {
-    if (isAuthenticated && walletAddress && user && !user.replitId) {
-      linkAccount(walletAddress);
-    }
-  }, [isAuthenticated, walletAddress, user, linkAccount]);
 
   const updateProfile = useMutation({
     mutationFn: async (data: any) => {

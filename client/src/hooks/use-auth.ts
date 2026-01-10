@@ -37,28 +37,11 @@ export function useAuth() {
     },
   });
 
-  const linkMutation = useMutation({
-    mutationFn: async (walletAddress: string) => {
-      const res = await fetch("/api/auth/link", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ walletAddress }),
-      });
-      if (!res.ok) throw new Error("Failed to link account");
-      return res.json();
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/auth/user"] });
-    },
-  });
-
   return {
     user,
     isLoading,
     isAuthenticated: !!user,
     logout: logoutMutation.mutate,
     isLoggingOut: logoutMutation.isPending,
-    linkAccount: linkMutation.mutate,
-    isLinking: linkMutation.isPending,
   };
 }
