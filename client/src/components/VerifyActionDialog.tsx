@@ -3,6 +3,7 @@ import { type Action, type Campaign } from "@shared/schema";
 import { useVerifyAction } from "@/hooks/use-executions";
 import { useWallet } from "@/hooks/use-wallet";
 import { useToast } from "@/hooks/use-toast";
+import { CONFIG } from "@shared/config";
 import {
   Dialog,
   DialogContent,

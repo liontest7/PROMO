@@ -23,6 +23,18 @@ export default function CampaignDetails() {
   const [, setLocation] = useLocation();
   const [selectedAction, setSelectedAction] = useState<{ action: Action; campaign: Campaign } | null>(null);
 
+  // Auto-refresh holding status
+  useEffect(() => {
+    if (!isConnected || !campaign) return;
+    
+    const interval = setInterval(() => {
+      // Invalidate the executions query to trigger a refresh
+      queryClient.invalidateQueries({ queryKey: [`/api/executions/campaign/${campaign.id}`] });
+    }, 30000); // Every 30 seconds
+
+    return () => clearInterval(interval);
+  }, [isConnected, campaign?.id]);
+
   const { data: campaign, isLoading: campaignLoading } = useQuery<CampaignWithActions | undefined>({
     queryKey: symbol ? [`/api/campaigns/symbol/${symbol}`] : [`/api/campaigns/${id}`],
     enabled: !!(id || symbol),
@@ -199,9 +211,18 @@ export default function CampaignDetails() {
                             </div>
                           </div>
 
-                          <div className="flex-1 min-w-0 md:pl-4">
+                          <div className="flex-1 min-w-0 md:pl-4 relative">
                             {isConnected ? (
                               <div className="space-y-5">
+                                <Button 
+                                  variant="ghost" 
+                                  size="icon" 
+                                  className="absolute -top-2 -left-2 h-7 w-7 rounded-full bg-white/5 hover:bg-white/10 text-white/30 hover:text-primary transition-all z-10"
+                                  onClick={handleHolderClick}
+                                  title="Refresh Status"
+                                >
+                                  <RefreshCw className="w-3.5 h-3.5" />
+                                </Button>
                                 <div className="flex justify-between items-end border-b border-white/5 pb-4">
                                   <div className="space-y-1">
                                     <p className="text-[10px] font-black text-white/20 uppercase tracking-widest flex items-center gap-1.5">
@@ -240,22 +261,15 @@ export default function CampaignDetails() {
                               className={cn(
                                 "font-black px-12 py-8 rounded-2xl text-base shadow-2xl transition-all min-w-[220px] uppercase tracking-widest group/btn",
                                 isConnected 
-                                  ? "bg-white/5 text-white hover:bg-white/10 border border-white/10 hover:border-white/20" 
+                                  ? "bg-primary text-primary-foreground hover:scale-[1.02] active:scale-[0.98] shadow-primary/30" 
                                   : "bg-primary text-primary-foreground hover:scale-[1.02] active:scale-[0.98] shadow-primary/30"
                               )}
                               onClick={handleHolderClick}
                             >
-                              {isConnected ? (
-                                <div className="flex items-center gap-3">
-                                  <RefreshCw className="w-5 h-5 group-hover/btn:rotate-180 transition-transform duration-700" />
-                                  Refresh
-                                </div>
-                              ) : (
-                                <div className="flex items-center gap-3">
-                                  Verify & Start
-                                  <ArrowRight className="w-5 h-5 group-hover/btn:translate-x-1 transition-transform" />
-                                </div>
-                              )}
+                              <div className="flex items-center gap-3">
+                                {isConnected ? "Check Eligibility" : "Verify & Start"}
+                                <ArrowRight className="w-5 h-5 group-hover/btn:translate-x-1 transition-transform" />
+                              </div>
                             </Button>
                           </div>
                         </div>
