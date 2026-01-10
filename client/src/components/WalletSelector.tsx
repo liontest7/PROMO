@@ -21,36 +21,50 @@ export function WalletSelector({ open, onOpenChange, onSelect }: WalletSelectorP
 
   useEffect(() => {
     const checkProviders = () => {
+      // Direct detection of injected providers with deeper checks
+      const solana = (window as any).solana;
+      
+      const phantomProvider = (window as any).phantom?.solana || (solana?.isPhantom ? solana : null);
+      const solflareProvider = (window as any).solflare?.solana || (solana?.isSolflare ? solana : null);
+      const bybitProvider = (window as any).bybitWallet?.solana || (solana?.isBybit ? solana : null);
+
       const detected = [
         { 
           name: 'Phantom', 
-          provider: (window as any).phantom?.solana || (window as any).solana?.isPhantom ? (window as any).solana : null,
-          icon: "https://www.phantom.app/favicon.ico",
-          installUrl: "https://phantom.app/"
+          provider: phantomProvider,
+          icon: "https://raw.githubusercontent.com/solana-labs/wallet-adapter/master/packages/wallets/phantom/src/phantom.svg",
+          installUrl: "https://phantom.app/",
+          detected: !!phantomProvider
         },
         { 
           name: 'Solflare', 
-          provider: (window as any).solflare?.solana || (window as any).solana?.isSolflare ? (window as any).solana : null,
-          icon: "https://solflare.com/favicon.ico",
-          installUrl: "https://solflare.com/"
+          provider: solflareProvider,
+          icon: "https://raw.githubusercontent.com/solana-labs/wallet-adapter/master/packages/wallets/solflare/src/solflare.svg",
+          installUrl: "https://solflare.com/",
+          detected: !!solflareProvider
         },
         { 
           name: 'Bybit Wallet', 
-          provider: (window as any).bybitWallet?.solana || (window as any).solana?.isBybit ? (window as any).solana : null,
+          provider: bybitProvider,
           icon: "https://www.bybit.com/favicon.ico",
-          installUrl: "https://www.bybit.com/en/web3/"
+          installUrl: "https://www.bybit.com/en/web3/",
+          detected: !!bybitProvider
         }
-      ].map(p => ({
-        ...p,
-        detected: !!(p.provider && (p.provider.connect || p.provider.isPrimary || p.provider.publicKey))
-      }));
+      ];
       setProviders(detected);
     };
 
     checkProviders();
-    // Re-check after a short delay in case of late injection
-    const timer = setTimeout(checkProviders, 1000);
-    return () => clearTimeout(timer);
+    // Re-check more frequently and over a longer period to ensure all extensions are detected
+    const timers = [50, 100, 250, 500, 1000, 2000, 5000].map(ms => setTimeout(checkProviders, ms));
+    
+    // Also listen for a custom event if wallets emit one when they're ready
+    window.addEventListener('load', checkProviders);
+    
+    return () => {
+      timers.forEach(clearTimeout);
+      window.removeEventListener('load', checkProviders);
+    };
   }, [open]);
 
   return (
@@ -72,7 +86,14 @@ export function WalletSelector({ open, onOpenChange, onSelect }: WalletSelectorP
             >
               <div className="flex items-center gap-4">
                 <div className="w-10 h-10 rounded-xl bg-black/20 flex items-center justify-center overflow-hidden p-2 group-hover:scale-110 transition-transform">
-                  <img src={p.icon} alt={p.name} className="w-full h-full object-contain" />
+                  <img 
+                    src={p.icon} 
+                    alt={p.name} 
+                    className="w-full h-full object-contain"
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).src = "https://solana.com/favicon.ico";
+                    }}
+                  />
                 </div>
                 <span className="text-lg font-bold">{p.name}</span>
               </div>
