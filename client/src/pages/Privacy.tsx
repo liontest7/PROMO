@@ -1,70 +1,122 @@
 import { Link } from "wouter";
+import { Navigation as Header } from "@/components/Navigation";
+import { Footer } from "@/components/Footer";
+import { PLATFORM_CONFIG } from "@shared/config";
+import { ShieldCheck, Lock, Globe, Eye, Database, Share2, RefreshCw, FileText } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 export default function PrivacyPolicy() {
   return (
-    <div className="min-h-screen bg-background pt-24 pb-16 px-4">
-      <div className="max-w-4xl mx-auto">
-        <div className="glass-card p-8 md:p-12 border-white/10 rounded-2xl">
-          <h1 className="font-display font-black text-4xl mb-8 uppercase tracking-tighter italic text-primary">Privacy Policy</h1>
-          
-          <div className="space-y-8 text-muted-foreground leading-relaxed">
-            <section>
-              <h2 className="text-white font-bold text-xl mb-4">1. Information We Collect</h2>
-              <p>
-                As a decentralized platform, we minimize data collection. We collect:
-              </p>
-              <ul className="list-disc pl-6 space-y-2 mt-4">
-                <li>Public Solana wallet addresses.</li>
-                <li>Social media handles (Twitter/X, Telegram) only for task verification purposes.</li>
-                <li>Anonymous usage analytics to improve the Platform.</li>
-              </ul>
-            </section>
+    <div className="min-h-screen bg-background flex flex-col">
+      <Header />
+      <main className="flex-1 pt-32 pb-24 px-4 relative overflow-hidden">
+        {/* Decorative background */}
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full pointer-events-none overflow-hidden">
+          <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-primary/5 blur-[120px] rounded-full" />
+          <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-primary/5 blur-[120px] rounded-full" />
+        </div>
 
-            <section>
-              <h2 className="text-white font-bold text-xl mb-4">2. How We Use Data</h2>
-              <p>
-                Your information is used strictly for:
-              </p>
-              <ul className="list-disc pl-6 space-y-2 mt-4">
-                <li>Verifying completion of marketing tasks.</li>
-                <li>Distributing token rewards to your wallet.</li>
-                <li>Preventing fraud and sybil attacks.</li>
-              </ul>
-            </section>
+        <div className="max-w-4xl mx-auto relative z-10">
+          <div className="glass-card p-8 md:p-16 border-white/10 rounded-[32px] shadow-[0_0_100px_rgba(0,0,0,0.5)]">
+            <div className="flex flex-col items-center text-center mb-16">
+              <div className="w-20 h-20 rounded-3xl bg-primary/10 flex items-center justify-center border border-primary/20 mb-6 shadow-[0_0_30px_rgba(34,197,94,0.1)]">
+                <Lock className="w-10 h-10 text-primary" />
+              </div>
+              <h1 className="font-display font-black text-5xl md:text-6xl mb-4 uppercase tracking-tighter italic text-white">
+                Privacy <span className="text-primary">Policy</span>
+              </h1>
+              <div className="flex items-center gap-2 text-muted-foreground/60 font-black uppercase tracking-[0.2em] text-[10px]">
+                <Eye className="w-3 h-3" />
+                Last Updated: January 10, 2026
+              </div>
+            </div>
+            
+            <div className="space-y-12">
+              <section className="relative pl-12">
+                <div className="absolute left-0 top-1 text-primary/40 font-black text-2xl italic tracking-tighter">01</div>
+                <h2 className="text-white font-black text-xl mb-4 uppercase tracking-tight flex items-center gap-3">
+                  <Database className="w-5 h-5 text-primary/50" />
+                  Information We Collect
+                </h2>
+                <div className="space-y-4 text-white/90 leading-relaxed font-medium">
+                  <p>As a decentralized platform on the Solana blockchain, we prioritize user anonymity and minimize data collection. We only collect:</p>
+                  <ul className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    {[
+                      "Public Solana wallet addresses",
+                      "Social media handles for verification",
+                      "Anonymous session analytics",
+                      "On-chain transaction history"
+                    ].map((item, idx) => (
+                      <li key={idx} className="flex items-center gap-3 p-3 bg-white/5 rounded-xl border border-white/5 text-xs font-bold uppercase tracking-wide text-white/100">
+                        <div className="w-1.5 h-1.5 rounded-full bg-primary" />
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </section>
 
-            <section>
-              <h2 className="text-white font-bold text-xl mb-4">3. Data Sharing</h2>
-              <p>
-                We do not sell your personal data. Public blockchain transactions are, by nature, 
-                visible to everyone. Verification data may be shared with the relevant advertiser 
-                to confirm task completion.
-              </p>
-            </section>
+              <section className="relative pl-12">
+                <div className="absolute left-0 top-1 text-primary/40 font-black text-2xl italic tracking-tighter">02</div>
+                <h2 className="text-white font-black text-xl mb-4 uppercase tracking-tight flex items-center gap-3">
+                  <ShieldCheck className="w-5 h-5 text-primary/50" />
+                  How We Use Data
+                </h2>
+                <p className="text-white/90 leading-relaxed font-medium">
+                  Your information is used strictly to facilitate the core functions of the Platform: verifying marketing task completion, distributing on-chain rewards, and maintaining the integrity of the ecosystem by preventing bot activity and fraud.
+                </p>
+              </section>
 
-            <section>
-              <h2 className="text-white font-bold text-xl mb-4">4. Security</h2>
-              <p>
-                We implement technical and organizational measures to protect your data, but no 
-                system is 100% secure. You are responsible for your own digital security.
-              </p>
-            </section>
+              <section className="relative pl-12">
+                <div className="absolute left-0 top-1 text-primary/40 font-black text-2xl italic tracking-tighter">03</div>
+                <h2 className="text-white font-black text-xl mb-4 uppercase tracking-tight flex items-center gap-3">
+                  <Share2 className="w-5 h-5 text-primary/50" />
+                  Data Sharing & Transparency
+                </h2>
+                <p className="text-white/90 leading-relaxed font-medium">
+                  We do not sell your personal data. By using the Solana blockchain, all transaction data is inherently public and immutable. Verification data is shared only with the specific campaign advertisers to confirm task completion and authorize reward release.
+                </p>
+              </section>
 
-            <section>
-              <h2 className="text-white font-bold text-xl mb-4">5. Updates</h2>
-              <p>
-                We may update this policy periodically. Your continued use of the Platform after 
-                changes constitutes acceptance of the new policy.
-              </p>
-            </section>
-          </div>
+              <section className="relative pl-12">
+                <div className="absolute left-0 top-1 text-primary/40 font-black text-2xl italic tracking-tighter">04</div>
+                <h2 className="text-white font-black text-xl mb-4 uppercase tracking-tight flex items-center gap-3">
+                  <Lock className="w-5 h-5 text-primary/50" />
+                  Security Standards
+                </h2>
+                <div className="p-6 bg-primary/5 rounded-2xl border border-primary/10 italic text-sm text-white/100">
+                  We implement industry-standard encryption and security measures. However, you remain the ultimate guardian of your assets. Dropy never requests, stores, or has access to your private keys or seed phrases.
+                </div>
+              </section>
 
-          <div className="mt-12 pt-8 border-t border-white/5">
-            <Link href="/">
-              <span className="text-primary hover:underline cursor-pointer font-bold">Back to Home</span>
-            </Link>
+              <section className="relative pl-12">
+                <div className="absolute left-0 top-1 text-primary/40 font-black text-2xl italic tracking-tighter">05</div>
+                <h2 className="text-white font-black text-xl mb-4 uppercase tracking-tight flex items-center gap-3">
+                  <RefreshCw className="w-5 h-5 text-primary/50" />
+                  Policy Updates
+                </h2>
+                <p className="text-white/90 leading-relaxed font-medium">
+                  The {PLATFORM_CONFIG.TOKEN_SYMBOL} Platform reserves the right to update this policy periodically to reflect changes in legal requirements or platform functionality. Continued use of the platform constitutes your agreement to the updated terms.
+                </p>
+              </section>
+            </div>
+
+            <div className="mt-20 pt-10 border-t border-white/5 flex flex-col md:flex-row items-center justify-between gap-6">
+              <Link href="/">
+                <Button variant="ghost" className="font-black uppercase tracking-widest text-xs gap-2 group hover-elevate">
+                  <Globe className="w-4 h-4 group-hover:rotate-12 transition-transform" />
+                  Back to Platform
+                </Button>
+              </Link>
+              <div className="flex items-center gap-3 p-4 bg-white/5 rounded-2xl border border-white/5">
+                <ShieldCheck className="w-5 h-5 text-primary" />
+                <span className="text-[10px] font-black uppercase tracking-[0.2em] text-white/50">Privacy Protected Platform</span>
+              </div>
+            </div>
           </div>
         </div>
-      </div>
+      </main>
+      <Footer />
     </div>
   );
 }
