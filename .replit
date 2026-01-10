@@ -40,3 +40,9 @@ waitForPort = 5000
 
 [agent]
 integrations = ["javascript_log_in_with_replit:2.0.0"]
+
+[userenv]
+
+[userenv.shared]
+VITE_TURNSTILE_SITE_KEY = "0x4AAAAAACLuMcElS7ceqnxe"
+TURNSTILE_SECRET_KEY = "0x4AAAAAACLuMcizVJo8Cqt1GppWZjtBbmY"
