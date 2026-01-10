@@ -21,6 +21,18 @@ export async function registerRoutes(
   await setupAuth(app);
   registerAuthRoutes(app);
 
+  // Middleware for blocked users
+  app.use(async (req, res, next) => {
+    const walletAddress = req.headers['x-wallet-address'] || req.body?.walletAddress;
+    if (walletAddress && typeof walletAddress === 'string') {
+      const user = await storage.getUserByWallet(walletAddress);
+      if (user?.isBlocked) {
+        return res.status(403).json({ message: "Your account is blocked. Please contact support." });
+      }
+    }
+    next();
+  });
+
   // Users
   app.post('/api/users/auth', async (req, res) => {
     try {
