@@ -123,7 +123,7 @@ export function CampaignCard({ campaign, onActionClick, isOwner }: CampaignCardP
                 </CardTitle>
               </Link>
               <Badge variant="outline" className="border-primary/20 text-primary bg-primary/5 text-[10px] py-0 font-bold tracking-widest">
-                {campaign.tokenName}
+                ${campaign.tokenName}
               </Badge>
             </div>
           </div>
@@ -137,27 +137,27 @@ export function CampaignCard({ campaign, onActionClick, isOwner }: CampaignCardP
             <div className="space-y-2 bg-primary/10 p-4 rounded-2xl border border-primary/20 shadow-inner">
               <div className="flex items-center gap-2 text-[11px] font-black text-primary uppercase tracking-tighter">
                 <ShieldCheck className="w-4 h-4" />
-                <span>HOLD {campaign.minHoldingAmount} {campaign.tokenName} FOR {campaign.minHoldingDuration} DAYS</span>
+                <span>HOLD {campaign.minHoldingAmount} ${campaign.tokenName} FOR {campaign.minHoldingDuration} DAYS</span>
               </div>
             </div>
           ) : (
             <div className="space-y-2 bg-primary/10 p-4 rounded-2xl border border-primary/20 shadow-inner">
               <div className="flex items-center gap-2 text-[11px] font-black text-primary uppercase tracking-tighter">
                 <Zap className="w-4 h-4" />
-                <span>{campaign.actions?.length || 0} TASKS AVAILABLE • EARN UP TO {campaign.actions?.reduce((acc, a) => acc + Number(a.rewardAmount), 0)} {campaign.tokenName}</span>
+                <span>{campaign.actions?.length || 0} TASKS AVAILABLE • EARN UP TO {campaign.actions?.reduce((acc, a) => acc + Number(a.rewardAmount), 0)} ${campaign.tokenName}</span>
               </div>
             </div>
           )}
 
           <div className="bg-secondary/20 p-3 rounded-2xl border border-secondary/10 flex items-center justify-between">
             <span className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">REWARD PER USER</span>
-            <span className="text-sm font-black text-secondary-foreground">{campaign.rewardPerWallet || '0'} {campaign.tokenName}</span>
+            <span className="text-sm font-black text-secondary-foreground">{campaign.rewardPerWallet || '0'} ${campaign.tokenName}</span>
           </div>
 
           <div className="space-y-2">
             <div className="flex justify-between text-[10px] font-black uppercase tracking-widest mb-1">
               <span className="text-muted-foreground">PROGRESS ({percentComplete.toFixed(0)}%)</span>
-              <span className="text-primary">{remainingBudgetNum.toLocaleString()} / {totalBudgetNum.toLocaleString()} {campaign.tokenName}</span>
+              <span className="text-primary">{remainingBudgetNum.toLocaleString()} / {totalBudgetNum.toLocaleString()} ${campaign.tokenName}</span>
             </div>
             <Progress value={percentComplete} className="h-2 bg-white/5 rounded-full" />
           </div>

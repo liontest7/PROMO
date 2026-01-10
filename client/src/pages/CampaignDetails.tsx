@@ -4,7 +4,7 @@ import { Campaign, Action, Execution, CampaignWithActions } from "@shared/schema
 import { Loader2, ArrowLeft, ExternalLink, ShieldCheck, Coins, Users, CheckCircle, ArrowRight, Twitter, Send, Zap, Globe, Share2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
+import { Progress } from "@/components/ui/progress";
 import { Link } from "wouter";
 import { Navigation } from "@/components/Navigation";
 import { formatDistanceToNow } from "date-fns";
@@ -121,7 +121,7 @@ export default function CampaignDetails() {
               <div className="flex-1 space-y-1">
                 <div className="flex flex-wrap gap-2 mb-1">
                   <Badge variant="outline" className="bg-primary/10 border-primary/20 text-primary font-black text-xs px-3 py-1">
-                    {campaign.tokenName}
+                    ${campaign.tokenName}
                   </Badge>
                   <Badge className="bg-green-500/20 text-green-400 border-green-500/30 text-xs px-3 py-1 font-black">
                     ACTIVE
@@ -175,7 +175,7 @@ export default function CampaignDetails() {
                 <h2 className="text-xl font-display font-black text-white tracking-tight uppercase">Campaign Tasks</h2>
                 <div className="flex items-center gap-2 bg-primary/10 px-4 py-2 rounded-xl border border-primary/20">
                   <span className="text-xs font-black text-primary uppercase tracking-widest">Rewards</span>
-                  <span className="text-lg font-black text-primary">{campaign.rewardPerWallet || '0'} {campaign.tokenName}</span>
+                  <span className="text-lg font-black text-primary">{campaign.rewardPerWallet || '0'} ${campaign.tokenName}</span>
                 </div>
               </div>
 
@@ -193,7 +193,26 @@ export default function CampaignDetails() {
                           </div>
                           <div className="text-left">
                             <p className="text-xl font-black uppercase tracking-tight text-white">Holder Verification</p>
-                            <p className="text-sm font-bold text-white/50">Hold {campaign.minHoldingAmount} tokens for {campaign.minHoldingDuration} days</p>
+                            <p className="text-sm font-bold text-white/50 mb-4">Hold {campaign.minHoldingAmount} ${campaign.tokenName} for {campaign.minHoldingDuration} days</p>
+                            
+                            {isConnected && (
+                              <div className="space-y-3 bg-black/20 p-4 rounded-xl border border-white/5 mb-2">
+                                <div className="flex justify-between items-center text-[10px] font-black uppercase tracking-widest">
+                                  <span className="text-white/40">Current Balance</span>
+                                  <span className="text-primary">0 ${campaign.tokenName}</span>
+                                </div>
+                                <div className="space-y-1.5">
+                                  <div className="flex justify-between text-[9px] font-black uppercase tracking-widest text-white/30">
+                                    <span>Holding Progress</span>
+                                    <span>0%</span>
+                                  </div>
+                                  <Progress value={0} className="h-1.5 bg-white/5" />
+                                </div>
+                                <p className="text-[10px] text-yellow-500/80 font-bold uppercase tracking-tight italic">
+                                  * Holding time resets if you sell your tokens
+                                </p>
+                              </div>
+                            )}
                           </div>
                         </div>
                         <div className="bg-primary text-primary-foreground font-black px-6 py-3 rounded-xl text-sm shadow-lg shadow-primary/10 transition-all">
@@ -400,7 +419,7 @@ export default function CampaignDetails() {
                   </span>
                   <Badge variant="outline" className="border-secondary/30 text-secondary bg-secondary/5 text-[9px] font-black py-0.5 h-5">LOCKED</Badge>
                 </div>
-                <p className="text-lg font-black text-white">{campaign.totalBudget} {campaign.tokenName}</p>
+                <p className="text-lg font-black text-white">{campaign.totalBudget} ${campaign.tokenName}</p>
               </div>
             </Card>
 
