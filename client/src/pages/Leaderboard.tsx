@@ -1,75 +1,148 @@
 import { Navigation } from "@/components/Navigation";
-import { Trophy, TrendingUp, Star, Medal } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
+import { Trophy, Star, Medal, Crown } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { PLATFORM_CONFIG } from "@shared/config";
-
-const LEADERBOARD_DATA = [
-  { rank: 1, name: "SolanaWhale", points: 12500, avatar: "SW", tasks: 142 },
-  { rank: 2, name: "CryptoKing", points: 10200, avatar: "CK", tasks: 98 },
-  { rank: 3, name: "DropyHunter", points: 8900, avatar: "DH", tasks: 85 },
-  { rank: 4, name: "AirdropFarmer", points: 7600, avatar: "AF", tasks: 72 },
-  { rank: 5, name: "MoonWalker", points: 6500, avatar: "MW", tasks: 64 },
-];
+import { useQuery } from "@tanstack/react-query";
+import { api } from "@shared/routes";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function Leaderboard() {
-  return (
-    <div className="min-h-screen bg-background text-foreground">
-      <Navigation />
-      <main className="max-w-5xl mx-auto px-4 py-12">
-        <div className="text-center mb-12">
-          <div className="inline-flex items-center justify-center p-3 rounded-2xl bg-yellow-500/10 border border-yellow-500/20 mb-4">
-            <Trophy className="w-10 h-10 text-yellow-500" />
+  const { data: leaders, isLoading } = useQuery<any[]>({
+    queryKey: ["/api/leaderboard"],
+    queryFn: async () => {
+      // For now using mock logic but structured for API
+      return [
+        { rank: 1, name: "SolanaWhale", points: 12500, avatar: "SW", tasks: 142 },
+        { rank: 2, name: "CryptoKing", points: 10200, avatar: "CK", tasks: 98 },
+        { rank: 3, name: "DropyHunter", points: 8900, avatar: "DH", tasks: 85 },
+        { rank: 4, name: "AirdropFarmer", points: 7600, avatar: "AF", tasks: 72 },
+        { rank: 5, name: "MoonWalker", points: 6500, avatar: "MW", tasks: 64 },
+      ];
+    }
+  });
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Navigation />
+        <main className="max-w-5xl mx-auto px-4 py-12">
+          <Skeleton className="h-12 w-48 mx-auto mb-12 bg-white/5" />
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+            {[1, 2, 3].map(i => <Skeleton key={i} className="h-64 rounded-[2.5rem] bg-white/5" />)}
           </div>
-          <h1 className="text-4xl font-display font-black uppercase italic tracking-tighter mb-2">Hall of Fame</h1>
-          <p className="text-muted-foreground uppercase tracking-widest text-xs font-black">Top Ecosystem Contributors</p>
+        </main>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-[#050505] text-white">
+      <Navigation />
+      <main className="max-w-6xl mx-auto px-4 py-16">
+        <div className="text-center mb-16 relative">
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-primary/10 blur-[100px] rounded-full" />
+          <div className="relative z-10">
+            <div className="inline-flex p-4 rounded-3xl bg-yellow-500/10 border border-yellow-500/20 mb-6 shadow-[0_0_30px_rgba(234,179,8,0.1)]">
+              <Trophy className="w-12 h-12 text-yellow-500" />
+            </div>
+            <h1 className="text-6xl font-display font-black uppercase italic tracking-tighter mb-4 leading-none">
+              Hall <span className="text-primary">of Fame</span>
+            </h1>
+            <p className="text-white/40 uppercase tracking-[0.4em] text-[10px] font-black italic">Top Ecosystem Contributors • Real-time Sync</p>
+          </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-          {LEADERBOARD_DATA.slice(0, 3).map((user, i) => (
-            <Card key={user.name} className={`glass-card border-white/10 bg-white/[0.02] rounded-[2rem] overflow-hidden relative group ${i === 0 ? 'md:-translate-y-4 border-yellow-500/30 bg-yellow-500/5' : ''}`}>
-              <CardContent className="p-8 flex flex-col items-center text-center">
-                <div className="relative mb-4">
-                  <Avatar className="h-20 w-20 border-4 border-background shadow-xl">
-                    <AvatarFallback className="bg-primary/20 text-primary font-bold">{user.avatar}</AvatarFallback>
+        {/* Podium */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-20 items-end">
+          {/* Rank 2 */}
+          <Card className="glass-card border-white/5 bg-white/[0.02] rounded-[2.5rem] overflow-hidden order-2 md:order-1 hover-elevate transition-all duration-500">
+            <CardContent className="p-10 flex flex-col items-center text-center">
+              <div className="relative mb-6">
+                <div className="w-24 h-24 rounded-full bg-[#111] border-2 border-white/10 p-1">
+                  <Avatar className="h-full w-full">
+                    <AvatarFallback className="bg-emerald-500/20 text-emerald-500 font-black text-xl">{leaders?.[1].avatar}</AvatarFallback>
                   </Avatar>
-                  <div className={`absolute -top-2 -right-2 w-8 h-8 rounded-full flex items-center justify-center font-black text-xs ${i === 0 ? 'bg-yellow-500 text-black' : i === 1 ? 'bg-gray-300 text-black' : 'bg-amber-600 text-white'}`}>
-                    #{user.rank}
-                  </div>
                 </div>
-                <h3 className="text-xl font-black font-display uppercase italic">{user.name}</h3>
-                <div className="flex items-center gap-2 mt-2">
-                  <Star className="w-4 h-4 text-primary" />
-                  <span className="text-2xl font-black font-display text-primary">{user.points.toLocaleString()}</span>
+                <div className="absolute -top-2 -right-2 w-10 h-10 rounded-full bg-white text-black flex items-center justify-center font-black text-xs shadow-xl border-4 border-[#050505]">#2</div>
+              </div>
+              <h3 className="text-2xl font-black font-display uppercase italic tracking-tight text-white/90">{leaders?.[1].name}</h3>
+              <div className="flex items-center gap-2 mt-3 bg-emerald-500/10 px-4 py-1.5 rounded-full border border-emerald-500/20">
+                <Star className="w-4 h-4 text-emerald-500" />
+                <span className="text-xl font-black font-display text-emerald-500">{leaders?.[1].points.toLocaleString()}</span>
+              </div>
+              <p className="text-[10px] font-black text-white/20 uppercase tracking-[0.2em] mt-4 italic">{leaders?.[1].tasks} TASKS COMPLETED</p>
+            </CardContent>
+          </Card>
+
+          {/* Rank 1 */}
+          <Card className="glass-card border-yellow-500/30 bg-yellow-500/5 rounded-[3rem] overflow-hidden order-1 md:order-2 scale-110 relative z-20 shadow-[0_0_50px_rgba(234,179,8,0.15)] hover-elevate transition-all duration-500">
+            <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-transparent via-yellow-500/50 to-transparent" />
+            <CardContent className="p-12 flex flex-col items-center text-center">
+              <div className="relative mb-6">
+                <div className="w-32 h-32 rounded-full bg-[#111] border-4 border-yellow-500/40 p-1 shadow-[0_0_30px_rgba(234,179,8,0.3)]">
+                  <Avatar className="h-full w-full">
+                    <AvatarFallback className="bg-primary/20 text-primary font-black text-3xl">{leaders?.[0].avatar}</AvatarFallback>
+                  </Avatar>
                 </div>
-                <p className="text-[10px] font-black text-white/30 uppercase tracking-widest mt-1">{user.tasks} Tasks Completed</p>
-              </CardContent>
-            </Card>
-          ))}
+                <div className="absolute -top-3 -right-3 w-12 h-12 rounded-full bg-yellow-500 text-black flex items-center justify-center font-black text-sm shadow-xl border-4 border-[#050505]">#1</div>
+                <Crown className="absolute -top-10 left-1/2 -translate-x-1/2 w-8 h-8 text-yellow-500 drop-shadow-[0_0_10px_rgba(234,179,8,0.5)]" />
+              </div>
+              <h3 className="text-3xl font-black font-display uppercase italic tracking-tighter text-white">{leaders?.[0].name}</h3>
+              <div className="flex items-center gap-2 mt-4 bg-primary/20 px-6 py-2 rounded-full border border-primary/30 shadow-lg">
+                <Star className="w-5 h-5 text-primary" />
+                <span className="text-3xl font-black font-display text-primary">{leaders?.[0].points.toLocaleString()}</span>
+              </div>
+              <p className="text-[11px] font-black text-white/30 uppercase tracking-[0.3em] mt-6 italic">{leaders?.[0].tasks} TASKS COMPLETED</p>
+            </CardContent>
+          </Card>
+
+          {/* Rank 3 */}
+          <Card className="glass-card border-white/5 bg-white/[0.02] rounded-[2.5rem] overflow-hidden order-3 hover-elevate transition-all duration-500">
+            <CardContent className="p-10 flex flex-col items-center text-center">
+              <div className="relative mb-6">
+                <div className="w-24 h-24 rounded-full bg-[#111] border-2 border-white/10 p-1">
+                  <Avatar className="h-full w-full">
+                    <AvatarFallback className="bg-amber-600/20 text-amber-600 font-black text-xl">{leaders?.[2].avatar}</AvatarFallback>
+                  </Avatar>
+                </div>
+                <div className="absolute -top-2 -right-2 w-10 h-10 rounded-full bg-amber-600 text-white flex items-center justify-center font-black text-xs shadow-xl border-4 border-[#050505]">#3</div>
+              </div>
+              <h3 className="text-2xl font-black font-display uppercase italic tracking-tight text-white/90">{leaders?.[2].name}</h3>
+              <div className="flex items-center gap-2 mt-3 bg-amber-600/10 px-4 py-1.5 rounded-full border border-amber-600/20">
+                <Star className="w-4 h-4 text-amber-600" />
+                <span className="text-xl font-black font-display text-amber-600">{leaders?.[2].points.toLocaleString()}</span>
+              </div>
+              <p className="text-[10px] font-black text-white/20 uppercase tracking-[0.2em] mt-4 italic">{leaders?.[2].tasks} TASKS COMPLETED</p>
+            </CardContent>
+          </Card>
         </div>
 
-        <Card className="glass-card border-white/10 bg-white/[0.02] rounded-[2rem] overflow-hidden">
+        {/* List */}
+        <Card className="glass-card border-white/5 bg-white/[0.01] rounded-[2.5rem] overflow-hidden shadow-2xl backdrop-blur-md">
+          <div className="bg-white/[0.03] px-10 py-5 border-b border-white/5 flex items-center text-[10px] font-black text-white/30 uppercase tracking-[0.4em] italic">
+            <span className="w-16">Rank</span>
+            <span className="flex-1">Contributor</span>
+            <span className="w-32 text-right">Score</span>
+            <span className="w-32 text-right">Tasks</span>
+          </div>
           <CardContent className="p-0">
             <div className="divide-y divide-white/5">
-              {LEADERBOARD_DATA.map((user) => (
-                <div key={user.rank} className="flex items-center justify-between p-6 hover:bg-white/[0.03] transition-all group">
-                  <div className="flex items-center gap-6">
-                    <span className="text-xl font-black font-display text-white/20 w-6">#{user.rank}</span>
-                    <Avatar className="h-10 w-10 border border-white/10">
-                      <AvatarFallback className="text-xs font-bold">{user.avatar}</AvatarFallback>
+              {leaders?.map((user) => (
+                <div key={user.rank} className="flex items-center px-10 py-8 hover:bg-white/[0.03] transition-all group relative">
+                  <div className="absolute left-0 w-1 h-0 bg-primary group-hover:h-full transition-all duration-300" />
+                  <span className="w-16 text-2xl font-black font-display text-white/10 group-hover:text-primary transition-colors">#{user.rank}</span>
+                  <div className="flex-1 flex items-center gap-6">
+                    <Avatar className="h-12 w-12 border border-white/10 group-hover:border-primary/50 transition-all">
+                      <AvatarFallback className="text-xs font-black bg-white/5">{user.avatar}</AvatarFallback>
                     </Avatar>
-                    <span className="font-bold text-lg">{user.name}</span>
+                    <span className="font-black text-xl font-display uppercase italic tracking-tight">{user.name}</span>
                   </div>
-                  <div className="flex items-center gap-8">
-                    <div className="text-right">
-                      <p className="text-[10px] font-black text-white/30 uppercase tracking-widest">Score</p>
-                      <p className="text-xl font-black font-display text-primary">{user.points.toLocaleString()}</p>
-                    </div>
-                    <div className="text-right min-w-[100px] hidden sm:block">
-                      <p className="text-[10px] font-black text-white/30 uppercase tracking-widest">Tasks</p>
-                      <p className="text-lg font-black font-display text-white/60">{user.tasks}</p>
-                    </div>
+                  <div className="w-32 text-right">
+                    <p className="text-2xl font-black font-display text-primary drop-shadow-[0_0_10px_rgba(34,197,94,0.3)]">{user.points.toLocaleString()}</p>
+                  </div>
+                  <div className="w-32 text-right">
+                    <p className="text-xl font-black font-display text-white/40">{user.tasks}</p>
                   </div>
                 </div>
               ))}
