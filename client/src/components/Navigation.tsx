@@ -48,32 +48,32 @@ export function Navigation() {
   );
 
   return (
-    <nav className="border-b border-white/5 bg-background/50 backdrop-blur-xl sticky top-0 z-50">
+    <nav className="border-b border-white/5 bg-background/80 backdrop-blur-2xl sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex h-16 items-center justify-between">
+        <div className="flex h-20 items-center justify-between">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-3 group cursor-pointer">
-            <div className="w-10 h-10 rounded-xl overflow-hidden shadow-lg shadow-primary/20 group-hover:shadow-primary/40 transition-all">
-              <img src={APP_CONFIG.assets.logo} alt="Logo" className="w-full h-full object-cover" />
+          <Link href="/" className="flex items-center gap-4 group cursor-pointer">
+            <div className="w-12 h-12 rounded-xl overflow-hidden shadow-xl shadow-primary/20 group-hover:shadow-primary/40 transition-all">
+              <img src={APP_CONFIG.assets.logo} alt="Logo" className="w-full h-full object-cover scale-110 group-hover:scale-125 transition-transform duration-500" />
             </div>
-            <span className="font-display font-bold text-2xl tracking-tight bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent">
+            <span className="font-display font-black text-3xl tracking-tighter bg-gradient-to-r from-white via-white to-gray-400 bg-clip-text text-transparent">
               {APP_CONFIG.platformName}
             </span>
           </Link>
 
           {/* Nav Links */}
-          <div className="hidden md:flex items-center gap-2">
-            <NavLink href="/earn" icon={Coins}>Earn</NavLink>
+          <div className="hidden md:flex items-center gap-4">
+            <NavLink href="/earn" icon={Coins}>Earn Rewards</NavLink>
             
             {isConnected && role === "user" && (
-              <NavLink href="/dashboard" icon={Trophy}>Dashboard</NavLink>
+              <NavLink href="/dashboard" icon={Trophy}>My Dashboard</NavLink>
             )}
             
             {isConnected && role === "advertiser" && (
-              <NavLink href="/advertiser" icon={LayoutDashboard}>Dashboard</NavLink>
+              <NavLink href="/advertiser" icon={LayoutDashboard}>Admin Console</NavLink>
             )}
-            <div className="ml-auto flex items-center gap-2">
-              <NavLink href="/about" icon={ShieldCheck}>About</NavLink>
+            <div className="ml-2 flex items-center gap-4">
+              <NavLink href="/about" icon={ShieldCheck}>About Us</NavLink>
             </div>
           </div>
 

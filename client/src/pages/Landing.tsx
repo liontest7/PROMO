@@ -2,7 +2,7 @@ import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Navigation } from "@/components/Navigation";
 import { useWallet } from "@/hooks/use-wallet";
-import { Rocket, Coins, ShieldCheck, ArrowRight, Users, Search, Zap } from "lucide-react";
+import { Rocket, Coins, ShieldCheck, ArrowRight, Users, Search, Zap, Send, Twitter } from "lucide-react";
 import { motion } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
 import { useCampaigns } from "@/hooks/use-campaigns";
@@ -211,8 +211,8 @@ export default function Landing() {
                 </div>
               </div>
               <div className="flex justify-center relative">
-                <div className="w-64 h-64 rounded-full bg-primary/20 flex items-center justify-center border-8 border-primary/10 animate-pulse">
-                  <img src={APP_CONFIG.assets.logo} alt="Token" className="w-32 h-32 object-contain" />
+                <div className="w-80 h-80 rounded-full bg-primary/20 flex items-center justify-center border-[12px] border-primary/10 animate-pulse">
+                  <img src={APP_CONFIG.assets.logo} alt="Token" className="w-48 h-48 object-contain drop-shadow-[0_0_30px_rgba(34,197,94,0.4)]" />
                 </div>
               </div>
             </div>
@@ -221,17 +221,27 @@ export default function Landing() {
       </section>
 
       {/* Updated CTA Section */}
-      <section className="py-32 border-t border-white/5" data-testid="section-social-cta">
+      <section className="py-32 border-t border-white/5 bg-gradient-to-b from-transparent to-black/40" data-testid="section-social-cta">
         <div className="container mx-auto px-4 text-center">
           <div className="max-w-3xl mx-auto space-y-12">
-            <h2 className="text-5xl font-display font-black tracking-tighter italic uppercase underline decoration-primary decoration-4 underline-offset-8">Follow Our Community</h2>
-            <p className="text-xl text-muted-foreground">Join thousands of users and get the latest updates on new high-reward campaigns.</p>
-            <div className="flex flex-col sm:flex-row justify-center gap-6">
-              <Button size="lg" className="h-16 px-12 bg-[#0088cc] hover:bg-[#0088cc]/90 text-white font-black text-xl rounded-2xl shadow-xl shadow-blue-500/20" asChild data-testid="link-telegram">
-                <a href={PLATFORM_CONFIG.SOCIAL_LINKS.TELEGRAM} target="_blank" rel="noreferrer">JOIN TELEGRAM</a>
+            <h2 className="text-6xl font-display font-black tracking-tighter italic uppercase underline decoration-primary decoration-8 underline-offset-12">Follow Our Community</h2>
+            <p className="text-2xl text-muted-foreground font-medium">Join thousands of users and get the latest updates on new high-reward campaigns.</p>
+            <div className="flex flex-col sm:flex-row justify-center gap-8">
+              <Button size="lg" className="h-20 px-12 bg-[#0088cc] hover:bg-[#0088cc]/90 text-white font-black text-2xl rounded-2xl shadow-2xl shadow-blue-500/20 group transition-all hover:scale-105" asChild data-testid="link-telegram">
+                <a href={PLATFORM_CONFIG.SOCIAL_LINKS.TELEGRAM} target="_blank" rel="noreferrer" className="flex items-center gap-4">
+                  <div className="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center group-hover:rotate-12 transition-transform">
+                    <Send className="w-6 h-6 fill-white" />
+                  </div>
+                  JOIN TELEGRAM
+                </a>
               </Button>
-              <Button size="lg" className="h-16 px-12 bg-white text-black hover:bg-gray-100 font-black text-xl rounded-2xl shadow-xl" asChild data-testid="link-twitter">
-                <a href={PLATFORM_CONFIG.SOCIAL_LINKS.TWITTER} target="_blank" rel="noreferrer">FOLLOW TWITTER (X)</a>
+              <Button size="lg" className="h-20 px-12 bg-white text-black hover:bg-gray-100 font-black text-2xl rounded-2xl shadow-2xl group transition-all hover:scale-105" asChild data-testid="link-twitter">
+                <a href={PLATFORM_CONFIG.SOCIAL_LINKS.TWITTER} target="_blank" rel="noreferrer" className="flex items-center gap-4">
+                  <div className="w-10 h-10 rounded-xl bg-black/10 flex items-center justify-center group-hover:rotate-12 transition-transform">
+                    <Twitter className="w-6 h-6 fill-black" />
+                  </div>
+                  FOLLOW TWITTER (X)
+                </a>
               </Button>
             </div>
           </div>
