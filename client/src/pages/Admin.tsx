@@ -1,4 +1,5 @@
 import { useQuery, useMutation } from "@tanstack/react-query";
+import { Navigation } from "@/components/Navigation";
 import { 
   Table, 
   TableBody, 
@@ -122,6 +123,7 @@ export default function AdminDashboard() {
 
   return (
     <div className="min-h-screen bg-background text-foreground pb-20">
+      <Navigation />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
         {/* Header Section */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">

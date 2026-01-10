@@ -64,23 +64,27 @@ export function Navigation() {
           <div className="hidden md:flex items-center gap-3">
             <NavLink href="/earn" icon={Coins}>Earn Rewards</NavLink>
             
-            {isConnected && (role === "user" || role === "advertiser" || role === "admin") && (
-              <div className="flex items-center gap-2">
+            {isConnected && (role === "user" || role === "advertiser" || (role as any) === "admin") && (
+              <div className="flex items-center gap-3">
                 <NavLink href="/dashboard" icon={Trophy}>My Dashboard</NavLink>
-                {(role === "advertiser" || role === "admin") && (
-                  <NavLink 
-                    href={role === "advertiser" ? "/advertiser" : "/admin"} 
-                    icon={role === "advertiser" ? LayoutDashboard : ShieldAlert}
-                    className="bg-primary/10 text-primary hover:bg-primary/20"
-                  >
-                    {role === "advertiser" ? "Admin Console" : "Admin Panel"}
-                  </NavLink>
-                )}
+                <div className="ml-auto flex items-center gap-2">
+                  <NavLink href="/about" icon={ShieldCheck}>About Us</NavLink>
+                  {(role === "advertiser" || (role as any) === "admin") && (
+                    <Button 
+                      variant="ghost" 
+                      size="icon" 
+                      asChild 
+                      className="h-8 w-8 rounded-full bg-primary/10 text-primary hover:bg-primary/20 transition-all border border-primary/20"
+                      title={role === "advertiser" ? "Admin Console" : "Admin Panel"}
+                    >
+                      <a href={role === "advertiser" ? "/advertiser" : "/admin"}>
+                        {role === "advertiser" ? <LayoutDashboard className="h-4 w-4" /> : <ShieldAlert className="h-4 w-4" />}
+                      </a>
+                    </Button>
+                  )}
+                </div>
               </div>
             )}
-            <div className="ml-1 flex items-center gap-3">
-              <NavLink href="/about" icon={ShieldCheck}>About Us</NavLink>
-            </div>
           </div>
 
           <div className="flex items-center gap-4">
