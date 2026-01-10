@@ -44,6 +44,7 @@ export default function Earn() {
   };
 
   const [minReward, setMinReward] = useState<string>("");
+  const [sortBy, setSortBy] = useState<"newest" | "reward_high" | "reward_low">("newest");
 
   const filteredCampaigns = campaigns?.filter(c => {
     const matchesSearch = 
@@ -61,6 +62,10 @@ export default function Earn() {
       (c.campaignType === 'holder_qualification' && activeFilters.includes('holder')) ||
       c.actions.some(a => activeFilters.includes(a.type));
     return matchesSearch && matchesFilter && matchesReward;
+  }).sort((a, b) => {
+    if (sortBy === "reward_high") return parseFloat(b.rewardPerWallet || "0") - parseFloat(a.rewardPerWallet || "0");
+    if (sortBy === "reward_low") return parseFloat(a.rewardPerWallet || "0") - parseFloat(b.rewardPerWallet || "0");
+    return b.id - a.id; // Newest first
   });
 
   const toggleFilter = (type: string) => {
@@ -137,6 +142,19 @@ export default function Earn() {
                         value={minReward}
                         onChange={(e) => setMinReward(e.target.value)}
                       />
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label className="text-xs text-muted-foreground uppercase font-black">Sort By</Label>
+                      <select 
+                        className="w-full h-8 bg-white/5 border border-white/10 rounded-md px-2 text-sm text-white focus:outline-none focus:border-primary/50"
+                        value={sortBy}
+                        onChange={(e) => setSortBy(e.target.value as any)}
+                      >
+                        <option value="newest" className="bg-background">Newest First</option>
+                        <option value="reward_high" className="bg-background">Highest Reward</option>
+                        <option value="reward_low" className="bg-background">Lowest Reward</option>
+                      </select>
                     </div>
 
                     <div className="space-y-3">

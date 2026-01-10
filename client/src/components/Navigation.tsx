@@ -37,10 +37,10 @@ export function Navigation() {
 
   const NavLink = ({ href, children, icon: Icon }: { href: string; children: React.ReactNode; icon: any }) => (
     <Link href={href} className={cn(
-      "flex items-center gap-2 px-4 py-2 rounded-lg text-base font-bold transition-all duration-200",
+      "flex items-center gap-2 px-4 py-2 rounded-lg text-[15px] font-bold transition-all duration-200",
       location === href 
         ? "bg-primary/15 text-white border border-primary/30 shadow-[0_0_15px_rgba(34,197,94,0.2)]" 
-        : "text-white/70 hover:text-white hover:bg-white/10"
+        : "text-white/80 hover:text-white hover:bg-white/10"
     )}>
       <Icon className="w-5 h-5" />
       {children}
@@ -62,7 +62,7 @@ export function Navigation() {
           </Link>
 
           {/* Nav Links */}
-          <div className="hidden md:flex items-center gap-4">
+          <div className="hidden md:flex items-center gap-3">
             <NavLink href="/earn" icon={Coins}>Earn Rewards</NavLink>
             
             {isConnected && role === "user" && (
@@ -72,7 +72,7 @@ export function Navigation() {
             {isConnected && role === "advertiser" && (
               <NavLink href="/advertiser" icon={LayoutDashboard}>Admin Console</NavLink>
             )}
-            <div className="ml-2 flex items-center gap-4">
+            <div className="ml-1 flex items-center gap-3">
               <NavLink href="/about" icon={ShieldCheck}>About Us</NavLink>
             </div>
           </div>
@@ -83,10 +83,10 @@ export function Navigation() {
                 <DropdownMenuTrigger asChild>
                   <Button 
                     variant="ghost" 
-                    size="sm" 
-                    className="px-4 h-9 rounded-full bg-primary/10 border border-primary/20 text-primary hover:bg-primary/20 transition-all gap-2 group"
+                    size="default" 
+                    className="px-6 h-11 rounded-full bg-primary/10 border border-primary/20 text-primary hover:bg-primary/20 transition-all gap-2 group"
                   >
-                    <span className="text-xs font-bold uppercase tracking-widest">Buy {APP_CONFIG.token.symbol}</span>
+                    <span className="text-sm font-black uppercase tracking-widest">Buy {APP_CONFIG.token.symbol}</span>
                     <ChevronDown className="w-4 h-4 transition-transform group-data-[state=open]:rotate-180" />
                   </Button>
                 </DropdownMenuTrigger>
@@ -126,55 +126,55 @@ export function Navigation() {
             </div>
 
             {/* Social Links */}
-            <div className="hidden lg:flex items-center gap-2 mr-2">
+            <div className="hidden lg:flex items-center gap-3 mr-2">
               <Button 
                 variant="ghost" 
                 size="icon" 
-                className="w-8 h-8 rounded-full border border-white/5 hover:bg-white/5 text-muted-foreground hover:text-blue-400 transition-colors"
+                className="w-10 h-10 rounded-full border border-white/10 hover:bg-white/10 text-white/80 hover:text-blue-400 transition-colors shadow-lg shadow-black/20"
                 asChild
                 data-testid="nav-link-twitter"
               >
                 <a href={PLATFORM_CONFIG.SOCIAL_LINKS.TWITTER} target="_blank" rel="noreferrer">
-                  <Twitter className="w-4 h-4" />
+                  <Twitter className="w-5 h-5" />
                 </a>
               </Button>
               <Button 
                 variant="ghost" 
                 size="icon" 
-                className="w-8 h-8 rounded-full border border-white/5 hover:bg-white/5 text-muted-foreground hover:text-blue-500 transition-colors"
+                className="w-10 h-10 rounded-full border border-white/10 hover:bg-white/10 text-white/80 hover:text-blue-500 transition-colors shadow-lg shadow-black/20"
                 asChild
                 data-testid="nav-link-telegram"
               >
                 <a href={PLATFORM_CONFIG.SOCIAL_LINKS.TELEGRAM} target="_blank" rel="noreferrer">
-                  <Send className="w-4 h-4" />
+                  <Send className="w-5 h-5" />
                 </a>
               </Button>
             </div>
 
             {/* User Wallet Info */}
             {isConnected ? (
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-4">
                 <div className="hidden sm:flex flex-col items-end">
-                  <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">{role}</span>
-                  <span className="text-sm font-mono text-primary font-bold">
+                  <span className="text-[11px] font-black text-muted-foreground uppercase tracking-widest leading-none mb-1">{role}</span>
+                  <span className="text-[15px] font-mono text-primary font-black leading-none">
                     {walletAddress?.slice(0, 4)}...{walletAddress?.slice(-4)}
                   </span>
                 </div>
                 <Button 
                   variant="outline" 
-                  size="sm" 
+                  size="default" 
                   onClick={disconnect}
-                  className="border-white/10 hover:bg-white/5 hover:border-white/20 hover:text-destructive h-9"
+                  className="border-white/10 hover:bg-white/5 hover:border-white/20 hover:text-destructive h-11 px-4 shadow-lg shadow-black/20"
                 >
-                  <LogOut className="w-4 h-4" />
+                  <LogOut className="w-5 h-5" />
                 </Button>
               </div>
             ) : (
               <Button 
                 onClick={() => connect('user')}
-                className="bg-primary text-primary-foreground font-bold hover:bg-primary/90 shadow-lg shadow-primary/25 hover:shadow-primary/40 transition-all h-9 px-6 rounded-lg"
+                className="bg-primary text-primary-foreground font-black text-[15px] hover:bg-primary/90 shadow-xl shadow-primary/25 hover:shadow-primary/40 transition-all h-11 px-8 rounded-xl uppercase tracking-tight"
               >
-                <Wallet className="w-4 h-4 mr-2" />
+                <Wallet className="w-5 h-5 mr-2" />
                 Connect Wallet
               </Button>
             )}
