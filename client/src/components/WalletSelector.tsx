@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Wallet, CheckCircle2 } from "lucide-react";
+import { CONFIG } from "@shared/config";
 
 interface WalletProvider {
   name: string;
@@ -35,21 +36,21 @@ export function WalletSelector({ open, onOpenChange, onSelect }: WalletSelectorP
         { 
           name: 'Phantom', 
           provider: phantomProvider,
-          icon: "https://www.phantom.app/favicon.ico",
+          icon: CONFIG.ui.walletIcons.phantom,
           installUrl: "https://phantom.app/",
           detected: !!phantomProvider
         },
         { 
           name: 'Solflare', 
           provider: solflareProvider,
-          icon: "https://solflare.com/favicon.ico",
+          icon: CONFIG.ui.walletIcons.solflare,
           installUrl: "https://solflare.com/",
           detected: !!solflareProvider
         },
         { 
           name: 'Bybit Wallet', 
           provider: bybitProvider,
-          icon: "https://www.bybit.com/favicon.ico",
+          icon: CONFIG.ui.walletIcons.bybit,
           installUrl: "https://www.bybit.com/en/web3/",
           detected: !!bybitProvider
         }
@@ -69,18 +70,18 @@ export function WalletSelector({ open, onOpenChange, onSelect }: WalletSelectorP
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[420px] border-white/10 bg-background/40 backdrop-blur-2xl p-0 overflow-hidden rounded-3xl shadow-2xl shadow-black/50">
+      <DialogContent className="sm:max-w-[420px] border-white/20 bg-background/60 backdrop-blur-3xl p-0 overflow-hidden rounded-3xl shadow-2xl shadow-black/70">
         <div 
-          className="absolute inset-0 z-0 opacity-[0.08] pointer-events-none bg-cover bg-center"
-          style={{ backgroundImage: 'url(https://i.ibb.co/xq2jkksm/20260109-2047-Image-Generation-remix-01kej1a44aer6vxak4n8tx8e6j.png)' }}
+          className="absolute inset-0 z-0 opacity-[0.15] pointer-events-none bg-cover bg-center"
+          style={{ backgroundImage: `url(${CONFIG.ui.walletSelectorBg})` }}
         />
 
         <div className="relative z-10 p-8">
           <DialogHeader className="mb-8">
-            <DialogTitle className="text-3xl font-display font-black text-center bg-gradient-to-br from-white to-white/60 bg-clip-text text-transparent">
+            <DialogTitle className="text-3xl font-display font-black text-center text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
               Connect Wallet
             </DialogTitle>
-            <p className="text-center text-muted-foreground text-sm font-medium mt-2">
+            <p className="text-center text-white text-sm font-bold mt-2 drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]">
               Choose your preferred Solana wallet to securely connect to Dropy.
             </p>
           </DialogHeader>
@@ -90,13 +91,13 @@ export function WalletSelector({ open, onOpenChange, onSelect }: WalletSelectorP
               <Button
                 key={p.name}
                 variant="outline"
-                className="w-full h-20 justify-between items-center bg-white/5 border-white/10 hover:bg-white/10 hover:border-primary/50 transition-all duration-300 rounded-2xl group px-6 relative overflow-hidden no-default-hover-elevate no-default-active-elevate"
+                className="w-full h-20 justify-between items-center bg-black/60 border-white/30 hover:bg-black/80 hover:border-primary/60 transition-all duration-300 rounded-2xl group px-6 relative overflow-hidden no-default-hover-elevate no-default-active-elevate shadow-xl"
                 onClick={() => p.detected ? onSelect(p.provider) : window.open(p.installUrl, '_blank')}
               >
-                <div className="absolute inset-0 bg-gradient-to-r from-primary/0 via-primary/5 to-primary/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                <div className="absolute inset-0 bg-gradient-to-r from-primary/0 via-primary/20 to-primary/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
                 <div className="flex items-center gap-5 relative z-10">
-                  <div className="w-12 h-12 rounded-xl bg-black/40 flex items-center justify-center overflow-hidden p-2 group-hover:scale-110 transition-transform duration-300 border border-white/5">
+                  <div className="w-12 h-12 rounded-xl bg-white/20 flex items-center justify-center overflow-hidden p-2 group-hover:scale-110 transition-transform duration-300 border border-white/40 shadow-inner">
                     <img 
                       src={p.icon} 
                       alt={p.name} 
@@ -107,22 +108,22 @@ export function WalletSelector({ open, onOpenChange, onSelect }: WalletSelectorP
                     />
                   </div>
                   <div className="flex flex-col items-start">
-                    <span className="text-xl font-bold tracking-tight text-white">{p.name}</span>
-                    <span className="text-[10px] text-muted-foreground font-semibold uppercase tracking-widest">Solana Network</span>
+                    <span className="text-xl font-black tracking-tight text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)]">{p.name}</span>
+                    <span className="text-[10px] text-white font-black uppercase tracking-widest drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]">Solana Network</span>
                   </div>
                 </div>
                 
                 <div className="flex items-center gap-2 relative z-10">
                   {p.detected ? (
-                    <div className="flex items-center gap-2 bg-primary/10 px-3 py-1.5 rounded-full border border-primary/20">
-                      <span className="text-[10px] font-black uppercase tracking-widest text-primary">
+                    <div className="flex items-center gap-2 bg-primary/40 px-3 py-1.5 rounded-full border border-primary/60 shadow-lg shadow-primary/30 backdrop-blur-md">
+                      <span className="text-[10px] font-black uppercase tracking-widest text-primary drop-shadow-[0_2px_2px_rgba(0,0,0,0.6)]">
                         Detected
                       </span>
                       <CheckCircle2 className="w-3.5 h-3.5 text-primary" />
                     </div>
                   ) : (
-                    <div className="flex items-center gap-2 bg-white/5 px-3 py-1.5 rounded-full border border-white/10">
-                      <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">
+                    <div className="flex items-center gap-2 bg-white/30 px-3 py-1.5 rounded-full border border-white/40 backdrop-blur-md">
+                      <span className="text-[10px] font-black uppercase tracking-widest text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]">
                         Install
                       </span>
                     </div>
@@ -133,7 +134,7 @@ export function WalletSelector({ open, onOpenChange, onSelect }: WalletSelectorP
           </div>
 
           <div className="mt-8 text-center">
-            <p className="text-[11px] text-muted-foreground/60 font-medium">
+            <p className="text-[11px] text-white font-black drop-shadow-[0_1px_2px_rgba(0,0,0,0.9)] opacity-70 hover:opacity-100 transition-opacity">
               By connecting, you agree to Dropy's Terms of Service and Privacy Policy.
             </p>
           </div>

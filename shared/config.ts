@@ -35,8 +35,18 @@ export const PLATFORM_CONFIG = {
     CHARACTER_HELLO:
       "https://i.ibb.co/pBnZXZps/20260109-2049-Image-Generation-remix-01kej1dxwve5s9jwddtakxjtga.png",
   },
+  ui: {
+    walletSelectorBg: "https://i.ibb.co/xq2jkksm/20260109-2047-Image-Generation-remix-01kej1a44aer6vxak4n8tx8e6j.png",
+    walletIcons: {
+      phantom: "https://play-lh.googleusercontent.com/obRvW02OTYLzJuvic1ZbVDVXLXzI0Vt_JGOjlxZ92XMdBF_i3kqU92u9SgHvJ5pySdM",
+      solflare: "https://solflare.com/favicon.ico",
+      bybit: "https://www.bybit.com/favicon.ico",
+    }
+  },
   CONSTANTS: {
     MIN_REPUTATION_FOR_REWARD: 50,
     BURN_PERCENTAGE_PER_CAMPAIGN: 5,
   },
 };
+
+export const CONFIG = PLATFORM_CONFIG;
