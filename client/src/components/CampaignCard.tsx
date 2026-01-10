@@ -137,7 +137,7 @@ export function CampaignCard({ campaign, onActionClick, isOwner }: CampaignCardP
             <div className="space-y-2 bg-primary/10 p-4 rounded-2xl border border-primary/20 shadow-inner">
               <div className="flex items-center gap-2 text-[11px] font-black text-primary uppercase tracking-tighter">
                 <ShieldCheck className="w-4 h-4" />
-                <span>HOLD {campaign.minHoldingAmount} ${campaign.tokenName} FOR {campaign.minHoldingDuration} DAYS</span>
+                <span>HOLD {Number(campaign.minHoldingAmount).toLocaleString()} ${campaign.tokenName} FOR {campaign.minHoldingDuration} DAYS</span>
               </div>
             </div>
           ) : (
