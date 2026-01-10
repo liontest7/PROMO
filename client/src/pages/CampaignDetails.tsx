@@ -215,19 +215,21 @@ export default function CampaignDetails() {
                         <div className="flex-1 flex items-center justify-between md:px-8 gap-8 w-full border-y md:border-y-0 md:border-x border-white/10 py-4 md:py-0">
                           {isConnected ? (
                             <>
-                              <div className="space-y-2 flex-1 min-w-0">
-                                <div className="flex justify-between items-center text-[10px] font-black uppercase tracking-widest text-white/70">
-                                  <span>Progress</span>
-                                  <span className="text-primary">0%</span>
-                                </div>
-                                <div className="relative h-2.5 w-full bg-white/10 rounded-full overflow-hidden border border-white/5">
-                                  <div className="absolute inset-y-0 left-0 bg-primary w-[5%] transition-all duration-1000 shadow-[0_0_12px_rgba(var(--primary),0.8)]" />
+                              <div className="space-y-3 flex-1 min-w-0">
+                                <div className="flex flex-col items-center gap-1.5">
+                                  <div className="flex justify-between w-full items-center text-[12px] font-black uppercase tracking-widest text-white">
+                                    <span>Progress</span>
+                                    <span className="text-primary">0%</span>
+                                  </div>
+                                  <div className="relative h-3 w-full bg-white/10 rounded-full overflow-hidden border border-white/5">
+                                    <div className="absolute inset-y-0 left-0 bg-primary w-[5%] transition-all duration-1000 shadow-[0_0_12px_rgba(var(--primary),0.8)]" />
+                                  </div>
                                 </div>
                               </div>
-                              <div className="shrink-0 text-right py-1">
-                                <p className="text-[10px] font-black text-white/60 uppercase tracking-widest mb-1">Your Balance</p>
-                                <p className="text-lg font-black text-white font-mono leading-none">
-                                  {Number(walletBalance || 0).toLocaleString()} <span className="text-[10px] text-primary font-bold">${campaign.tokenName}</span>
+                              <div className="shrink-0 flex flex-col items-center gap-1 min-w-[120px]">
+                                <p className="text-[12px] font-black text-white/90 uppercase tracking-widest leading-none">Your Balance</p>
+                                <p className="text-xl font-black text-white font-mono leading-none mt-1">
+                                  {Number(walletBalance || 0).toLocaleString()} <span className="text-[11px] text-primary font-bold uppercase ml-0.5 tracking-tighter">${campaign.tokenName}</span>
                                 </p>
                               </div>
                             </>
