@@ -12,24 +12,24 @@ export function AirdropAnimation() {
           rotate: -15
         }}
         animate={{ 
-          // Path that starts just above and ends just below the section
-          // Using percentages relative to the container for better stability
-          y: ["-20%", "20%", "50%", "80%", "120%"],
-          x: ["80%", "10%", "90%", "10%", "80%"],
+          // Extended descent to 140% to ensure it fully exits the section bottom
+          y: ["-20%", "20%", "60%", "100%", "140%"],
+          x: ["80%", "0%", "100%", "0%", "80%"],
           rotate: [-15, 15, -15, 15, -15]
         }}
         transition={{
-          duration: 35, // Slower, calmer speed
+          duration: 20, // Slightly faster speed as requested
           repeat: Infinity,
           ease: "linear",
           times: [0, 0.25, 0.5, 0.75, 1]
         }}
-        className="absolute w-48 h-48 md:w-64 md:h-64"
+        className="absolute w-40 h-40 md:w-56 md:h-56"
       >
         <img 
           src={PLATFORM_CONFIG.ASSETS.MAIN_LOGO} 
           alt="Falling Mascot" 
-          className="w-full h-full object-contain drop-shadow-[0_40px_80px_rgba(0,0,0,0.5)]"
+          className="w-full h-full object-contain mix-blend-normal bg-transparent"
+          style={{ filter: "none" }} // Ensure no filters/shadows create circles
         />
       </motion.div>
     </div>
