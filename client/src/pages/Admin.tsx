@@ -69,7 +69,17 @@ export default function AdminDashboard() {
     }
   });
 
-  if (loadingUsers || loadingCampaigns || loadingExecutions) {
+  const { data: adminStats, isLoading: loadingStats } = useQuery<{
+    totalUsers: number;
+    activeCampaigns: number;
+    totalExecutions: number;
+    totalRewardsPaid: number;
+    blockedUsers: number;
+  }>({
+    queryKey: ["/api/admin/stats"],
+  });
+
+  if (loadingUsers || loadingCampaigns || loadingExecutions || loadingStats) {
     return (
       <div className="flex h-screen items-center justify-center">
         <Loader2 className="h-8 w-8 animate-spin text-primary" />
@@ -77,11 +87,11 @@ export default function AdminDashboard() {
     );
   }
 
-  const totalRewardsPaid = executions?.filter((e: any) => e.status === 'paid')
-    .reduce((sum: number, e: any) => sum + parseFloat(e.action?.rewardAmount || "0"), 0) || 0;
-
-  const activeCampaignsCount = campaigns?.filter(c => c.status === 'active').length || 0;
-  const blockedUsersCount = users?.filter(u => u.isBlocked).length || 0;
+  const totalRewardsPaid = adminStats?.totalRewardsPaid || 0;
+  const activeCampaignsCount = adminStats?.activeCampaigns || 0;
+  const blockedUsersCount = adminStats?.blockedUsers || 0;
+  const totalUsersCount = adminStats?.totalUsers || 0;
+  const totalExecutionsCount = adminStats?.totalExecutions || 0;
 
   return (
     <div className="container mx-auto py-10 space-y-8">
@@ -107,7 +117,7 @@ export default function AdminDashboard() {
             <Users className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{users?.length || 0}</div>
+            <div className="text-2xl font-bold">{totalUsersCount}</div>
             <p className="text-[10px] text-muted-foreground mt-1 uppercase tracking-wider">{blockedUsersCount} blocked</p>
           </CardContent>
         </Card>
@@ -127,7 +137,7 @@ export default function AdminDashboard() {
             <CheckCircle className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{executions?.length || 0}</div>
+            <div className="text-2xl font-bold">{totalExecutionsCount}</div>
             <p className="text-[10px] text-muted-foreground mt-1 uppercase tracking-wider">Total tasks done</p>
           </CardContent>
         </Card>

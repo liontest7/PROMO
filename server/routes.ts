@@ -491,6 +491,27 @@ export async function registerRoutes(
     }
   });
 
+  app.get('/api/admin/stats', async (req, res) => {
+    try {
+      const users = await storage.getAllUsers();
+      const campaigns = await storage.getAllCampaigns();
+      const executions = await storage.getAllExecutions();
+      
+      const totalRewardsPaid = executions.filter(e => e.status === 'paid')
+        .reduce((sum, e) => sum + parseFloat(e.action?.rewardAmount || "0"), 0);
+
+      res.json({
+        totalUsers: users.length,
+        activeCampaigns: campaigns.filter(c => c.status === 'active').length,
+        totalExecutions: executions.length,
+        totalRewardsPaid,
+        blockedUsers: users.filter(u => u.isBlocked).length
+      });
+    } catch (err) {
+      res.status(500).json({ message: "Failed to fetch admin stats" });
+    }
+  });
+
   // Seed Data
   // seed(); // Commented out to prevent mock data on restart if database has real data
 
