@@ -298,7 +298,7 @@ export class DatabaseStorage implements IStorage {
       .from(users)
       .where(eq(users.role, "user"))
       .orderBy(desc(users.reputationScore))
-      .limit(10);
+      .limit(100);
   }
 }
 

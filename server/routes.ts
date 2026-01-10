@@ -410,15 +410,23 @@ export async function registerRoutes(
     try {
       const { timeframe } = req.query; // all_time, monthly, weekly
       const leaders = await storage.getLeaderboard();
-      const formatted = leaders.map((u, i) => ({
-        rank: i + 1,
-        name: u.walletAddress.slice(0, 4) + "..." + u.walletAddress.slice(-4),
-        points: u.reputationScore,
-        avatar: u.walletAddress.slice(0, 2).toUpperCase(),
-        tasks: 0 
+      
+      const formatted = await Promise.all(leaders.map(async (u, i) => {
+        const userExecutions = await storage.getExecutionsByUser(u.id);
+        const completedCount = userExecutions.filter(e => e.status === 'paid' || e.status === 'verified').length;
+        
+        return {
+          rank: i + 1,
+          name: u.walletAddress.slice(0, 4) + "..." + u.walletAddress.slice(-4),
+          fullWallet: u.walletAddress,
+          points: u.reputationScore,
+          avatar: u.walletAddress.slice(0, 2).toUpperCase(),
+          tasks: completedCount
+        };
       }));
       res.json(formatted);
     } catch (err) {
+      console.error("Leaderboard API error:", err);
       res.status(500).json({ message: "Failed to fetch leaderboard" });
     }
   });
