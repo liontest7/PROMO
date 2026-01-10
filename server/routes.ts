@@ -231,11 +231,11 @@ export async function registerRoutes(
         const campaign = await storage.getCampaign(input.actionId);
         if (campaign && campaign.campaignType === 'holder_qualification') {
           // Anti-Fraud check
-          const associatedWallets = await storage.getWalletsByIp(userIp);
+          const associatedWallets = await storage.getWalletsByIp(userIp || 'unknown');
           if (associatedWallets.length > 5 && !associatedWallets.includes(input.userWallet)) {
             return res.status(403).json({ message: "Fraud detected: Too many wallets from this IP" });
           }
-          await storage.logIpWalletAssociation(userIp, input.userWallet);
+          await storage.logIpWalletAssociation(userIp || 'unknown', input.userWallet);
 
           let state = await storage.getHolderState(user.id, campaign.id);
           let balance = 0;
