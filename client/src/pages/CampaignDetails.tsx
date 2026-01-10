@@ -1,7 +1,7 @@
 import { useRoute, useParams, useLocation } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { Campaign, Action, Execution, CampaignWithActions } from "@shared/schema";
-import { Loader2, ArrowLeft, ExternalLink, ShieldCheck, Coins, Users, CheckCircle, ArrowRight, Twitter, Send, Zap, Globe, Share2 } from "lucide-react";
+import { Loader2, ArrowLeft, ExternalLink, ShieldCheck, Coins, Users, CheckCircle, ArrowRight, Twitter, Send, Zap, Globe, Share2, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -18,7 +18,7 @@ import { CONFIG } from "@shared/config";
 
 export default function CampaignDetails() {
   const { id, symbol } = useParams();
-  const { isConnected, walletAddress, connect } = useWallet();
+  const { isConnected, walletAddress, connect, walletBalance } = useWallet();
   const { toast } = useToast();
   const [, setLocation] = useLocation();
   const [selectedAction, setSelectedAction] = useState<{ action: Action; campaign: Campaign } | null>(null);
@@ -192,32 +192,64 @@ export default function CampaignDetails() {
                           <div className="w-12 h-12 rounded-xl bg-primary/20 flex items-center justify-center shrink-0 group-hover:scale-110 transition-all">
                             <ShieldCheck className="w-7 h-7" />
                           </div>
-                          <div className="text-left">
-                            <p className="text-xl font-black uppercase tracking-tight text-white">Holder Verification</p>
+                          <div className="text-left flex-1 min-w-0">
+                            <p className="text-xl font-black uppercase tracking-tight text-white mb-1">Holder Verification</p>
                             <p className="text-sm font-bold text-white/50 mb-4">Hold {campaign.minHoldingAmount} ${campaign.tokenName} for {campaign.minHoldingDuration} days</p>
                             
                             {isConnected && (
-                              <div className="space-y-3 bg-black/20 p-4 rounded-xl border border-white/5 mb-2">
+                              <div className="space-y-4 bg-black/40 p-5 rounded-2xl border border-white/5 mb-2 shadow-inner">
                                 <div className="flex justify-between items-center text-[10px] font-black uppercase tracking-widest">
                                   <span className="text-white/40">Current Balance</span>
-                                  <span className="text-primary">0 ${campaign.tokenName}</span>
+                                  <span className="text-primary font-mono text-xs">{Number(walletBalance || 0).toLocaleString()} ${campaign.tokenName}</span>
                                 </div>
-                                <div className="space-y-1.5">
-                                  <div className="flex justify-between text-[9px] font-black uppercase tracking-widest text-white/30">
-                                    <span>Holding Progress</span>
-                                    <span>0%</span>
+                                
+                                <div className="space-y-2">
+                                  <div className="flex justify-between items-end mb-1">
+                                    <div className="space-y-0.5">
+                                      <p className="text-[10px] font-black uppercase tracking-widest text-white/30">Holding Progress</p>
+                                      <p className="text-xs font-black text-white">0 Days 0h 0m</p>
+                                    </div>
+                                    <span className="text-[10px] font-black text-primary">0%</span>
                                   </div>
-                                  <Progress value={0} className="h-1.5 bg-white/5" />
+                                  <div className="relative h-2 w-full bg-white/5 rounded-full overflow-hidden">
+                                    <Progress value={0} className="h-full bg-primary transition-all duration-500" />
+                                  </div>
+                                  <div className="flex justify-between text-[9px] font-bold text-white/20 uppercase">
+                                    <span>Start</span>
+                                    <span>{campaign.minHoldingDuration} Days Target</span>
+                                  </div>
                                 </div>
-                                <p className="text-[10px] text-yellow-500/80 font-bold uppercase tracking-tight italic">
-                                  * Holding time resets if you sell your tokens
-                                </p>
+
+                                <div className="flex items-center gap-2 pt-2 border-t border-white/5">
+                                  <div className="w-1.5 h-1.5 rounded-full bg-yellow-500 animate-pulse" />
+                                  <p className="text-[10px] text-yellow-500/80 font-black uppercase tracking-tight italic">
+                                    Holding time resets if balance drops below {campaign.minHoldingAmount}
+                                  </p>
+                                </div>
                               </div>
                             )}
                           </div>
                         </div>
-                        <div className="bg-primary text-primary-foreground font-black px-6 py-3 rounded-xl text-sm shadow-lg shadow-primary/10 transition-all">
-                          VERIFY NOW
+                        <div className="flex flex-col gap-2 shrink-0">
+                          <Button 
+                            className={cn(
+                              "font-black px-6 py-3 rounded-xl text-sm shadow-lg transition-all h-12 min-w-[140px]",
+                              isConnected ? "bg-white/10 text-white hover:bg-white/20 border border-white/10" : "bg-primary text-primary-foreground shadow-primary/10"
+                            )}
+                            onClick={handleHolderClick}
+                          >
+                            {isConnected ? (
+                              <div className="flex items-center gap-2">
+                                <RefreshCw className="w-4 h-4" />
+                                REFRESH
+                              </div>
+                            ) : "VERIFY NOW"}
+                          </Button>
+                          {isConnected && (
+                            <p className="text-[9px] font-black text-white/20 text-center uppercase tracking-widest">
+                              Last checked: Just now
+                            </p>
+                          )}
                         </div>
                       </Button>
                     </CardContent>
