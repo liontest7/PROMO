@@ -124,19 +124,19 @@ export default function About() {
               { 
                 phase: "Phase 1: Foundation", 
                 title: "Launch & Holder Qualification", 
-                items: ["Platform Build & UI/UX", "Token Launch & Initial Liquidity", "100% On-chain Holder Verification Model"],
+                items: ["Secure Platform Launch & UI/UX Audit", "Verified On-chain Holder Model (Phase 1 Live)", "$MEME Burn Utility on Campaign Creation"],
                 status: "active"
               },
               { 
-                phase: "Phase 2: Engagement", 
-                title: "Social & API Integration", 
-                items: ["Twitter & Telegram API Connections", "Automated Engagement Verification", "Advertiser Dashboard Expansion"],
+                phase: "Phase 2: Growth", 
+                title: "Engagement & Expansion", 
+                items: ["Social Media API (Twitter/X & Telegram)", "Automated Verified Action Tracking", "Multi-Asset Reward Support"],
                 status: "pending"
               },
               { 
                 phase: "Phase 3: Ecosystem", 
-                title: "DEX & Payments", 
-                items: ["Direct DEX Payment Integrations", "Multi-token Reward Support", "Cross-chain Expansion Exploration"],
+                title: "DEX & Advanced Tools", 
+                items: ["Direct DEX Liquidity Incentives", "Staking Rewards for $MEME Holders", "Permissionless Campaign Factory"],
                 status: "pending"
               }
             ].map((step, i) => (
@@ -166,26 +166,26 @@ export default function About() {
         {/* Token Info Section */}
         <section className="py-20 border-t border-white/5">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-display font-bold mb-4">The Platform Token</h2>
-            <p className="text-muted-foreground">Powering the MemeDrop ecosystem.</p>
+            <h2 className="text-4xl font-display font-bold mb-4">The Deflationary Ecosystem</h2>
+            <p className="text-muted-foreground">Powering the MemeDrop economy with real utility.</p>
           </div>
           <div className="grid md:grid-cols-3 gap-8">
             <Card className="glass-card border-primary/20 bg-primary/5">
               <CardContent className="p-8">
-                <h3 className="text-xl font-bold mb-4">Advertiser Staking</h3>
-                <p className="text-muted-foreground">Projects stake our native token to gain priority placement and reduced platform fees.</p>
+                <h3 className="text-xl font-bold mb-4">Deflationary Burn</h3>
+                <p className="text-muted-foreground">Every campaign creation removes {PLATFORM_CONFIG.BURN_AMOUNT.toLocaleString()} ${PLATFORM_CONFIG.TOKEN_SYMBOL} from circulation forever, reducing supply.</p>
               </CardContent>
             </Card>
             <Card className="glass-card border-white/5 bg-white/[0.02]">
               <CardContent className="p-8">
-                <h3 className="text-xl font-bold mb-4">Governance</h3>
-                <p className="text-muted-foreground">Token holders vote on platform parameters and upcoming feature priorities.</p>
+                <h3 className="text-xl font-bold mb-4">Governance & Voting</h3>
+                <p className="text-muted-foreground">Token holders shape the future of the platform, voting on roadmap priorities and fee structures.</p>
               </CardContent>
             </Card>
             <Card className="glass-card border-white/5 bg-white/[0.02]">
               <CardContent className="p-8">
-                <h3 className="text-xl font-bold mb-4">Earn Bonus</h3>
-                <p className="text-muted-foreground">Holders receive up to 15% extra rewards when completing tasks on the platform.</p>
+                <h3 className="text-xl font-bold mb-4">Priority Access</h3>
+                <p className="text-muted-foreground">Holders get first access to high-reward campaigns and exclusive community-only distributions.</p>
               </CardContent>
             </Card>
           </div>
