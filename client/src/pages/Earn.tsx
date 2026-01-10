@@ -53,6 +53,11 @@ export default function Earn() {
     const matchesTab = activeTab === "active" ? c.status === "active" : (c.status === "completed" || c.status === "paused");
     if (!matchesTab) return false;
 
+    // Reputation Filter (Simulated for Phase 2 readiness)
+    const userReputation = user?.reputation || 0;
+    const reputationRequirement = (c as any).minReputation || 0;
+    if (userReputation < reputationRequirement) return false;
+
     const matchesSearch = 
       ((c.title || "").toLowerCase()).includes(searchTerm.toLowerCase()) || 
       ((c.tokenName || "").toLowerCase()).includes(searchTerm.toLowerCase()) ||

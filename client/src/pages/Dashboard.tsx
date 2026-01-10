@@ -380,19 +380,26 @@ export default function Dashboard() {
                     <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-all duration-700">
                       <Twitter className="w-12 h-12" />
                     </div>
-                    <div className="relative z-10">
-                      <div className="flex items-center gap-2 mb-3">
+                    <div className="relative z-10 text-left space-y-3">
+                      <div className="flex items-center gap-2 mb-1">
                         <div className="p-1.5 rounded-lg bg-blue-500/20 border border-blue-500/30">
                           <Twitter className="w-4 h-4 text-blue-400" />
                         </div>
                         <span className="text-[11px] font-black uppercase tracking-widest text-white italic">X IDENTITY</span>
                       </div>
-                      <Button 
-                        className="w-full bg-blue-500 hover:bg-blue-600 text-white gap-3 font-black text-[10px] h-10 rounded-lg shadow-md transition-all active-elevate-2 uppercase tracking-widest"
-                      >
-                        SYNC PROTOCOL NODE
-                      </Button>
-                      <p className="text-[9px] text-white/40 mt-3 italic text-center font-black uppercase tracking-widest">
+                      <div className="flex flex-col gap-2">
+                        <Button 
+                          className="w-full bg-blue-500 hover:bg-blue-600 text-white gap-3 font-black text-[10px] h-10 rounded-lg shadow-md transition-all active-elevate-2 uppercase tracking-widest"
+                        >
+                          SYNC PROTOCOL NODE
+                        </Button>
+                        <div className="flex justify-center py-2">
+                          <div id="cf-turnstile-placeholder" className="w-full min-h-[50px] flex items-center justify-center text-[9px] text-white/20 uppercase font-black tracking-widest border border-dashed border-white/10 rounded-lg px-2 text-center">
+                            Bot Protection Active (PHASE 2)
+                          </div>
+                        </div>
+                      </div>
+                      <p className="text-[9px] text-white/40 mt-3 italic text-center font-black uppercase tracking-widest leading-none">
                         SECURE OAUTH 2.0 ENCRYPTED
                       </p>
                     </div>
@@ -431,13 +438,20 @@ export default function Dashboard() {
                       </div>
                       <span className="text-[11px] font-black uppercase tracking-widest text-white italic">TG IDENTITY</span>
                     </div>
-                    <Button 
-                      variant="outline"
-                      disabled
-                      className="w-full border-white/10 hover:bg-white/5 text-white/40 gap-3 font-black text-[10px] h-10 rounded-lg transition-all uppercase tracking-widest cursor-not-allowed"
-                    >
-                      INITIATE SECURE LINK
-                    </Button>
+                    <div className="flex flex-col gap-2">
+                      <Button 
+                        variant="outline"
+                        disabled
+                        className="w-full border-white/10 hover:bg-white/5 text-white/40 gap-3 font-black text-[10px] h-10 rounded-lg transition-all uppercase tracking-widest cursor-not-allowed"
+                      >
+                        INITIATE SECURE LINK
+                      </Button>
+                      <div className="flex justify-center py-1">
+                        <div className="w-full h-[30px] flex items-center justify-center text-[8px] text-white/10 uppercase font-black tracking-tighter border border-dashed border-white/5 rounded-md px-2 text-center">
+                          VERIFICATION BYPASS (PHASE 2)
+                        </div>
+                      </div>
+                    </div>
                     <p className="text-[10px] text-white/40 mt-3 italic text-center font-black uppercase tracking-widest leading-none">
                       OFFLINE ENCRYPTION
                     </p>

@@ -90,6 +90,17 @@ export function Navigation() {
 
           <div className="flex items-center gap-4">
             <div className="hidden lg:flex items-center gap-3 mr-4 pr-4 border-r border-white/10">
+              <Button 
+                variant="ghost" 
+                size="default" 
+                className="px-4 h-10 rounded-full bg-yellow-500/10 border border-yellow-500/20 text-yellow-500 hover:bg-yellow-500/20 transition-all gap-2 group"
+                asChild
+              >
+                <Link href="/leaderboard">
+                  <Trophy className="w-4 h-4" />
+                  <span className="text-xs font-black uppercase tracking-widest">Leaderboard</span>
+                </Link>
+              </Button>
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button 
