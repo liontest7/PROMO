@@ -70,7 +70,7 @@ export function TermsModal() {
                 Please read and accept our Terms to continue.
               </p>
             </div>
-            <div className="shrink-0 relative">
+            <div className="shrink-0 relative pr-6">
               <div className="absolute inset-0 bg-primary/10 blur-[25px] rounded-full scale-110" />
               <img 
                 src={PLATFORM_CONFIG.ASSETS.LEGAL_BANNER} 
@@ -89,36 +89,51 @@ export function TermsModal() {
             <div className="space-y-6 text-[15px] text-white/90 leading-relaxed pb-6">
               <section>
                 <h3 className="text-white font-black text-xs uppercase tracking-[0.2em] mb-2">1. Acceptance of Terms</h3>
-                <p>By connecting your Solana wallet and accessing the {PLATFORM_CONFIG.TOKEN_SYMBOL} Platform, you acknowledge that you have read, understood, and agree to be bound by these Terms of Service. This Platform provides a decentralized interface for Pay-Per-Action marketing and reward distribution.</p>
+                <p>By connecting your Solana wallet and accessing the Dropy Platform (“Platform”), you confirm that you have read, understood, and agree to be bound by these Terms of Service. The Platform provides a decentralized interface for Pay-Per-Action marketing, on-chain verification, and reward distribution.</p>
               </section>
               
               <section>
-                <h3 className="text-white font-black text-xs uppercase tracking-[0.2em] mb-2">2. Eligibility & Risk</h3>
-                <p>You must be of legal age in your jurisdiction to use this Platform. You acknowledge that participating in crypto-asset ecosystems involves significant risk, including technical vulnerabilities and extreme price volatility. {PLATFORM_CONFIG.TOKEN_SYMBOL} INC. is a technology provider and does not offer financial or investment advice.</p>
+                <h3 className="text-white font-black text-xs uppercase tracking-[0.2em] mb-2">2. Eligibility, Risk & No Advice</h3>
+                <p>You must be of legal age in your jurisdiction to access or use the Platform. You acknowledge that participation in blockchain-based systems involves inherent risks, including but not limited to smart contract vulnerabilities, third-party failures, and extreme price volatility. The Platform is a technology interface only and does not provide financial, investment, legal, or tax advice.</p>
               </section>
 
               <section>
-                <h3 className="text-white font-black text-xs uppercase tracking-[0.2em] mb-2">3. Prohibited Conduct</h3>
-                <p>We strictly prohibit any form of fraudulent activity, including but not limited to: Sybil attacks, use of automated scripts/bots, or manipulation of verification protocols. Any user found violating these integrity standards will be permanently blacklisted and all pending rewards will be forfeited.</p>
+                <h3 className="text-white font-black text-xs uppercase tracking-[0.2em] mb-2">3. No Guarantee of Rewards</h3>
+                <p>Rewards are not guaranteed. The Platform reserves the right to modify, delay, reduce, or cancel reward distributions at any time due to technical issues, abuse prevention, verification failure, liquidity limitations, or protocol updates.</p>
               </section>
 
               <section>
-                <h3 className="text-white font-black text-xs uppercase tracking-[0.2em] mb-2">4. Reward Verification</h3>
-                <p>Rewards are distributed upon successful verification of social actions (Twitter, Telegram, etc.) via third-party APIs. We are not responsible for any failures, delays, or inaccuracies in third-party verification systems or Solana network congestion.</p>
+                <h3 className="text-white font-black text-xs uppercase tracking-[0.2em] mb-2">4. Prohibited Conduct & Enforcement</h3>
+                <p>The following activities are strictly prohibited: Sybil attacks or multi-wallet abuse; Use of bots, scripts, or automated tools; Spoofing identities or falsifying social actions; Exploiting bugs or attempting protocol manipulation. Any violation may result in immediate suspension, permanent blacklisting, and forfeiture of all pending or future rewards, without prior notice.</p>
               </section>
 
               <section>
-                <h3 className="text-white font-black text-xs uppercase tracking-[0.2em] mb-2">5. Privacy & Data</h3>
-                <p>We only collect public wallet addresses and social handles necessary for action verification. We never store private keys or seed phrases. Your interactions with the Platform are recorded on the public Solana blockchain.</p>
+                <h3 className="text-white font-black text-xs uppercase tracking-[0.2em] mb-2">5. Verification & Third-Party Dependencies</h3>
+                <p>Action verification (e.g. Twitter, Telegram, on-chain events) relies on third-party APIs and external services. The Platform is not responsible for verification errors, data inaccuracies, service outages, delays, or Solana network congestion.</p>
               </section>
 
               <section>
-                <h3 className="text-white font-black text-xs uppercase tracking-[0.2em] mb-2">6. Limitation of Liability</h3>
-                <p>To the maximum extent permitted by law, Dropy INC. and its affiliates shall not be liable for any loss of assets, data, or profits resulting from your use of the Platform or interactions with decentralized smart contracts.</p>
+                <h3 className="text-white font-black text-xs uppercase tracking-[0.2em] mb-2">6. Privacy & On-Chain Transparency</h3>
+                <p>The Platform only processes public wallet addresses and social identifiers required for action verification. Private keys, seed phrases, or sensitive credentials are never requested or stored. All blockchain interactions are publicly visible and immutable on the Solana network.</p>
+              </section>
+
+              <section>
+                <h3 className="text-white font-black text-xs uppercase tracking-[0.2em] mb-2">7. Jurisdiction & Legal Compliance</h3>
+                <p>You are solely responsible for ensuring that your use of the Platform complies with all applicable laws and regulations in your jurisdiction. Access to the Platform may be restricted or unavailable in certain regions.</p>
+              </section>
+
+              <section>
+                <h3 className="text-white font-black text-xs uppercase tracking-[0.2em] mb-2">8. Limitation of Liability</h3>
+                <p>To the maximum extent permitted by law, the Platform and its contributors shall not be liable for any loss of digital assets, data, rewards, or profits arising from the use of the Platform, smart contracts, or third-party services.</p>
+              </section>
+
+              <section>
+                <h3 className="text-white font-black text-xs uppercase tracking-[0.2em] mb-2">9. Platform Access</h3>
+                <p>Access to core Platform functionality requires connecting a compatible Solana wallet and accepting these Terms. Users who do not agree may not access the Platform engine.</p>
               </section>
 
               <div className="pt-2 border-t border-white/5 italic text-[11px] font-medium text-white/40 text-center">
-                Finalizing your acceptance will grant you full access to the Platform engine.
+                By connecting your wallet, you acknowledge and accept these Terms of Service.
               </div>
             </div>
           </ScrollArea>
