@@ -194,7 +194,7 @@ export default function Landing() {
               <div className="flex justify-center relative">
                 <div className="w-[400px] h-[400px] rounded-full bg-primary/20 flex items-center justify-center border-[12px] border-primary/10">
                   <motion.img 
-                    src="https://i.ibb.co/8DwGd5Z1/Untitled-design.png" 
+                    src={PLATFORM_CONFIG.ASSETS.MAIN_LOGO} 
                     alt="MemeDrop Character" 
                     animate={{ y: [0, -30, 0] }}
                     transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
