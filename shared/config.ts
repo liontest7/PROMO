@@ -47,7 +47,7 @@ export const PLATFORM_CONFIG = {
   },
   STATS: {
     // Total tokens burned by the platform through campaign creations
-    TOTAL_BURNED: 150000,
+    TOTAL_BURNED: 0,
   },
   ui: {
     walletSelectorBg:

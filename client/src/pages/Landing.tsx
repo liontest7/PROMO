@@ -12,7 +12,6 @@ import { useToast } from "@/hooks/use-toast";
 import { useQuery } from "@tanstack/react-query";
 
 import { PLATFORM_CONFIG } from "@shared/config";
-import { AirdropAnimation } from "@/components/AirdropAnimation";
 
 function EarnContentOnly() {
   const { data: campaigns, isLoading } = useCampaigns();
@@ -81,7 +80,6 @@ export default function Landing() {
       <div className="overflow-hidden">
         {/* Hero Section */}
         <section className="relative pt-20 pb-20 overflow-hidden">
-          <AirdropAnimation />
           <div className="absolute top-0 left-0 w-full h-full overflow-hidden z-0 pointer-events-none">
             <div className="absolute top-[-10%] right-[-5%] w-[500px] h-[500px] bg-primary/20 rounded-full blur-[120px]" />
             <div className="absolute bottom-[-10%] left-[-10%] w-[600px] h-[600px] bg-secondary/20 rounded-full blur-[120px]" />
@@ -133,7 +131,7 @@ export default function Landing() {
                   { label: "Community Members", value: stats?.totalUsers || "1,240" },
                   { label: "Verified Projects", value: stats?.totalVerifiedProjects || "3" },
                   { label: "Rewards Paid (Tokens)", value: stats ? stats.totalPaid : "450k" },
-                  { label: "Total Tokens Burned", value: PLATFORM_CONFIG.STATS.TOTAL_BURNED.toLocaleString(), isBurn: true },
+                  { label: "Total Tokens Burned", value: stats?.totalBurned || "0", isBurn: true },
                 ].map((stat, i) => (
                   <div key={i} className={`relative text-center p-4 rounded-2xl bg-white/5 border border-white/5 backdrop-blur-sm group hover:border-primary/30 transition-all flex flex-col justify-center min-h-[100px] ${stat.isBurn ? 'border-orange-500/20 bg-orange-500/5 hover:border-orange-500/50' : ''}`}>
                     {stat.mascot && (
@@ -199,13 +197,9 @@ export default function Landing() {
                 </div>
                 <div className="flex justify-center relative">
                   <div className="w-[400px] h-[400px] rounded-full bg-primary/20 flex items-center justify-center border-[12px] border-primary/10">
-                    <motion.img 
-                      src={PLATFORM_CONFIG.ASSETS.DEFLATIONARY_MONK} 
-                      alt="Deflationary Monk" 
-                      animate={{ y: [0, -30, 0] }}
-                      transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-                      className="w-80 h-80 object-contain drop-shadow-[0_0_60px_rgba(34,197,94,0.7)] translate-x-1" 
-                    />
+                    <div className="w-80 h-80 flex items-center justify-center bg-black/20 rounded-full border-4 border-primary/20 shadow-[0_0_40px_rgba(34,197,94,0.3)]">
+                       <Coins className="w-40 h-40 text-primary animate-pulse" />
+                    </div>
                   </div>
                 </div>
               </div>

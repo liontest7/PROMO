@@ -15,8 +15,8 @@ import rateLimit from "express-rate-limit";
 import { ADMIN_CONFIG } from "@shared/config";
 
 const apiLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // Limit each IP to 100 requests per windowMs
+  windowMs: 15 * 60 * 1000,
+  max: 100,
   standardHeaders: true,
   legacyHeaders: false,
   message: { message: "Too many requests from this IP, please try again after 15 minutes" }
@@ -26,14 +26,11 @@ export async function registerRoutes(
   httpServer: Server,
   app: Express
 ): Promise<Server> {
-  // Apply rate limiting to all /api routes
   app.use("/api", apiLimiter);
 
-  // Setup Auth
   await setupAuth(app);
   registerAuthRoutes(app);
 
-  // Middleware for blocked users
   app.use(async (req, res, next) => {
     const walletAddress = req.headers['x-wallet-address'] || req.body?.walletAddress;
     if (walletAddress && typeof walletAddress === 'string') {
@@ -45,16 +42,13 @@ export async function registerRoutes(
     next();
   });
 
-  // Users
   app.post('/api/users/auth', async (req, res) => {
     try {
       const input = api.users.getOrCreate.input.parse(req.body);
       let user = await storage.getUserByWallet(input.walletAddress);
       
       if (!user) {
-        // Check if this wallet is in superAdmin list
         const isSuperAdmin = ADMIN_CONFIG.superAdminWallets.includes(input.walletAddress);
-        
         const userData = { 
           walletAddress: input.walletAddress,
           role: isSuperAdmin ? "admin" : (input.role || "user"),
@@ -65,7 +59,6 @@ export async function registerRoutes(
         user = await storage.createUser(userData);
         res.status(201).json(user);
       } else {
-        // Auto-upgrade if in config but not yet admin in DB
         if (ADMIN_CONFIG.superAdminWallets.includes(user.walletAddress) && user.role !== "admin") {
           user = await storage.updateUserRole(user.id, "admin");
         }
@@ -140,7 +133,6 @@ export async function registerRoutes(
     }
   });
 
-  // Campaigns
   app.get(api.campaigns.list.path, async (req, res) => {
     const campaigns = await storage.getCampaigns();
     res.json(campaigns);
@@ -184,20 +176,23 @@ export async function registerRoutes(
     }
   });
 
-  // Verification & Claiming
   app.post(api.executions.verify.path, async (req, res) => {
     try {
       const input = api.executions.verify.input.parse(req.body);
-      
       const user = await storage.getUserByWallet(input.userWallet);
       if (!user) return res.status(404).json({ message: "User not found" });
+
+      const userExecutions = await storage.getExecutionsByUser(user.id);
+      const existingExecution = userExecutions.find(e => e.actionId === input.actionId);
+      if (existingExecution && (existingExecution.status === 'verified' || existingExecution.status === 'paid')) {
+        return res.status(400).json({ message: "Task already completed" });
+      }
 
       const action = await storage.getAction(input.actionId);
       if (!action) {
         const campaign = await storage.getCampaign(input.actionId);
         if (campaign && campaign.campaignType === 'holder_qualification') {
           let state = await storage.getHolderState(user.id, campaign.id);
-          
           let balance = 0;
           try {
             const connection = new Connection("https://api.mainnet-beta.solana.com");
@@ -222,7 +217,7 @@ export async function registerRoutes(
                 status: "insufficient",
                 currentBalance: balance,
                 requiredBalance: required,
-                message: `Insufficient balance: you hold ${balance} but need ${required}` 
+                message: `Insufficient balance` 
               });
             }
             state = await storage.createHolderState({
@@ -231,70 +226,28 @@ export async function registerRoutes(
               holdStartTimestamp: new Date(),
               claimed: false
             });
-            return res.json({ 
-              success: true, 
-              status: "holding", 
-              currentBalance: balance,
-              requiredBalance: required,
-              holdDuration: 0,
-              message: "Holding period started!" 
-            });
+            return res.json({ success: true, status: "holding", message: "Holding period started!" });
           }
-
           if (state.claimed) return res.json({ success: false, message: "Already claimed" });
-
           const now = new Date();
           const durationDays = (now.getTime() - state.holdStartTimestamp.getTime()) / (1000 * 60 * 60 * 24);
           const minDuration = campaign.minHoldingDuration || 0;
-
           if (balance < required) {
-            return res.json({ 
-              success: false, 
-              status: "insufficient",
-              currentBalance: balance,
-              requiredBalance: required,
-              message: `Verification failed: You no longer hold the required ${required} tokens.` 
-            });
+            return res.json({ success: false, status: "insufficient", message: `Verification failed.` });
           }
-
           if (durationDays < minDuration) {
-            return res.json({ 
-              success: true, 
-              status: "waiting", 
-              remaining: Math.max(0, minDuration - durationDays),
-              currentBalance: balance,
-              requiredBalance: required,
-              holdDuration: durationDays,
-              message: "Still in holding period" 
-            });
+            return res.json({ success: true, status: "waiting", message: "Still in holding period" });
           }
-
-          return res.json({ 
-            success: true, 
-            status: "ready", 
-            currentBalance: balance,
-            requiredBalance: required,
-            holdDuration: durationDays,
-            message: "Eligibility verified! You can claim now." 
-          });
+          return res.json({ success: true, status: "ready", message: "Eligibility verified!" });
         }
         return res.status(404).json({ message: "Action or Campaign not found" });
       }
 
-      const userExecutions = await storage.getExecutionsByUser(user.id);
-      const existingExecution = userExecutions.find(e => e.actionId === input.actionId);
-      if (existingExecution && (existingExecution.status === 'verified' || existingExecution.status === 'paid')) {
-        return res.status(400).json({ message: "Task already completed" });
-      }
-
       const proofObj = JSON.parse(input.proof || "{}");
       let isVerified = false;
-
       if (action.type === 'twitter' || action.type === 'telegram') {
         const userHandle = action.type === 'twitter' ? user.twitterHandle : user.telegramHandle;
-        if (userHandle) {
-          isVerified = true;
-        } else if (proofObj.proofText && proofObj.proofText.length > 3) {
+        if (userHandle || (proofObj.proofText && proofObj.proofText.length > 3)) {
           isVerified = true;
         }
       } else if (action.type === 'website') {
@@ -304,41 +257,21 @@ export async function registerRoutes(
       if (isVerified) {
         const freshAction = await storage.getAction(action.id);
         const reward = freshAction ? freshAction.rewardAmount : action.rewardAmount;
-
         const execution = await storage.createExecution({
           actionId: action.id,
           campaignId: action.campaignId,
           userId: user.id,
           status: "verified"
         } as any);
-        
         await storage.incrementActionExecution(action.id);
-        
         if (action.type === 'website') {
           const txSignature = "sol-" + Math.random().toString(36).substring(7);
           await storage.updateExecutionStatus(execution.id, "paid", txSignature);
-
-          return res.json({
-            success: true,
-            status: "paid",
-            message: `Action verified and ${reward} rewards paid!`,
-            executionId: execution.id,
-            txSignature
-          });
+          return res.json({ success: true, status: "paid", message: `Action verified and rewards paid!`, executionId: execution.id, txSignature });
         }
-
-        res.json({
-          success: true,
-          status: "verified",
-          message: `Action verified! Claim your ${reward} rewards in the dashboard.`,
-          executionId: execution.id
-        });
+        res.json({ success: true, status: "verified", message: `Action verified!`, executionId: execution.id });
       } else {
-         res.json({
-          success: false,
-          status: "rejected",
-          message: `Verification failed: Please link your ${action.type} account in profile or provide proof.`
-        });
+         res.json({ success: false, status: "rejected", message: `Verification failed.` });
       }
     } catch (err) {
       console.error("Verification error:", err);
@@ -352,23 +285,15 @@ export async function registerRoutes(
       if (!executionIds || !Array.isArray(executionIds)) {
         return res.status(400).json({ message: "Invalid execution IDs" });
       }
-
       const results = [];
       const txSignature = "sol-" + Math.random().toString(36).substring(7);
-
       for (const id of executionIds) {
         const execution = await storage.getExecution(id);
         if (!execution || execution.status === 'paid') continue;
         await storage.updateExecutionStatus(id, "paid", txSignature);
         results.push(id);
       }
-
-      res.json({
-        success: true,
-        txSignature,
-        claimedIds: results,
-        message: `Successfully claimed ${results.length} rewards. Transaction fee paid by user.`
-      });
+      res.json({ success: true, txSignature, claimedIds: results });
     } catch (err) {
       console.error("Claim error:", err);
       res.status(400).json({ message: "Invalid request" });
@@ -390,22 +315,15 @@ export async function registerRoutes(
       const activeCount = allCampaigns.filter(c => c.status === 'active').length;
       const users = await db.select().from(usersTable);
       const totalUsersCount = users.length;
-      
-      const paidExecutions = await db.select()
-        .from(executionsTable)
-        .innerJoin(actionsTable, eq(executionsTable.actionId, actionsTable.id))
-        .where(eq(executionsTable.status, 'paid'));
-      
+      const paidExecutions = await db.select().from(executionsTable).innerJoin(actionsTable, eq(executionsTable.actionId, actionsTable.id)).where(eq(executionsTable.status, 'paid'));
       const totalPaidValue = paidExecutions.reduce((sum, e) => sum + Number(e.actions.rewardAmount), 0);
       const totalBurnedValue = allCampaigns.length * 10000;
-      const totalBurned = totalBurnedValue.toLocaleString();
-      
       res.json({
         activeCampaigns: activeCount,
         totalVerifiedProjects: allCampaigns.length, 
         totalUsers: totalUsersCount.toLocaleString(),
         totalPaid: totalPaidValue.toLocaleString(),
-        totalBurned: totalBurned,
+        totalBurned: totalBurnedValue.toLocaleString(),
         totalValueDistributed: (totalPaidValue * 0.5).toFixed(2)
       });
     } catch (err) {
@@ -467,10 +385,7 @@ export async function registerRoutes(
   app.patch('/api/admin/campaigns/:id/budget', async (req, res) => {
     try {
       const { totalBudget } = req.body;
-      const [campaign] = await db.update(campaignsTable)
-        .set({ totalBudget, remainingBudget: totalBudget })
-        .where(eq(campaignsTable.id, parseInt(req.params.id)))
-        .returning();
+      const [campaign] = await db.update(campaignsTable).set({ totalBudget, remainingBudget: totalBudget }).where(eq(campaignsTable.id, parseInt(req.params.id))).returning();
       res.json(campaign);
     } catch (err) {
       res.status(500).json({ message: "Failed to update budget" });
@@ -482,9 +397,7 @@ export async function registerRoutes(
       const users = await storage.getAllUsers();
       const campaigns = await storage.getAllCampaigns();
       const executions = await storage.getAllExecutions();
-      const totalRewardsPaid = executions.filter(e => e.status === 'paid')
-        .reduce((sum, e) => sum + parseFloat(e.action?.rewardAmount || "0"), 0);
-
+      const totalRewardsPaid = executions.filter(e => e.status === 'paid').reduce((sum, e) => sum + parseFloat(e.action?.rewardAmount || "0"), 0);
       res.json({
         totalUsers: users.length,
         activeCampaigns: campaigns.filter(c => c.status === 'active').length,
