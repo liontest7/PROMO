@@ -216,18 +216,18 @@ export default function CampaignDetails() {
                           {isConnected ? (
                             <>
                               <div className="space-y-2 flex-1 min-w-0">
-                                <div className="flex justify-between items-center text-[10px] font-black uppercase tracking-widest text-white/50">
+                                <div className="flex justify-between items-center text-[10px] font-black uppercase tracking-widest text-white/70">
                                   <span>Progress</span>
                                   <span className="text-primary">0%</span>
                                 </div>
-                                <div className="relative h-2.5 w-full bg-white/10 rounded-full overflow-hidden">
+                                <div className="relative h-2.5 w-full bg-white/10 rounded-full overflow-hidden border border-white/5">
                                   <div className="absolute inset-y-0 left-0 bg-primary w-[5%] transition-all duration-1000 shadow-[0_0_12px_rgba(var(--primary),0.8)]" />
                                 </div>
                               </div>
-                              <div className="shrink-0 text-right bg-white/5 px-3 py-1.5 rounded-lg border border-white/5">
-                                <p className="text-[9px] font-black text-white/30 uppercase tracking-widest mb-0.5">Your Balance</p>
-                                <p className="text-base font-black text-white font-mono leading-none">
-                                  {Number(walletBalance || 0).toLocaleString()} <span className="text-xs text-primary">${campaign.tokenName}</span>
+                              <div className="shrink-0 text-right py-1">
+                                <p className="text-[10px] font-black text-white/60 uppercase tracking-widest mb-1">Your Balance</p>
+                                <p className="text-lg font-black text-white font-mono leading-none">
+                                  {Number(walletBalance || 0).toLocaleString()} <span className="text-[10px] text-primary font-bold">${campaign.tokenName}</span>
                                 </p>
                               </div>
                             </>
