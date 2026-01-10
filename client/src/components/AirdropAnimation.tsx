@@ -14,13 +14,13 @@ export function AirdropAnimation() {
   const [icons, setIcons] = useState<FallingIcon[]>([]);
 
   useEffect(() => {
-    // Generate 15 random falling icons
-    const newIcons = Array.from({ length: 15 }, (_, i) => ({
+    // Generate 8 random falling icons (reduced for better focus)
+    const newIcons = Array.from({ length: 8 }, (_, i) => ({
       id: i,
-      x: Math.random() * 100, // percentage across screen
-      delay: Math.random() * 5,
-      duration: 5 + Math.random() * 10,
-      size: 30 + Math.random() * 40,
+      x: Math.random() * 80 + 10, // percentage across screen, avoid edges
+      delay: Math.random() * 10,
+      duration: 15 + Math.random() * 10, // Slower descent
+      size: 60 + Math.random() * 40, // Larger icons
     }));
     setIcons(newIcons);
   }, []);
@@ -30,17 +30,51 @@ export function AirdropAnimation() {
       {icons.map((icon) => (
         <motion.div
           key={icon.id}
-          initial={{ y: -100, x: `${icon.x}%`, opacity: 0, rotate: 0 }}
+          initial={{ 
+            y: -200, 
+            x: `${icon.x}%`, 
+            opacity: 0, 
+            rotate: -15 
+          }}
           animate={{ 
             y: "120vh", 
-            opacity: [0, 1, 1, 0],
-            rotate: 360 
+            opacity: [0, 0.8, 0.8, 0],
+            // Swaying motion from side to side
+            x: [
+              `${icon.x}%`, 
+              `${icon.x + 5}%`, 
+              `${icon.x - 5}%`, 
+              `${icon.x + 3}%`, 
+              `${icon.x}%`
+            ],
+            // Swaying rotation
+            rotate: [-15, 15, -15, 15, -15]
           }}
           transition={{
-            duration: icon.duration,
-            repeat: Infinity,
-            delay: icon.delay,
-            ease: "linear",
+            y: {
+              duration: icon.duration,
+              repeat: Infinity,
+              delay: icon.delay,
+              ease: "linear",
+            },
+            x: {
+              duration: icon.duration / 4,
+              repeat: Infinity,
+              delay: icon.delay,
+              ease: "easeInOut",
+            },
+            rotate: {
+              duration: 3,
+              repeat: Infinity,
+              delay: icon.delay,
+              ease: "easeInOut",
+            },
+            opacity: {
+              duration: icon.duration,
+              repeat: Infinity,
+              delay: icon.delay,
+              times: [0, 0.1, 0.9, 1]
+            }
           }}
           style={{
             position: "absolute",
@@ -49,9 +83,9 @@ export function AirdropAnimation() {
           }}
         >
           <img 
-            src={PLATFORM_CONFIG.ASSETS.LANDING_MASCOT} 
-            alt="" 
-            className="w-full h-full object-contain opacity-40 blur-[1px]"
+            src={PLATFORM_CONFIG.ASSETS.MAIN_LOGO} 
+            alt="Falling Mascot" 
+            className="w-full h-full object-contain opacity-60 drop-shadow-[0_10px_20px_rgba(0,0,0,0.3)]"
           />
         </motion.div>
       ))}
