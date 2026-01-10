@@ -28,6 +28,7 @@ import Earn from "@/pages/Earn";
 import Dashboard from "@/pages/Dashboard";
 import AdvertiserDashboard from "@/pages/AdvertiserDashboard";
 import About from "@/pages/About";
+import Leaderboard from "@/pages/Leaderboard";
 import CampaignDetails from "@/pages/CampaignDetails";
 import Admin from "@/pages/Admin";
 import NotFound from "@/pages/not-found";
@@ -77,6 +78,9 @@ function Router() {
         </Route>
         <Route path="/about">
           <PageWrapper><About /></PageWrapper>
+        </Route>
+        <Route path="/leaderboard">
+          <PageWrapper><Leaderboard /></PageWrapper>
         </Route>
         <Route path="/earn">
           <PageWrapper><Earn /></PageWrapper>
