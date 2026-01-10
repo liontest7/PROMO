@@ -40,24 +40,31 @@ export default function Leaderboard() {
       <main className="max-w-6xl mx-auto px-4 py-16">
         <div className="text-center mb-16 relative">
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-primary/10 blur-[100px] rounded-full" />
-          <div className="relative z-10 flex flex-col md:flex-row items-center justify-center gap-8">
-            <div className="text-center md:text-left">
-              <h1 className="text-6xl font-display font-black uppercase italic tracking-tighter mb-4 leading-none text-white">
-                Hall <span className="text-primary">of Fame</span>
-              </h1>
-              <p className="text-white uppercase tracking-[0.4em] text-[10px] font-black italic">Top Ecosystem Contributors • Real-time Sync</p>
-            </div>
-            <div className="relative group">
-              <div className="absolute inset-0 bg-primary/20 blur-2xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity" />
-              <img 
-                src="https://i.ibb.co/5Xd708DM/20260110-2035-Dropy-Wins-Trophy-remix-01kemjzex0f9xvh2emrc9tk4jy.png" 
-                alt="Dropy Trophy" 
-                className="w-32 h-32 object-contain relative z-10 drop-shadow-[0_0_30px_rgba(34,197,94,0.3)]"
-              />
+          
+          <div className="relative z-10 max-w-4xl mx-auto">
+            <div className="flex flex-col items-center justify-center relative py-10">
+              <div className="text-center space-y-4">
+                <h1 className="text-7xl md:text-8xl font-display font-black uppercase italic tracking-tighter leading-none text-white drop-shadow-[0_0_30px_rgba(255,255,255,0.1)]">
+                  Hall <span className="text-primary">of Fame</span>
+                </h1>
+                <p className="text-white uppercase tracking-[0.5em] text-xs font-black italic">Top Ecosystem Contributors • Real-time Sync</p>
+              </div>
+              
+              {/* Character Trophy positioned to the right and lower */}
+              <div className="absolute -bottom-4 right-0 md:right-[-40px] transform translate-y-1/4">
+                <div className="relative group">
+                  <div className="absolute inset-0 bg-primary/20 blur-2xl rounded-full opacity-50 group-hover:opacity-100 transition-opacity" />
+                  <img 
+                    src="https://i.ibb.co/5Xd708DM/20260110-2035-Dropy-Wins-Trophy-remix-01kemjzex0f9xvh2emrc9tk4jy.png" 
+                    alt="Dropy Trophy" 
+                    className="w-40 h-40 md:w-48 md:h-48 object-contain relative z-10 drop-shadow-[0_0_40px_rgba(34,197,94,0.4)] hover:scale-110 transition-transform duration-500"
+                  />
+                </div>
+              </div>
             </div>
           </div>
 
-          <div className="flex justify-center gap-3 mt-10 relative z-10">
+          <div className="flex justify-center gap-3 mt-12 relative z-10">
             {[
               { id: "weekly", label: "Weekly", icon: Clock },
               { id: "monthly", label: "Monthly", icon: Calendar },
