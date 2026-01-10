@@ -3,6 +3,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useQueryClient } from "@tanstack/react-query";
 import { api } from "@shared/routes";
 import { Connection, PublicKey, LAMPORTS_PER_SOL, clusterApiUrl } from "@solana/web3.js";
+import { WalletSelector } from "@/components/WalletSelector";
 
 interface WalletContextType {
   isConnected: boolean;
@@ -13,6 +14,9 @@ interface WalletContextType {
   disconnect: () => void;
   isLoading: boolean;
   solBalance: number | null;
+  showSelector: boolean;
+  setShowSelector: (show: boolean) => void;
+  pendingRole: "user" | "advertiser" | null;
 }
 
 declare global {
@@ -29,6 +33,8 @@ export function WalletProvider({ children }: { children: ReactNode }) {
   const [role, setRole] = useState<"user" | "advertiser" | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [solBalance, setSolBalance] = useState<number | null>(null);
+  const [showSelector, setShowSelector] = useState(false);
+  const [pendingRole, setPendingRole] = useState<"user" | "advertiser" | null>(null);
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
@@ -40,7 +46,6 @@ export function WalletProvider({ children }: { children: ReactNode }) {
       setSolBalance(balance / LAMPORTS_PER_SOL);
     } catch (error) {
       console.error("Error fetching balance:", error);
-      // Fallback to devnet if mainnet fails (for development environment)
       try {
         const connection = new Connection(clusterApiUrl("devnet"), "confirmed");
         const publicKey = new PublicKey(address);
@@ -52,7 +57,6 @@ export function WalletProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  // Load from local storage on mount
   useEffect(() => {
     const savedAddress = localStorage.getItem("wallet_address");
     const savedRole = localStorage.getItem("user_role") as "user" | "advertiser";
@@ -65,107 +69,65 @@ export function WalletProvider({ children }: { children: ReactNode }) {
     }
   }, []);
 
-  const connect = async (selectedRole: "user" | "advertiser") => {
+  const handleWalletSelect = async (solanaInstance: any) => {
+    setShowSelector(false);
+    if (!pendingRole) return;
+    
     setIsLoading(true);
     try {
-      console.log("Connecting to Solana wallet...");
+      const response = await solanaInstance.connect({ onlyIfTrusted: false });
+      const publicAddress = response.publicKey.toString();
       
-      // Standard Solana providers to check
-      const providers = [
-        { name: 'Solflare', provider: (window as any).solflare?.solana },
-        { name: 'Phantom', provider: (window as any).phantom?.solana },
-        { name: 'Bybit', provider: (window as any).bybitWallet?.solana },
-        { name: 'Solana', provider: (window as any).solana }
-      ].filter(p => p.provider && p.provider.connect);
-
-      // Force a disconnect from any previously connected session to trigger the picker
-      // and explicitly check for multiple providers.
-      let solanaInstance = (window as any).solana;
-
-      // Check if we can find a non-Phantom provider if that's what's currently "dominating" window.solana
-      const solflare = (window as any).solflare?.solana;
-      const bybit = (window as any).bybitWallet?.solana;
-      const phantom = (window as any).phantom?.solana;
-
-      // If the user has multiple extensions, some (like Phantom) might auto-connect.
-      // We'll try to use the most generic one first to see if it triggers the picker.
-      if (!solanaInstance || !solanaInstance.connect) {
-        solanaInstance = providers[0]?.provider;
-      }
+      const res = await fetch('/api/users/auth', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          walletAddress: publicAddress,
+          role: pendingRole
+        })
+      });
       
-      if (solanaInstance) {
-        // Try to force the selection dialog by passing onlyIfTrusted: false
-        // and ensuring we aren't just resuming an old session.
-        console.log("Calling connect with onlyIfTrusted: false");
-        const response = await solanaInstance.connect({ onlyIfTrusted: false });
-        
-        const publicAddress = response.publicKey.toString();
-        console.log("Wallet connected:", publicAddress);
-        
-        // Auth with backend
-        const res = await fetch('/api/users/auth', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            walletAddress: publicAddress,
-            role: selectedRole
-          })
-        });
-        
-        if (!res.ok) throw new Error("Backend authentication failed");
-        const user = await res.json();
-        
-        setWalletAddress(user.walletAddress);
-        setRole(user.role);
-        setUserId(user.id);
-        fetchBalance(user.walletAddress);
-        
-        localStorage.setItem("wallet_address", user.walletAddress);
-        localStorage.setItem("user_role", user.role);
-        localStorage.setItem("user_id", user.id.toString());
+      if (!res.ok) throw new Error("Backend authentication failed");
+      const user = await res.json();
+      
+      setWalletAddress(user.walletAddress);
+      setRole(user.role);
+      setUserId(user.id);
+      fetchBalance(user.walletAddress);
+      
+      localStorage.setItem("wallet_address", user.walletAddress);
+      localStorage.setItem("user_role", user.role);
+      localStorage.setItem("user_id", user.id.toString());
 
-        toast({
-          title: "Wallet Connected",
-          description: `Connected as ${selectedRole}`,
-          className: "border-primary/50 text-foreground bg-background/95 backdrop-blur-md",
-        });
+      toast({
+        title: "Wallet Connected",
+        description: `Connected as ${pendingRole}`,
+        className: "border-primary/50 text-foreground bg-background/95 backdrop-blur-md",
+      });
 
-        // Prefetch user data
-        queryClient.invalidateQueries({ queryKey: [api.users.get.path, user.walletAddress] });
+      queryClient.invalidateQueries({ queryKey: [api.users.get.path, user.walletAddress] });
 
-        // Handle real wallet disconnect
-        if (solanaInstance && solanaInstance.on) {
-          solanaInstance.on('disconnect', () => {
-            disconnect();
-          });
-        }
-        
-        setIsLoading(false);
-        return;
-      } else {
-        toast({
-          title: "Wallet Not Found",
-          description: "Please install a Solana wallet extension (Phantom, Solflare, etc.) or unlock it to continue.",
-          variant: "destructive",
+      if (solanaInstance && solanaInstance.on) {
+        solanaInstance.on('disconnect', () => {
+          disconnect();
         });
-        setIsLoading(false);
-        return;
       }
-
     } catch (error: any) {
       console.error("Connection error detail:", error);
-      // Detailed logging for debugging
-      if (error?.message) console.log("Error message:", error.message);
-      if (error?.code) console.log("Error code:", error.code);
-      
       toast({
         title: "Connection Failed",
-        description: error.message || "Could not connect to Solana wallet. Please check if Phantom is unlocked.",
+        description: error.message || "Could not connect to Solana wallet.",
         variant: "destructive",
       });
     } finally {
       setIsLoading(false);
+      setPendingRole(null);
     }
+  };
+
+  const connect = async (selectedRole: "user" | "advertiser") => {
+    setPendingRole(selectedRole);
+    setShowSelector(true);
   };
 
   const disconnect = () => {
@@ -193,9 +155,17 @@ export function WalletProvider({ children }: { children: ReactNode }) {
       connect,
       disconnect,
       isLoading,
-      solBalance
+      solBalance,
+      showSelector,
+      setShowSelector,
+      pendingRole
     }}>
       {children}
+      <WalletSelector 
+        open={showSelector} 
+        onOpenChange={setShowSelector} 
+        onSelect={handleWalletSelect}
+      />
     </WalletContext.Provider>
   );
 }
