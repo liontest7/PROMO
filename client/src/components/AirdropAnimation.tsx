@@ -3,28 +3,26 @@ import { PLATFORM_CONFIG } from "@shared/config";
 
 export function AirdropAnimation() {
   return (
-    <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
+    <div className="absolute inset-0 overflow-visible pointer-events-none z-0">
       <motion.div
         initial={{ 
-          y: "-40%", // Start further up
+          y: "-50%", 
           x: "80%", 
-          opacity: 1, // Start fully opaque
+          opacity: 1,
           rotate: -15
         }}
         animate={{ 
-          // Constant vertical speed: evenly spaced values for y
-          y: ["-40%", "5%", "50%", "95%", "140%"],
-          // Balanced horizontal sway
-          x: ["80%", "10%", "90%", "10%", "80%"],
-          // No opacity changes during the middle of the descent
-          opacity: [1, 1, 1, 1, 1],
+          // Use fixed viewport height (vh) to ensure it exits the screen regardless of section height
+          // Path that starts above and ends completely below the viewport
+          y: ["-50vh", "20vh", "50vh", "80vh", "150vh"],
+          x: ["80%", "5%", "95%", "5%", "80%"],
           rotate: [-15, 15, -15, 15, -15]
         }}
         transition={{
-          duration: 30, // Even slower for constant, calm feel
+          duration: 35, // Constant speed
           repeat: Infinity,
-          ease: "linear", // CRITICAL for uniform motion
-          times: [0, 0.25, 0.5, 0.75, 1] // Uniform time segments
+          ease: "linear",
+          times: [0, 0.25, 0.5, 0.75, 1]
         }}
         className="absolute w-48 h-48 md:w-64 md:h-64"
       >
