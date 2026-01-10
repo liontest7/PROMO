@@ -103,7 +103,7 @@ export function CampaignCard({ campaign, onActionClick, isOwner }: CampaignCardP
         <CardHeader className="pb-1 relative pt-10 px-6">
           <div className="absolute -top-10 left-6 w-20 h-24 flex flex-col gap-2">
             <Link href={`/campaign/${campaign.id}`}>
-              <div className="w-20 h-20 rounded-2xl border-4 border-background bg-card overflow-hidden shadow-2xl hover:scale-105 transition-transform">
+              <div className="w-20 h-20 rounded-2xl border-4 border-background bg-card overflow-hidden shadow-2xl hover:scale-105 transition-transform cursor-pointer">
                 {campaign.logoUrl ? (
                   <img src={campaign.logoUrl} alt="Logo" className="w-full h-full object-cover" />
                 ) : (
