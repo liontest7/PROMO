@@ -17,6 +17,8 @@ export function OnboardingSocials() {
   const queryClient = useQueryClient();
 
   useEffect(() => {
+    // Temporarily disabled onboarding dialog for Phase 1
+    return;
     if (isConnected && walletAddress) {
       const hasOnboarded = localStorage.getItem(`onboarded_${walletAddress}`);
       if (!hasOnboarded) {

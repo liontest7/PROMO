@@ -69,14 +69,21 @@ export function WalletProvider({ children }: { children: ReactNode }) {
     setIsLoading(true);
     try {
       console.log("Connecting to Solana wallet...");
-      // Try multiple ways to find the provider
-      const solanaInstance = 
-        (window as any).phantom?.solana || 
-        (window as any).solflare?.solana ||
-        (window as any).bybitWallet?.solana ||
-        (window as any).solana;
       
-      if (!solanaInstance || !solanaInstance.isPrimary && !solanaInstance.connect) {
+      // Standard Solana providers to check
+      const providers = [
+        (window as any).phantom?.solana,
+        (window as any).solflare?.solana,
+        (window as any).bybitWallet?.solana,
+        (window as any).solana
+      ].filter(p => p && p.connect);
+
+      let solanaInstance = providers[0];
+      
+      // If multiple providers exist, let the user choose via the browser's default behavior 
+      // or prioritize the first detected one. In a more advanced version, we'd show a custom picker.
+      
+      if (!solanaInstance) {
         toast({
           title: "Wallet Not Found",
           description: "Please install a Solana wallet extension (Phantom, Solflare, etc.) or unlock it to continue.",
