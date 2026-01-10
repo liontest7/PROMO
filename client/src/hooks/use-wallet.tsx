@@ -72,16 +72,21 @@ export function WalletProvider({ children }: { children: ReactNode }) {
       
       // Standard Solana providers to check
       const providers = [
-        (window as any).phantom?.solana,
-        (window as any).solflare?.solana,
-        (window as any).bybitWallet?.solana,
-        (window as any).solana
-      ].filter(p => p && p.connect);
+        { name: 'Solflare', provider: (window as any).solflare?.solana },
+        { name: 'Phantom', provider: (window as any).phantom?.solana },
+        { name: 'Bybit', provider: (window as any).bybitWallet?.solana },
+        { name: 'Solana', provider: (window as any).solana }
+      ].filter(p => p.provider && p.provider.connect);
 
-      let solanaInstance = providers[0];
+      // To prevent automatic selection of the first provider (which is often Phantom),
+      // we check if there's an active provider. If not, we use the standard window.solana
+      // which usually triggers the "wallet picker" if multiple are installed and configured correctly.
+      let solanaInstance = (window as any).solana;
       
-      // If multiple providers exist, let the user choose via the browser's default behavior 
-      // or prioritize the first detected one. In a more advanced version, we'd show a custom picker.
+      // If window.solana is not available or doesn't have connect, fallback to the first detected provider
+      if (!solanaInstance || !solanaInstance.connect) {
+        solanaInstance = providers[0]?.provider;
+      }
       
       if (!solanaInstance) {
         toast({
