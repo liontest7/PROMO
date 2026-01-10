@@ -117,8 +117,8 @@ export function CampaignCard({ campaign, onActionClick, isOwner }: CampaignCardP
 
           <div className="flex justify-between items-start pt-1">
             <div className="space-y-0.5 w-full">
-              <Link href={`/campaign/${campaign.id}`}>
-                <CardTitle className="text-xl font-display font-black leading-tight group-hover:text-primary transition-colors cursor-pointer line-clamp-1">
+              <Link href={`/campaign/${campaign.id}`} className="block">
+                <CardTitle className="text-xl font-display font-black leading-tight hover:text-primary transition-colors cursor-pointer line-clamp-1">
                   {campaign.title}
                 </CardTitle>
               </Link>
@@ -163,10 +163,10 @@ export function CampaignCard({ campaign, onActionClick, isOwner }: CampaignCardP
           </div>
 
           <div className="flex flex-col gap-2 pt-2">
-            <Link href={`/campaign/${campaign.id}`}>
+            <Link href={`/campaign/${campaign.id}`} className="w-full">
               <Button className="w-full bg-primary/10 text-primary hover:bg-primary hover:text-white font-black h-11 rounded-2xl border border-primary/20 group/btn transition-all">
                 VIEW DETAILS
-                <ArrowRight className="ml-2 w-4 h-4 group-btn-hover:translate-x-1 transition-transform" />
+                <ArrowRight className="ml-2 w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />
               </Button>
             </Link>
           </div>
