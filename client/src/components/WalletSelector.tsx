@@ -23,16 +23,19 @@ export function WalletSelector({ open, onOpenChange, onSelect }: WalletSelectorP
     const checkProviders = () => {
       // Direct detection of injected providers with deeper checks
       const solana = (window as any).solana;
+      const phantom = (window as any).phantom;
+      const solflare = (window as any).solflare;
+      const bybit = (window as any).bybitWallet;
       
-      const phantomProvider = (window as any).phantom?.solana || (solana?.isPhantom ? solana : null);
-      const solflareProvider = (window as any).solflare?.solana || (solana?.isSolflare ? solana : null);
-      const bybitProvider = (window as any).bybitWallet?.solana || (solana?.isBybit ? solana : null);
+      const phantomProvider = phantom?.solana || (solana?.isPhantom ? solana : null);
+      const solflareProvider = solflare?.solana || solflare || (solana?.isSolflare ? solana : null);
+      const bybitProvider = bybit?.solana || (solana?.isBybit ? solana : null);
 
       const detected = [
         { 
           name: 'Phantom', 
           provider: phantomProvider,
-          icon: "https://phantom.app/favicon.ico",
+          icon: "https://www.phantom.app/favicon.ico",
           installUrl: "https://phantom.app/",
           detected: !!phantomProvider
         },

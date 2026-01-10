@@ -77,10 +77,18 @@ export function WalletProvider({ children }: { children: ReactNode }) {
     try {
       console.log("Selected wallet instance:", solanaInstance);
       
-      // Some providers might be nested or have different connect structures
-      const provider = solanaInstance.connect ? solanaInstance : (solanaInstance.solana || solanaInstance);
+      // Extensive provider normalization
+      let provider = solanaInstance;
+      if (solanaInstance.solana) provider = solanaInstance.solana;
+      if (!provider.connect && solanaInstance.connect) provider = solanaInstance;
+      
+      // Some wallets (like Solflare) might have the connect method directly on the injected object
+      if (typeof provider.connect !== 'function' && typeof solanaInstance.connect === 'function') {
+        provider = solanaInstance;
+      }
       
       if (!provider || typeof provider.connect !== 'function') {
+        console.error("Invalid provider structure:", provider);
         throw new Error("Invalid wallet provider. Please try again or refresh.");
       }
 
