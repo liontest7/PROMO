@@ -134,20 +134,20 @@ export default function Landing() {
               <Link href="/earn">
                 <Button 
                   size="lg" 
-                  className="h-14 px-8 text-lg bg-primary text-primary-foreground font-black hover:bg-primary/90 shadow-2xl transition-all"
+                  className="h-16 px-10 text-xl font-black rounded-2xl bg-primary hover:bg-primary/90 text-primary-foreground shadow-[0_0_30px_rgba(34,197,94,0.4)] transition-all hover:scale-105 group"
                   data-testid="button-start-earning"
                 >
-                  START EARNING <Coins className="ml-2 w-5 h-5" />
+                  START EARNING <Coins className="ml-2 w-6 h-6 group-hover:rotate-12 transition-transform" />
                 </Button>
               </Link>
               <Button 
                 size="lg" 
                 variant="outline" 
-                className="h-14 px-8 text-lg border-white/10 hover:bg-white/5 font-black uppercase"
+                className="h-16 px-10 text-xl font-black rounded-2xl border-white/20 hover:bg-white/5 backdrop-blur-sm transition-all hover:scale-105 group"
                 onClick={() => connect('advertiser')}
                 data-testid="button-launch-project"
               >
-                Launch Project <Rocket className="ml-2 w-5 h-5" />
+                LAUNCH PROJECT <Rocket className="ml-2 w-6 h-6 group-hover:translate-x-1 transition-transform" />
               </Button>
             </div>
 
