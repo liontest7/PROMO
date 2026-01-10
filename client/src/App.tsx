@@ -90,7 +90,7 @@ function Router() {
         
         {/* User Routes */}
         <Route path="/dashboard">
-          <ProtectedRoute component={Dashboard} allowedRole="user" />
+          <ProtectedRoute component={Dashboard} />
         </Route>
 
         {/* Advertiser Routes */}

@@ -296,21 +296,22 @@ export default function Dashboard() {
           {/* Sidebar Modules */}
           <div className="space-y-8">
             {/* Ecosystem Contribution */}
-            <Card className="glass-card border border-primary/30 bg-primary/5 rounded-[2.5rem] overflow-hidden relative group p-0.5 shadow-xl">
+            <Card className="glass-card border border-primary/30 bg-primary/5 rounded-[2rem] overflow-hidden relative group p-0.5 shadow-xl lg:max-w-md ml-auto">
               <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(34,197,94,0.3),transparent_70%)] opacity-70" />
-              <CardHeader className="relative z-10 p-8 pb-4">
-                <div className="flex items-center justify-end mb-2">
+              <CardHeader className="relative z-10 p-6 pb-2">
+                <div className="flex items-center justify-between gap-3">
+                  <CardTitle className="text-2xl font-black font-display uppercase leading-none italic tracking-tighter text-white">Ecosystem <span className="text-primary drop-shadow-[0_0_10px_rgba(34,197,94,0.4)]">Impact</span></CardTitle>
                   <TooltipProvider delayDuration={0}>
                     <Tooltip>
                       <TooltipTrigger asChild>
-                        <Button variant="ghost" size="icon" className="w-8 h-8 rounded-full border border-primary/30 bg-primary/10 text-primary hover:bg-primary/20 cursor-help translate-y-2">
-                          <HelpCircle className="w-4 h-4" />
+                        <Button variant="ghost" size="icon" className="w-6 h-6 rounded-full border border-primary/30 bg-primary/10 text-primary hover:bg-primary/20 cursor-help">
+                          <HelpCircle className="w-3.5 h-3.5" />
                         </Button>
                       </TooltipTrigger>
                       <TooltipContent 
                         side="left" 
-                        align="start"
-                        className="glass-card border border-primary/30 bg-black p-4 rounded-xl shadow-[0_10px_40px_rgba(0,0,0,0.9)] w-64 z-[100]"
+                        align="center"
+                        className="border border-white/10 bg-black text-white p-4 rounded-xl shadow-[0_10px_40px_rgba(0,0,0,0.9)] w-64 z-[100] backdrop-blur-xl"
                       >
                         <div className="space-y-3">
                           <p className="text-xs font-black uppercase tracking-widest text-primary border-b border-primary/20 pb-2">Sentinel Tier Benefits</p>
@@ -332,18 +333,17 @@ export default function Dashboard() {
                     </Tooltip>
                   </TooltipProvider>
                 </div>
-                <CardTitle className="text-3xl font-black font-display uppercase leading-none italic tracking-tighter text-white">Ecosystem <span className="text-primary drop-shadow-[0_0_10px_rgba(34,197,94,0.4)]">Impact</span></CardTitle>
               </CardHeader>
-              <CardContent className="relative z-10 p-8 pt-0 space-y-8">
-                <div className="flex items-baseline gap-3">
-                  <span className="text-[5rem] font-black font-display text-primary tracking-tighter leading-none drop-shadow-[0_0_15px_rgba(34,197,94,0.5)]">{tasksCompleted}</span>
-                  <span className="text-xl font-black text-primary/60 uppercase italic tracking-widest">Actions</span>
+              <CardContent className="relative z-10 p-6 pt-0 space-y-6">
+                <div className="flex items-baseline gap-2">
+                  <span className="text-[4rem] font-black font-display text-primary tracking-tighter leading-none drop-shadow-[0_0_15px_rgba(34,197,94,0.5)]">{tasksCompleted}</span>
+                  <span className="text-lg font-black text-primary/60 uppercase italic tracking-widest">Actions</span>
                 </div>
                 
-                <div className="space-y-6">
+                <div className="space-y-4">
                   <div className="flex justify-between items-end">
-                    <span className="text-[9px] font-black text-white/40 uppercase tracking-widest">Evolution Progress</span>
-                    <span className="text-2xl font-black font-display text-primary italic tracking-tight drop-shadow-md">{progress}%</span>
+                    <span className="text-[11px] font-black text-white/40 uppercase tracking-widest">Evolution Progress</span>
+                    <span className="text-xl font-black font-display text-primary italic tracking-tight drop-shadow-md">{progress}%</span>
                   </div>
                   <div className="w-full h-8 rounded-full bg-black/90 overflow-hidden p-1.5 border border-white/10 shadow-inner relative">
                     <div 
@@ -368,14 +368,14 @@ export default function Dashboard() {
             </Card>
 
             {/* Social Verification */}
-            <Card className="glass-card border border-white/10 bg-white/[0.02] rounded-[2.5rem] overflow-hidden p-1 shadow-xl">
-              <CardHeader className="p-8 pb-6">
-                <CardTitle className="text-2xl font-black font-display uppercase italic tracking-tighter leading-none text-white">Identity Sync</CardTitle>
+            <Card className="glass-card border border-white/10 bg-white/[0.02] rounded-[2rem] overflow-hidden p-1 shadow-xl lg:max-w-md ml-auto">
+              <CardHeader className="p-6 pb-4">
+                <CardTitle className="text-xl font-black font-display uppercase italic tracking-tighter leading-none text-white">Identity Sync</CardTitle>
                 <div className="h-0.5 w-12 bg-white/20 mt-3 rounded-full" />
               </CardHeader>
-              <CardContent className="p-8 pt-0 space-y-6">
+              <CardContent className="p-6 pt-0 space-y-6">
                 {!isAuthenticated ? (
-                  <div className="p-6 rounded-2xl bg-blue-500/5 border border-blue-500/10 relative overflow-hidden group shadow-lg">
+                  <div className="p-5 rounded-2xl bg-blue-500/5 border border-blue-500/10 relative overflow-hidden group shadow-lg">
                     <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-all duration-700">
                       <Twitter className="w-16 h-16" />
                     </div>
@@ -391,40 +391,55 @@ export default function Dashboard() {
                       >
                         SYNC PROTOCOL NODE
                       </Button>
-                      <p className="text-[8px] text-white/30 mt-4 italic text-center font-black uppercase tracking-widest">
+                      <p className="text-[10px] text-white/40 mt-4 italic text-center font-black uppercase tracking-widest">
                         SECURE OAUTH 2.0 ENCRYPTED
                       </p>
                     </div>
                   </div>
                 ) : (
-                  <div className="p-6 rounded-2xl bg-primary/10 border border-primary/20 flex items-center gap-6 relative overflow-hidden group shadow-lg">
-                    <Avatar className="h-20 w-20 border-4 border-background shadow-[0_0_30px_rgba(34,197,94,0.2)] relative z-10">
+                  <div className="p-5 rounded-2xl bg-primary/10 border border-primary/20 flex items-center gap-6 relative overflow-hidden group shadow-lg">
+                    <Avatar className="h-16 w-16 border-4 border-background shadow-[0_0_30px_rgba(34,197,94,0.2)] relative z-10">
                       <AvatarImage src={replitUser?.profileImageUrl || ""} />
                       <AvatarFallback className="bg-primary/20"><UserIcon className="w-10 h-10 text-primary" /></AvatarFallback>
                     </Avatar>
                     <div className="flex-1 relative z-10">
-                      <p className="text-2xl font-black font-display uppercase italic tracking-tight text-white mb-2 leading-none">{replitUser?.firstName || 'Dropy Sentinel'}</p>
-                      <Badge className="bg-primary/20 text-primary border-none text-[9px] font-black uppercase px-4 py-1 tracking-[0.2em] rounded-lg shadow-md">NODE VERIFIED</Badge>
+                      <div className="flex items-center gap-2 mb-1">
+                        <Twitter className="w-3.5 h-3.5 text-blue-400" />
+                        <span className="text-[10px] font-black uppercase tracking-widest text-white/40">Verified Identity</span>
+                      </div>
+                      <p className="text-lg font-black font-display tracking-tight text-white uppercase italic">{replitUser?.firstName || 'Dropy Sentinel'}</p>
+                      <Badge className="bg-primary/20 text-primary border-none text-[9px] font-black mt-2 uppercase tracking-widest">Node Synced</Badge>
                     </div>
-                    <Button variant="ghost" size="icon" className="h-12 w-12 rounded-2xl text-white/30 hover:text-destructive hover:bg-destructive/10 relative z-10 transition-all" onClick={() => logout()}>
-                      <LogOut className="w-6 h-6" />
+                    <Button variant="ghost" size="icon" className="h-10 w-10 rounded-xl text-white/30 hover:text-destructive hover:bg-destructive/10 relative z-10 transition-all" onClick={() => logout()}>
+                      <LogOut className="w-5 h-5" />
                     </Button>
+                    <div className="absolute bottom-0 right-0 p-4 opacity-5">
+                      <ShieldCheck className="w-12 h-12 text-primary" />
+                    </div>
                   </div>
                 )}
                 
-                <div className="p-8 rounded-[2rem] bg-white/[0.04] border-2 border-white/10 opacity-60 grayscale group hover:grayscale-0 transition-all duration-700 shadow-lg">
-                  <div className="flex items-center gap-6 mb-8">
-                    <div className="w-14 h-14 rounded-2xl bg-blue-400/10 flex items-center justify-center border-2 border-blue-400/20">
-                      <Send className="w-7 h-7 text-blue-400 opacity-60 group-hover:opacity-100 transition-opacity" />
-                    </div>
-                    <div>
-                      <span className="text-lg font-black uppercase tracking-[0.3em] block italic text-white/60 group-hover:text-white transition-colors leading-none mb-2">Telegram</span>
-                      <span className="text-[9px] text-white/20 font-black uppercase tracking-[0.2em]">OFFLINE ENCRYPTION</span>
-                    </div>
+                <div className="p-5 rounded-2xl bg-blue-600/5 border border-blue-600/10 relative overflow-hidden group shadow-lg">
+                  <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-all duration-700">
+                    <Send className="w-16 h-16" />
                   </div>
-                  <Button variant="outline" className="w-full text-[10px] font-black h-14 rounded-2xl border-white/10 uppercase tracking-[0.2em] hover:bg-white/10 transition-all" disabled>
-                    INITIATE SECURE LINK
-                  </Button>
+                  <div className="relative z-10 text-center space-y-4">
+                    <div className="flex items-center justify-center gap-3">
+                      <div className="p-2 rounded-xl bg-blue-600/20 border border-blue-600/30">
+                        <Send className="w-5 h-5 text-blue-500" />
+                      </div>
+                      <span className="text-sm font-black uppercase tracking-widest text-white italic">TG COMMS</span>
+                    </div>
+                    <Button 
+                      variant="outline"
+                      className="w-full border-blue-600/30 hover:bg-blue-600/10 text-blue-400 gap-3 font-black text-xs h-12 rounded-xl transition-all active-elevate-2 uppercase tracking-widest"
+                    >
+                      LINK TELEGRAM
+                    </Button>
+                    <p className="text-[10px] text-white/40 italic font-black uppercase tracking-widest">
+                      OFFLINE ENCRYPTION
+                    </p>
+                  </div>
                 </div>
               </CardContent>
             </Card>
