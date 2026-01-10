@@ -21,6 +21,7 @@ export default function About() {
     { label: "Community Members", value: stats?.totalUsers || "1", icon: Users },
     { label: "Verified Projects", value: stats?.totalVerifiedProjects || "0", icon: ShieldCheck },
     { label: "Rewards Paid", value: stats ? `${stats.totalPaid} TOKENS` : "0.03 TOKENS", icon: Coins },
+    { label: "Tokens Burned", value: PLATFORM_CONFIG.STATS.TOTAL_BURNED.toLocaleString(), icon: Zap, isBurn: true },
   ];
 
   return (
@@ -51,12 +52,12 @@ export default function About() {
         </div>
 
         {/* Stats */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-24">
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-6 mb-24">
           {statsItems.map((stat, i) => (
-            <Card key={i} className="glass-card border-white/5 bg-white/[0.02] group hover:border-primary/30 transition-all">
+            <Card key={i} className={`glass-card border-white/5 bg-white/[0.02] group transition-all ${stat.isBurn ? 'border-orange-500/20 bg-orange-500/5 hover:border-orange-500/50' : 'hover:border-primary/30'}`}>
               <CardContent className="p-6 text-center">
-                <stat.icon className="w-8 h-8 text-primary opacity-50 group-hover:opacity-100 transition-opacity mx-auto mb-4" />
-                <h3 className="text-2xl font-display font-black mb-1">{stat.value}</h3>
+                <stat.icon className={`w-8 h-8 opacity-50 group-hover:opacity-100 transition-opacity mx-auto mb-4 ${stat.isBurn ? 'text-orange-500' : 'text-primary'}`} />
+                <h3 className={`text-2xl font-display font-black mb-1 ${stat.isBurn ? 'text-orange-500' : ''}`}>{stat.value}</h3>
                 <p className="text-[10px] text-muted-foreground uppercase tracking-widest font-black">{stat.label}</p>
               </CardContent>
             </Card>

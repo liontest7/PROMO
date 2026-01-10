@@ -127,14 +127,15 @@ export default function Landing() {
               </div>
 
               {/* Global Stats - Restored */}
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 w-full max-w-4xl mx-auto">
+              <div className="grid grid-cols-2 md:grid-cols-5 gap-4 w-full max-w-5xl mx-auto">
                 {[
                   { label: "Active Campaigns", value: stats?.activeCampaigns || "3", mascot: true },
                   { label: "Community Members", value: stats?.totalUsers || "1,240" },
                   { label: "Verified Projects", value: stats?.totalVerifiedProjects || "3" },
                   { label: "Rewards Paid (Tokens)", value: stats ? stats.totalPaid : "450k" },
+                  { label: "Total Tokens Burned", value: PLATFORM_CONFIG.STATS.TOTAL_BURNED.toLocaleString(), isBurn: true },
                 ].map((stat, i) => (
-                  <div key={i} className="relative text-center p-4 rounded-2xl bg-white/5 border border-white/5 backdrop-blur-sm group hover:border-primary/30 transition-all flex flex-col justify-center min-h-[100px]">
+                  <div key={i} className={`relative text-center p-4 rounded-2xl bg-white/5 border border-white/5 backdrop-blur-sm group hover:border-primary/30 transition-all flex flex-col justify-center min-h-[100px] ${stat.isBurn ? 'border-orange-500/20 bg-orange-500/5 hover:border-orange-500/50' : ''}`}>
                     {stat.mascot && (
                       <div className="absolute -top-[4.5rem] left-1/2 -translate-x-1/2 w-24 h-24 pointer-events-none z-20">
                         <img 
@@ -144,7 +145,7 @@ export default function Landing() {
                         />
                       </div>
                     )}
-                    <h3 className="text-xl md:text-3xl font-display font-black text-white mb-1 tracking-tighter">{stat.value}</h3>
+                    <h3 className={`text-xl md:text-3xl font-display font-black mb-1 tracking-tighter ${stat.isBurn ? 'text-orange-500' : 'text-white'}`}>{stat.value}</h3>
                     <p className="text-[9px] md:text-[10px] text-muted-foreground uppercase font-black tracking-widest leading-tight">{stat.label}</p>
                   </div>
                 ))}

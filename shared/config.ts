@@ -45,6 +45,10 @@ export const PLATFORM_CONFIG = {
     DEFLATIONARY_MONK:
       "https://i.ibb.co/ycPX4D4Z/20260110-1319-Meditating-Crypto-Monk-remix-01kekt16kyft7vsz2w75t40rxd.png",
   },
+  STATS: {
+    // Total tokens burned by the platform through campaign creations
+    TOTAL_BURNED: 150000,
+  },
   ui: {
     walletSelectorBg:
       "https://i.ibb.co/xq2jkksm/20260109-2047-Image-Generation-remix-01kej1a44aer6vxak4n8tx8e6j.png",
