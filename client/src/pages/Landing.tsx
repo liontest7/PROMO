@@ -161,16 +161,7 @@ export default function Landing() {
       </section>
 
       {/* Features */}
-      <section className="py-24 relative overflow-hidden">
-        {/* Floating character asset */}
-        <motion.div 
-          className="absolute -right-20 top-40 w-64 h-64 opacity-20 pointer-events-none hidden lg:block"
-          animate={{ rotate: [0, 5, -5, 0], y: [0, 20, 0] }}
-          transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-        >
-          <img src="https://ibb.co/s9MN3Dqp" alt="" className="w-full h-full object-contain" />
-        </motion.div>
-
+      <section className="py-24">
         <div className="max-w-7xl mx-auto px-4">
           <div className="bg-gradient-to-br from-primary/10 to-secondary/10 rounded-[40px] p-8 md:p-16 border border-white/10 relative overflow-hidden">
             <div className="absolute top-0 right-0 w-64 h-64 bg-primary/10 blur-[100px] -z-10" />

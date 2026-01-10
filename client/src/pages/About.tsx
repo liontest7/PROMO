@@ -113,16 +113,7 @@ export default function About() {
         </section>
 
         {/* Roadmap Section */}
-        <section className="py-20 mb-24 relative">
-          {/* Floating character asset */}
-          <motion.div 
-            className="absolute -left-20 bottom-0 w-48 h-48 opacity-20 pointer-events-none hidden lg:block"
-            animate={{ rotate: [0, -5, 5, 0], x: [0, 20, 0] }}
-            transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
-          >
-            <img src="https://ibb.co/s9MN3Dqp" alt="" className="w-full h-full object-contain" />
-          </motion.div>
-
+        <section className="py-20 mb-24">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-display font-bold mb-4">MemeDrop Roadmap</h2>
             <p className="text-muted-foreground">Our journey to revolutionizing Solana marketing.</p>
@@ -174,9 +165,22 @@ export default function About() {
 
         {/* Token Info Section */}
         <section className="py-20 border-t border-white/5">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-display font-bold mb-4">The Deflationary Ecosystem</h2>
-            <p className="text-muted-foreground">Powering the MemeDrop economy with real utility.</p>
+          <div className="flex flex-col md:flex-row items-center justify-center gap-6 mb-16">
+            <div className="text-center md:text-left">
+              <h2 className="text-4xl font-display font-bold mb-4">The Deflationary Ecosystem</h2>
+              <p className="text-muted-foreground">Powering the MemeDrop economy with real utility.</p>
+            </div>
+            <motion.div
+              animate={{ y: [0, -10, 0] }}
+              transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+              className="w-24 h-24 shrink-0"
+            >
+              <img 
+                src="https://i.ibb.co/VWVv3R6W/Logo-Meme-Drop-Squer.png" 
+                alt="MemeDrop Character" 
+                className="w-full h-full object-contain drop-shadow-[0_0_15px_rgba(34,197,94,0.4)]" 
+              />
+            </motion.div>
           </div>
           <div className="grid md:grid-cols-3 gap-8">
             <Card className="glass-card border-primary/20 bg-primary/5">
