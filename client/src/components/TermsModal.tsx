@@ -37,8 +37,8 @@ export function TermsModal() {
 
   const handleScroll = (event: React.UIEvent<HTMLDivElement>) => {
     const { scrollTop, scrollHeight, clientHeight } = event.currentTarget;
-    // Strict bottom detection: within 2 pixels of the actual scrollable bottom
-    const isAtBottom = Math.abs(scrollHeight - scrollTop - clientHeight) < 2;
+    // Using a more robust threshold and Math.ceil to handle subpixel issues
+    const isAtBottom = Math.ceil(scrollTop + clientHeight) >= scrollHeight - 5;
     if (isAtBottom) {
       setHasReadToBottom(true);
     }
