@@ -64,9 +64,15 @@ export function VerifyActionDialog({ action, campaign, open, onOpenChange, onSuc
     }
   }, [open]);
 
-  if (!campaign) return null;
+  const isHolderCampaign = campaign?.campaignType === 'holder_qualification';
 
-  const isHolderCampaign = campaign.campaignType === 'holder_qualification';
+  useEffect(() => {
+    if (open && isConnected && isHolderCampaign) {
+      handleVerify();
+    }
+  }, [open, isConnected, isHolderCampaign]);
+
+  if (!campaign) return null;
 
   const handleVerify = async () => {
     if (!walletAddress) return;
@@ -176,7 +182,7 @@ export function VerifyActionDialog({ action, campaign, open, onOpenChange, onSuc
               <DialogTitle className="text-2xl font-black uppercase text-white tracking-tighter">
                 {isHolderCampaign ? "ELIGIBILITY CHECK" : "TASK VERIFICATION"}
               </DialogTitle>
-              <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/30">
+              <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-white">
                 VERIFICATION FOR {campaign.tokenName}
               </p>
             </div>
@@ -188,13 +194,13 @@ export function VerifyActionDialog({ action, campaign, open, onOpenChange, onSuc
             <div className="space-y-6">
               <div className="grid grid-cols-2 gap-4">
                 <div className="bg-[#141414] p-6 rounded-3xl border border-white/5 space-y-2">
-                  <p className="text-[10px] font-black uppercase text-white/30 tracking-widest">Balance</p>
+                  <p className="text-[10px] font-black uppercase text-white tracking-widest">Balance</p>
                   <p className={cn("text-3xl font-black font-mono tracking-tighter", (holdingStatus?.currentBalance || 0) >= Number(campaign.minHoldingAmount || 0) ? "text-primary" : "text-[#FF4B4B]")}>
                     {holdingStatus?.currentBalance?.toLocaleString() || "0"}
                   </p>
                 </div>
                 <div className="bg-[#141414] p-6 rounded-3xl border border-white/5 space-y-2">
-                  <p className="text-[10px] font-black uppercase text-white/30 tracking-widest">Required</p>
+                  <p className="text-[10px] font-black uppercase text-white tracking-widest">Required</p>
                   <p className="text-3xl font-black font-mono text-white tracking-tighter">
                     {Number(campaign.minHoldingAmount).toLocaleString()}
                   </p>
@@ -203,7 +209,7 @@ export function VerifyActionDialog({ action, campaign, open, onOpenChange, onSuc
 
               <div className="bg-[#141414] p-6 rounded-3xl border border-white/5 space-y-4">
                 <div className="flex justify-between items-center">
-                  <p className="text-[10px] font-black uppercase text-white/30 tracking-widest">Progress</p>
+                  <p className="text-[10px] font-black uppercase text-white tracking-widest">Progress</p>
                   <p className="text-[10px] font-black text-primary tracking-widest">
                     {holdingStatus?.status === 'verified' ? '100%' : '0%'}
                   </p>
@@ -222,12 +228,12 @@ export function VerifyActionDialog({ action, campaign, open, onOpenChange, onSuc
                   <div className="pt-2 space-y-3 border-t border-white/5">
                     <div className="grid grid-cols-2 gap-4">
                       <div className="space-y-1">
-                        <span className="text-[8px] font-black text-white/20 uppercase tracking-widest block">Hold Required</span>
-                        <span className="text-[10px] font-bold text-white/60">{holdingStatus.holdDuration || 0} Days</span>
+                        <span className="text-[8px] font-black text-white uppercase tracking-widest block">Hold Required</span>
+                        <span className="text-[10px] font-bold text-white">{holdingStatus.holdDuration || 0} Days</span>
                       </div>
                       <div className="space-y-1 text-right">
-                        <span className="text-[8px] font-black text-white/20 uppercase tracking-widest block">Remaining</span>
-                        <span className="text-[10px] font-bold text-primary">{holdingStatus.remaining !== undefined ? `${holdingStatus.remaining} Blocks` : '---'}</span>
+                        <span className="text-[8px] font-black text-white uppercase tracking-widest block">Remaining</span>
+                        <span className="text-[10px] font-bold text-white">{holdingStatus.remaining !== undefined ? `${holdingStatus.remaining} Blocks` : '---'}</span>
                       </div>
                     </div>
                   </div>
@@ -252,29 +258,27 @@ export function VerifyActionDialog({ action, campaign, open, onOpenChange, onSuc
                 </Button>
                 
                 <div className="space-y-4 pt-2">
-                  <p className="text-[10px] font-black text-center text-white/20 uppercase tracking-[0.3em]">Quick Links</p>
+                  <p className="text-[10px] font-black text-center text-white uppercase tracking-[0.3em]">Quick Links</p>
                   <div className="flex justify-center items-center gap-6">
                     <button onClick={() => window.open(`${CONFIG.TOKEN_DETAILS.BUY_LINKS.JUPITER}${campaign.tokenAddress}`, '_blank')} className="opacity-40 hover:opacity-100 transition-all hover:scale-110 flex flex-col items-center gap-1">
-                      <div className="w-8 h-8 flex items-center justify-center bg-[#19FB9B] rounded-full">
-                        <span className="text-[8px] font-black text-black">JUP</span>
-                      </div>
-                      <span className="text-[8px] font-black text-white/40">JUPITER</span>
+                      <img src={CONFIG.ui.walletIcons.jupiter} className="w-8 h-8" alt="Jupiter" />
+                      <span className="text-[8px] font-black text-white">JUPITER</span>
                     </button>
                     <button onClick={() => window.open(`https://dexscreener.com/solana/${campaign.tokenAddress}`, '_blank')} className="opacity-40 hover:opacity-100 transition-all hover:scale-110 flex flex-col items-center gap-1">
-                      <img src="https://dexscreener.com/favicon.ico" className="w-8 h-8 grayscale invert" alt="DexScreener" />
-                      <span className="text-[8px] font-black text-white/40">DEX</span>
+                      <img src={CONFIG.ui.walletIcons.dexscreener} className="w-8 h-8 grayscale invert" alt="DexScreener" />
+                      <span className="text-[8px] font-black text-white">DEX</span>
                     </button>
                     <button onClick={() => window.open(`https://pump.fun/coin/${campaign.tokenAddress}`, '_blank')} className="opacity-40 hover:opacity-100 transition-all hover:scale-110 flex flex-col items-center gap-1">
-                      <img src="https://pump.fun/favicon.ico" className="w-8 h-8" alt="Pump.fun" />
-                      <span className="text-[8px] font-black text-white/40">PUMP</span>
+                      <img src={CONFIG.ui.walletIcons.pumpfun} className="w-8 h-8" alt="Pump.fun" />
+                      <span className="text-[8px] font-black text-white">PUMP</span>
                     </button>
                   </div>
                 </div>
               </div>
 
               <div className="flex items-start gap-3 p-4 bg-white/[0.02] rounded-2xl border border-white/5 mt-4">
-                <Info className="w-4 h-4 text-white/20 mt-0.5" />
-                <p className="text-[10px] leading-relaxed text-white/30 font-medium">
+                <Info className="w-4 h-4 text-white mt-0.5" />
+                <p className="text-[10px] leading-relaxed text-white font-medium">
                   Holding requirement ensures authentic community participation. Verification is checked directly on the Solana blockchain.
                 </p>
               </div>
