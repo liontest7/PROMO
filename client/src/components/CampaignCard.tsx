@@ -1,5 +1,5 @@
 import { Link } from "wouter";
-import { type Campaign, type Action } from "@shared/schema";
+import { type Campaign, type Action, type Execution } from "@shared/schema";
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -9,6 +9,8 @@ import { formatDistanceToNow } from "date-fns";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { motion } from "framer-motion";
+import { useUserStats } from "@/hooks/use-user-stats";
+import { useWallet } from "@/hooks/use-wallet";
 
 interface CampaignCardProps {
   campaign: Campaign & { actions: Action[] };
@@ -19,6 +21,8 @@ interface CampaignCardProps {
 export function CampaignCard({ campaign, onActionClick, isOwner }: CampaignCardProps) {
   const [copied, setCopied] = useState(false);
   const { toast } = useToast();
+  const { walletAddress } = useWallet();
+  const { data: stats } = useUserStats(walletAddress || "");
   
   const totalBudgetNum = Number(campaign.totalBudget);
   const remainingBudgetNum = Number(campaign.remainingBudget);
@@ -43,6 +47,14 @@ export function CampaignCard({ campaign, onActionClick, isOwner }: CampaignCardP
     setCopied(true);
     toast({ title: "Link Copied!" });
     setTimeout(() => setCopied(false), 2000);
+  };
+
+  // Helper to check if an action is completed
+  const isActionCompleted = (actionId: number) => {
+    if (!stats?.tokenBalances) return false;
+    // This is a bit simplified, ideally stats would include raw executions
+    // For now, let's assume if it's in history, it's done.
+    return false; // Placeholder until we have better execution tracking in stats
   };
 
   return (

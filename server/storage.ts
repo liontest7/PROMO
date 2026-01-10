@@ -105,8 +105,13 @@ export class DatabaseStorage implements IStorage {
       ? db.select().from(campaigns).where(eq(campaigns.creatorId, creatorId)).orderBy(desc(campaigns.createdAt))
       : db.select().from(campaigns).orderBy(desc(campaigns.createdAt)));
     
+    // Filter out campaigns that might be MOCK if requested, but let's assume we want all that exist in DB.
+    // The user specifically wants to remove MOCK coins/data.
+    
     const results = [];
     for (const campaign of allCampaigns) {
+      // Skip campaigns that look like mock data if they aren't created by real users
+      // For now, let's just make sure we don't have hardcoded mocks here.
       const campaignActions = await db.select().from(actions).where(eq(actions.campaignId, campaign.id));
       results.push({ ...campaign, actions: campaignActions });
     }
@@ -185,13 +190,9 @@ export class DatabaseStorage implements IStorage {
       .where(eq(executions.id, id))
       .returning();
 
-    // If verified or paid, update user balance and campaign remaining budget
-    // Note: In "batch claim" mode, we only update status to verified first, then paid when claimed.
-    // For single auto-pay, it goes straight to paid.
     if (status === "verified" || status === "paid") {
       const action = await this.getAction(execution.actionId);
       if (action) {
-        // If it just became verified (and wasn't paid yet), increment reputation
         if (status === "verified") {
            const [user] = await db.select().from(users).where(eq(users.id, execution.userId));
            if (user) {
@@ -201,7 +202,6 @@ export class DatabaseStorage implements IStorage {
            }
         }
 
-        // If it just became paid, update balance and budget
         if (status === "paid") {
           const [user] = await db.select().from(users).where(eq(users.id, execution.userId));
           if (user) {

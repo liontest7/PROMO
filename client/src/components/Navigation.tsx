@@ -51,7 +51,6 @@ export function Navigation() {
     <nav className="border-b border-white/5 bg-background/80 backdrop-blur-2xl sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex h-20 items-center justify-between">
-          {/* Logo */}
           <Link href="/" className="flex items-center gap-4 group cursor-pointer">
             <div className="w-16 h-16 overflow-visible">
               <img src={PLATFORM_CONFIG.ASSETS.MAIN_LOGO} alt="Dropy Logo" className="w-full h-full object-contain scale-125 group-hover:scale-150 transition-transform duration-500" />

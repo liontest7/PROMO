@@ -198,11 +198,21 @@ export async function registerRoutes(
       const user = await storage.getUserByWallet(input.userWallet);
       if (!user) return res.status(404).json({ message: "User not found" });
 
-      const action = await storage.getAction(input.actionId);
-        if (!action) {
-          // Handle direct campaign eligibility check for HOLDER_QUALIFICATION
-          const campaign = await storage.getCampaign(input.actionId); // Reusing ID for simplicity in MVP
-          if (campaign && campaign.campaignType === 'holder_qualification') {
+    // Verify action
+    const action = await storage.getAction(actionId);
+    if (!action) {
+      // Handle direct campaign eligibility check for HOLDER_QUALIFICATION
+      const campaign = await storage.getCampaign(actionId);
+      if (!campaign) {
+        return res.status(404).json({ message: "Action or Campaign not found" });
+      }
+    }
+
+    const userExecutions = await storage.getExecutionsByUser(user.id);
+    const existingExecution = userExecutions.find(e => e.actionId === input.actionId);
+    if (existingExecution && (existingExecution.status === 'verified' || existingExecution.status === 'paid')) {
+      return res.status(400).json({ message: "Task already completed" });
+    }
             let state = await storage.getHolderState(user.id, campaign.id);
             
             // Actual Solana balance check
@@ -528,82 +538,13 @@ export async function registerRoutes(
   });
 
   // Seed Data
-  seed().catch(console.error);
+  // seed().catch(console.error); // Disabling seed to prevent mock data injection
 
   return httpServer;
 }
 
 // Function remains for manual trigger if needed, but not called by default
 async function seed() {
-  const campaigns = await storage.getCampaigns();
-  if (campaigns.length === 0) {
-    console.log("Seeding database...");
-    
-    // Create Demo Advertiser
-    const advertiser = await storage.createUser({
-      walletAddress: "DemoAdvertiserWallet123",
-      role: "advertiser"
-    });
-
-      // Create Campaign 1
-      const c1 = await storage.createCampaign({
-        title: "Solana Summer Airdrop",
-        description: "Join our community and get free tokens! We are building the next gen DeFi protocol.",
-        tokenName: "SOLSUM",
-        tokenAddress: "So11111111111111111111111111111111111111112",
-        totalBudget: "10000",
-        creatorId: advertiser.id,
-        requirements: { minSolBalance: 0.1 },
-        bannerUrl: "https://images.unsplash.com/photo-1639762681485-074b7f938ba0?q=80&w=2000",
-        logoUrl: "https://images.unsplash.com/photo-1622560480605-d83c853bc5c3?q=80&w=200&h=200&fit=crop",
-        websiteUrl: "https://solana.com",
-        twitterUrl: "https://twitter.com/solana",
-        telegramUrl: "https://t.me/solana"
-      });
-
-      await storage.createAction({
-        campaignId: c1.id,
-        type: "twitter",
-        title: "Follow @SolanaSummer",
-        rewardAmount: "100",
-        url: "https://twitter.com/solana",
-        maxExecutions: 1000
-      });
-      
-      await storage.createAction({
-        campaignId: c1.id,
-        type: "telegram",
-        title: "Join Telegram Group",
-        rewardAmount: "50",
-        url: "https://t.me/solana",
-        maxExecutions: 500
-      });
-
-      // Create Campaign 2
-      const c2 = await storage.createCampaign({
-        title: "Neon EVM Launch",
-        description: "Experience Ethereum on Solana. Complete tasks to earn NEON tokens.",
-        tokenName: "NEON",
-        tokenAddress: "Neon...",
-        totalBudget: "5000",
-        creatorId: advertiser.id,
-        requirements: {},
-        bannerUrl: "https://images.unsplash.com/photo-1642104704074-907c0698cbd9?q=80&w=2000",
-        logoUrl: "https://images.unsplash.com/photo-1621504450181-5d356f63d3ee?q=80&w=200&h=200&fit=crop",
-        websiteUrl: "https://neonevm.org",
-        twitterUrl: "https://twitter.com/neonevm",
-        telegramUrl: "https://t.me/neonevm"
-      });
-
-     await storage.createAction({
-      campaignId: c2.id,
-      type: "website",
-      title: "Visit Official Website",
-      rewardAmount: "10",
-      url: "https://neonevm.org",
-      maxExecutions: 2000
-    });
-
-    console.log("Seeding complete.");
-  }
+  // Emptying mock seed to prevent recreation of mock coins
+  console.log("Seed function called but mock data injection is disabled.");
 }
