@@ -27,6 +27,8 @@ export function TermsModal() {
       const accepted = localStorage.getItem(storageKey);
       if (!accepted) {
         setIsOpen(true);
+        setHasReadToBottom(false);
+        setHasAccepted(false);
       }
     } else {
       setIsOpen(false);
@@ -35,7 +37,8 @@ export function TermsModal() {
 
   const handleScroll = (event: React.UIEvent<HTMLDivElement>) => {
     const { scrollTop, scrollHeight, clientHeight } = event.currentTarget;
-    if (scrollHeight - scrollTop <= clientHeight + 40) {
+    // Require scrolling to within 5px of the bottom for stricter verification
+    if (scrollHeight - scrollTop <= clientHeight + 5) {
       setHasReadToBottom(true);
     }
   };
@@ -60,22 +63,22 @@ export function TermsModal() {
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && handleClose()}>
       <DialogContent className="max-w-2xl max-h-[90vh] glass-card border-white flex flex-col p-0 overflow-hidden shadow-[0_0_60px_rgba(255,255,255,0.2)] ring-2 ring-white/50">
-        <DialogHeader className="p-4 border-b border-white/5 bg-gradient-to-br from-primary/10 via-transparent to-transparent relative">
+        <DialogHeader className="p-3 border-b border-white/5 bg-gradient-to-br from-primary/10 via-transparent to-transparent relative">
           <div className="flex items-center justify-between gap-4">
             <div className="flex-1 text-left pl-4">
               <DialogTitle className="font-display font-black text-4xl uppercase tracking-tighter italic text-white">
                 Legal Agreement
               </DialogTitle>
-              <p className="text-xs text-white/90 mt-1 font-bold uppercase tracking-widest leading-relaxed max-w-[280px]">
+              <p className="text-xs text-white/90 mt-0.5 font-bold uppercase tracking-widest leading-relaxed max-w-[280px]">
                 Please read and accept our Terms to continue.
               </p>
             </div>
-            <div className="shrink-0 relative pr-6">
-              <div className="absolute inset-0 bg-primary/10 blur-[25px] rounded-full scale-110" />
+            <div className="shrink-0 relative pr-10">
+              <div className="absolute inset-0 bg-primary/10 blur-[20px] rounded-full scale-110" />
               <img 
                 src={PLATFORM_CONFIG.ASSETS.LEGAL_BANNER} 
                 alt="Legal mascot"
-                className="w-40 h-40 object-contain relative z-10 drop-shadow-[0_0_20px_rgba(34,197,94,0.3)]"
+                className="w-36 h-36 object-contain relative z-10 drop-shadow-[0_0_20px_rgba(34,197,94,0.3)]"
               />
             </div>
           </div>

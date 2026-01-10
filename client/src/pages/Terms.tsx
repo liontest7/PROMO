@@ -52,7 +52,7 @@ export default function TermsOfService() {
             <section>
               <h2 className="text-white font-bold text-xl mb-4">5. Limitation of Liability</h2>
               <p>
-                To the maximum extent permitted by law, Dropy INC. shall not be liable for any indirect, 
+                To the maximum extent permitted by law, Dropy Platform shall not be liable for any indirect, 
                 incidental, special, consequential, or punitive damages.
               </p>
             </section>

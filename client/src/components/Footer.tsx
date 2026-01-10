@@ -135,7 +135,7 @@ export function Footer() {
         <div className="flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="flex flex-col items-center md:items-start">
             <p className="text-[12px] text-muted-foreground font-medium">
-              © {currentYear} {PLATFORM_CONFIG.TOKEN_SYMBOL} INC.
+              © {currentYear} {PLATFORM_CONFIG.TOKEN_SYMBOL} Platform.
             </p>
             <div className="flex items-center gap-2 text-[10px] text-muted-foreground/40 font-black uppercase tracking-widest mt-0.5">
               <div className="w-1 h-1 rounded-full bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.6)] animate-pulse" />
