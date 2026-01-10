@@ -188,68 +188,81 @@ export default function CampaignDetails() {
                         className="w-full h-24 justify-between px-8 bg-transparent hover:bg-primary/5 text-primary transition-all border-0 rounded-none"
                         onClick={handleHolderClick}
                       >
-                        <div className="flex items-center gap-5">
-                          <div className="w-12 h-12 rounded-xl bg-primary/20 flex items-center justify-center shrink-0 group-hover:scale-110 transition-all">
-                            <ShieldCheck className="w-7 h-7" />
+                        <div className="flex flex-col md:flex-row md:items-center gap-6 p-6 md:p-8">
+                          <div className="flex items-center gap-5 shrink-0">
+                            <div className="w-14 h-14 rounded-2xl bg-primary/20 flex items-center justify-center shrink-0 shadow-lg shadow-primary/5">
+                              <ShieldCheck className="w-8 h-8 text-primary" />
+                            </div>
+                            <div className="space-y-1">
+                              <div className="flex items-center gap-3">
+                                <p className="text-xl font-black uppercase tracking-tight text-white">Holder Verification</p>
+                                <Badge variant="outline" className="text-[10px] font-black border-primary/20 text-primary bg-primary/5 px-2 py-0.5">
+                                  +{campaign.rewardPerWallet} ${campaign.tokenName}
+                                </Badge>
+                              </div>
+                              <p className="text-sm font-bold text-white/50">Hold {campaign.minHoldingAmount} ${campaign.tokenName} for {campaign.minHoldingDuration} days</p>
+                            </div>
                           </div>
-                          <div className="text-left flex-1 min-w-0">
-                            <p className="text-xl font-black uppercase tracking-tight text-white mb-1">Holder Verification</p>
-                            <p className="text-sm font-bold text-white/50 mb-4">Hold {campaign.minHoldingAmount} ${campaign.tokenName} for {campaign.minHoldingDuration} days</p>
-                            
-                            {isConnected && (
-                              <div className="space-y-4 bg-black/40 p-5 rounded-2xl border border-white/5 mb-2 shadow-inner">
-                                <div className="flex justify-between items-center text-[10px] font-black uppercase tracking-widest">
-                                  <span className="text-white/40">Current Balance</span>
-                                  <span className="text-primary font-mono text-xs">{Number(walletBalance || 0).toLocaleString()} ${campaign.tokenName}</span>
+
+                          <div className="flex-1 min-w-0">
+                            {isConnected ? (
+                              <div className="bg-black/40 rounded-2xl border border-white/5 p-4 space-y-4 shadow-inner">
+                                <div className="flex justify-between items-end">
+                                  <div className="space-y-1">
+                                    <p className="text-[10px] font-black text-white/30 uppercase tracking-widest flex items-center gap-1.5">
+                                      <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
+                                      Live Wallet Balance
+                                    </p>
+                                    <p className="text-sm font-black text-white font-mono tracking-tight">
+                                      {Number(walletBalance || 0).toLocaleString()} ${campaign.tokenName}
+                                    </p>
+                                  </div>
+                                  <div className="text-right space-y-1">
+                                    <p className="text-[10px] font-black text-white/30 uppercase tracking-widest">Time Remaining</p>
+                                    <p className="text-sm font-black text-primary uppercase">{campaign.minHoldingDuration}d 0h 0m</p>
+                                  </div>
                                 </div>
                                 
                                 <div className="space-y-2">
-                                  <div className="flex justify-between items-end mb-1">
-                                    <div className="space-y-0.5">
-                                      <p className="text-[10px] font-black uppercase tracking-widest text-white/30">Holding Progress</p>
-                                      <p className="text-xs font-black text-white">0 Days 0h 0m</p>
-                                    </div>
-                                    <span className="text-[10px] font-black text-primary">0%</span>
+                                  <div className="flex justify-between items-center text-[10px] font-black uppercase tracking-widest">
+                                    <span className="text-white/40 italic">Holding Progress</span>
+                                    <span className="text-white/60">0% Complete</span>
                                   </div>
-                                  <div className="relative h-2 w-full bg-white/5 rounded-full overflow-hidden">
-                                    <Progress value={0} className="h-full bg-primary transition-all duration-500" />
-                                  </div>
-                                  <div className="flex justify-between text-[9px] font-bold text-white/20 uppercase">
-                                    <span>Start</span>
-                                    <span>{campaign.minHoldingDuration} Days Target</span>
+                                  <div className="relative h-2.5 w-full bg-white/5 rounded-full overflow-hidden border border-white/5">
+                                    <div className="absolute inset-y-0 left-0 bg-primary w-0 transition-all duration-1000 shadow-[0_0_10px_rgba(var(--primary),0.5)]" />
                                   </div>
                                 </div>
-
-                                <div className="flex items-center gap-2 pt-2 border-t border-white/5">
-                                  <div className="w-1.5 h-1.5 rounded-full bg-yellow-500 animate-pulse" />
-                                  <p className="text-[10px] text-yellow-500/80 font-black uppercase tracking-tight italic">
-                                    Holding time resets if balance drops below {campaign.minHoldingAmount}
-                                  </p>
-                                </div>
+                              </div>
+                            ) : (
+                              <div className="h-full flex items-center justify-center border-2 border-dashed border-white/10 rounded-2xl bg-white/[0.02] p-8 italic text-white/30 text-sm font-black uppercase tracking-widest text-center leading-relaxed">
+                                Connect wallet to track progress <br/> and claim your ${campaign.tokenName}
                               </div>
                             )}
                           </div>
-                        </div>
-                        <div className="flex flex-col gap-2 shrink-0">
-                          <Button 
-                            className={cn(
-                              "font-black px-6 py-3 rounded-xl text-sm shadow-lg transition-all h-12 min-w-[140px]",
-                              isConnected ? "bg-white/10 text-white hover:bg-white/20 border border-white/10" : "bg-primary text-primary-foreground shadow-primary/10"
-                            )}
-                            onClick={handleHolderClick}
-                          >
-                            {isConnected ? (
-                              <div className="flex items-center gap-2">
-                                <RefreshCw className="w-4 h-4" />
-                                REFRESH
-                              </div>
-                            ) : "VERIFY NOW"}
-                          </Button>
-                          {isConnected && (
-                            <p className="text-[9px] font-black text-white/20 text-center uppercase tracking-widest">
-                              Last checked: Just now
-                            </p>
-                          )}
+                          
+                          <div className="shrink-0 pt-2 md:pt-0">
+                            <Button 
+                              className={cn(
+                                "font-black px-10 py-7 rounded-2xl text-base shadow-2xl transition-all min-w-[200px] uppercase tracking-wider group/btn",
+                                isConnected 
+                                  ? "bg-white/5 text-white hover:bg-white/10 border border-white/10 hover:border-white/20" 
+                                  : "bg-primary text-primary-foreground hover:scale-[1.02] active:scale-[0.98] shadow-primary/20"
+                              )}
+                              onClick={handleHolderClick}
+                            >
+                              {isConnected ? (
+                                <div className="flex items-center gap-3">
+                                  <RefreshCw className="w-5 h-5 group-hover/btn:rotate-180 transition-transform duration-700" />
+                                  Check Eligibility
+                                </div>
+                              ) : (
+                                <div className="flex items-center gap-3">
+                                  Verify & Start
+                                  <ArrowRight className="w-5 h-5 group-hover/btn:translate-x-1 transition-transform" />
+                                </div>
+                              )}
+                            </Button>
+                          </div>
                         </div>
                       </Button>
                     </CardContent>
