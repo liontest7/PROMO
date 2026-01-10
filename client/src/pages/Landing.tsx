@@ -142,6 +142,13 @@ export default function Landing() {
       {/* Featured Campaigns Section - MOVED UP AS REQUESTED */}
       <section className="py-24 border-y border-white/5 bg-black/20" data-testid="section-active-campaigns">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-col items-center mb-8">
+            <img 
+              src="https://i.ibb.co/nM5YkVjq/1.png" 
+              alt="MemeDrop Mascot" 
+              className="w-24 h-24 object-contain drop-shadow-[0_0_15px_rgba(34,197,94,0.4)]" 
+            />
+          </div>
           <div className="flex flex-col md:flex-row justify-between items-end gap-6 mb-12">
             <div>
               <h2 className="text-4xl font-display font-bold mb-2">Active Campaigns</h2>
