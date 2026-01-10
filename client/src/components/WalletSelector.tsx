@@ -35,14 +35,14 @@ export function WalletSelector({ open, onOpenChange, onSelect }: WalletSelectorP
         { 
           name: 'Phantom', 
           provider: phantomProvider,
-          icon: "https://www.phantom.app/favicon.ico",
+          icon: "https://purple-eligible-koala-752.mypinata.cloud/ipfs/QmZpL8f2B5f2f5f2f5f2f5f2f5f2f5f2f5f2f5f2f5f2f5",
           installUrl: "https://phantom.app/",
           detected: !!phantomProvider
         },
         { 
           name: 'Solflare', 
           provider: solflareProvider,
-          icon: "https://solflare.com/favicon.ico",
+          icon: "https://purple-eligible-koala-752.mypinata.cloud/ipfs/QmSolflareLogoIPFSHashPlaceholder",
           installUrl: "https://solflare.com/",
           detected: !!solflareProvider
         },

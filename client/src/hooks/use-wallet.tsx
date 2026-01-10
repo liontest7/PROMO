@@ -80,21 +80,54 @@ export function WalletProvider({ children }: { children: ReactNode }) {
       // Extensive provider normalization
       let provider = solanaInstance;
       if (solanaInstance.solana) provider = solanaInstance.solana;
-      if (!provider.connect && solanaInstance.connect) provider = solanaInstance;
       
-      // Some wallets (like Solflare) might have the connect method directly on the injected object
+      // Ensure we have a connect method
       if (typeof provider.connect !== 'function' && typeof solanaInstance.connect === 'function') {
         provider = solanaInstance;
       }
-      
+
       if (!provider || typeof provider.connect !== 'function') {
         console.error("Invalid provider structure:", provider);
         throw new Error("Invalid wallet provider. Please try again or refresh.");
       }
 
       console.log("Found provider, calling connect...");
-      const response = await provider.connect({ onlyIfTrusted: false });
-      const publicAddress = response.publicKey.toString();
+      // Normalize connect call for various providers
+      let response;
+      try {
+        if (typeof provider.connect === 'function') {
+          response = await provider.connect({ onlyIfTrusted: false });
+        } else if (typeof provider === 'function') {
+          response = await provider({ onlyIfTrusted: false });
+        } else {
+          response = provider;
+        }
+      } catch (e: any) {
+        console.error("Connect error:", e);
+        if (e.message?.includes('User rejected')) throw e;
+        response = provider;
+      }
+      
+      console.log("Connect response:", response);
+      
+      // Handle the case where the public key is nested or returned directly
+      let publicKey = response?.publicKey || provider.publicKey;
+      
+      // If we still don't have it, check if response is the public key itself
+      if (!publicKey && response && (response.toBase58 || response.toString().length > 30)) {
+        publicKey = response;
+      }
+
+      // Final fallback to global objects if the direct connection didn't provide it
+      if (!publicKey) {
+        publicKey = provider.publicKey || (window as any).solana?.publicKey || (window as any).solflare?.publicKey || (window as any).phantom?.solana?.publicKey;
+      }
+      
+      if (!publicKey) {
+        throw new Error("Could not retrieve wallet address. Please make sure your wallet is unlocked and try again.");
+      }
+      
+      const publicAddress = publicKey.toString();
       
       const res = await fetch('/api/users/auth', {
         method: 'POST',
