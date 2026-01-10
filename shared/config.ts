@@ -19,18 +19,29 @@ export const PLATFORM_CONFIG = {
     },
   },
   ASSETS: {
+    // Main logo used in navigation and headers
     MAIN_LOGO: "https://i.ibb.co/TBd95CcD/1-Untitled-design.png",
+    // Mascot image used in the "About" section
     ABOUT_MASCOT: "https://i.ibb.co/nM5YkVjq/1.png",
+    // Mascot image used in the main hero/landing section
     LANDING_MASCOT: "https://i.ibb.co/nM5YkVjq/1.png",
+    // Character image for question states or help sections
     CHARACTER_QUESTION: "https://i.ibb.co/MKCDNr0/2.png",
+    // Character image for success or completion states
     CHARACTER_SUCCESS:
       "https://i.ibb.co/Zbky3Dm/20260109-2036-Image-Generation-remix-01kej0pqgpep3t2h7x1dc423y0.png",
+    // Character image for greeting or introductory states
     CHARACTER_HELLO:
       "https://i.ibb.co/pBnZXZps/20260109-2049-Image-Generation-remix-01kej1dxwve5s9jwddtakxjtga.png",
+    // Banner image for legal and terms of service pages
     LEGAL_BANNER:
       "https://i.ibb.co/Wv7S6FnP/20260110-1153-Image-Generation-remix-01kekn4z79ebt8j4bctxwdx91c.png",
+    // Banner image for the privacy policy page
     PRIVACY_BANNER:
       "https://i.ibb.co/hFY8hK9v/20260110-1301-Image-Generation-remix-01keks0yejfjy9dp3qyxkkjbnt.png",
+    // Character image for the deflationary section on landing page
+    DEFLATIONARY_MONK:
+      "https://i.ibb.co/ycPX4D4Z/20260110-1319-Meditating-Crypto-Monk-remix-01kekt16kyft7vsz2w75t40rxd.png",
   },
   ui: {
     walletSelectorBg:
