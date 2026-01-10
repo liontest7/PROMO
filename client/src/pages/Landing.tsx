@@ -12,6 +12,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useQuery } from "@tanstack/react-query";
 
 import { PLATFORM_CONFIG } from "@shared/config";
+import { AirdropAnimation } from "@/components/AirdropAnimation";
 
 function EarnContentOnly() {
   const { data: campaigns, isLoading } = useCampaigns();
@@ -76,6 +77,7 @@ export default function Landing() {
       
       {/* Hero Section */}
       <section className="relative pt-20 pb-20 overflow-hidden">
+        <AirdropAnimation />
         <div className="absolute top-0 left-0 w-full h-full overflow-hidden z-0 pointer-events-none">
           <div className="absolute top-[-10%] right-[-5%] w-[500px] h-[500px] bg-primary/20 rounded-full blur-[120px]" />
           <div className="absolute bottom-[-10%] left-[-10%] w-[600px] h-[600px] bg-secondary/20 rounded-full blur-[120px]" />
