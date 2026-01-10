@@ -3,23 +3,23 @@ import { PLATFORM_CONFIG } from "@shared/config";
 
 export function AirdropAnimation() {
   return (
-    <div className="absolute inset-0 overflow-visible pointer-events-none z-0">
+    <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
       <motion.div
         initial={{ 
-          y: "-50%", 
+          y: "-20%", 
           x: "80%", 
           opacity: 1,
           rotate: -15
         }}
         animate={{ 
-          // Use fixed viewport height (vh) to ensure it exits the screen regardless of section height
-          // Path that starts above and ends completely below the viewport
-          y: ["-50vh", "20vh", "50vh", "80vh", "150vh"],
-          x: ["80%", "5%", "95%", "5%", "80%"],
+          // Path that starts just above and ends just below the section
+          // Using percentages relative to the container for better stability
+          y: ["-20%", "20%", "50%", "80%", "120%"],
+          x: ["80%", "10%", "90%", "10%", "80%"],
           rotate: [-15, 15, -15, 15, -15]
         }}
         transition={{
-          duration: 35, // Constant speed
+          duration: 35, // Slower, calmer speed
           repeat: Infinity,
           ease: "linear",
           times: [0, 0.25, 0.5, 0.75, 1]
