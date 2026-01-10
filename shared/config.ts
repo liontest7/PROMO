@@ -7,13 +7,13 @@ export const PLATFORM_CONFIG = {
     TWITTER: "https://x.com/MemeDrop_Sol"
   },
   ASSETS: {
-    // Main brand logo used in Header, Footer and Loading screens
+    // הלוגו הראשי של המותג - בשימוש בהדר (Header), בפוטר (Footer), במסכי טעינה ובאזור ה-Deflationary בדף הבית
     MAIN_LOGO: "https://i.ibb.co/TBd95CcD/1-Untitled-design.png",
-    // Character mascot used in the About page ecosystem section
+    
+    // דמות המסקוט בשימוש בדף ה-About (אזור ה-Ecosystem)
     ABOUT_MASCOT: "https://i.ibb.co/nM5YkVjq/1.png",
-    // Special branded illustration for the Deflationary section on Landing page
-    DEFLATIONARY_HERO: "https://i.ibb.co/8DwGd5Z1/Untitled-design.png",
-    // Landing page mascot above Active Campaigns
+    
+    // דמות המסקוט המופיעה בדף הבית מעל אזור ה-Active Campaigns
     LANDING_MASCOT: "https://i.ibb.co/nM5YkVjq/1.png"
   }
 };
