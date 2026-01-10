@@ -1,5 +1,4 @@
 import { Link } from "wouter";
-import { APP_CONFIG } from "@/config";
 import { PLATFORM_CONFIG } from "@shared/config";
 
 export function Footer() {

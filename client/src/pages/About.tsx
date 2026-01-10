@@ -3,7 +3,6 @@ import { Navigation } from "@/components/Navigation";
 import { ShieldCheck, Rocket, Coins, Users, Zap, Globe, Target, BarChart3, Search } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { useQuery } from "@tanstack/react-query";
-import { APP_CONFIG } from "@/config";
 import { PLATFORM_CONFIG } from "@shared/config";
 
 export default function About() {
@@ -70,7 +69,7 @@ export default function About() {
             <div className="relative order-2 md:order-1">
               <div className="aspect-square rounded-3xl overflow-hidden bg-gradient-to-br from-primary/20 to-secondary/20 border border-white/10 flex items-center justify-center p-8 group">
                 <img 
-                  src={APP_CONFIG.assets.characterQuestion} 
+                  src={PLATFORM_CONFIG.ASSETS.CHARACTER_QUESTION} 
                   alt="MemeDrop Character" 
                   className="w-full h-full object-contain drop-shadow-[0_0_20px_rgba(34,197,94,0.3)] group-hover:scale-105 transition-transform duration-500" 
                 />

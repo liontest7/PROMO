@@ -11,7 +11,6 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useToast } from "@/hooks/use-toast";
 import { useQuery } from "@tanstack/react-query";
 
-import { APP_CONFIG } from "@/config";
 import { PLATFORM_CONFIG } from "@shared/config";
 
 function EarnContentOnly() {

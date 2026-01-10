@@ -16,7 +16,6 @@ import {
   User as UserIcon
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { APP_CONFIG } from "@/config";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -57,7 +56,7 @@ export function Navigation() {
               <img src={PLATFORM_CONFIG.ASSETS.MAIN_LOGO} alt="Logo" className="w-full h-full object-contain scale-125 group-hover:scale-150 transition-transform duration-500" />
             </div>
             <span className="font-display font-black text-3xl tracking-tighter bg-gradient-to-r from-white via-white to-gray-400 bg-clip-text text-transparent">
-              {APP_CONFIG.platformName}
+              MEMEDROP
             </span>
           </Link>
 
@@ -86,7 +85,7 @@ export function Navigation() {
                     size="default" 
                     className="px-4 h-10 rounded-full bg-primary/10 border border-primary/20 text-primary hover:bg-primary/20 transition-all gap-2 group"
                   >
-                    <span className="text-xs font-black uppercase tracking-widest">Buy {APP_CONFIG.token.symbol}</span>
+                    <span className="text-xs font-black uppercase tracking-widest">Buy ${PLATFORM_CONFIG.TOKEN_SYMBOL}</span>
                     <ChevronDown className="w-4 h-4 transition-transform group-data-[state=open]:rotate-180" />
                   </Button>
                 </DropdownMenuTrigger>
@@ -95,27 +94,27 @@ export function Navigation() {
                     Buy $MEME on DEX
                   </div>
                   <DropdownMenuItem asChild className="cursor-pointer focus:bg-primary/10 focus:text-primary">
-                    <a href={APP_CONFIG.token.buyLinks.pumpFun.url} target="_blank" rel="noreferrer" className="flex items-center gap-3 w-full py-2">
+                    <a href={PLATFORM_CONFIG.TOKEN_DETAILS.BUY_LINKS.PUMP_FUN} target="_blank" rel="noreferrer" className="flex items-center gap-3 w-full py-2">
                       <div className="w-8 h-8 rounded bg-primary/10 flex items-center justify-center overflow-hidden">
-                        <img src={APP_CONFIG.token.buyLinks.pumpFun.logo} className="w-full h-full object-cover" alt="Pump.fun" />
+                        <img src="https://i.ibb.co/60pBq969/pump-logo.png" className="w-full h-full object-cover" alt="Pump.fun" />
                       </div>
                       <span className="text-sm font-bold">Pump.fun</span>
                       <ExternalLink className="w-3 h-3 ml-auto opacity-50" />
                     </a>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild className="cursor-pointer focus:bg-primary/10 focus:text-primary">
-                    <a href={APP_CONFIG.token.buyLinks.dexScanner.url} target="_blank" rel="noreferrer" className="flex items-center gap-3 w-full py-2">
+                    <a href={PLATFORM_CONFIG.TOKEN_DETAILS.BUY_LINKS.DEX_SCREENER} target="_blank" rel="noreferrer" className="flex items-center gap-3 w-full py-2">
                       <div className="w-8 h-8 rounded bg-primary/10 flex items-center justify-center overflow-hidden p-1">
-                        <img src={APP_CONFIG.token.buyLinks.dexScanner.logo} className="w-full h-full object-contain" alt="DexScreener" />
+                        <img src="https://dexscreener.com/favicon.png" className="w-full h-full object-contain" alt="DexScreener" />
                       </div>
                       <span className="text-sm font-bold">DEXScreener</span>
                       <ExternalLink className="w-3 h-3 ml-auto opacity-50" />
                     </a>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild className="cursor-pointer focus:bg-primary/10 focus:text-primary">
-                    <a href={APP_CONFIG.token.buyLinks.jupiter.url} target="_blank" rel="noreferrer" className="flex items-center gap-3 w-full py-2">
+                    <a href={PLATFORM_CONFIG.TOKEN_DETAILS.BUY_LINKS.JUPITER} target="_blank" rel="noreferrer" className="flex items-center gap-3 w-full py-2">
                       <div className="w-8 h-8 rounded bg-primary/10 flex items-center justify-center overflow-hidden p-1">
-                        <img src={APP_CONFIG.token.buyLinks.jupiter.logo} className="w-full h-full object-contain" alt="Jupiter" />
+                        <img src="https://jup.ag/svg/jupiter-logo.svg" className="w-full h-full object-contain" alt="Jupiter" />
                       </div>
                       <span className="text-sm font-bold">Jupiter</span>
                       <ExternalLink className="w-3 h-3 ml-auto opacity-50" />
