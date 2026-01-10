@@ -162,7 +162,7 @@ export default function Leaderboard() {
         {/* List Section */}
         <div className="space-y-6">
           <Card className="glass-card border-white/5 bg-white/[0.01] rounded-[2.5rem] overflow-hidden shadow-2xl backdrop-blur-md">
-            <div className="bg-white/[0.03] px-10 py-5 border-b border-white/5 flex items-center text-[10px] font-black text-white uppercase tracking-[0.4em] italic">
+            <div className="bg-white/[0.03] px-10 py-5 border-b border-white/5 flex items-center text-xs font-black text-white uppercase tracking-[0.4em] italic">
               <span className="w-16">Rank</span>
               <span className="flex-1">Contributor</span>
               <span className="w-32 text-right">Score</span>
