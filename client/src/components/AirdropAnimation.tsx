@@ -3,7 +3,7 @@ import { PLATFORM_CONFIG } from "@shared/config";
 
 export function AirdropAnimation() {
   return (
-    <div className="absolute inset-0 overflow-visible pointer-events-none z-0">
+    <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
       <motion.div
         initial={{ 
           y: "-100%", 
@@ -12,15 +12,14 @@ export function AirdropAnimation() {
           rotate: -15
         }}
         animate={{ 
-          // Extreme vertical descent (500%) to ensure it absolutely clears the section
-          y: ["-100%", "50%", "150%", "300%", "500%"],
-          // Broad S-path
+          // Reduced descent to 350% to minimize the delay before looping back
+          y: ["-100%", "50%", "150%", "250%", "350%"],
           x: ["80%", "5%", "95%", "5%", "80%"],
           rotate: [-15, 15, -15, 15, -15],
           opacity: [1, 1, 1, 1, 1]
         }}
         transition={{
-          duration: 40, // Consistent, calm speed
+          duration: 25, // Slightly faster to compensate for shorter path and keep the loop snappy
           repeat: Infinity,
           ease: "linear",
           times: [0, 0.25, 0.5, 0.75, 1]
