@@ -33,7 +33,6 @@ export function Footer() {
     <footer className="relative bg-background pt-12 pb-6 overflow-hidden border-t border-white/5" data-testid="footer-main">
       {/* Decorative Background Elements */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-px bg-gradient-to-r from-transparent via-primary/50 to-transparent opacity-30" />
-      <div className="absolute -top-12 left-1/2 -translate-x-1/2 w-[400px] h-[200px] bg-primary/5 blur-[80px] rounded-full pointer-events-none" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 mb-10">
@@ -41,7 +40,7 @@ export function Footer() {
           {/* Brand Column */}
           <div className="lg:col-span-4 flex flex-col items-center lg:items-start text-center lg:text-left gap-4">
             <Link href="/" className="flex items-center gap-4 group cursor-pointer">
-              <div className="w-14 h-14 relative">
+              <div className="w-16 h-16 relative">
                 <div className="absolute inset-0 bg-primary/20 blur-xl rounded-full scale-125 group-hover:bg-primary/30 transition-colors" />
                 <img 
                   src={PLATFORM_CONFIG.ASSETS.MAIN_LOGO} 
