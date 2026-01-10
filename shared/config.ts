@@ -14,7 +14,8 @@ export const PLATFORM_CONFIG = {
     BUY_LINKS: {
       PUMP_FUN: "https://pump.fun/",
       DEX_SCREENER: "https://dexscreener.com/solana/",
-      JUPITER: "https://jup.ag/swap?sell=So11111111111111111111111111111111111111112&buy=",
+      JUPITER:
+        "https://jup.ag/swap?sell=So11111111111111111111111111111111111111112&buy=",
       PUMP_FUN_LOGO: "https://i.ibb.co/gMb1wq1s/pump-fun-logo.webp",
     },
   },
@@ -26,7 +27,8 @@ export const PLATFORM_CONFIG = {
     // Mascot image used in the main hero/landing section
     LANDING_MASCOT: "https://i.ibb.co/nM5YkVjq/1.png",
     // Character image for question states or help sections
-    CHARACTER_QUESTION: "https://i.ibb.co/MKCDNr0/2.png",
+    CHARACTER_QUESTION:
+      "https://i.ibb.co/m5H2kkdt/20260110-1326-Cute-Crypto-Mascot-remix-01kektec50ft99asyk3jyra2t8.png",
     // Character image for success or completion states
     CHARACTER_SUCCESS:
       "https://i.ibb.co/Zbky3Dm/20260109-2036-Image-Generation-remix-01kej0pqgpep3t2h7x1dc423y0.png",
@@ -63,9 +65,7 @@ export const PLATFORM_CONFIG = {
 };
 
 export const ADMIN_CONFIG = {
-  superAdminWallets: [
-    "DajB37qp74UzwND3N1rVWtLdxr55nhvuK2D4x476zmns"
-  ]
+  superAdminWallets: ["DajB37qp74UzwND3N1rVWtLdxr55nhvuK2D4x476zmns"],
 };
 
 export const CONFIG = PLATFORM_CONFIG;
