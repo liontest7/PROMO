@@ -439,8 +439,13 @@ export async function registerRoutes(
   });
 
   app.get('/api/admin/executions', async (req, res) => {
-    const executions = await storage.getAllExecutions();
-    res.json(executions);
+    try {
+      const executions = await storage.getAllExecutions();
+      res.json(executions);
+    } catch (err) {
+      console.error("Admin executions error:", err);
+      res.status(500).json({ message: "Failed to fetch executions" });
+    }
   });
 
   app.post('/api/admin/users/:id/role', async (req, res) => {
