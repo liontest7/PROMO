@@ -408,6 +408,32 @@ export async function registerRoutes(
     }
   });
 
+  app.get('/api/admin/users', async (req, res) => {
+    // In a real app, check if requester is an admin
+    const users = await storage.getAllUsers();
+    res.json(users);
+  });
+
+  app.get('/api/admin/campaigns', async (req, res) => {
+    const campaigns = await storage.getAllCampaigns();
+    res.json(campaigns);
+  });
+
+  app.get('/api/admin/executions', async (req, res) => {
+    const executions = await storage.getAllExecutions();
+    res.json(executions);
+  });
+
+  app.post('/api/admin/users/:id/role', async (req, res) => {
+    try {
+      const { role } = req.body;
+      const [user] = await db.update(usersTable).set({ role }).where(eq(usersTable.id, parseInt(req.params.id))).returning();
+      res.json(user);
+    } catch (err) {
+      res.status(500).json({ message: "Failed to update role" });
+    }
+  });
+
   // Seed Data
   // seed(); // Commented out to prevent mock data on restart if database has real data
 

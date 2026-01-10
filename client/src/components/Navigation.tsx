@@ -13,6 +13,7 @@ import {
   Send, 
   ShieldCheck,
   ChevronDown,
+  ShieldAlert,
   User as UserIcon
 } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -70,6 +71,9 @@ export function Navigation() {
             
             {isConnected && role === "advertiser" && (
               <NavLink href="/advertiser" icon={LayoutDashboard}>Admin Console</NavLink>
+            )}
+            {isConnected && role === "admin" && (
+              <NavLink href="/admin" icon={ShieldAlert}>Admin Panel</NavLink>
             )}
             <div className="ml-1 flex items-center gap-3">
               <NavLink href="/about" icon={ShieldCheck}>About Us</NavLink>

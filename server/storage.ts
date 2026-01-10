@@ -39,6 +39,11 @@ export interface IStorage {
   createHolderState(state: InsertHolderState): Promise<HolderState>;
   updateHolderClaimed(id: number): Promise<void>;
   getExecutionsByCampaign(campaignId: number): Promise<(Execution & { user: { walletAddress: string } })[]>;
+
+  // Admin
+  getAllUsers(): Promise<User[]>;
+  getAllCampaigns(): Promise<(Campaign & { actions: Action[] })[]>;
+  getAllExecutions(): Promise<(Execution & { user: User, campaign: Campaign, action: Action })[]>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -252,6 +257,28 @@ export class DatabaseStorage implements IStorage {
     .orderBy(desc(executions.createdAt));
     
     return campaignExecutions as any;
+  }
+
+  async getAllUsers(): Promise<User[]> {
+    return await db.select().from(users).orderBy(desc(users.createdAt));
+  }
+
+  async getAllCampaigns(): Promise<(Campaign & { actions: Action[] })[]> {
+    return await this.getCampaigns();
+  }
+
+  async getAllExecutions(): Promise<(Execution & { user: User; campaign: Campaign; action: Action })[]> {
+    const allExecutions = await db.select().from(executions).orderBy(desc(executions.createdAt));
+    const results = [];
+    for (const execution of allExecutions) {
+      const [user] = await db.select().from(users).where(eq(users.id, execution.userId));
+      const [campaign] = await db.select().from(campaigns).where(eq(campaigns.id, execution.campaignId));
+      const [action] = await db.select().from(actions).where(eq(actions.id, execution.actionId));
+      if (user && campaign && action) {
+        results.push({ ...execution, user, campaign, action });
+      }
+    }
+    return results;
   }
 }
 

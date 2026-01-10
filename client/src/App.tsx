@@ -16,6 +16,7 @@ import AdvertiserDashboard from "@/pages/AdvertiserDashboard";
 
 import About from "@/pages/About";
 import CampaignDetails from "@/pages/CampaignDetails";
+import Admin from "@/pages/Admin";
 import NotFound from "@/pages/not-found";
 
 function ProtectedRoute({ component: Component, allowedRole }: { component: any, allowedRole?: string }) {
@@ -75,6 +76,9 @@ function Router() {
         </Route>
         <Route path="/campaign/:id">
           <PageWrapper><CampaignDetails /></PageWrapper>
+        </Route>
+        <Route path="/admin">
+          <ProtectedRoute component={Admin} allowedRole="admin" />
         </Route>
 
         <Route>

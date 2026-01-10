@@ -25,7 +25,7 @@ export type ReplitUser = typeof replitUsers.$inferSelect;
 export const users = pgTable("users", {
   id: serial("id").primaryKey(),
   walletAddress: text("wallet_address").notNull().unique(),
-  role: text("role", { enum: ["user", "advertiser"] }).default("user").notNull(),
+  role: text("role", { enum: ["user", "advertiser", "admin"] }).default("user").notNull(),
   reputationScore: integer("reputation_score").default(100),
   balance: numeric("balance").default("0").notNull(),
   twitterHandle: text("twitter_handle"),
@@ -33,6 +33,23 @@ export const users = pgTable("users", {
   replitId: text("replit_id"), // Added to link with Replit Auth
   createdAt: timestamp("created_at").defaultNow(),
 });
+
+export const auditLogs = pgTable("audit_logs", {
+  id: serial("id").primaryKey(),
+  adminId: integer("admin_id").references(() => users.id).notNull(),
+  action: text("action").notNull(),
+  targetId: integer("target_id"),
+  targetType: text("target_type"),
+  details: jsonb("details"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const auditLogsRelations = relations(auditLogs, ({ one }) => ({
+  admin: one(users, {
+    fields: [auditLogs.adminId],
+    references: [users.id],
+  }),
+}));
 
 export const campaigns = pgTable("campaigns", {
   id: serial("id").primaryKey(),
