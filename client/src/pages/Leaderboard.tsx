@@ -1,15 +1,18 @@
 import { Navigation } from "@/components/Navigation";
-import { Trophy, Star, Medal, Crown } from "lucide-react";
+import { Trophy, Star, Medal, Crown, Calendar, Globe, Clock } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { PLATFORM_CONFIG } from "@shared/config";
 import { useQuery } from "@tanstack/react-query";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
 
 export default function Leaderboard() {
+  const [timeframe, setTimeframe] = useState<"all_time" | "monthly" | "weekly">("all_time");
   const { data: leaders, isLoading } = useQuery<any[]>({
-    queryKey: ["/api/leaderboard"]
+    queryKey: ["/api/leaderboard", timeframe]
   });
 
   if (isLoading) {
@@ -36,10 +39,33 @@ export default function Leaderboard() {
             <div className="inline-flex p-4 rounded-3xl bg-yellow-500/10 border border-yellow-500/20 mb-6 shadow-[0_0_30px_rgba(234,179,8,0.1)]">
               <Trophy className="w-12 h-12 text-yellow-500" />
             </div>
-            <h1 className="text-6xl font-display font-black uppercase italic tracking-tighter mb-4 leading-none">
+            <h1 className="text-6xl font-display font-black uppercase italic tracking-tighter mb-4 leading-none text-white">
               Hall <span className="text-primary">of Fame</span>
             </h1>
-            <p className="text-white/40 uppercase tracking-[0.4em] text-[10px] font-black italic">Top Ecosystem Contributors • Real-time Sync</p>
+            <p className="text-white uppercase tracking-[0.4em] text-[10px] font-black italic">Top Ecosystem Contributors • Real-time Sync</p>
+          </div>
+
+          <div className="flex justify-center gap-3 mt-10 relative z-10">
+            {[
+              { id: "weekly", label: "Weekly", icon: Clock },
+              { id: "monthly", label: "Monthly", icon: Calendar },
+              { id: "all_time", label: "All-time", icon: Globe },
+            ].map((t) => (
+              <Button
+                key={t.id}
+                variant={timeframe === t.id ? "default" : "outline"}
+                onClick={() => setTimeframe(t.id as any)}
+                className={cn(
+                  "rounded-2xl font-black uppercase tracking-widest text-[10px] h-10 px-6 transition-all",
+                  timeframe === t.id 
+                    ? "bg-primary text-primary-foreground shadow-[0_0_20px_rgba(34,197,94,0.4)]" 
+                    : "bg-white/5 border-white/10 text-white/60 hover:text-white hover:bg-white/10"
+                )}
+              >
+                <t.icon className="w-3.5 h-3.5 mr-2" />
+                {t.label}
+              </Button>
+            ))}
           </div>
         </div>
 
