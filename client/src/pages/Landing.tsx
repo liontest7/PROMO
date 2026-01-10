@@ -122,11 +122,12 @@ export default function Landing() {
               Live on Solana
             </span>
             <h1 className="text-6xl md:text-8xl font-display font-extrabold tracking-tighter mb-8 bg-gradient-to-br from-white via-white to-gray-600 bg-clip-text text-transparent">
-              Earn Crypto for <br />
-              <span className="text-primary neon-text italic">Real Actions</span>
+              Empower Your Project <br />
+              <span className="text-primary neon-text italic">Drive Real Growth</span>
             </h1>
             <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto mb-12 leading-relaxed font-medium">
-              MemeDrop is the ultimate engagement platform on Solana. Participate in top-tier projects, verify your holdings, and get paid in native tokens for your loyalty.
+              MemeDrop is Solana's premier Pay-Per-Action platform. Connect with high-conviction users through verified on-chain holder qualification and social engagement. 
+              Built for projects that demand authentic community growth.
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center mb-16">
@@ -192,21 +193,22 @@ export default function Landing() {
       {/* Features */}
       <section className="py-24">
         <div className="max-w-7xl mx-auto px-4">
-          <div className="bg-gradient-to-br from-primary/10 to-secondary/10 rounded-[40px] p-8 md:p-16 border border-white/10">
+          <div className="bg-gradient-to-br from-primary/10 to-secondary/10 rounded-[40px] p-8 md:p-16 border border-white/10 relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-64 h-64 bg-primary/10 blur-[100px] -z-10" />
             <div className="grid md:grid-cols-2 gap-16 items-center">
               <div>
-                <h2 className="text-4xl font-display font-bold mb-8 tracking-tighter italic">Built for the ${PLATFORM_CONFIG.TOKEN_SYMBOL} Ecosystem</h2>
-                <p className="text-xl text-muted-foreground mb-10 leading-relaxed">
-                  Our native token powers the entire platform. Every campaign created burns <strong>{PLATFORM_CONFIG.BURN_AMOUNT.toLocaleString()} ${PLATFORM_CONFIG.TOKEN_SYMBOL}</strong>, making it deflationary and rewarding long-term holders.
+                <h2 className="text-5xl font-display font-black mb-8 tracking-tighter italic uppercase underline decoration-primary decoration-4 underline-offset-8">Deflationary by Design</h2>
+                <p className="text-xl text-muted-foreground mb-10 leading-relaxed font-medium">
+                  We don't just grow communities; we strengthen the entire ecosystem. Every campaign created burns <strong>{PLATFORM_CONFIG.BURN_AMOUNT.toLocaleString()} ${PLATFORM_CONFIG.TOKEN_SYMBOL}</strong>, reducing total supply while rewarding loyal project holders.
                 </p>
-                <div className="grid grid-cols-2 gap-6">
-                  <div className="p-6 bg-black/40 rounded-2xl border border-white/5">
-                    <p className="text-3xl font-black text-primary">0%</p>
-                    <p className="text-[10px] text-muted-foreground uppercase font-black tracking-tighter">Platform Fees</p>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                  <div className="p-8 bg-black/40 rounded-[2rem] border border-white/5 backdrop-blur-md group hover:border-primary/30 transition-all">
+                    <p className="text-4xl font-black text-primary mb-2">0%</p>
+                    <p className="text-xs text-muted-foreground uppercase font-black tracking-widest">Platform Fees</p>
                   </div>
-                  <div className="p-6 bg-black/40 rounded-2xl border border-white/5">
-                    <p className="text-3xl font-black text-secondary">BURN</p>
-                    <p className="text-[10px] text-muted-foreground uppercase font-black tracking-tighter">{PLATFORM_CONFIG.BURN_AMOUNT.toLocaleString()} Tokens/Project</p>
+                  <div className="p-8 bg-black/40 rounded-[2rem] border border-white/5 backdrop-blur-md group hover:border-secondary/30 transition-all">
+                    <p className="text-4xl font-black text-secondary mb-2">BURN</p>
+                    <p className="text-xs text-muted-foreground uppercase font-black tracking-widest">{PLATFORM_CONFIG.BURN_AMOUNT.toLocaleString()} Tokens/Project</p>
                   </div>
                 </div>
               </div>
@@ -226,12 +228,12 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* Updated CTA Section */}
+      {/* CTA Section */}
       <section className="py-32 border-t border-white/5 bg-gradient-to-b from-transparent to-black/40" data-testid="section-social-cta">
         <div className="container mx-auto px-4 text-center">
           <div className="max-w-3xl mx-auto space-y-12">
-            <h2 className="text-6xl font-display font-black tracking-tighter italic uppercase underline decoration-primary decoration-8 underline-offset-12">Follow Our Community</h2>
-            <p className="text-2xl text-muted-foreground font-medium">Join thousands of users and get the latest updates on new high-reward campaigns.</p>
+            <h2 className="text-6xl font-display font-black tracking-tighter italic uppercase underline decoration-primary decoration-8 underline-offset-12">Join the Alpha</h2>
+            <p className="text-2xl text-muted-foreground font-medium">Be part of the leading engagement movement on Solana. Get early access to high-reward campaigns and community updates.</p>
             <div className="flex flex-col sm:flex-row justify-center gap-8">
               <Button size="lg" className="h-20 px-12 bg-[#0088cc] hover:bg-[#0088cc]/90 text-white font-black text-2xl rounded-2xl shadow-2xl shadow-blue-500/20 group transition-all hover:scale-105" asChild data-testid="link-telegram">
                 <a href={PLATFORM_CONFIG.SOCIAL_LINKS.TELEGRAM} target="_blank" rel="noreferrer" className="flex items-center gap-4">
