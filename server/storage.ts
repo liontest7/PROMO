@@ -47,9 +47,25 @@ export interface IStorage {
   getAllCampaigns(): Promise<(Campaign & { actions: Action[] })[]>;
   getAllExecutions(): Promise<(Execution & { user: User, campaign: Campaign, action: Action })[]>;
   getLeaderboard(): Promise<User[]>;
+  // Anti-fraud
+  getWalletsByIp(ip: string): Promise<string[]>;
+  logIpWalletAssociation(ip: string, wallet: string): Promise<void>;
 }
 
 export class DatabaseStorage implements IStorage {
+  private ipWalletLog: Map<string, Set<string>> = new Map();
+
+  async getWalletsByIp(ip: string): Promise<string[]> {
+    return Array.from(this.ipWalletLog.get(ip) || []);
+  }
+
+  async logIpWalletAssociation(ip: string, wallet: string): Promise<void> {
+    if (!this.ipWalletLog.has(ip)) {
+      this.ipWalletLog.set(ip, new Set());
+    }
+    this.ipWalletLog.get(ip)!.add(wallet);
+  }
+
   async getUserByWallet(walletAddress: string): Promise<User | undefined> {
     const [user] = await db.select().from(users).where(eq(users.walletAddress, walletAddress));
     return user;

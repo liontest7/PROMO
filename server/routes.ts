@@ -230,6 +230,17 @@ export async function registerRoutes(
       if (!action) {
         const campaign = await storage.getCampaign(input.actionId);
         if (campaign && campaign.campaignType === 'holder_qualification') {
+          // Anti-Fraud check
+          const ipKey = `ip:${userIp}`;
+          const walletKey = `wallet:${input.userWallet}`;
+          // In a real system, we'd use a database or redis to track associations
+          // For now, we'll implement a basic check for multiple wallets from same IP in our storage
+          const associatedWallets = await storage.getWalletsByIp(userIp);
+          if (associatedWallets.length > 5 && !associatedWallets.includes(input.userWallet)) {
+             return res.status(403).json({ message: "Fraud detected: Too many wallets from this IP" });
+          }
+          await storage.logIpWalletAssociation(userIp, input.userWallet);
+
           let state = await storage.getHolderState(user.id, campaign.id);
           let balance = 0;
           try {
