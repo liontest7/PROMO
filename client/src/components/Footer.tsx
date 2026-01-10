@@ -40,15 +40,15 @@ export function Footer() {
           {/* Brand Column */}
           <div className="lg:col-span-4 flex flex-col items-center lg:items-start text-center lg:text-left gap-4">
             <Link href="/" className="flex items-center gap-4 group cursor-pointer">
-              <div className="w-16 h-16 relative">
-                <div className="absolute inset-0 bg-primary/20 blur-xl rounded-full scale-150 group-hover:bg-primary/30 transition-colors" />
+              <div className="w-16 h-16 overflow-visible relative">
+                <div className="absolute inset-0 bg-primary/20 blur-xl rounded-full scale-125 group-hover:bg-primary/30 transition-colors" />
                 <img 
                   src={PLATFORM_CONFIG.ASSETS.MAIN_LOGO} 
                   alt="Logo" 
-                  className="w-full h-full object-contain relative transition-transform duration-500 group-hover:scale-150" 
+                  className="w-full h-full object-contain scale-125 relative transition-transform duration-500 group-hover:scale-150" 
                 />
               </div>
-              <span className="font-display font-black text-[32px] tracking-tighter text-white uppercase italic transition-transform duration-500 group-hover:scale-110 origin-left">
+              <span className="font-display font-black text-3xl tracking-tighter bg-gradient-to-r from-white via-white to-gray-400 bg-clip-text text-transparent group-hover:scale-110 transition-transform duration-500 origin-left uppercase italic">
                 {PLATFORM_CONFIG.TOKEN_SYMBOL}
               </span>
             </Link>
