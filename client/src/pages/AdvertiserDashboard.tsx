@@ -5,8 +5,14 @@ import { CreateCampaignDialog } from "@/components/CreateCampaignDialog";
 import { CampaignCard } from "@/components/CampaignCard";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { AlertCircle } from "lucide-react";
+import { AlertCircle, Info } from "lucide-react";
 import { motion } from "framer-motion";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 export default function AdvertiserDashboard() {
   const { walletAddress, userId } = useWallet();
@@ -23,7 +29,28 @@ export default function AdvertiserDashboard() {
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="flex justify-between items-center mb-10">
           <div>
-            <h1 className="text-3xl font-display font-bold italic uppercase tracking-tighter"><span className="text-primary">Dropy</span> Admin</h1>
+            <div className="flex items-center gap-2">
+              <h1 className="text-3xl font-display font-bold italic uppercase tracking-tighter"><span className="text-primary">Dropy</span> Admin</h1>
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button variant="ghost" size="icon" className="h-6 w-6 text-muted-foreground hover:text-primary">
+                      <Info className="h-4 w-4" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent className="max-w-xs bg-background border-white/10 p-4 rounded-xl shadow-2xl">
+                    <div className="space-y-2">
+                      <p className="font-bold text-primary uppercase tracking-widest text-[10px]">Reputation System</p>
+                      <p className="text-xs leading-relaxed">
+                        Our Reputation Score measures user quality based on task accuracy and activity. 
+                        Since we are in early launch phase, scores are evolving. In the future, you'll be 
+                        able to filter participants by their reputation tier to ensure maximum campaign ROI.
+                      </p>
+                    </div>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            </div>
             <p className="text-muted-foreground mt-1">Manage your active campaigns and track performance.</p>
           </div>
           <CreateCampaignDialog />

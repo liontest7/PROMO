@@ -12,6 +12,7 @@ import { eq, desc } from "drizzle-orm";
 import rateLimit from "express-rate-limit";
 
 import { ADMIN_CONFIG } from "@shared/config";
+import fetch from "node-fetch";
 
 const apiLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
@@ -174,6 +175,24 @@ export async function registerRoutes(
 
   app.post(api.executions.verify.path, async (req, res) => {
     try {
+      const { turnstileToken } = req.body;
+      
+      if (!turnstileToken) {
+        return res.status(400).json({ message: "Security verification required" });
+      }
+
+      const verifyUrl = "https://challenges.cloudflare.com/turnstile/v0/siteverify";
+      const verifyRes = await fetch(verifyUrl, {
+        method: "POST",
+        body: `secret=${process.env.TURNSTILE_SECRET_KEY}&response=${turnstileToken}`,
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      });
+
+      const verifyJson = await verifyRes.json() as { success: boolean };
+      if (!verifyJson.success) {
+        return res.status(400).json({ message: "Security verification failed. Please try again." });
+      }
+
       const input = api.executions.verify.input.parse(req.body);
       const user = await storage.getUserByWallet(input.userWallet);
       if (!user) return res.status(404).json({ message: "User not found" });
@@ -408,39 +427,58 @@ export async function registerRoutes(
 
   app.get('/api/leaderboard', async (req, res) => {
     try {
+      const timeframe = req.query.timeframe as string || 'all_time';
       const allUsers = await storage.getAllUsers();
-      // Relaxed filtering: keep all users except those explicitly marked as advertiser
       const userLeaders = allUsers.filter(u => u.role !== 'advertiser');
       
-      console.log(`[Leaderboard API] Found ${allUsers.length} total users in DB`);
-      console.log(`[Leaderboard API] Filtered users for leaderboard: ${userLeaders.length}`);
-      
-      userLeaders.sort((a, b) => {
-        const scoreA = a.reputationScore || 0;
-        const scoreB = b.reputationScore || 0;
-        if (scoreB !== scoreA) return scoreB - scoreA;
+      const leadersWithStats = await Promise.all(userLeaders.map(async (u) => {
+        const userExecutions = await storage.getExecutionsByUser(u.id);
+        const filteredExecutions = userExecutions.filter(e => {
+          if (e.status !== 'paid' && e.status !== 'verified') return false;
+          if (timeframe === 'all_time') return true;
+          
+          const executionDate = e.createdAt ? new Date(e.createdAt) : new Date(0);
+          const now = new Date();
+          if (timeframe === 'weekly') {
+            const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+            return executionDate >= weekAgo;
+          }
+          if (timeframe === 'monthly') {
+            const monthAgo = new Date(now.getFullYear(), now.getMonth() - 1, now.getDate());
+            return executionDate >= monthAgo;
+          }
+          return true;
+        });
+
+        const timeframeScore = filteredExecutions.reduce((sum, e) => {
+          return sum + 10; // 10 points per task for leaderboard calculation
+        }, 0);
+
+        return {
+          ...u,
+          timeframeScore,
+          tasksCount: filteredExecutions.length
+        };
+      }));
+
+      leadersWithStats.sort((a, b) => {
+        if (b.timeframeScore !== a.timeframeScore) return b.timeframeScore - a.timeframeScore;
         const dateA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
         const dateB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
         return dateA - dateB;
       });
 
-      const limitedLeaders = userLeaders.slice(0, 100);
+      const limitedLeaders = leadersWithStats.slice(0, 100);
       
-      const formatted = await Promise.all(limitedLeaders.map(async (u, i) => {
-        const userExecutions = await storage.getExecutionsByUser(u.id);
-        const completedCount = userExecutions.filter(e => e.status === 'paid' || e.status === 'verified').length;
-        
-        return {
-          rank: i + 1,
-          name: u.walletAddress ? (u.walletAddress.slice(0, 4) + "..." + u.walletAddress.slice(-4)) : "Unknown",
-          fullWallet: u.walletAddress || "",
-          points: u.reputationScore || 0,
-          avatar: u.walletAddress ? u.walletAddress.slice(0, 2).toUpperCase() : "?",
-          tasks: completedCount
-        };
+      const formatted = limitedLeaders.map((u, i) => ({
+        rank: i + 1,
+        name: u.walletAddress ? (u.walletAddress.slice(0, 4) + "..." + u.walletAddress.slice(-4)) : "Unknown",
+        fullWallet: u.walletAddress || "",
+        points: u.timeframeScore,
+        avatar: u.walletAddress ? u.walletAddress.slice(0, 2).toUpperCase() : "?",
+        tasks: u.tasksCount
       }));
       
-      console.log(`[Leaderboard API] Returning ${formatted.length} formatted users`);
       res.json(formatted);
     } catch (err) {
       console.error("Leaderboard API error:", err);

@@ -15,7 +15,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
-import { Loader2, CheckCircle, ExternalLink, ShieldCheck, RefreshCw } from "lucide-react";
+import { Loader2, CheckCircle, ExternalLink, ShieldCheck, RefreshCw, ShieldAlert } from "lucide-react";
+import Turnstile from "react-turnstile";
 
 interface VerifyActionDialogProps {
   action: Action | null;
@@ -42,6 +43,7 @@ export function VerifyActionDialog({ action, campaign, open, onOpenChange, onSuc
     }
   }, [open, isConnected]);
   const [proof, setProof] = useState("");
+  const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
   const [step, setStep] = useState<"perform" | "verify" | "success">("perform");
   const [holdingStatus, setHoldingStatus] = useState<{ 
     status: string; 
@@ -80,6 +82,14 @@ export function VerifyActionDialog({ action, campaign, open, onOpenChange, onSuc
 
   const handleVerify = async () => {
     if (!walletAddress) return;
+    if (!turnstileToken) {
+      toast({
+        title: "Verification Required",
+        description: "Please complete the security check.",
+        variant: "destructive"
+      });
+      return;
+    }
 
     try {
       let proofData: any = { proofText: proof };
@@ -89,7 +99,9 @@ export function VerifyActionDialog({ action, campaign, open, onOpenChange, onSuc
           { 
             actionId: campaign.id,
             userWallet: walletAddress, 
-            proof: JSON.stringify({ type: 'holder_verification', wallet: walletAddress }) 
+            proof: JSON.stringify({ type: 'holder_verification', wallet: walletAddress }),
+            // @ts-ignore - adding turnstileToken to payload
+            turnstileToken 
           },
           {
             onSuccess: (data: any) => {
@@ -155,7 +167,9 @@ export function VerifyActionDialog({ action, campaign, open, onOpenChange, onSuc
         { 
           actionId: action.id, 
           userWallet: walletAddress, 
-          proof: JSON.stringify(proofData) 
+          proof: JSON.stringify(proofData),
+          // @ts-ignore - adding turnstileToken to payload
+          turnstileToken
         },
         {
           onSuccess: () => {
@@ -369,7 +383,15 @@ export function VerifyActionDialog({ action, campaign, open, onOpenChange, onSuc
                     </p>
                   </div>
 
-                  <Button onClick={handleVerify} disabled={verifyMutation.isPending} className="w-full">
+                  <div className="flex justify-center py-2">
+                    <Turnstile
+                      sitekey={import.meta.env.VITE_TURNSTILE_SITE_KEY}
+                      onVerify={(token) => setTurnstileToken(token)}
+                      theme="dark"
+                    />
+                  </div>
+
+                  <Button onClick={handleVerify} disabled={verifyMutation.isPending || !turnstileToken} className="w-full">
                     {verifyMutation.isPending ? (
                       <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Verifying...</>
                     ) : (
