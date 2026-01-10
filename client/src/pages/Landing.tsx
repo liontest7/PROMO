@@ -126,7 +126,7 @@ export default function Landing() {
               <span className="text-primary neon-text italic">Real Actions</span>
             </h1>
             <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto mb-12 leading-relaxed font-medium">
-              MemeDrop is the ultimate engagement platform. Participate in top-tier Solana projects and get paid in native tokens for social tasks and holder verification.
+              MemeDrop is the ultimate engagement platform on Solana. Participate in top-tier projects, verify your holdings, and get paid in native tokens for your loyalty.
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center mb-16">

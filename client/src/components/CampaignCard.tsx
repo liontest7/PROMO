@@ -134,16 +134,16 @@ export function CampaignCard({ campaign, onActionClick, isOwner }: CampaignCardP
 
         <CardContent className="flex-1 space-y-4 px-6 pt-2">
           {campaign.campaignType === 'holder_qualification' ? (
-            <div className="space-y-2 bg-primary/5 p-3 rounded-2xl border border-primary/10">
-              <div className="flex items-center gap-2 text-[10px] font-black text-primary uppercase tracking-tighter">
-                <ShieldCheck className="w-3.5 h-3.5" />
+            <div className="space-y-2 bg-primary/10 p-4 rounded-2xl border border-primary/20 shadow-inner">
+              <div className="flex items-center gap-2 text-[11px] font-black text-primary uppercase tracking-tighter">
+                <ShieldCheck className="w-4 h-4" />
                 <span>HOLD {campaign.minHoldingAmount} {campaign.tokenName} FOR {campaign.minHoldingDuration} DAYS</span>
               </div>
             </div>
           ) : (
-            <div className="space-y-2 bg-primary/5 p-3 rounded-2xl border border-primary/10">
-              <div className="flex items-center gap-2 text-[10px] font-black text-primary uppercase tracking-tighter">
-                <Zap className="w-3.5 h-3.5" />
+            <div className="space-y-2 bg-primary/10 p-4 rounded-2xl border border-primary/20 shadow-inner">
+              <div className="flex items-center gap-2 text-[11px] font-black text-primary uppercase tracking-tighter">
+                <Zap className="w-4 h-4" />
                 <span>{campaign.actions?.length || 0} TASKS AVAILABLE • EARN UP TO {campaign.actions?.reduce((acc, a) => acc + Number(a.rewardAmount), 0)} {campaign.tokenName}</span>
               </div>
             </div>

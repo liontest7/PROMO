@@ -44,7 +44,9 @@ export default function About() {
           </motion.h1>
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
             MemeDrop has officially launched Phase 1: Holder Qualification. This model focuses on building genuine, long-term value by rewarding users who commit to projects through verified on-chain holdings. 
-            No more high-cost engagement APIs – just pure on-chain verification and real community support.
+            No more high-cost engagement APIs – just pure on-chain verification and real community support. 
+            <br/><br/>
+            Our mission is to create a deflationary ecosystem where every campaign burns ${PLATFORM_CONFIG.TOKEN_SYMBOL}, rewarding the entire community.
           </p>
         </div>
 
