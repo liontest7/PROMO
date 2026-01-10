@@ -13,20 +13,19 @@ import { VerifyActionDialog } from "@/components/VerifyActionDialog";
 import { useState } from "react";
 import { useWallet } from "@/hooks/use-wallet";
 import { useToast } from "@/hooks/use-toast";
+import { CONFIG } from "@shared/config";
 
 export default function CampaignDetails() {
-  const [, params] = useRoute("/campaign/:tokenSymbol");
-  const tokenSymbol = params?.tokenSymbol;
+  const [, params] = useRoute("/campaign/:id");
+  const campaignId = params?.id;
   const [selectedAction, setSelectedAction] = useState<{ action: Action; campaign: Campaign } | null>(null);
   const { toast } = useToast();
   const { isConnected, connect } = useWallet();
 
   const { data: campaign, isLoading: campaignLoading } = useQuery<(Campaign & { actions: Action[] }) | undefined>({
-    queryKey: [`/api/campaigns/symbol/${tokenSymbol}`],
-    enabled: !!tokenSymbol,
+    queryKey: [`/api/campaigns/${campaignId}`],
+    enabled: !!campaignId,
   });
-
-  const campaignId = campaign?.id;
 
   const { data: participants, isLoading: participantsLoading } = useQuery<(Execution & { user: { walletAddress: string } })[]>({
     queryKey: [`/api/executions/campaign/${campaignId}`],
@@ -90,7 +89,7 @@ export default function CampaignDetails() {
       <Navigation />
       <div className="container max-w-6xl mx-auto px-4 py-12">
         <Link href="/earn">
-          <Button variant="ghost" className="mb-8 gap-2 hover:bg-white/5">
+          <Button variant="ghost" className="mb-8 gap-2 hover:bg-white/5 text-white">
             <ArrowLeft className="w-4 h-4" /> Back to Explore
           </Button>
         </Link>
@@ -124,7 +123,7 @@ export default function CampaignDetails() {
                       ACTIVE
                     </Badge>
                   </div>
-                  <h1 className="text-4xl font-display font-black text-white tracking-tight">{campaign.title}</h1>
+                  <h1 className="text-4xl font-display font-black text-white tracking-tight drop-shadow-lg">{campaign.title}</h1>
                 </div>
               </div>
             </div>
@@ -204,9 +203,36 @@ export default function CampaignDetails() {
               </div>
             </section>
 
+            <section className="space-y-6">
+              <div className="flex items-center justify-between">
+                <h2 className="text-2xl font-display font-black text-white drop-shadow-sm">Market Overview</h2>
+                <div className="flex gap-2">
+                  <Button variant="outline" size="sm" className="h-8 text-[10px] font-black border-white/10 bg-white/5 hover:bg-primary/20 hover:border-primary/40 transition-all gap-2 text-white" asChild>
+                    <a href={`https://dexscreener.com/solana/${campaign.tokenAddress}`} target="_blank" rel="noreferrer">
+                      <img src={CONFIG.ui.walletIcons.bybit} className="w-3 h-3 grayscale opacity-70 group-hover:grayscale-0" />
+                      DEXSCREENER
+                    </a>
+                  </Button>
+                  <Button variant="outline" size="sm" className="h-8 text-[10px] font-black border-white/10 bg-white/5 hover:bg-primary/20 hover:border-primary/40 transition-all gap-2 text-white" asChild>
+                    <a href={`https://jup.ag/swap/SOL-${campaign.tokenAddress}`} target="_blank" rel="noreferrer">
+                      <img src="https://jup.ag/favicon.ico" className="w-3 h-3" />
+                      JUPITER
+                    </a>
+                  </Button>
+                </div>
+              </div>
+              <div className="w-full h-[500px] rounded-3xl overflow-hidden border border-white/10 bg-black/40 backdrop-blur-md relative shadow-2xl">
+                <iframe 
+                  src={`https://dexscreener.com/solana/${campaign.tokenAddress}?embed=1&theme=dark&trades=0&info=0`}
+                  className="w-full h-full border-0"
+                  title="DexScreener Chart"
+                />
+              </div>
+            </section>
+
             <section className="space-y-4">
-              <h2 className="text-2xl font-display font-bold">About the Project</h2>
-              <div className="text-muted-foreground leading-relaxed text-lg whitespace-pre-wrap">
+              <h2 className="text-2xl font-display font-bold text-white drop-shadow-sm">About the Project</h2>
+              <div className="text-white/70 leading-relaxed text-lg whitespace-pre-wrap font-medium drop-shadow-sm">
                 {campaign.description}
               </div>
             </section>
@@ -249,7 +275,7 @@ export default function CampaignDetails() {
 
             <section className="space-y-6">
               <div className="flex items-center justify-between">
-                <h2 className="text-2xl font-display font-bold">Reward Proofs & Winners</h2>
+                <h2 className="text-2xl font-display font-bold text-white">Reward Proofs & Winners</h2>
                 <Badge variant="secondary" className="gap-1 px-3">
                   <CheckCircle className="w-3 h-3 text-primary" /> {participants?.filter(p => p.status === 'paid').length || 0} Claimed
                 </Badge>
@@ -319,7 +345,7 @@ export default function CampaignDetails() {
                 <div className="space-y-4">
                   <div className="flex justify-between items-center text-sm">
                     <span className="text-muted-foreground font-medium">Network</span>
-                    <span className="font-bold flex items-center gap-1.5">
+                    <span className="font-bold text-white flex items-center gap-1.5">
                       <img src="https://raw.githubusercontent.com/solana-labs/token-list/main/assets/mainnet/So11111111111111111111111111111111111111112/logo.png" alt="Solana" className="w-4 h-4" />
                       Solana
                     </span>
@@ -330,18 +356,18 @@ export default function CampaignDetails() {
                   </div>
                   <div className="flex justify-between items-center text-sm">
                     <span className="text-muted-foreground font-medium">Created</span>
-                    <span className="font-bold">{formatDistanceToNow(new Date(campaign.createdAt || Date.now()), { addSuffix: true })}</span>
+                    <span className="font-bold text-white">{formatDistanceToNow(new Date(campaign.createdAt || Date.now()), { addSuffix: true })}</span>
                   </div>
                 </div>
 
                 <div className="pt-6 border-t border-white/5 space-y-4">
                   <div className="grid grid-cols-2 gap-2">
-                    <Button variant="outline" className="gap-2 border-white/10 hover:bg-white/5" asChild>
+                    <Button variant="outline" className="gap-2 border-white/10 hover:bg-white/5 text-white" asChild>
                       <a href={campaign.websiteUrl || "#"} target="_blank" rel="noreferrer">
                         Website <ExternalLink className="w-3 h-3" />
                       </a>
                     </Button>
-                    <Button variant="outline" className="gap-2 border-white/10 hover:bg-white/5" asChild>
+                    <Button variant="outline" className="gap-2 border-white/10 hover:bg-white/5 text-white" asChild>
                       <a href={campaign.twitterUrl || "#"} target="_blank" rel="noreferrer">
                         Twitter <Twitter className="w-3 h-3" />
                       </a>

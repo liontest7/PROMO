@@ -72,7 +72,7 @@ function Router() {
         <Route path="/advertiser">
           <ProtectedRoute component={AdvertiserDashboard} allowedRole="advertiser" />
         </Route>
-        <Route path="/campaign/:tokenSymbol">
+        <Route path="/campaign/:id">
           <PageWrapper><CampaignDetails /></PageWrapper>
         </Route>
 

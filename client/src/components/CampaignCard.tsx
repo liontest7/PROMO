@@ -33,7 +33,7 @@ export function CampaignCard({ campaign, onActionClick, isOwner }: CampaignCardP
     }
   };
 
-  const shareUrl = `${window.location.origin}/campaign/${campaign.tokenName}`;
+  const shareUrl = `${window.location.origin}/campaign/${campaign.id}`;
   const shareText = `Check out this airdrop on MemeDrop: ${campaign.title}! Earn ${campaign.tokenName} by completing simple tasks.`;
 
   const handleCopyLink = (e: React.MouseEvent) => {
@@ -62,21 +62,47 @@ export function CampaignCard({ campaign, onActionClick, isOwner }: CampaignCardP
           ) : (
             <div className="w-full h-full bg-gradient-to-br from-primary/20 to-secondary/20" />
           )}
-          <Link href={`/campaign/${campaign.tokenName}`} className="absolute inset-0 cursor-pointer">
+          <Link href={`/campaign/${campaign.id}`} className="absolute inset-0 cursor-pointer">
             <div className="w-full h-full bg-gradient-to-t from-background/90 via-background/40 to-transparent" />
           </Link>
-          {/* ... */}
+
           <div className="absolute top-4 right-4 flex gap-2 z-20">
             <Badge variant={campaign.status === 'active' ? 'default' : 'secondary'} className="uppercase text-[10px] tracking-widest font-black shadow-2xl">
               {campaign.status}
             </Badge>
           </div>
-          {/* ... */}
+
+          <div className="absolute bottom-4 right-4 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-20">
+            {campaign.websiteUrl && (
+              <Button size="icon" variant="secondary" className="h-8 w-8 rounded-full bg-background/80 backdrop-blur-md border border-white/10" asChild>
+                <a href={campaign.websiteUrl} target="_blank" rel="noreferrer" onClick={(e) => e.stopPropagation()}>
+                  <Globe className="w-3.5 h-3.5" />
+                </a>
+              </Button>
+            )}
+            {campaign.twitterUrl && (
+              <Button size="icon" variant="secondary" className="h-8 w-8 rounded-full bg-background/80 backdrop-blur-md border border-white/10" asChild>
+                <a href={campaign.twitterUrl} target="_blank" rel="noreferrer" onClick={(e) => e.stopPropagation()}>
+                  <Twitter className="w-3.5 h-3.5" />
+                </a>
+              </Button>
+            )}
+            {campaign.telegramUrl && (
+              <Button size="icon" variant="secondary" className="h-8 w-8 rounded-full bg-background/80 backdrop-blur-md border border-white/10" asChild>
+                <a href={campaign.telegramUrl} target="_blank" rel="noreferrer" onClick={(e) => e.stopPropagation()}>
+                  <Send className="w-3.5 h-3.5" />
+                </a>
+              </Button>
+            )}
+            <Button size="icon" variant="secondary" className="h-8 w-8 rounded-full bg-background/80 backdrop-blur-md border border-white/10" onClick={handleCopyLink}>
+              {copied ? <Check className="w-3.5 h-3.5 text-green-500" /> : <Share2 className="w-3.5 h-3.5" />}
+            </Button>
+          </div>
         </div>
 
         <CardHeader className="pb-1 relative pt-10 px-6">
           <div className="absolute -top-10 left-6 w-20 h-24 flex flex-col gap-2">
-            <Link href={`/campaign/${campaign.tokenName}`}>
+            <Link href={`/campaign/${campaign.id}`}>
               <div className="w-20 h-20 rounded-2xl border-4 border-background bg-card overflow-hidden shadow-2xl hover:scale-105 transition-transform cursor-pointer">
                 {campaign.logoUrl ? (
                   <img src={campaign.logoUrl} alt="Logo" className="w-full h-full object-cover" />
@@ -91,7 +117,7 @@ export function CampaignCard({ campaign, onActionClick, isOwner }: CampaignCardP
 
           <div className="flex justify-between items-start pt-1">
             <div className="space-y-0.5 w-full">
-              <Link href={`/campaign/${campaign.tokenName}`} className="block">
+              <Link href={`/campaign/${campaign.id}`} className="block">
                 <CardTitle className="text-xl font-display font-black leading-tight hover:text-primary transition-colors cursor-pointer line-clamp-1">
                   {campaign.title}
                 </CardTitle>
@@ -107,9 +133,37 @@ export function CampaignCard({ campaign, onActionClick, isOwner }: CampaignCardP
         </CardHeader>
 
         <CardContent className="flex-1 space-y-4 px-6 pt-2">
-          {/* ... content remains same ... */}
+          {campaign.campaignType === 'holder_qualification' ? (
+            <div className="space-y-2 bg-primary/10 p-4 rounded-2xl border border-primary/20 shadow-inner">
+              <div className="flex items-center gap-2 text-[11px] font-black text-primary uppercase tracking-tighter">
+                <ShieldCheck className="w-4 h-4" />
+                <span>HOLD {campaign.minHoldingAmount} {campaign.tokenName} FOR {campaign.minHoldingDuration} DAYS</span>
+              </div>
+            </div>
+          ) : (
+            <div className="space-y-2 bg-primary/10 p-4 rounded-2xl border border-primary/20 shadow-inner">
+              <div className="flex items-center gap-2 text-[11px] font-black text-primary uppercase tracking-tighter">
+                <Zap className="w-4 h-4" />
+                <span>{campaign.actions?.length || 0} TASKS AVAILABLE • EARN UP TO {campaign.actions?.reduce((acc, a) => acc + Number(a.rewardAmount), 0)} {campaign.tokenName}</span>
+              </div>
+            </div>
+          )}
+
+          <div className="bg-secondary/20 p-3 rounded-2xl border border-secondary/10 flex items-center justify-between">
+            <span className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">REWARD PER USER</span>
+            <span className="text-sm font-black text-secondary-foreground">{campaign.rewardPerWallet || '0'} {campaign.tokenName}</span>
+          </div>
+
+          <div className="space-y-2">
+            <div className="flex justify-between text-[10px] font-black uppercase tracking-widest mb-1">
+              <span className="text-muted-foreground">PROGRESS ({percentComplete.toFixed(0)}%)</span>
+              <span className="text-primary">{remainingBudgetNum.toLocaleString()} / {totalBudgetNum.toLocaleString()} {campaign.tokenName}</span>
+            </div>
+            <Progress value={percentComplete} className="h-2 bg-white/5 rounded-full" />
+          </div>
+
           <div className="flex flex-col gap-2 pt-2">
-            <Link href={`/campaign/${campaign.tokenName}`} className="w-full">
+            <Link href={`/campaign/${campaign.id}`} className="w-full">
               <Button className="w-full bg-primary/10 text-primary hover:bg-primary hover:text-white font-black h-11 rounded-2xl border border-primary/20 group/btn transition-all">
                 VIEW DETAILS
                 <ArrowRight className="ml-2 w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />
