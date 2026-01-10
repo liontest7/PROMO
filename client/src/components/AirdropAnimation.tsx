@@ -32,7 +32,6 @@ export function AirdropAnimation() {
           alt="Falling Mascot" 
           className="w-full h-full object-contain"
           style={{ 
-            filter: "drop-shadow(0 30px 60px rgba(0,0,0,0.3))",
             backgroundColor: "transparent",
             boxShadow: "none",
             border: "none",
