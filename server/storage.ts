@@ -297,7 +297,7 @@ export class DatabaseStorage implements IStorage {
     return await db.select()
       .from(users)
       .where(eq(users.role, "user"))
-      .orderBy(desc(users.reputationScore))
+      .orderBy(desc(users.reputationScore), desc(users.createdAt))
       .limit(100);
   }
 }
