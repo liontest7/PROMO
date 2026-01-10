@@ -67,9 +67,8 @@ export function VerifyActionDialog({ action, campaign, open, onOpenChange, onSuc
   const isHolderCampaign = campaign?.campaignType === 'holder_qualification';
 
   const handleVerify = async (isAutoFetch: boolean = false) => {
-    if (!walletAddress) return;
+    if (!walletAddress || !campaign) return;
     
-    // Only require Turnstile for task completion (refresh button), not for background data fetch
     if (!isAutoFetch && !turnstileToken && (isHolderCampaign || step === "verify")) {
       toast({
         title: "Verification Required",
@@ -113,19 +112,6 @@ export function VerifyActionDialog({ action, campaign, open, onOpenChange, onSuc
         );
         return;
       }
-      // ... rest of the function
-    } catch (err: any) {
-      // ... error handling
-    }
-  };
-
-  useEffect(() => {
-    if (open && isConnected && isHolderCampaign) {
-      handleVerify(true);
-    }
-  }, [open, isConnected, isHolderCampaign]);
-
-  if (!campaign) return null;
 
       if (!action) return;
       const isWebsiteAction = action.type === "website";
@@ -177,6 +163,14 @@ export function VerifyActionDialog({ action, campaign, open, onOpenChange, onSuc
       });
     }
   };
+
+  useEffect(() => {
+    if (open && isConnected && isHolderCampaign && campaign) {
+      handleVerify(true);
+    }
+  }, [open, isConnected, isHolderCampaign, !!campaign]);
+
+  if (!campaign) return null;
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -255,7 +249,7 @@ export function VerifyActionDialog({ action, campaign, open, onOpenChange, onSuc
 
               <div className="space-y-3">
                 <Button 
-                  onClick={handleVerify} 
+                  onClick={() => handleVerify(false)} 
                   disabled={verifyMutation.isPending || !turnstileToken} 
                   className="w-full h-16 bg-primary hover:bg-primary/90 text-primary-foreground rounded-2xl font-black uppercase tracking-widest text-sm shadow-[0_0_20px_rgba(34,197,94,0.3)] transition-all hover:scale-[1.02] active:scale-[0.98]"
                 >
@@ -318,7 +312,7 @@ export function VerifyActionDialog({ action, campaign, open, onOpenChange, onSuc
                     />
                   </div>
 
-                  <Button onClick={handleVerify} disabled={verifyMutation.isPending || !turnstileToken} className="w-full h-16 bg-[#00D1FF] hover:bg-[#00D1FF]/90 text-black rounded-2xl font-black uppercase tracking-widest">
+                  <Button onClick={() => handleVerify(false)} disabled={verifyMutation.isPending || !turnstileToken} className="w-full h-16 bg-[#00D1FF] hover:bg-[#00D1FF]/90 text-black rounded-2xl font-black uppercase tracking-widest">
                     {verifyMutation.isPending ? <Loader2 className="animate-spin" /> : "CONFIRM"}
                   </Button>
                 </div>
