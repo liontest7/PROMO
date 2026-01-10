@@ -68,17 +68,17 @@ export function VerifyActionDialog({ action, campaign, open, onOpenChange, onSuc
 
   useEffect(() => {
     if (open && isConnected && isHolderCampaign) {
-      handleVerify();
+      handleVerify(true);
     }
   }, [open, isConnected, isHolderCampaign]);
 
   if (!campaign) return null;
 
-  const handleVerify = async () => {
+  const handleVerify = async (isAutoFetch: boolean = false) => {
     if (!walletAddress) return;
     
-    // Only require Turnstile for initial eligibility check or task completion
-    if (!turnstileToken && (isHolderCampaign || step === "verify")) {
+    // Only require Turnstile for task completion (refresh button), not for background data fetch
+    if (!isAutoFetch && !turnstileToken && (isHolderCampaign || step === "verify")) {
       toast({
         title: "Verification Required",
         description: "Please complete the security check.",
@@ -93,7 +93,7 @@ export function VerifyActionDialog({ action, campaign, open, onOpenChange, onSuc
           { 
             actionId: campaign.id,
             userWallet: walletAddress, 
-            proof: JSON.stringify({ type: 'holder_verification', wallet: walletAddress }),
+            proof: JSON.stringify({ type: 'holder_verification', wallet: walletAddress, isAutoFetch }),
             // @ts-ignore
             turnstileToken 
           },
@@ -107,7 +107,7 @@ export function VerifyActionDialog({ action, campaign, open, onOpenChange, onSuc
                 holdDuration: data.holdDuration
               });
 
-              if (data.status === 'ready' || data.status === 'verified') {
+              if (!isAutoFetch && (data.status === 'ready' || data.status === 'verified')) {
                 setStep("success");
                 toast({
                   title: "Eligibility Verified!",
