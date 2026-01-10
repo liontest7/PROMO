@@ -22,6 +22,7 @@ import { Label } from "@/components/ui/label";
 import { useWallet } from "@/hooks/use-wallet";
 import { useToast } from "@/hooks/use-toast";
 import { Link } from "wouter";
+import { useQuery } from "@tanstack/react-query";
 
 export default function Earn() {
   const { isConnected, walletAddress } = useWallet();
