@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, ReactNode, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
-import { useQueryClient } from "@tanstack/react-query";
+import { useQueryClient, useQuery } from "@tanstack/react-query";
 import { api } from "@shared/routes";
 import { Connection, PublicKey, LAMPORTS_PER_SOL, clusterApiUrl } from "@solana/web3.js";
 import { WalletSelector } from "@/components/WalletSelector";
