@@ -157,7 +157,7 @@ export default function CampaignDetails() {
         actionTitle: action.title
       });
     }
-  }
+  };
 
   if (campaignLoading) {
     return (
