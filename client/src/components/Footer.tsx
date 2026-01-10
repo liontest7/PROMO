@@ -48,7 +48,7 @@ export function Footer() {
                   className="w-full h-full object-contain scale-125 relative transition-transform duration-500 group-hover:scale-150" 
                 />
               </div>
-              <span className="font-display font-black text-3xl tracking-tighter bg-gradient-to-r from-white via-white to-gray-400 bg-clip-text text-transparent group-hover:scale-110 transition-transform duration-500 origin-left uppercase italic">
+              <span className="font-display font-black text-3xl tracking-tighter bg-gradient-to-r from-white via-white to-gray-400 bg-clip-text text-transparent group-hover:scale-110 transition-transform duration-500 origin-left uppercase italic pr-2">
                 {PLATFORM_CONFIG.TOKEN_SYMBOL}
               </span>
             </Link>
