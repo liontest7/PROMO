@@ -74,7 +74,7 @@ export function Navigation() {
                       className="h-10 w-10 rounded-full bg-primary/10 text-primary hover:bg-primary/20 transition-all border border-primary/20 ml-2"
                       title={role === "advertiser" ? "Admin Console" : "Admin Panel"}
                     >
-                      <Link href={role === "advertiser" ? "/advertiser" : "/admin"}>
+                      <Link href={role === "advertiser" ? "/advertiser" : "/admin"} className="flex items-center justify-center w-full h-full">
                         {role === "advertiser" ? <LayoutDashboard className="h-5 w-5" /> : <ShieldAlert className="h-5 w-5" />}
                       </Link>
                     </Button>

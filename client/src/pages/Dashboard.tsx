@@ -3,7 +3,7 @@ import { useUserStats } from "@/hooks/use-user-stats";
 import { Navigation } from "@/components/Navigation";
 import { Card, CardHeader, CardTitle, CardContent, CardDescription } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Coins, Trophy, TrendingUp, Activity, CheckCircle, Twitter, Send, Loader2, Wallet, LogOut, Megaphone, ShieldAlert, ShieldCheck } from "lucide-react";
+import { Coins, Trophy, TrendingUp, Activity, CheckCircle, Twitter, Send, Loader2, Wallet, LogOut, Megaphone, ShieldAlert, ShieldCheck, User as UserIcon, HelpCircle } from "lucide-react";
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { api } from "@shared/routes";
@@ -17,7 +17,6 @@ import { type User as UserType } from "@shared/schema";
 import { useAuth } from "@/hooks/use-auth";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { User as UserIcon } from "lucide-react";
 import { Link } from "wouter";
 
 export default function Dashboard() {
@@ -42,26 +41,6 @@ export default function Dashboard() {
       setTelegram(user.telegramHandle || "");
     }
   }, [user]);
-
-  const updateProfile = useMutation({
-    mutationFn: async (data: any) => {
-      const res = await fetch("/api/users/profile", {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ walletAddress, ...data }),
-      });
-      if (!res.ok) {
-        const err = await res.json();
-        throw new Error(err.message || "Failed to update profile");
-      }
-      return res.json();
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/users", walletAddress] });
-      queryClient.invalidateQueries({ queryKey: [api.users.stats.path, walletAddress] });
-      toast({ title: "Profile Updated", description: "Your social handles have been saved." });
-    },
-  });
 
   const { data: executions, refetch: refetchExecutions } = useQuery({
     queryKey: [api.users.executions.path, walletAddress],
@@ -137,6 +116,10 @@ export default function Dashboard() {
       </div>
     );
   }
+
+  const tasksCompleted = stats?.tasksCompleted || 0;
+  const nextMilestone = (Math.floor(tasksCompleted / 10) + 1) * 10;
+  const progress = (tasksCompleted % 10) * 10;
 
   return (
     <div className="min-h-screen bg-background">
@@ -289,17 +272,90 @@ export default function Dashboard() {
               </CardHeader>
               <CardContent className="relative z-10 pt-0">
                 <div className="flex items-baseline gap-2 mb-4">
-                  <span className="text-5xl font-black font-display text-primary">{stats?.tasksCompleted || 0}</span>
+                  <span className="text-5xl font-black font-display text-primary">{tasksCompleted}</span>
                   <span className="text-sm font-bold text-primary/60 uppercase">Actions</span>
                 </div>
                 <div className="space-y-4">
-                  <div className="w-full h-2 rounded-full bg-black/40 overflow-hidden">
+                  <div className="flex justify-between items-end mb-1">
+                    <span className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">Progress to Next Tier</span>
+                    <span className="text-[10px] font-black text-primary uppercase tracking-widest">{progress}%</span>
+                  </div>
+                  <div className="w-full h-3 rounded-full bg-black/40 overflow-hidden p-0.5 border border-white/5">
                     <div 
-                      className="h-full bg-primary shadow-[0_0_15px_rgba(34,197,94,0.8)]" 
-                      style={{ width: `${Math.min(100, (stats?.tasksCompleted || 0) * 10)}%` }}
+                      className="h-full bg-primary shadow-[0_0_15px_rgba(34,197,94,0.8)] rounded-full transition-all duration-1000" 
+                      style={{ width: `${progress}%` }}
                     />
                   </div>
-                  <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest text-center">Next milestone: {(Math.floor((stats?.tasksCompleted || 0) / 10) + 1) * 10} actions</p>
+                  <div className="flex justify-between items-center text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
+                    <span>Lvl {Math.floor(tasksCompleted / 10)}</span>
+                    <span className="text-primary/70">Milestone: {nextMilestone} Actions</span>
+                    <span>Lvl {Math.floor(tasksCompleted / 10) + 1}</span>
+                  </div>
+                </div>
+                
+                <div className="mt-6 p-4 rounded-2xl bg-white/5 border border-white/5">
+                  <div className="flex items-center gap-2 mb-2">
+                    <HelpCircle className="w-3 h-3 text-primary" />
+                    <span className="text-[10px] font-black uppercase tracking-widest">Tier Benefits</span>
+                  </div>
+                  <p className="text-[11px] text-muted-foreground font-medium leading-relaxed">
+                    Level up to unlock exclusive airdrops, higher reward multipliers, and early access to premium projects.
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="glass-card border-white/5 bg-white/[0.01] rounded-3xl overflow-hidden">
+              <CardHeader>
+                <CardTitle className="text-xl font-black font-display uppercase italic">Social Verification</CardTitle>
+                <CardDescription className="text-xs">Connect your social accounts to verify actions.</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                {!isAuthenticated ? (
+                  <div className="p-4 rounded-2xl bg-blue-500/10 border border-blue-500/20 relative overflow-hidden group">
+                    <div className="absolute top-0 right-0 p-2 opacity-10 group-hover:opacity-20 transition-opacity">
+                      <Twitter className="w-12 h-12" />
+                    </div>
+                    <p className="text-[10px] text-blue-400 font-black mb-3 uppercase tracking-widest">Identity Sync</p>
+                    <Button 
+                      className="w-full bg-blue-500/50 cursor-not-allowed text-white gap-2 font-black text-xs relative z-10"
+                      disabled
+                    >
+                      <Twitter className="w-4 h-4" /> LINK X PROFILE
+                    </Button>
+                    <p className="text-[9px] text-muted-foreground mt-3 italic text-center">
+                      Twitter & Telegram OAuth integration in progress.
+                    </p>
+                  </div>
+                ) : (
+                  <div className="p-4 rounded-2xl bg-primary/10 border border-primary/20 flex items-center gap-4 relative overflow-hidden group">
+                    <Avatar className="h-12 w-12 border-2 border-primary/20 relative z-10">
+                      <AvatarImage src={replitUser?.profileImageUrl || ""} />
+                      <AvatarFallback><UserIcon className="w-6 h-6" /></AvatarFallback>
+                    </Avatar>
+                    <div className="flex-1 relative z-10">
+                      <p className="text-sm font-bold leading-none mb-1">{replitUser?.firstName} {replitUser?.lastName}</p>
+                      <Badge variant="outline" className="text-[9px] uppercase font-black bg-primary/20 text-primary border-primary/30">Verified X Account</Badge>
+                    </div>
+                    <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-destructive relative z-10" onClick={() => logout()}>
+                      <LogOut className="w-4 h-4" />
+                    </Button>
+                  </div>
+                )}
+                
+                <div className="p-4 rounded-2xl bg-white/5 border border-white/5 opacity-50">
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="w-8 h-8 rounded-xl bg-blue-500/20 flex items-center justify-center">
+                      <Send className="w-4 h-4 text-blue-400" />
+                    </div>
+                    <div>
+                      <span className="text-xs font-black uppercase tracking-widest block">Telegram</span>
+                      <span className="text-[9px] text-muted-foreground font-bold uppercase">Disconnected</span>
+                    </div>
+                  </div>
+                  <Button variant="outline" className="w-full text-[10px] h-9 border-white/10" disabled>
+                    CONNECT BOT
+                  </Button>
                 </div>
               </CardContent>
             </Card>
@@ -321,12 +377,12 @@ export default function Dashboard() {
                     className="justify-start h-14 rounded-2xl border-white/5 bg-white/[0.02] hover:bg-primary/10 hover:border-primary/20 transition-all group"
                   >
                     <Link href={link.href}>
-                      <a className="flex items-center gap-4 w-full">
+                      <div className="flex items-center gap-4 w-full cursor-pointer">
                         <div className="p-2 rounded-xl bg-white/5 group-hover:bg-primary/20 transition-colors">
                           <link.icon className="w-4 h-4 group-hover:text-primary transition-colors" />
                         </div>
                         <span className="font-bold text-sm tracking-tight">{link.title}</span>
-                      </a>
+                      </div>
                     </Link>
                   </Button>
                 ))}
