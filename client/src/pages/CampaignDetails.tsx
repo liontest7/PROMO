@@ -24,6 +24,11 @@ export default function CampaignDetails() {
   const queryClient = useQueryClient();
   const [selectedAction, setSelectedAction] = useState<{ action: Action; campaign: Campaign } | null>(null);
 
+  const { data: campaign, isLoading: campaignLoading } = useQuery<CampaignWithActions | undefined>({
+    queryKey: symbol ? [`/api/campaigns/symbol/${symbol}`] : [`/api/campaigns/${id}`],
+    enabled: !!(id || symbol),
+  });
+
   // Auto-refresh holding status
   useEffect(() => {
     if (!isConnected || !campaign) return;
@@ -34,12 +39,7 @@ export default function CampaignDetails() {
     }, 30000); // Every 30 seconds
 
     return () => clearInterval(interval);
-  }, [isConnected, campaign?.id]);
-
-  const { data: campaign, isLoading: campaignLoading } = useQuery<CampaignWithActions | undefined>({
-    queryKey: symbol ? [`/api/campaigns/symbol/${symbol}`] : [`/api/campaigns/${id}`],
-    enabled: !!(id || symbol),
-  });
+  }, [isConnected, campaign?.id, queryClient]);
 
   const campaignId = campaign?.id;
 
