@@ -64,15 +64,7 @@ export function VerifyActionDialog({ action, campaign, open, onOpenChange, onSuc
     }
   }, [open]);
 
-  if (!campaign) return null;
-
   const isHolderCampaign = campaign?.campaignType === 'holder_qualification';
-
-  useEffect(() => {
-    if (open && isConnected && isHolderCampaign) {
-      handleVerify(true);
-    }
-  }, [open, isConnected, isHolderCampaign]);
 
   const handleVerify = async (isAutoFetch: boolean = false) => {
     if (!walletAddress) return;
@@ -121,6 +113,19 @@ export function VerifyActionDialog({ action, campaign, open, onOpenChange, onSuc
         );
         return;
       }
+      // ... rest of the function
+    } catch (err: any) {
+      // ... error handling
+    }
+  };
+
+  useEffect(() => {
+    if (open && isConnected && isHolderCampaign) {
+      handleVerify(true);
+    }
+  }, [open, isConnected, isHolderCampaign]);
+
+  if (!campaign) return null;
 
       if (!action) return;
       const isWebsiteAction = action.type === "website";
