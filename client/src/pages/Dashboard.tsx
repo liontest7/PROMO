@@ -33,6 +33,8 @@ export default function Dashboard() {
   const { data: user, isLoading: userLoading } = useQuery<UserType>({
     queryKey: ["/api/users", walletAddress],
     enabled: !!walletAddress,
+    retry: false,
+    staleTime: 30000,
   });
 
   const { user: replitUser, isAuthenticated, logout } = useAuth();
@@ -132,97 +134,97 @@ export default function Dashboard() {
       
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-10">
         {/* Profile Header - Optimized Size */}
-        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-8 p-8 rounded-[2.5rem] bg-white/[0.04] border-2 border-white/10 backdrop-blur-3xl relative overflow-hidden group shadow-xl">
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 p-6 rounded-[2rem] bg-white/[0.04] border border-white/10 backdrop-blur-3xl relative overflow-hidden group shadow-lg">
           <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-transparent to-transparent opacity-60" />
-          <div className="relative z-10 flex flex-col md:flex-row items-center gap-8">
+          <div className="relative z-10 flex flex-col md:flex-row items-center gap-6">
             <div className="relative">
-              <div className="w-28 h-28 rounded-full bg-gradient-to-tr from-primary via-primary/60 to-primary/20 p-1.5 shadow-[0_0_40px_rgba(34,197,94,0.4)]">
-                <div className="w-full h-full rounded-full bg-background flex items-center justify-center overflow-hidden border-4 border-background">
-                  <img src={PLATFORM_CONFIG.ASSETS.MAIN_LOGO} className="w-16 h-16 object-contain hover:scale-110 transition-transform duration-500" alt="Level Avatar" />
+              <div className="w-20 h-20 rounded-full bg-gradient-to-tr from-primary via-primary/60 to-primary/20 p-1 shadow-[0_0_20px_rgba(34,197,94,0.3)]">
+                <div className="w-full h-full rounded-full bg-background flex items-center justify-center overflow-hidden border-2 border-background">
+                  <img src={PLATFORM_CONFIG.ASSETS.MAIN_LOGO} className="w-12 h-12 object-contain hover:scale-110 transition-transform duration-500" alt="Level Avatar" />
                 </div>
               </div>
-              <Badge className="absolute -bottom-3 left-1/2 -translate-x-1/2 px-5 py-2 bg-primary text-primary-foreground font-black text-xs rounded-full border-4 border-background shadow-xl uppercase tracking-widest">
+              <Badge className="absolute -bottom-2 left-1/2 -translate-x-1/2 px-3 py-1 bg-primary text-primary-foreground font-black text-[9px] rounded-full border-2 border-background shadow-lg uppercase tracking-widest">
                 LVL {level}
               </Badge>
             </div>
             
-            <div className="text-center md:text-left space-y-2">
-              <div className="flex flex-col md:flex-row items-center gap-3">
-                <h1 className="text-4xl font-display font-black tracking-tighter uppercase italic leading-none text-white drop-shadow-sm">
-                  {walletAddress?.slice(0, 8)}<span className="text-primary">...</span>{walletAddress?.slice(-8)}
+            <div className="text-center md:text-left space-y-1">
+              <div className="flex flex-col md:flex-row items-center gap-2">
+                <h1 className="text-2xl font-display font-black tracking-tight uppercase italic leading-none text-white drop-shadow-sm">
+                  {walletAddress?.slice(0, 6)}<span className="text-primary">...</span>{walletAddress?.slice(-6)}
                 </h1>
-                <Badge className="bg-primary/20 text-primary border-2 border-primary/40 text-[10px] font-black uppercase px-3 py-0.5 tracking-widest rounded-lg">PLATINUM NODE</Badge>
+                <Badge className="bg-primary/20 text-primary border border-primary/40 text-[9px] font-black uppercase px-2 py-0.5 tracking-widest rounded-md">PLATINUM NODE</Badge>
               </div>
-              <p className="text-white/60 font-black uppercase tracking-[0.2em] text-[11px] bg-white/5 inline-block px-3 py-1 rounded-full border border-white/10">Protocol Status: Active & Verified</p>
+              <p className="text-white/60 font-black uppercase tracking-widest text-[10px] bg-white/5 inline-block px-2 py-0.5 rounded-full border border-white/10">Protocol Status: Active & Verified</p>
             </div>
           </div>
           
-          <div className="relative z-10 grid grid-cols-2 gap-6 lg:min-w-[400px]">
-            <div className="flex flex-col p-6 rounded-[2rem] bg-black/40 border-2 border-white/10 hover:border-primary/50 transition-all group/card shadow-lg backdrop-blur-md">
-              <span className="text-[10px] font-black text-white/40 uppercase tracking-[0.3em] mb-2">Protocol Reputation</span>
-              <div className="flex items-center gap-3">
-                <span className="text-5xl font-black font-display text-primary drop-shadow-[0_0_15px_rgba(34,197,94,0.5)]">{stats?.reputation || 100}</span>
-                <Trophy className="w-6 h-6 text-primary opacity-50 group-hover/card:opacity-100 transition-opacity" />
+          <div className="relative z-10 grid grid-cols-2 gap-4 lg:min-w-[320px]">
+            <div className="flex flex-col p-4 rounded-2xl bg-black/40 border border-white/10 hover:border-primary/50 transition-all group/card shadow-md backdrop-blur-md">
+              <span className="text-[9px] font-black text-white/40 uppercase tracking-widest mb-1">Protocol Reputation</span>
+              <div className="flex items-center gap-2">
+                <span className="text-3xl font-black font-display text-primary drop-shadow-[0_0_10px_rgba(34,197,94,0.4)]">{stats?.reputation || 100}</span>
+                <Trophy className="w-4 h-4 text-primary opacity-50 group-hover/card:opacity-100 transition-opacity" />
               </div>
             </div>
-            <div className="flex flex-col p-6 rounded-[2rem] bg-black/40 border-2 border-white/10 hover:border-primary/50 transition-all group/card shadow-lg backdrop-blur-md">
-              <div className="flex justify-between items-start mb-2">
-                <span className="text-[10px] font-black text-white/40 uppercase tracking-[0.3em]">Network Rank</span>
-                {rankChange === "up" && <ArrowUpRight className="w-5 h-5 text-primary animate-bounce-slow" />}
+            <div className="flex flex-col p-4 rounded-2xl bg-black/40 border border-white/10 hover:border-primary/50 transition-all group/card shadow-md backdrop-blur-md">
+              <div className="flex justify-between items-start mb-1">
+                <span className="text-[9px] font-black text-white/40 uppercase tracking-widest">Network Rank</span>
+                {rankChange === "up" && <ArrowUpRight className="w-4 h-4 text-primary animate-bounce-slow" />}
               </div>
-              <div className="flex items-center gap-3">
-                <span className="text-5xl font-black font-display text-white">#{Math.max(1, 100 - (stats?.reputation || 0))}</span>
-                {rankChange === "up" && <span className="text-sm font-black text-primary font-display border border-primary/30 bg-primary/20 px-2 rounded-lg">+3</span>}
+              <div className="flex items-center gap-2">
+                <span className="text-3xl font-black font-display text-white">#{Math.max(1, 100 - (stats?.reputation || 0))}</span>
+                {rankChange === "up" && <span className="text-xs font-black text-primary font-display border border-primary/30 bg-primary/20 px-1.5 rounded-md">+3</span>}
               </div>
             </div>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
-          <div className="lg:col-span-2 space-y-10">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <div className="lg:col-span-2 space-y-8">
             {/* Token Portfolios */}
             <section>
-              <div className="flex items-center gap-6 mb-8">
-                <div className="w-16 h-16 rounded-[1.5rem] bg-primary/10 flex items-center justify-center border-2 border-primary/30 shadow-[0_0_20px_rgba(34,197,94,0.1)]">
-                  <Coins className="w-8 h-8 text-primary" />
+              <div className="flex items-center gap-4 mb-6">
+                <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center border border-primary/30">
+                  <Coins className="w-6 h-6 text-primary" />
                 </div>
                 <div>
-                  <h2 className="text-4xl font-black font-display uppercase italic tracking-tighter leading-none text-white">Token Portfolios</h2>
-                  <div className="h-1 w-24 bg-primary mt-3 rounded-full shadow-[0_0_10px_rgba(34,197,94,0.3)]" />
+                  <h2 className="text-2xl font-black font-display uppercase italic tracking-tighter leading-none text-white">Token Portfolios</h2>
+                  <div className="h-0.5 w-16 bg-primary mt-2 rounded-full shadow-[0_0_10px_rgba(34,197,94,0.3)]" />
                 </div>
               </div>
               
               {stats?.tokenBalances && stats.tokenBalances.length > 0 ? (
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                   {stats.tokenBalances.map((tb: any) => (
-                    <Card key={tb.symbol} className="glass-card border-2 border-white/10 bg-white/[0.03] hover-elevate transition-all rounded-[2.5rem] overflow-hidden group shadow-xl">
-                      <div className="p-8 relative">
-                        <div className="absolute top-0 right-0 p-8 opacity-5 group-hover:opacity-15 transition-all duration-700 rotate-12">
-                          <Coins className="w-32 h-32" />
+                    <Card key={tb.symbol} className="glass-card border border-white/10 bg-white/[0.03] hover-elevate transition-all rounded-[2rem] overflow-hidden group shadow-lg">
+                      <div className="p-6 relative">
+                        <div className="absolute top-0 right-0 p-6 opacity-5 group-hover:opacity-10 transition-all duration-700 rotate-12">
+                          <Coins className="w-24 h-24" />
                         </div>
-                        <div className="flex justify-between items-start mb-8">
+                        <div className="flex justify-between items-start mb-6">
                           <div>
-                            <span className="text-[11px] font-black text-white/40 uppercase tracking-[0.3em] mb-3 block italic">{tb.symbol} PROTOCOL</span>
-                            <div className="text-5xl font-black font-display text-primary tracking-tighter drop-shadow-[0_0_15px_rgba(34,197,94,0.3)]">{tb.balance}</div>
+                            <span className="text-[9px] font-black text-white/40 uppercase tracking-[0.2em] mb-2 block italic">{tb.symbol} PROTOCOL</span>
+                            <div className="text-3xl font-black font-display text-primary tracking-tighter drop-shadow-[0_0_10px_rgba(34,197,94,0.3)]">{tb.balance}</div>
                           </div>
                           {Number(tb.pending) > 0 && (
                             <div className="flex flex-col items-end">
-                              <Badge className="text-[10px] font-black text-yellow-500 bg-yellow-500/10 border border-yellow-500/30 px-3 py-1.5 rounded-xl uppercase tracking-widest shadow-md">
+                              <Badge className="text-[8px] font-black text-yellow-500 bg-yellow-500/10 border border-yellow-500/30 px-2 py-1 rounded-lg uppercase tracking-widest">
                                 PENDING
                               </Badge>
-                              <span className="text-base font-black text-yellow-500 mt-2 font-mono">+{tb.pending}</span>
+                              <span className="text-sm font-black text-yellow-500 mt-1 font-mono">+{tb.pending}</span>
                             </div>
                           )}
                         </div>
-                        <div className="grid grid-cols-2 gap-8 pt-8 border-t border-white/10">
+                        <div className="grid grid-cols-2 gap-6 pt-6 border-t border-white/10">
                           <div>
-                            <span className="text-[10px] font-black text-white/30 uppercase tracking-[0.1em] block mb-2">Historical Yield</span>
-                            <span className="text-2xl font-black font-display text-white italic tracking-tight">{tb.earned}</span>
+                            <span className="text-[9px] font-black text-white/30 uppercase tracking-widest block mb-1">Historical Yield</span>
+                            <span className="text-xl font-black font-display text-white italic tracking-tight">{tb.earned}</span>
                           </div>
                           {tb.price && (
                             <div className="text-right">
-                              <span className="text-[10px] font-black text-white/30 uppercase tracking-[0.1em] block mb-2">Valuation (USD)</span>
-                              <span className="text-2xl font-black text-primary font-mono tracking-tighter">${(Number(tb.balance) * Number(tb.price)).toFixed(2)}</span>
+                              <span className="text-[9px] font-black text-white/30 uppercase tracking-widest block mb-1">Valuation (USD)</span>
+                              <span className="text-xl font-black text-primary font-mono tracking-tighter">${(Number(tb.balance) * Number(tb.price)).toFixed(2)}</span>
                             </div>
                           )}
                         </div>
@@ -231,12 +233,12 @@ export default function Dashboard() {
                   ))}
                 </div>
               ) : (
-                <div className="flex flex-col items-center justify-center p-24 rounded-[3.5rem] bg-white/[0.02] border-4 border-dashed border-white/10 group hover:border-primary/40 transition-all duration-500 shadow-inner">
-                  <div className="p-10 rounded-[2rem] bg-white/5 mb-8 group-hover:bg-primary/20 transition-all duration-500 shadow-xl border border-white/5">
-                    <Activity className="w-16 h-16 text-muted-foreground opacity-30 group-hover:text-primary group-hover:opacity-100 transition-all duration-500" />
+                <div className="flex flex-col items-center justify-center p-16 rounded-[2.5rem] bg-white/[0.02] border-2 border-dashed border-white/10 group hover:border-primary/40 transition-all duration-500 shadow-inner">
+                  <div className="p-6 rounded-2xl bg-white/5 mb-6 group-hover:bg-primary/20 transition-all duration-500 shadow-lg border border-white/5">
+                    <Activity className="w-12 h-12 text-muted-foreground opacity-30 group-hover:text-primary group-hover:opacity-100 transition-all duration-500" />
                   </div>
-                  <p className="text-2xl font-display font-black uppercase tracking-[0.3em] text-white/20 italic mb-8">Data Pipeline Empty</p>
-                  <Button variant="default" className="bg-primary text-primary-foreground font-black uppercase tracking-[0.2em] text-sm px-10 py-7 rounded-xl shadow-[0_0_30px_rgba(34,197,94,0.2)] hover:shadow-[0_0_40px_rgba(34,197,94,0.4)] transition-all transform hover:-translate-y-1" asChild>
+                  <p className="text-xl font-display font-black uppercase tracking-[0.2em] text-white/20 italic mb-6">Data Pipeline Empty</p>
+                  <Button variant="default" className="bg-primary text-primary-foreground font-black uppercase tracking-widest text-xs px-8 py-6 rounded-lg shadow-lg hover:shadow-primary/40 transition-all transform hover:-translate-y-1" asChild>
                     <Link href="/earn">Engage Network Tasks</Link>
                   </Button>
                 </div>
@@ -245,54 +247,54 @@ export default function Dashboard() {
 
             {/* Recent Activity */}
             <section>
-              <div className="flex items-center gap-6 mb-8">
-                <div className="w-16 h-16 rounded-[1.5rem] bg-primary/10 flex items-center justify-center border-2 border-primary/30 shadow-[0_0_20px_rgba(34,197,94,0.1)]">
-                  <Activity className="w-8 h-8 text-primary" />
+              <div className="flex items-center gap-4 mb-6">
+                <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center border border-primary/30">
+                  <Activity className="w-6 h-6 text-primary" />
                 </div>
                 <div>
-                  <h2 className="text-4xl font-black font-display uppercase italic tracking-tighter leading-none text-white">Verification Logs</h2>
-                  <div className="h-1 w-24 bg-primary mt-3 rounded-full shadow-[0_0_10px_rgba(34,197,94,0.3)]" />
+                  <h2 className="text-2xl font-black font-display uppercase italic tracking-tighter leading-none text-white">Verification Logs</h2>
+                  <div className="h-0.5 w-16 bg-primary mt-2 rounded-full shadow-[0_0_10px_rgba(34,197,94,0.3)]" />
                 </div>
               </div>
-              <Card className="glass-card border-2 border-white/10 bg-white/[0.02] rounded-[3rem] overflow-hidden shadow-xl">
+              <Card className="glass-card border border-white/10 bg-white/[0.02] rounded-[2rem] overflow-hidden shadow-lg">
                 <CardContent className="p-0">
                   {executions && executions.length > 0 ? (
-                    <div className="divide-y-2 divide-white/5">
+                    <div className="divide-y border-white/5">
                       {executions.slice(0, 10).map((execution: any) => (
-                        <div key={execution.id} className="flex items-center justify-between p-8 hover:bg-white/[0.03] transition-all group">
-                          <div className="flex items-center gap-8">
-                            <div className="w-16 h-16 rounded-[1.5rem] bg-white/5 flex items-center justify-center border-2 border-white/10 group-hover:border-primary/50 transition-all duration-500 shadow-md">
-                              <CheckCircle className="w-8 h-8 text-primary opacity-40 group-hover:opacity-100 transition-all duration-500 shadow-[0_0_20px_rgba(34,197,94,0.4)]" />
+                        <div key={execution.id} className="flex items-center justify-between p-6 hover:bg-white/[0.03] transition-all group">
+                          <div className="flex items-center gap-6">
+                            <div className="w-12 h-12 rounded-xl bg-white/5 flex items-center justify-center border border-white/10 group-hover:border-primary/50 transition-all duration-500 shadow-sm">
+                              <CheckCircle className="w-6 h-6 text-primary opacity-40 group-hover:opacity-100 transition-all duration-500 shadow-[0_0_15px_rgba(34,197,94,0.4)]" />
                             </div>
                             <div>
-                              <p className="font-black text-2xl font-display tracking-tight uppercase italic leading-none mb-3 text-white group-hover:text-primary transition-colors">{execution.action?.title || 'System Verification'}</p>
-                              <div className="flex items-center gap-3">
-                                <Badge variant="outline" className="text-[10px] font-black uppercase border-white/10 px-3 py-1 bg-white/5 rounded-lg tracking-widest">{execution.campaign?.title}</Badge>
-                                <span className="text-xs font-black text-primary uppercase tracking-widest">+ {execution.action?.rewardAmount} REWARD</span>
+                              <p className="font-black text-xl font-display tracking-tight uppercase italic leading-none mb-2 text-white group-hover:text-primary transition-colors">{execution.action?.title || 'System Verification'}</p>
+                              <div className="flex items-center gap-2">
+                                <Badge variant="outline" className="text-[8px] font-black uppercase border-white/10 px-2 py-0.5 bg-white/5 rounded-md tracking-widest">{execution.campaign?.title}</Badge>
+                                <span className="text-[9px] font-black text-primary uppercase tracking-widest">+ {execution.action?.rewardAmount} REWARD</span>
                               </div>
                             </div>
                           </div>
-                          <div className="flex flex-col items-end gap-3">
+                          <div className="flex flex-col items-end gap-2">
                             <Badge 
                               className={cn(
-                                "text-[10px] font-black uppercase px-6 py-2 rounded-full tracking-widest border border-white/10",
+                                "text-[8px] font-black uppercase px-4 py-1 rounded-full tracking-widest border border-white/10",
                                 execution.status === 'paid' 
-                                  ? 'bg-primary/20 text-primary border-primary/30 shadow-[0_0_15px_rgba(34,197,94,0.3)]' 
+                                  ? 'bg-primary/20 text-primary border-primary/30 shadow-[0_0_10px_rgba(34,197,94,0.2)]' 
                                   : 'bg-yellow-500/10 text-yellow-500 border-yellow-500/30'
                               )}
                             >
                               {execution.status}
                             </Badge>
-                            <span className="text-[10px] font-black font-mono text-white/30 uppercase tracking-[0.1em]">
-                              LOGGED: {execution.createdAt ? format(new Date(execution.createdAt), 'MMM d, HH:mm') : 'REAL-TIME'}
+                            <span className="text-[8px] font-black font-mono text-white/30 uppercase tracking-widest">
+                              {execution.createdAt ? format(new Date(execution.createdAt), 'MMM d, HH:mm') : 'REAL-TIME'}
                             </span>
                           </div>
                         </div>
                       ))}
                     </div>
                   ) : (
-                    <div className="p-24 text-center">
-                      <p className="text-xl font-black font-display uppercase tracking-[0.4em] text-white/10 italic">Protocol Inactivity Detected</p>
+                    <div className="p-16 text-center">
+                      <p className="text-lg font-black font-display uppercase tracking-[0.3em] text-white/10 italic">Protocol Inactivity Detected</p>
                     </div>
                   )}
                 </CardContent>
@@ -301,98 +303,104 @@ export default function Dashboard() {
           </div>
 
           {/* Sidebar Modules */}
-          <div className="space-y-10">
+          <div className="space-y-8">
             {/* Ecosystem Contribution */}
-            <Card className="glass-card border-2 border-primary/30 bg-primary/5 rounded-[3rem] overflow-hidden relative group p-1 shadow-2xl">
+            <Card className="glass-card border border-primary/30 bg-primary/5 rounded-[2.5rem] overflow-hidden relative group p-0.5 shadow-xl">
               <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(34,197,94,0.3),transparent_70%)] opacity-70" />
-              <CardHeader className="relative z-10 p-10 pb-6">
-                <div className="w-16 h-16 rounded-[1.5rem] bg-primary flex items-center justify-center mb-8 shadow-[0_0_40px_rgba(34,197,94,0.6)] border-4 border-white/20 animate-bounce-slow">
-                  <Star className="w-8 h-8 text-primary-foreground fill-primary-foreground" />
+              <CardHeader className="relative z-10 p-8 pb-4">
+                <div className="flex items-center justify-between mb-4">
+                  <div className="w-12 h-12 rounded-xl bg-primary flex items-center justify-center shadow-[0_0_30px_rgba(34,197,94,0.5)] border-2 border-white/20 animate-bounce-slow">
+                    <Star className="w-6 h-6 text-primary-foreground fill-primary-foreground" />
+                  </div>
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Button variant="ghost" size="icon" className="w-8 h-8 rounded-full border border-primary/30 bg-primary/10 text-primary hover:bg-primary/20">
+                          <HelpCircle className="w-4 h-4" />
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent className="glass-card border-primary/30 bg-black/90 p-4 rounded-xl shadow-2xl w-64">
+                        <div className="space-y-3">
+                          <p className="text-[10px] font-black uppercase tracking-widest text-primary border-b border-primary/20 pb-2">Sentinel Tier Benefits</p>
+                          <ul className="space-y-2">
+                            {[
+                              "Priority Action Verification",
+                              "Exclusive Ecosystem Airdrops",
+                              "High-Yield Project Access",
+                              "Governance Voting Multipliers"
+                            ].map((benefit, i) => (
+                              <li key={i} className="flex items-start gap-3 text-[9px] font-black text-white/80 uppercase tracking-widest leading-tight">
+                                <div className="w-1.5 h-1.5 rounded-full bg-primary/60 mt-0.5 shrink-0" />
+                                {benefit}
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
                 </div>
-                <CardTitle className="text-5xl font-black font-display uppercase leading-none italic tracking-tighter text-white">Ecosystem<br/><span className="text-primary drop-shadow-[0_0_10px_rgba(34,197,94,0.4)]">Impact</span></CardTitle>
-                <div className="h-1 w-20 bg-primary mt-6 rounded-full shadow-lg" />
+                <CardTitle className="text-3xl font-black font-display uppercase leading-none italic tracking-tighter text-white">Ecosystem<br/><span className="text-primary drop-shadow-[0_0_10px_rgba(34,197,94,0.4)]">Impact</span></CardTitle>
               </CardHeader>
-              <CardContent className="relative z-10 p-10 pt-0 space-y-10">
-                <div className="flex items-baseline gap-4">
-                  <span className="text-[7rem] font-black font-display text-primary tracking-tighter leading-none drop-shadow-[0_0_20px_rgba(34,197,94,0.5)]">{tasksCompleted}</span>
-                  <span className="text-2xl font-black text-primary/60 uppercase italic tracking-[0.2em]">Actions</span>
+              <CardContent className="relative z-10 p-8 pt-0 space-y-8">
+                <div className="flex items-baseline gap-3">
+                  <span className="text-[5rem] font-black font-display text-primary tracking-tighter leading-none drop-shadow-[0_0_15px_rgba(34,197,94,0.5)]">{tasksCompleted}</span>
+                  <span className="text-xl font-black text-primary/60 uppercase italic tracking-widest">Actions</span>
                 </div>
                 
-                <div className="space-y-8">
+                <div className="space-y-6">
                   <div className="flex justify-between items-end">
-                    <span className="text-[10px] font-black text-white/40 uppercase tracking-[0.3em]">Evolution Progress</span>
-                    <span className="text-3xl font-black font-display text-primary italic tracking-tight drop-shadow-md">{progress}%</span>
+                    <span className="text-[9px] font-black text-white/40 uppercase tracking-widest">Evolution Progress</span>
+                    <span className="text-2xl font-black font-display text-primary italic tracking-tight drop-shadow-md">{progress}%</span>
                   </div>
-                  <div className="w-full h-8 rounded-full bg-black/90 overflow-hidden p-2 border border-white/10 shadow-inner">
+                  <div className="w-full h-6 rounded-full bg-black/90 overflow-hidden p-1.5 border border-white/10 shadow-inner">
                     <div 
-                      className="h-full bg-primary shadow-[0_0_30px_rgba(34,197,94,0.8)] rounded-full transition-all duration-1000 relative overflow-hidden" 
+                      className="h-full bg-primary shadow-[0_0_20px_rgba(34,197,94,0.8)] rounded-full transition-all duration-1000 relative overflow-hidden" 
                       style={{ width: `${progress}%` }}
                     >
-                      <div className="absolute inset-0 bg-[linear-gradient(90deg,transparent_0%,rgba(255,255,255,0.5)_50%,transparent_100%)] animate-shimmer" />
+                      <div className="absolute inset-0 bg-[linear-gradient(90deg,transparent_0%,rgba(255,255,255,0.4)_50%,transparent_100%)] animate-shimmer" />
                     </div>
                   </div>
-                  <div className="flex justify-between items-center text-[9px] font-black uppercase tracking-[0.1em] text-white/40">
-                    <span className="flex items-center gap-2 bg-white/5 px-2 py-1 rounded-lg border border-white/10"><Badge className="h-4 px-2 bg-white/10 text-white border-white/20 text-[8px]">LVL {level}</Badge> INITIATE</span>
-                    <span className="text-primary font-display italic text-sm">TARGET: {nextMilestone}</span>
-                    <span className="flex items-center gap-2 bg-primary/10 px-2 py-1 rounded-lg border border-primary/20">SENTINEL <Badge className="h-4 px-2 bg-primary text-primary-foreground border-none text-[8px]">LVL {level + 1}</Badge></span>
+                  <div className="flex justify-between items-center text-[8px] font-black uppercase tracking-widest text-white/40">
+                    <span className="flex items-center gap-1.5 bg-white/5 px-1.5 py-0.5 rounded-md border border-white/10"><Badge className="h-3 px-1.5 bg-white/10 text-white border-white/20 text-[7px]">LVL {level}</Badge> INITIATE</span>
+                    <span className="text-primary font-display italic text-xs">TARGET: {nextMilestone}</span>
+                    <span className="flex items-center gap-1.5 bg-primary/10 px-1.5 py-0.5 rounded-md border border-primary/20">SENTINEL <Badge className="h-3 px-1.5 bg-primary text-primary-foreground border-none text-[7px]">LVL {level + 1}</Badge></span>
                   </div>
-                </div>
-                
-                <div className="p-8 rounded-[2rem] bg-black/70 border-2 border-white/10 backdrop-blur-3xl shadow-xl ring-1 ring-white/5">
-                  <div className="flex items-center gap-4 mb-6">
-                    <div className="p-3 rounded-xl bg-primary/20 border border-primary/40 shadow-inner">
-                      <HelpCircle className="w-5 h-5 text-primary" />
-                    </div>
-                    <span className="text-xs font-black uppercase tracking-[0.3em] text-white italic">Sentinel Tier Benefits</span>
-                  </div>
-                  <ul className="space-y-4">
-                    {[
-                      "Priority Action Verification",
-                      "Exclusive Ecosystem Airdrops",
-                      "High-Yield Project Access",
-                      "Governance Voting Multipliers"
-                    ].map((benefit, i) => (
-                      <li key={i} className="flex items-start gap-4 text-[10px] font-black text-white/60 uppercase tracking-widest group/item leading-tight">
-                        <div className="w-2 h-2 rounded-full bg-primary/40 group-hover/item:bg-primary transition-all duration-300 shadow-[0_0_10px_rgba(34,197,94,0.4)] mt-1 shrink-0" />
-                        {benefit}
-                      </li>
-                    ))}
-                  </ul>
                 </div>
               </CardContent>
             </Card>
 
             {/* Social Verification */}
-            <Card className="glass-card border-2 border-white/10 bg-white/[0.02] rounded-[3rem] overflow-hidden p-1.5 shadow-2xl">
-              <CardHeader className="p-10 pb-8">
-                <CardTitle className="text-3xl font-black font-display uppercase italic tracking-tighter leading-none text-white">Identity Sync</CardTitle>
-                <div className="h-1 w-16 bg-white/20 mt-4 rounded-full" />
+            <Card className="glass-card border border-white/10 bg-white/[0.02] rounded-[2.5rem] overflow-hidden p-1 shadow-xl">
+              <CardHeader className="p-8 pb-6">
+                <CardTitle className="text-2xl font-black font-display uppercase italic tracking-tighter leading-none text-white">Identity Sync</CardTitle>
+                <div className="h-0.5 w-12 bg-white/20 mt-3 rounded-full" />
               </CardHeader>
-              <CardContent className="p-10 pt-0 space-y-8">
+              <CardContent className="p-8 pt-0 space-y-6">
                 {!isAuthenticated ? (
-                  <div className="p-8 rounded-[2rem] bg-blue-500/5 border-2 border-blue-500/10 relative overflow-hidden group shadow-xl">
-                    <div className="absolute top-0 right-0 p-6 opacity-5 group-hover:opacity-15 transition-all duration-700">
-                      <Twitter className="w-20 h-20" />
+                  <div className="p-6 rounded-2xl bg-blue-500/5 border border-blue-500/10 relative overflow-hidden group shadow-lg">
+                    <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-all duration-700">
+                      <Twitter className="w-16 h-16" />
                     </div>
                     <div className="relative z-10">
-                      <div className="flex items-center gap-4 mb-6">
-                        <div className="p-3 rounded-2xl bg-blue-500/20 border border-blue-500/30 shadow-[0_0_20px_rgba(59,130,246,0.2)]">
-                          <Twitter className="w-6 h-6 text-blue-400" />
+                      <div className="flex items-center gap-3 mb-4">
+                        <div className="p-2 rounded-xl bg-blue-500/20 border border-blue-500/30">
+                          <Twitter className="w-5 h-5 text-blue-400" />
                         </div>
-                        <span className="text-base font-black uppercase tracking-[0.3em] text-white italic">X IDENTITY</span>
+                        <span className="text-sm font-black uppercase tracking-widest text-white italic">X IDENTITY</span>
                       </div>
                       <Button 
-                        className="w-full bg-blue-500 hover:bg-blue-600 text-white gap-4 font-black text-sm h-16 rounded-[1.5rem] shadow-[0_0_30px_rgba(59,130,246,0.3)] transition-all active-elevate-2 uppercase tracking-widest"
+                        className="w-full bg-blue-500 hover:bg-blue-600 text-white gap-3 font-black text-xs h-12 rounded-xl shadow-md transition-all active-elevate-2 uppercase tracking-widest"
                       >
                         SYNC PROTOCOL NODE
                       </Button>
-                      <p className="text-[10px] text-white/30 mt-6 italic text-center font-black uppercase tracking-[0.2em]">
+                      <p className="text-[8px] text-white/30 mt-4 italic text-center font-black uppercase tracking-widest">
                         SECURE OAUTH 2.0 ENCRYPTED
                       </p>
                     </div>
                   </div>
                 ) : (
-                  <div className="p-8 rounded-[2rem] bg-primary/10 border-2 border-primary/20 flex items-center gap-8 relative overflow-hidden group shadow-xl">
+                  <div className="p-6 rounded-2xl bg-primary/10 border border-primary/20 flex items-center gap-6 relative overflow-hidden group shadow-lg">
                     <Avatar className="h-20 w-20 border-4 border-background shadow-[0_0_30px_rgba(34,197,94,0.2)] relative z-10">
                       <AvatarImage src={replitUser?.profileImageUrl || ""} />
                       <AvatarFallback className="bg-primary/20"><UserIcon className="w-10 h-10 text-primary" /></AvatarFallback>

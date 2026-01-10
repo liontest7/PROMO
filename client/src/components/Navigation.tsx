@@ -67,7 +67,7 @@ export function Navigation() {
               {isConnected && (
                 <>
                   <NavLink href="/dashboard" icon={Trophy}>My Dashboard</NavLink>
-                  {(role === "advertiser" || (role as any) === "admin") && (
+                  {(role === "advertiser" || (role as any) === "admin" || (role as any) === "superadmin") && (
                     <div className="flex items-center ml-2 p-1 rounded-full bg-primary/10 border border-primary/20 shrink-0">
                       <Button 
                         variant="ghost" 
@@ -76,7 +76,7 @@ export function Navigation() {
                         className="h-8 w-8 rounded-full text-primary hover:bg-primary/20 transition-all p-0 flex items-center justify-center overflow-hidden"
                         title={role === "advertiser" ? "Admin Console" : "Admin Panel"}
                       >
-                        <Link href={role === "advertiser" ? "/advertiser" : "/admin"}>
+                        <Link href={(role as any) === "admin" || (role as any) === "superadmin" ? "/admin" : "/advertiser"}>
                           <a className="flex items-center justify-center w-full h-full">
                             {role === "advertiser" ? <LayoutDashboard className="h-4 w-4" /> : <ShieldAlert className="h-4 w-4" />}
                           </a>
