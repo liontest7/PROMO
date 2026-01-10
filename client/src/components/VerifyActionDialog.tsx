@@ -3,19 +3,17 @@ import { type Action, type Campaign } from "@shared/schema";
 import { useVerifyAction } from "@/hooks/use-executions";
 import { useWallet } from "@/hooks/use-wallet";
 import { useToast } from "@/hooks/use-toast";
-import { CONFIG } from "@shared/config";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogDescription,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
-import { Loader2, CheckCircle, ExternalLink, ShieldCheck } from "lucide-react";
+import { Loader2, CheckCircle, ExternalLink, ShoppingCart, Info } from "lucide-react";
 import { Turnstile } from "@marsidev/react-turnstile";
 
 interface VerifyActionDialogProps {
@@ -65,25 +63,24 @@ export function VerifyActionDialog({ action, campaign, open, onOpenChange, onSuc
     }
   }, [open]);
 
-  if (!action || !campaign) return null;
+  if (!campaign) return null;
 
-  const isWebsiteAction = action.type === "website";
   const isHolderCampaign = campaign.campaignType === 'holder_qualification';
 
   const handleVerify = async () => {
     if (!walletAddress) return;
-    if (!turnstileToken) {
+    
+    // Only require Turnstile for initial eligibility check or task completion
+    if (!turnstileToken && (isHolderCampaign || step === "verify")) {
       toast({
         title: "Verification Required",
-        description: "Please complete the security check widget below.",
+        description: "Please complete the security check.",
         variant: "destructive"
       });
       return;
     }
 
     try {
-      let proofData: any = { proofText: proof };
-
       if (isHolderCampaign) {
         verifyMutation.mutate(
           { 
@@ -110,15 +107,17 @@ export function VerifyActionDialog({ action, campaign, open, onOpenChange, onSuc
                   description: "You are eligible to claim your reward.",
                 });
                 if (onSuccess) onSuccess(0);
-                setTimeout(() => {
-                  onOpenChange(false);
-                }, 2000);
+                setTimeout(() => onOpenChange(false), 2000);
               }
             }
           }
         );
         return;
       }
+
+      if (!action) return;
+      const isWebsiteAction = action.type === "website";
+      let proofData: any = { proofText: proof };
 
       if (!isWebsiteAction) {
         if (!proof || proof.length < 3) {
@@ -169,81 +168,121 @@ export function VerifyActionDialog({ action, campaign, open, onOpenChange, onSuc
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md bg-background border-white/10 rounded-[2rem] p-0 overflow-hidden shadow-2xl">
+      <DialogContent className="sm:max-w-md bg-[#0A0A0A] border-white/5 rounded-[2.5rem] p-0 overflow-hidden shadow-[0_0_50px_rgba(0,0,0,0.5)]">
         <DialogHeader className="p-8 pb-4">
-          <DialogTitle className="text-2xl font-black uppercase text-white">
-            {isHolderCampaign ? "Eligibility Check" : "Complete Task"}
-          </DialogTitle>
-          <DialogDescription className="text-white/40 font-bold uppercase tracking-widest text-[10px]">
-            Security verification required
-          </DialogDescription>
+          <div className="flex justify-between items-start mb-2">
+            <div>
+              <DialogTitle className="text-2xl font-black uppercase text-white tracking-tighter">
+                {isHolderCampaign ? "ELIGIBILITY CHECK" : "TASK VERIFICATION"}
+              </DialogTitle>
+              <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/30">
+                VERIFICATION FOR {campaign.tokenName}
+              </p>
+            </div>
+          </div>
         </DialogHeader>
 
-        <div className="px-8 pb-8 space-y-6">
+        <div className="px-8 pb-10 space-y-6">
           {isHolderCampaign ? (
-            <div className="space-y-6 text-center">
-              {!holdingStatus && (
-                <div className="bg-white/5 p-8 rounded-[2rem] border border-white/10">
-                  <ShieldCheck className="w-12 h-12 text-primary mx-auto opacity-20 mb-4" />
-                  <p className="text-sm font-medium text-white/60">Verify your $SPRM holdings on the blockchain</p>
+            <div className="space-y-6">
+              <div className="grid grid-cols-2 gap-4">
+                <div className="bg-[#141414] p-6 rounded-3xl border border-white/5 space-y-2">
+                  <p className="text-[10px] font-black uppercase text-white/30 tracking-widest">Balance</p>
+                  <p className={cn("text-3xl font-black font-mono tracking-tighter", (holdingStatus?.currentBalance || 0) >= (campaign.minHoldingAmount || 0) ? "text-primary" : "text-[#FF4B4B]")}>
+                    {holdingStatus?.currentBalance?.toLocaleString() || "0"}
+                  </p>
                 </div>
-              )}
-              
-              <div className="flex flex-col items-center justify-center py-2 gap-4">
-                <p className="text-[10px] font-black uppercase text-primary tracking-[0.2em]">Step 1: Anti-Bot Check</p>
-                <div className="min-h-[65px] flex items-center justify-center w-full bg-white/5 rounded-xl border border-white/5 p-2">
-                  <Turnstile
-                    siteKey={siteKey}
-                    onSuccess={(token) => setTurnstileToken(token)}
-                    options={{ theme: "dark", size: "normal" }}
-                  />
+                <div className="bg-[#141414] p-6 rounded-3xl border border-white/5 space-y-2">
+                  <p className="text-[10px] font-black uppercase text-white/30 tracking-widest">Required</p>
+                  <p className="text-3xl font-black font-mono text-white tracking-tighter">
+                    {Number(campaign.minHoldingAmount).toLocaleString()}
+                  </p>
                 </div>
               </div>
 
-              <Button 
-                onClick={handleVerify} 
-                disabled={verifyMutation.isPending || !turnstileToken} 
-                className="w-full h-14 bg-primary text-primary-foreground rounded-2xl font-black uppercase tracking-widest shadow-xl shadow-primary/20"
-              >
-                {verifyMutation.isPending ? <Loader2 className="animate-spin" /> : "START VERIFICATION"}
-              </Button>
+              <div className="bg-[#141414] p-6 rounded-3xl border border-white/5 space-y-4">
+                <div className="flex justify-between items-center">
+                  <p className="text-[10px] font-black uppercase text-white/30 tracking-widest">Progress</p>
+                  <p className="text-[10px] font-black text-primary tracking-widest">0%</p>
+                </div>
+                <div className="h-2 w-full bg-white/5 rounded-full overflow-hidden">
+                  <div className="h-full bg-primary w-0 transition-all duration-1000" />
+                </div>
+              </div>
+
+              <div className="bg-[#141414] p-6 rounded-3xl border border-white/5 flex items-center justify-center min-h-[70px]">
+                <Turnstile
+                  siteKey={siteKey}
+                  onSuccess={(token) => setTurnstileToken(token)}
+                  options={{ theme: "dark" }}
+                />
+              </div>
+
+              <div className="space-y-3">
+                <Button 
+                  onClick={handleVerify} 
+                  disabled={verifyMutation.isPending || !turnstileToken} 
+                  className="w-full h-16 bg-[#00D1FF] hover:bg-[#00D1FF]/90 text-black rounded-2xl font-black uppercase tracking-widest text-sm"
+                >
+                  {verifyMutation.isPending ? <Loader2 className="animate-spin" /> : "REFRESH"}
+                </Button>
+                
+                <Button 
+                  variant="ghost" 
+                  className="w-full h-12 text-white/40 hover:text-white font-black uppercase tracking-widest text-[10px] gap-2"
+                  onClick={() => window.open(`https://jup.ag/swap/SOL-${campaign.tokenAddress}`, '_blank')}
+                >
+                  <ShoppingCart className="w-3 h-3" /> BUY ${campaign.tokenName}
+                </Button>
+              </div>
+
+              <div className="flex items-start gap-3 p-4 bg-white/[0.02] rounded-2xl border border-white/5">
+                <Info className="w-4 h-4 text-white/20 mt-0.5" />
+                <p className="text-[10px] leading-relaxed text-white/30 font-medium">
+                  Holding requirement ensures authentic community participation. Verification is checked directly on the Solana blockchain.
+                </p>
+              </div>
             </div>
           ) : (
             <div className="space-y-6">
               {step === "perform" && (
-                <Button className="w-full h-16 rounded-2xl bg-white/5 border border-white/10 font-black uppercase tracking-widest gap-3" onClick={() => { window.open(action.url, '_blank'); setStep("verify"); }}>
-                  Open Task <ExternalLink className="w-5 h-5" />
-                </Button>
+                <div className="space-y-4">
+                  <div className="bg-white/5 p-8 rounded-[2rem] border border-white/10 text-center">
+                    <CheckCircle className="w-12 h-12 text-primary mx-auto opacity-20 mb-4" />
+                    <p className="text-sm font-medium text-white/60">{action?.description}</p>
+                  </div>
+                  <Button className="w-full h-16 rounded-2xl bg-white/5 border border-white/10 font-black uppercase tracking-widest gap-3" onClick={() => { window.open(action?.url, '_blank'); setStep("verify"); }}>
+                    OPEN TASK <ExternalLink className="w-5 h-5" />
+                  </Button>
+                </div>
               )}
               {step === "verify" && (
                 <div className="space-y-6">
-                  {!isWebsiteAction && (
+                  {action?.type !== "website" && (
                     <div className="space-y-2">
-                      <Label className="text-[10px] uppercase font-black text-white/40">Proof (Username)</Label>
-                      <Input placeholder="@username" value={proof} onChange={(e) => setProof(e.target.value)} className="bg-white/5 border-white/10 h-12" />
+                      <Label className="text-[10px] uppercase font-black text-white/40 tracking-widest">PROOF (USERNAME)</Label>
+                      <Input placeholder="@username" value={proof} onChange={(e) => setProof(e.target.value)} className="bg-[#141414] border-white/10 h-14 rounded-xl" />
                     </div>
                   )}
                   
-                  <div className="flex flex-col items-center justify-center gap-4">
-                    <p className="text-[10px] font-black uppercase text-primary tracking-[0.2em]">Security Verification</p>
-                    <div className="min-h-[65px] flex items-center justify-center w-full bg-white/5 rounded-xl border border-white/5 p-2">
-                      <Turnstile
-                        siteKey={siteKey}
-                        onSuccess={(token) => setTurnstileToken(token)}
-                        options={{ theme: "dark" }}
-                      />
-                    </div>
+                  <div className="bg-[#141414] p-6 rounded-3xl border border-white/5 flex items-center justify-center min-h-[70px]">
+                    <Turnstile
+                      siteKey={siteKey}
+                      onSuccess={(token) => setTurnstileToken(token)}
+                      options={{ theme: "dark" }}
+                    />
                   </div>
 
-                  <Button onClick={handleVerify} disabled={verifyMutation.isPending || !turnstileToken} className="w-full h-14 bg-primary text-primary-foreground rounded-2xl font-black uppercase tracking-widest">
+                  <Button onClick={handleVerify} disabled={verifyMutation.isPending || !turnstileToken} className="w-full h-16 bg-[#00D1FF] hover:bg-[#00D1FF]/90 text-black rounded-2xl font-black uppercase tracking-widest">
                     {verifyMutation.isPending ? <Loader2 className="animate-spin" /> : "CONFIRM"}
                   </Button>
                 </div>
               )}
               {step === "success" && (
                 <div className="text-center py-10 space-y-4">
-                  <CheckCircle className="w-16 h-16 text-primary mx-auto" />
-                  <h3 className="text-xl font-black text-white uppercase">Verified!</h3>
+                  <CheckCircle className="w-20 h-20 text-[#00D1FF] mx-auto" />
+                  <h3 className="text-2xl font-black text-white uppercase tracking-tighter">VERIFIED!</h3>
+                  <p className="text-white/40 font-bold uppercase tracking-widest text-[10px]">Reward unlocked</p>
                 </div>
               )}
             </div>
