@@ -6,6 +6,7 @@ import { insertCampaignSchema, insertActionSchema } from "@shared/schema";
 import { useCreateCampaign } from "@/hooks/use-campaigns";
 import { useWallet } from "@/hooks/use-wallet";
 import { useToast } from "@/hooks/use-toast";
+import { CONFIG, PLATFORM_CONFIG } from "@shared/config";
 import {
   Dialog,
   DialogContent,
@@ -333,14 +334,14 @@ export function CreateCampaignDialog() {
                       </h3>
                       <div className="space-y-3 text-sm text-muted-foreground leading-relaxed">
                         <p>
-                          Creating a campaign requires a one-time burn of <strong>{PLATFORM_CONFIG.BURN_AMOUNT.toLocaleString()} ${PLATFORM_CONFIG.TOKEN_SYMBOL}</strong>.
+                          Creating a campaign requires a one-time fee of <strong>{CONFIG.TOKENOMICS.CREATION_FEE.toLocaleString()} ${PLATFORM_CONFIG.TOKEN_SYMBOL}</strong>.
                         </p>
                         <p>
-                          As an advertiser, you are responsible for:
+                          Fee Breakdown:
                           <ul className="list-disc ml-4 mt-1 space-y-1">
-                            <li>Funding the reward pool (deposited into Dropy System Escrow)</li>
-                            <li>Platform setup fee ({PLATFORM_CONFIG.FEE_SOL} SOL)</li>
-                            <li>Transaction costs for distribution</li>
+                            <li>{CONFIG.TOKENOMICS.BURN_PERCENT}% Burned (Deflationary)</li>
+                            <li>{CONFIG.TOKENOMICS.REWARDS_PERCENT}% to Weekly Rewards Pool</li>
+                            <li>{CONFIG.TOKENOMICS.SYSTEM_PERCENT}% to System Maintenance</li>
                           </ul>
                         </p>
                         <p className="text-[10px] border-t border-white/5 pt-2 italic">
