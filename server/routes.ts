@@ -176,21 +176,25 @@ export async function registerRoutes(
   app.post(api.executions.verify.path, async (req, res) => {
     try {
       const { turnstileToken } = req.body;
+      const parsedProof = JSON.parse(req.body.proof || "{}");
+      const isAutoFetch = parsedProof.isAutoFetch === true;
       
-      if (!turnstileToken) {
+      if (!turnstileToken && !isAutoFetch) {
         return res.status(400).json({ message: "Security verification required" });
       }
 
-      const verifyUrl = "https://challenges.cloudflare.com/turnstile/v0/siteverify";
-      const verifyRes = await fetch(verifyUrl, {
-        method: "POST",
-        body: `secret=${process.env.TURNSTILE_SECRET_KEY}&response=${turnstileToken}`,
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      });
+      if (turnstileToken) {
+        const verifyUrl = "https://challenges.cloudflare.com/turnstile/v0/siteverify";
+        const verifyRes = await fetch(verifyUrl, {
+          method: "POST",
+          body: `secret=${process.env.TURNSTILE_SECRET_KEY}&response=${turnstileToken}`,
+          headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        });
 
-      const verifyJson = await verifyRes.json() as { success: boolean };
-      if (!verifyJson.success) {
-        return res.status(400).json({ message: "Security verification failed. Please try again." });
+        const verifyJson = await verifyRes.json() as { success: boolean };
+        if (!verifyJson.success) {
+          return res.status(400).json({ message: "Security verification failed. Please try again." });
+        }
       }
 
       const input = api.executions.verify.input.parse(req.body);
@@ -232,7 +236,8 @@ export async function registerRoutes(
                 status: "insufficient",
                 currentBalance: balance,
                 requiredBalance: required,
-                message: `Insufficient balance` 
+                message: `Insufficient balance`,
+                holdDuration: campaign.minHoldingDuration || 0
               });
             }
             state = await storage.createHolderState({
@@ -241,19 +246,55 @@ export async function registerRoutes(
               holdStartTimestamp: new Date(),
               claimed: false
             });
-            return res.json({ success: true, status: "holding", message: "Holding period started!" });
+            return res.json({ 
+              success: true, 
+              status: "holding", 
+              message: "Holding period started!",
+              currentBalance: balance,
+              requiredBalance: required,
+              holdDuration: campaign.minHoldingDuration || 0,
+              remaining: (campaign.minHoldingDuration || 0) * 14400 // Approximate blocks
+            });
           }
           if (state.claimed) return res.json({ success: false, message: "Already claimed" });
           const now = new Date();
           const durationDays = (now.getTime() - state.holdStartTimestamp.getTime()) / (1000 * 60 * 60 * 24);
           const minDuration = campaign.minHoldingDuration || 0;
+          
+          const remainingDays = Math.max(0, minDuration - durationDays);
+          const remainingBlocks = Math.ceil(remainingDays * 14400);
+
           if (balance < required) {
-            return res.json({ success: false, status: "insufficient", message: `Verification failed.` });
+            return res.json({ 
+              success: false, 
+              status: "insufficient", 
+              message: `Verification failed.`,
+              currentBalance: balance,
+              requiredBalance: required,
+              holdDuration: minDuration,
+              remaining: remainingBlocks
+            });
           }
           if (durationDays < minDuration) {
-            return res.json({ success: true, status: "waiting", message: "Still in holding period" });
+            return res.json({ 
+              success: true, 
+              status: "waiting", 
+              message: "Still in holding period",
+              currentBalance: balance,
+              requiredBalance: required,
+              holdDuration: minDuration,
+              remaining: remainingBlocks
+            });
           }
-          return res.json({ success: true, status: "ready", message: "Eligibility verified!" });
+          return res.json({ 
+            success: true, 
+            status: "ready", 
+            message: "Eligibility verified!",
+            currentBalance: balance,
+            requiredBalance: required,
+            holdDuration: minDuration,
+            remaining: 0
+          });
         }
         return res.status(404).json({ message: "Action or Campaign not found" });
       }

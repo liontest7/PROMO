@@ -64,6 +64,8 @@ export function VerifyActionDialog({ action, campaign, open, onOpenChange, onSuc
     }
   }, [open]);
 
+  if (!campaign) return null;
+
   const isHolderCampaign = campaign?.campaignType === 'holder_qualification';
 
   useEffect(() => {
@@ -71,8 +73,6 @@ export function VerifyActionDialog({ action, campaign, open, onOpenChange, onSuc
       handleVerify(true);
     }
   }, [open, isConnected, isHolderCampaign]);
-
-  if (!campaign) return null;
 
   const handleVerify = async (isAutoFetch: boolean = false) => {
     if (!walletAddress) return;
@@ -93,7 +93,7 @@ export function VerifyActionDialog({ action, campaign, open, onOpenChange, onSuc
           { 
             actionId: campaign.id,
             userWallet: walletAddress, 
-            proof: JSON.stringify({ type: 'holder_verification', wallet: walletAddress, isAutoFetch }),
+            proof: JSON.stringify({ type: 'holder_verification', wallet: walletAddress, isAutoFetch: !!isAutoFetch }),
             // @ts-ignore
             turnstileToken 
           },
