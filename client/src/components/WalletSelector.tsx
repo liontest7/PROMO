@@ -24,22 +24,25 @@ export function WalletSelector({ open, onOpenChange, onSelect }: WalletSelectorP
       const detected = [
         { 
           name: 'Phantom', 
-          provider: (window as any).phantom?.solana,
-          icon: "https://raw.githubusercontent.com/solana-labs/wallet-adapter/master/packages/wallets/phantom/src/phantom.svg"
+          provider: (window as any).phantom?.solana || (window as any).solana?.isPhantom ? (window as any).solana : null,
+          icon: "https://www.phantom.app/favicon.ico",
+          installUrl: "https://phantom.app/"
         },
         { 
           name: 'Solflare', 
-          provider: (window as any).solflare?.solana,
-          icon: "https://raw.githubusercontent.com/solana-labs/wallet-adapter/master/packages/wallets/solflare/src/solflare.svg"
+          provider: (window as any).solflare?.solana || (window as any).solana?.isSolflare ? (window as any).solana : null,
+          icon: "https://solflare.com/favicon.ico",
+          installUrl: "https://solflare.com/"
         },
         { 
-          name: 'Bybit', 
-          provider: (window as any).bybitWallet?.solana,
-          icon: "https://www.bybit.com/favicon.ico"
+          name: 'Bybit Wallet', 
+          provider: (window as any).bybitWallet?.solana || (window as any).solana?.isBybit ? (window as any).solana : null,
+          icon: "https://www.bybit.com/favicon.ico",
+          installUrl: "https://www.bybit.com/en/web3/"
         }
       ].map(p => ({
         ...p,
-        detected: !!(p.provider && p.provider.connect)
+        detected: !!(p.provider && (p.provider.connect || p.provider.isPrimary || p.provider.publicKey))
       }));
       setProviders(detected);
     };
@@ -65,7 +68,7 @@ export function WalletSelector({ open, onOpenChange, onSelect }: WalletSelectorP
               key={p.name}
               variant="outline"
               className="w-full h-16 justify-between items-center bg-white/5 border-white/10 hover:bg-white/10 hover:border-primary/50 transition-all group px-4"
-              onClick={() => p.detected ? onSelect(p.provider) : window.open('https://solana.com/ecosystem/wallets', '_blank')}
+              onClick={() => p.detected ? onSelect(p.provider) : window.open(p.installUrl, '_blank')}
             >
               <div className="flex items-center gap-4">
                 <div className="w-10 h-10 rounded-xl bg-black/20 flex items-center justify-center overflow-hidden p-2 group-hover:scale-110 transition-transform">
