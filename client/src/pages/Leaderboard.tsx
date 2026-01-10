@@ -16,8 +16,7 @@ export default function Leaderboard() {
 
   const { data: leaders, isLoading } = useQuery<any[]>({
     queryKey: ["/api/leaderboard", timeframe],
-    refetchInterval: 5000,
-    staleTime: 0
+    refetchInterval: 10000,
   });
 
   if (isLoading) {
@@ -53,8 +52,8 @@ export default function Leaderboard() {
               
               {/* Character Trophy positioned to the right and lower */}
               <div className="absolute -bottom-12 right-0 md:right-[-100px] transform translate-y-1/2">
-                <div className="relative group">
-                  <div className="absolute inset-0 bg-primary/20 blur-3xl rounded-full opacity-50 group-hover:opacity-100 transition-opacity" />
+                <div className="relative">
+                  <div className="absolute inset-0 bg-primary/10 blur-3xl rounded-full" />
                   <img 
                     src="https://i.ibb.co/5Xd708DM/20260110-2035-Dropy-Wins-Trophy-remix-01kemjzex0f9xvh2emrc9tk4jy.png" 
                     alt="Dropy Trophy" 

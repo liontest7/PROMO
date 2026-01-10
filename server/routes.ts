@@ -408,23 +408,20 @@ export async function registerRoutes(
 
   app.get('/api/leaderboard', async (req, res) => {
     try {
-      const { timeframe } = req.query; // all_time, monthly, weekly
-      
-      // Explicitly fetch all users with 'user' role
       const allUsers = await storage.getAllUsers();
-      const leaders = allUsers.filter(u => u.role === 'user');
+      console.log(`[Leaderboard API] Found ${allUsers.length} total users in DB`);
       
-      console.log(`[Leaderboard API] Total users in DB: ${allUsers.length}, Users with 'user' role: ${leaders.length}`);
+      const userLeaders = allUsers.filter(u => u.role === 'user');
+      console.log(`[Leaderboard API] Filtered to ${userLeaders.length} users with role='user'`);
       
-      // Sort: Reputation first, then registration date
-      leaders.sort((a, b) => {
+      userLeaders.sort((a, b) => {
         const scoreA = a.reputationScore || 0;
         const scoreB = b.reputationScore || 0;
         if (scoreB !== scoreA) return scoreB - scoreA;
         return new Date(a.createdAt || 0).getTime() - new Date(b.createdAt || 0).getTime();
       });
 
-      const limitedLeaders = leaders.slice(0, 100);
+      const limitedLeaders = userLeaders.slice(0, 100);
       
       const formatted = await Promise.all(limitedLeaders.map(async (u, i) => {
         const userExecutions = await storage.getExecutionsByUser(u.id);
