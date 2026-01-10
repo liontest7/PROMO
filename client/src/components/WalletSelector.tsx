@@ -8,6 +8,7 @@ interface WalletProvider {
   icon: string;
   provider: any;
   detected: boolean;
+  installUrl: string;
 }
 
 interface WalletSelectorProps {
@@ -21,7 +22,6 @@ export function WalletSelector({ open, onOpenChange, onSelect }: WalletSelectorP
 
   useEffect(() => {
     const checkProviders = () => {
-      // Direct detection of injected providers with deeper checks
       const solana = (window as any).solana;
       const phantom = (window as any).phantom;
       const solflare = (window as any).solflare;
@@ -35,14 +35,14 @@ export function WalletSelector({ open, onOpenChange, onSelect }: WalletSelectorP
         { 
           name: 'Phantom', 
           provider: phantomProvider,
-          icon: "https://purple-eligible-koala-752.mypinata.cloud/ipfs/QmZpL8f2B5f2f5f2f5f2f5f2f5f2f5f2f5f2f5f2f5f2f5",
+          icon: "https://www.phantom.app/favicon.ico",
           installUrl: "https://phantom.app/",
           detected: !!phantomProvider
         },
         { 
           name: 'Solflare', 
           provider: solflareProvider,
-          icon: "https://purple-eligible-koala-752.mypinata.cloud/ipfs/QmSolflareLogoIPFSHashPlaceholder",
+          icon: "https://solflare.com/favicon.ico",
           installUrl: "https://solflare.com/",
           detected: !!solflareProvider
         },
@@ -58,10 +58,7 @@ export function WalletSelector({ open, onOpenChange, onSelect }: WalletSelectorP
     };
 
     checkProviders();
-    // Re-check more frequently and over a longer period to ensure all extensions are detected
     const timers = [50, 100, 250, 500, 1000, 2000, 5000].map(ms => setTimeout(checkProviders, ms));
-    
-    // Also listen for a custom event if wallets emit one when they're ready
     window.addEventListener('load', checkProviders);
     
     return () => {
@@ -72,52 +69,74 @@ export function WalletSelector({ open, onOpenChange, onSelect }: WalletSelectorP
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[400px] glass-card border-white/10 bg-background/95 backdrop-blur-xl p-6">
-        <DialogHeader className="mb-6">
-          <DialogTitle className="text-2xl font-display font-black text-center">
-            Connect a wallet on Solana to continue
-          </DialogTitle>
-        </DialogHeader>
-        
-        <div className="grid gap-3">
-          {providers.map((p) => (
-            <Button
-              key={p.name}
-              variant="outline"
-              className="w-full h-16 justify-between items-center bg-white/5 border-white/10 hover:bg-white/10 hover:border-primary/50 transition-all group px-4"
-              onClick={() => p.detected ? onSelect(p.provider) : window.open(p.installUrl, '_blank')}
-            >
-              <div className="flex items-center gap-4">
-                <div className="w-10 h-10 rounded-xl bg-black/20 flex items-center justify-center overflow-hidden p-2 group-hover:scale-110 transition-transform">
-                  <img 
-                    src={p.icon} 
-                    alt={p.name} 
-                    className="w-full h-full object-contain"
-                    onError={(e) => {
-                      (e.target as HTMLImageElement).src = "https://solana.com/favicon.ico";
-                    }}
-                  />
-                </div>
-                <span className="text-lg font-bold">{p.name}</span>
-              </div>
-              
-              <div className="flex items-center gap-2">
-                {p.detected ? (
-                  <span className="text-[10px] font-black uppercase tracking-widest text-primary flex items-center gap-1">
-                    Detected <CheckCircle2 className="w-3 h-3" />
-                  </span>
-                ) : (
-                  <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">
-                    Install
-                  </span>
-                )}
-              </div>
-            </Button>
-          ))}
+      <DialogContent className="sm:max-w-[420px] border-white/10 bg-background/40 backdrop-blur-2xl p-0 overflow-hidden rounded-3xl shadow-2xl shadow-black/50">
+        <div 
+          className="absolute inset-0 z-0 opacity-[0.08] pointer-events-none bg-cover bg-center"
+          style={{ backgroundImage: 'url(https://i.ibb.co/xq2jkksm/20260109-2047-Image-Generation-remix-01kej1a44aer6vxak4n8tx8e6j.png)' }}
+        />
+
+        <div className="relative z-10 p-8">
+          <DialogHeader className="mb-8">
+            <DialogTitle className="text-3xl font-display font-black text-center bg-gradient-to-br from-white to-white/60 bg-clip-text text-transparent">
+              Connect Wallet
+            </DialogTitle>
+            <p className="text-center text-muted-foreground text-sm font-medium mt-2">
+              Choose your preferred Solana wallet to securely connect to Dropy.
+            </p>
+          </DialogHeader>
           
-          <p className="text-[11px] text-center text-muted-foreground mt-4 italic">
-            Choose your preferred wallet to securely connect to Dropy.
-          </p>
+          <div className="grid gap-4">
+            {providers.map((p) => (
+              <Button
+                key={p.name}
+                variant="outline"
+                className="w-full h-20 justify-between items-center bg-white/5 border-white/10 hover:bg-white/10 hover:border-primary/50 transition-all duration-300 rounded-2xl group px-6 relative overflow-hidden no-default-hover-elevate no-default-active-elevate"
+                onClick={() => p.detected ? onSelect(p.provider) : window.open(p.installUrl, '_blank')}
+              >
+                <div className="absolute inset-0 bg-gradient-to-r from-primary/0 via-primary/5 to-primary/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+
+                <div className="flex items-center gap-5 relative z-10">
+                  <div className="w-12 h-12 rounded-xl bg-black/40 flex items-center justify-center overflow-hidden p-2 group-hover:scale-110 transition-transform duration-300 border border-white/5">
+                    <img 
+                      src={p.icon} 
+                      alt={p.name} 
+                      className="w-full h-full object-contain"
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).src = "https://solana.com/favicon.ico";
+                      }}
+                    />
+                  </div>
+                  <div className="flex flex-col items-start">
+                    <span className="text-xl font-bold tracking-tight text-white">{p.name}</span>
+                    <span className="text-[10px] text-muted-foreground font-semibold uppercase tracking-widest">Solana Network</span>
+                  </div>
+                </div>
+                
+                <div className="flex items-center gap-2 relative z-10">
+                  {p.detected ? (
+                    <div className="flex items-center gap-2 bg-primary/10 px-3 py-1.5 rounded-full border border-primary/20">
+                      <span className="text-[10px] font-black uppercase tracking-widest text-primary">
+                        Detected
+                      </span>
+                      <CheckCircle2 className="w-3.5 h-3.5 text-primary" />
+                    </div>
+                  ) : (
+                    <div className="flex items-center gap-2 bg-white/5 px-3 py-1.5 rounded-full border border-white/10">
+                      <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">
+                        Install
+                      </span>
+                    </div>
+                  )}
+                </div>
+              </Button>
+            ))}
+          </div>
+
+          <div className="mt-8 text-center">
+            <p className="text-[11px] text-muted-foreground/60 font-medium">
+              By connecting, you agree to Dropy's Terms of Service and Privacy Policy.
+            </p>
+          </div>
         </div>
       </DialogContent>
     </Dialog>
