@@ -15,7 +15,9 @@ import {
   Megaphone, 
   CheckCircle, 
   ShieldAlert,
-  Loader2
+  Loader2,
+  Activity,
+  ArrowUpRight
 } from "lucide-react";
 import { queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
@@ -75,40 +77,68 @@ export default function AdminDashboard() {
     );
   }
 
+  const totalRewardsPaid = executions?.filter((e: any) => e.status === 'paid')
+    .reduce((sum: number, e: any) => sum + parseFloat(e.action?.rewardAmount || "0"), 0) || 0;
+
+  const activeCampaignsCount = campaigns?.filter(c => c.status === 'active').length || 0;
+  const blockedUsersCount = users?.filter(u => u.isBlocked).length || 0;
+
   return (
     <div className="container mx-auto py-10 space-y-8">
-      <h1 className="text-4xl font-display font-black tracking-tighter uppercase italic">
-        Admin <span className="text-primary">Console</span>
-      </h1>
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
+        <div>
+          <h1 className="text-4xl font-display font-black tracking-tighter uppercase italic">
+            Admin <span className="text-primary">Console</span>
+          </h1>
+          <p className="text-muted-foreground mt-1">Professional Management & Real-time Operations</p>
+        </div>
+        <div className="flex gap-2">
+          <Badge variant="outline" className="px-3 py-1 flex gap-2 items-center border-primary/30 bg-primary/5">
+            <Activity className="h-3 w-3 text-primary animate-pulse" />
+            System Live
+          </Badge>
+        </div>
+      </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <Card className="bg-white/5 border-white/10">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <Card className="bg-white/5 border-white/10 hover:bg-white/10 transition-colors">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Total Users</CardTitle>
             <Users className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{users?.length || 0}</div>
+            <p className="text-[10px] text-muted-foreground mt-1 uppercase tracking-wider">{blockedUsersCount} blocked</p>
           </CardContent>
         </Card>
-        <Card className="bg-white/5 border-white/10">
+        <Card className="bg-white/5 border-white/10 hover:bg-white/10 transition-colors">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Campaigns</CardTitle>
+            <CardTitle className="text-sm font-medium">Campaigns</CardTitle>
             <Megaphone className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{campaigns?.length || 0}</div>
+            <p className="text-[10px] text-primary mt-1 uppercase tracking-wider font-bold">{activeCampaignsCount} active</p>
           </CardContent>
         </Card>
-        <Card className="bg-white/5 border-white/10">
+        <Card className="bg-white/5 border-white/10 hover:bg-white/10 transition-colors">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Verified Actions</CardTitle>
+            <CardTitle className="text-sm font-medium">Executions</CardTitle>
             <CheckCircle className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
-              {executions?.filter((e: any) => e.status === 'verified' || e.status === 'paid').length || 0}
-            </div>
+            <div className="text-2xl font-bold">{executions?.length || 0}</div>
+            <p className="text-[10px] text-muted-foreground mt-1 uppercase tracking-wider">Total tasks done</p>
+          </CardContent>
+        </Card>
+        <Card className="bg-white/5 border-white/10 hover:bg-white/10 transition-colors">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Rewards Paid</CardTitle>
+            <ArrowUpRight className="h-4 w-4 text-primary" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-primary">{totalRewardsPaid.toLocaleString()}</div>
+            <p className="text-[10px] text-muted-foreground mt-1 uppercase tracking-wider">Token distribution</p>
           </CardContent>
         </Card>
       </div>
