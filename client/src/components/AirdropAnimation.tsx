@@ -9,28 +9,27 @@ export function AirdropAnimation() {
           y: "-20%", 
           x: "80%", 
           opacity: 0,
-          rotate: -20
+          rotate: -15
         }}
         animate={{ 
-          // Large S-shaped path that goes fully off-screen at the bottom
-          y: ["-20%", "20%", "50%", "80%", "120%"],
-          x: ["80%", "20%", "80%", "20%", "80%"],
+          // Smooth S-shaped path that goes fully off-screen at the bottom (140%)
+          y: ["-20%", "20%", "60%", "100%", "140%"],
+          x: ["80%", "10%", "90%", "10%", "80%"],
           opacity: [0, 1, 1, 1, 0],
-          rotate: [-20, 20, -20, 20, -20]
+          rotate: [-15, 15, -15, 15, -15]
         }}
         transition={{
-          duration: 18,
+          duration: 25, // Slower for a calmer feel
           repeat: Infinity,
-          ease: "linear",
-          // Control visibility so it's only hidden at the very start/end of the cycle
-          times: [0, 0.1, 0.5, 0.9, 1]
+          ease: "easeInOut", // Smoother transitions between points
+          times: [0, 0.15, 0.5, 0.85, 1]
         }}
-        className="absolute w-32 h-32 md:w-48 md:h-48"
+        className="absolute w-40 h-40 md:w-56 md:h-56"
       >
         <img 
           src={PLATFORM_CONFIG.ASSETS.MAIN_LOGO} 
           alt="Falling Mascot" 
-          className="w-full h-full object-contain opacity-40 drop-shadow-[0_20px_40px_rgba(0,0,0,0.4)] blur-[0.5px]"
+          className="w-full h-full object-contain opacity-30 drop-shadow-[0_30px_60px_rgba(0,0,0,0.3)] blur-[0.3px]"
         />
       </motion.div>
     </div>
