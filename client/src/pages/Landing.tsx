@@ -197,9 +197,13 @@ export default function Landing() {
                 </div>
                 <div className="flex justify-center relative">
                   <div className="w-[400px] h-[400px] rounded-full bg-primary/20 flex items-center justify-center border-[12px] border-primary/10">
-                    <div className="w-80 h-80 flex items-center justify-center bg-black/20 rounded-full border-4 border-primary/20 shadow-[0_0_40px_rgba(34,197,94,0.3)]">
-                       <Coins className="w-40 h-40 text-primary animate-pulse" />
-                    </div>
+                    <motion.img 
+                      src={PLATFORM_CONFIG.ASSETS.DEFLATIONARY_MONK} 
+                      alt="Deflationary Monk" 
+                      animate={{ y: [0, -30, 0] }}
+                      transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+                      className="w-80 h-80 object-contain drop-shadow-[0_0_60px_rgba(34,197,94,0.7)] translate-x-1" 
+                    />
                   </div>
                 </div>
               </div>
