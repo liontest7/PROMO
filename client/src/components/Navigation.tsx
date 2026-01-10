@@ -60,32 +60,28 @@ export function Navigation() {
             </span>
           </Link>
 
-          {/* Nav Links */}
-          <div className="hidden md:flex items-center gap-3">
-            <NavLink href="/earn" icon={Coins}>Earn Rewards</NavLink>
-            
-            {isConnected && (role === "user" || role === "advertiser" || (role as any) === "admin") && (
-              <div className="flex items-center gap-3">
-                <NavLink href="/dashboard" icon={Trophy}>My Dashboard</NavLink>
-                <div className="ml-auto flex items-center gap-2">
+            <div className="hidden md:flex items-center gap-3">
+              <NavLink href="/earn" icon={Coins}>Earn Rewards</NavLink>
+              {isConnected && (
+                <>
+                  <NavLink href="/dashboard" icon={Trophy}>My Dashboard</NavLink>
                   <NavLink href="/about" icon={ShieldCheck}>About Us</NavLink>
                   {(role === "advertiser" || (role as any) === "admin") && (
                     <Button 
                       variant="ghost" 
                       size="icon" 
                       asChild 
-                      className="h-8 w-8 rounded-full bg-primary/10 text-primary hover:bg-primary/20 transition-all border border-primary/20"
+                      className="h-10 w-10 rounded-full bg-primary/10 text-primary hover:bg-primary/20 transition-all border border-primary/20 ml-2"
                       title={role === "advertiser" ? "Admin Console" : "Admin Panel"}
                     >
-                      <a href={role === "advertiser" ? "/advertiser" : "/admin"}>
-                        {role === "advertiser" ? <LayoutDashboard className="h-4 w-4" /> : <ShieldAlert className="h-4 w-4" />}
-                      </a>
+                      <Link href={role === "advertiser" ? "/advertiser" : "/admin"}>
+                        {role === "advertiser" ? <LayoutDashboard className="h-5 w-5" /> : <ShieldAlert className="h-5 w-5" />}
+                      </Link>
                     </Button>
                   )}
-                </div>
-              </div>
-            )}
-          </div>
+                </>
+              )}
+            </div>
 
           <div className="flex items-center gap-4">
             <div className="hidden lg:flex items-center gap-3 mr-4 pr-4 border-r border-white/10">

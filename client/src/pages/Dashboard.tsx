@@ -1,9 +1,9 @@
 import { useWallet } from "@/hooks/use-wallet";
 import { useUserStats } from "@/hooks/use-user-stats";
 import { Navigation } from "@/components/Navigation";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { Card, CardHeader, CardTitle, CardContent, CardDescription } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Coins, Trophy, TrendingUp, Activity, CheckCircle, Twitter, Send, Loader2, Wallet, LogOut } from "lucide-react";
+import { Coins, Trophy, TrendingUp, Activity, CheckCircle, Twitter, Send, Loader2, Wallet, LogOut, Megaphone, ShieldAlert, ShieldCheck } from "lucide-react";
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { api } from "@shared/routes";
@@ -18,6 +18,7 @@ import { useAuth } from "@/hooks/use-auth";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { User as UserIcon } from "lucide-react";
+import { Link } from "wouter";
 
 export default function Dashboard() {
   const { walletAddress, userId, solBalance } = useWallet();
@@ -57,7 +58,7 @@ export default function Dashboard() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/users", walletAddress] });
-      queryClient.invalidateQueries({ queryKey: [api.users.stats.path, walletAddress] }); // Added this
+      queryClient.invalidateQueries({ queryKey: [api.users.stats.path, walletAddress] });
       toast({ title: "Profile Updated", description: "Your social handles have been saved." });
     },
   });
@@ -138,257 +139,197 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <div className="min-h-screen bg-background">
       <header>
         <title>User Dashboard | Dropy</title>
       </header>
       <Navigation />
       
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-12">
-          <div>
-            <h1 className="text-4xl font-display font-bold mb-2 italic uppercase tracking-tighter">My <span className="text-primary">Dropy</span></h1>
-            <p className="text-muted-foreground font-medium">Track your earnings and verified actions across the Dropy ecosystem.</p>
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-12">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
+          <div className="space-y-2">
+            <div className="flex items-center gap-2 text-primary">
+              <div className="h-px w-8 bg-primary/50" />
+              <span className="text-[10px] font-black uppercase tracking-[0.2em]">Personal Console</span>
+            </div>
+            <h1 className="text-5xl md:text-6xl font-display font-black tracking-tighter uppercase italic leading-none">
+              User <span className="text-primary drop-shadow-[0_0_15px_rgba(34,197,94,0.3)]">Stats</span>
+            </h1>
+            <p className="text-muted-foreground font-medium text-lg max-w-lg">Track your performance and protocol rewards in real-time.</p>
           </div>
-          <div className="p-4 rounded-2xl bg-primary/5 border border-primary/10 backdrop-blur-sm">
-            <p className="text-[10px] font-bold text-primary uppercase tracking-widest mb-1">Current Wallet</p>
-            <p className="font-mono text-sm font-bold flex items-center gap-2">
-              <Wallet className="w-3.5 h-3.5" />
-              {walletAddress?.slice(0, 6)}...{walletAddress?.slice(-6)}
-            </p>
+          
+          <div className="grid grid-cols-2 gap-4 p-4 rounded-3xl bg-white/5 border border-white/10 backdrop-blur-md">
+            <div className="flex flex-col pr-6 border-r border-white/10">
+              <span className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-1">Reputation</span>
+              <div className="flex items-center gap-2">
+                <span className="text-3xl font-black font-display text-primary">{stats?.reputation || 100}</span>
+                <Trophy className="w-4 h-4 text-primary opacity-50" />
+              </div>
+            </div>
+            <div className="flex flex-col pl-2">
+              <span className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-1">Rank</span>
+              <span className="text-3xl font-black font-display text-white">#{Math.max(1, 100 - (stats?.reputation || 0))}</span>
+            </div>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
-          {/* Stats Column */}
-          <div className="lg:col-span-2 space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              <Card className="glass-card border-primary/20 bg-primary/5 rounded-2xl md:col-span-2">
-                <CardHeader className="flex flex-row items-center justify-between pb-2">
-                  <CardTitle className="text-[11px] font-bold text-primary uppercase tracking-widest">Available Rewards</CardTitle>
-                  <div className="p-2 rounded-lg bg-primary/20">
-                    <Coins className="h-4 w-4 text-primary" />
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    {stats?.tokenBalances && stats.tokenBalances.length > 0 ? (
-                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                        {stats.tokenBalances.map((tb: any) => (
-                          <div key={tb.symbol} className="p-4 rounded-2xl bg-white/5 border border-white/10 hover-elevate transition-all group relative overflow-hidden">
-                            <div className="absolute top-0 right-0 p-2 opacity-10 group-hover:opacity-20 transition-opacity">
-                              <Coins className="w-12 h-12 rotate-12" />
-                            </div>
-                            <div className="flex justify-between items-start mb-3">
-                              <div className="flex flex-col">
-                                <span className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-1">{tb.symbol} Assets</span>
-                                <div className="text-2xl font-black font-display text-primary">{tb.balance}</div>
-                              </div>
-                              {Number(tb.pending) > 0 && (
-                                <Badge variant="outline" className="text-[9px] font-black text-yellow-500 bg-yellow-500/10 border-yellow-500/20 px-2 py-1 rounded-lg uppercase tracking-tight">
-                                  {tb.pending} PENDING
-                                </Badge>
-                              )}
-                            </div>
-                            <div className="space-y-2">
-                              <div className="flex justify-between items-center">
-                                <span className="text-[10px] font-bold text-muted-foreground uppercase">Lifetime Earnings</span>
-                                <span className="text-xs font-bold text-foreground">{tb.earned} {tb.symbol}</span>
-                              </div>
-                              {tb.price && (
-                                <div className="flex justify-between items-center pt-2 border-t border-white/5">
-                                  <span className="text-[10px] font-bold text-muted-foreground uppercase">Estimated Value</span>
-                                  <span className="text-sm font-black text-primary/80 font-mono">${(Number(tb.balance) * Number(tb.price)).toFixed(2)}</span>
-                                </div>
-                              )}
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    ) : (
-                      <div className="text-2xl font-bold font-display tracking-tight text-muted-foreground opacity-50 italic">No rewards yet</div>
-                    )}
-                    
-                    {stats?.tokenBalances?.some((tb: any) => Number(tb.pending) > 0) && (
-                      <Button 
-                        size="sm" 
-                        variant="default"
-                        className="w-full mt-2 h-10 font-bold bg-primary hover:bg-primary/90"
-                        onClick={() => claimAllMutation.mutate()}
-                        disabled={claimAllMutation.isPending}
-                      >
-                        {claimAllMutation.isPending ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <Coins className="h-4 w-4 mr-2" />}
-                        CLAIM ALL PENDING REWARDS
-                      </Button>
-                    )}
-                  </div>
-                </CardContent>
-              </Card>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <div className="lg:col-span-2 space-y-8">
+            <section>
+              <div className="flex items-center gap-3 mb-6">
+                <div className="p-2 rounded-xl bg-primary/10">
+                  <Coins className="w-5 h-5 text-primary" />
+                </div>
+                <h2 className="text-2xl font-black font-display uppercase italic tracking-tight">Token Portfolios</h2>
+              </div>
               
-              <Card className="glass-card border-white/5 rounded-2xl bg-white/[0.02]">
-                <CardHeader className="flex flex-row items-center justify-between pb-2">
-                  <CardTitle className="text-sm font-medium text-muted-foreground">Reputation Score</CardTitle>
-                  <Trophy className="h-4 w-4 text-yellow-500" />
-                </CardHeader>
-                <CardContent>
-                  <div className="text-3xl font-bold font-display text-primary">{stats?.reputation || 100}</div>
-                  <p className="text-[10px] text-muted-foreground uppercase font-black tracking-widest mt-1">Trust Level: Verified</p>
-                </CardContent>
-              </Card>
-
-              <Card className="glass-card border-white/5 rounded-2xl bg-white/[0.02]">
-                <CardHeader className="flex flex-row items-center justify-between pb-2">
-                  <CardTitle className="text-sm font-medium text-muted-foreground">Tasks Completed</CardTitle>
-                  <Activity className="h-4 w-4 text-secondary" />
-                </CardHeader>
-                <CardContent>
-                  <div className="text-3xl font-bold font-display">{stats?.tasksCompleted || 0}</div>
-                  <p className="text-[10px] text-muted-foreground uppercase font-black tracking-widest mt-1">Global Ranking: --</p>
-                </CardContent>
-              </Card>
-            </div>
-
-            <Card className="glass-card border-white/5 rounded-2xl bg-white/[0.02]">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2 text-lg">
-                  <TrendingUp className="w-5 h-5 text-primary" />
-                  Earnings History
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="h-[250px] w-full">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <AreaChart data={chartData}>
-                      <defs>
-                        <linearGradient id="colorEarnings" x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="5%" stopColor="#22c55e" stopOpacity={0.3}/>
-                          <stop offset="95%" stopColor="#22c55e" stopOpacity={0}/>
-                        </linearGradient>
-                      </defs>
-                      <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
-                      <XAxis dataKey="name" stroke="#666" fontSize={12} tickLine={false} axisLine={false} />
-                      <YAxis stroke="#666" fontSize={12} tickLine={false} axisLine={false} />
-                      <Tooltip 
-                        contentStyle={{ backgroundColor: '#111', borderColor: '#333' }}
-                        itemStyle={{ color: '#fff' }}
-                      />
-                      <Area type="monotone" dataKey="earnings" stroke="#22c55e" strokeWidth={2} fillOpacity={1} fill="url(#colorEarnings)" />
-                    </AreaChart>
-                  </ResponsiveContainer>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-
-          {/* Social Profile Column */}
-          <div className="space-y-6">
-            <Card className="glass-card border-primary/20 bg-white/[0.02] rounded-2xl">
-              <CardHeader>
-                <CardTitle className="text-lg">Social Connections</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                {!isAuthenticated ? (
-                  <div className="p-4 rounded-xl bg-blue-500/10 border border-blue-500/20 text-center relative overflow-hidden group">
-                    <div className="absolute top-0 right-0 p-2 opacity-10 group-hover:opacity-20 transition-opacity">
-                      <Twitter className="w-12 h-12" />
-                    </div>
-                    <p className="text-xs text-blue-400 font-bold mb-3 uppercase tracking-wider">Verification (Coming Soon)</p>
-                    <Button 
-                      className="w-full bg-blue-500/50 cursor-not-allowed text-white gap-2 font-bold relative z-10"
-                      disabled
-                    >
-                      <Twitter className="w-4 h-4" /> Sync Socials (Soon)
-                    </Button>
-                    <p className="text-[10px] text-muted-foreground mt-3 italic">
-                      Twitter & Telegram API integration is in progress.
-                    </p>
-                  </div>
-                ) : (
-                  <div className="p-4 rounded-xl bg-primary/10 border border-primary/20 flex items-center gap-4 relative overflow-hidden group">
-                    <Avatar className="h-12 w-12 border-2 border-primary/20 relative z-10">
-                      <AvatarImage src={replitUser?.profileImageUrl || ""} />
-                      <AvatarFallback><UserIcon className="w-6 h-6" /></AvatarFallback>
-                    </Avatar>
-                    <div className="flex-1 relative z-10">
-                      <p className="text-sm font-bold leading-none mb-1">{replitUser?.firstName} {replitUser?.lastName}</p>
-                      <Badge variant="outline" className="text-[9px] uppercase font-black bg-primary/20 text-primary border-primary/30">Verified X Account</Badge>
-                    </div>
-                    <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-destructive relative z-10" onClick={() => logout()}>
-                      <LogOut className="w-4 h-4" />
-                    </Button>
-                  </div>
-                )}
-
-                <div className="space-y-4 pt-2">
-                  <div className="p-4 rounded-xl bg-blue-500/5 border border-blue-500/10 opacity-60">
-                    <div className="flex items-center gap-3 mb-2">
-                      <div className="w-8 h-8 rounded bg-blue-500/10 flex items-center justify-center">
-                        <Send className="w-4 h-4 text-blue-500" />
-                      </div>
-                      <div className="flex flex-col">
-                        <span className="text-sm font-bold">Connect Telegram</span>
-                        <span className="text-[9px] text-blue-400/70 font-bold uppercase tracking-tighter">Coming Soon</span>
-                      </div>
-                    </div>
-                    <Button variant="outline" className="w-full text-[10px] h-8 border-blue-500/20" disabled>
-                      Sync Official Telegram
-                    </Button>
-                  </div>
-                </div>
-
-                <p className="text-[10px] text-muted-foreground italic text-center">
-                  Manual handle entry is disabled. Real-time sync ensures secure verification.
-                </p>
-              </CardContent>
-            </Card>
-
-            <Card className="glass-card border-white/5 rounded-2xl bg-white/[0.02]">
-              <CardHeader className="flex flex-row items-center justify-between pb-2">
-                <CardTitle className="text-lg">Recent Activity</CardTitle>
-                {executions?.some((e: any) => e.status === 'verified') && (
-                  <Button 
-                    size="sm" 
-                    variant="default"
-                    className="h-7 text-[10px] font-bold bg-primary hover:bg-primary/90"
-                    onClick={() => claimAllMutation.mutate()}
-                    disabled={claimAllMutation.isPending}
-                  >
-                    {claimAllMutation.isPending ? <Loader2 className="h-3 w-3 animate-spin mr-1" /> : <Coins className="h-3 w-3 mr-1" />}
-                    CLAIM ALL PENDING
-                  </Button>
-                )}
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  {executions && executions.length > 0 ? (
-                    executions.slice(0, 10).map((execution: any) => (
-                      <div key={execution.id} className="flex items-start justify-between gap-3 p-3 rounded-xl bg-white/5 hover:bg-white/10 transition-colors">
-                        <div className="flex items-start gap-3">
-                          <div className={`w-2 h-2 mt-1.5 rounded-full ${execution.status === 'paid' ? 'bg-primary shadow-[0_0_8px_rgba(34,197,94,0.5)]' : 'bg-yellow-500'}`} />
+              {stats?.tokenBalances && stats.tokenBalances.length > 0 ? (
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  {stats.tokenBalances.map((tb: any) => (
+                    <Card key={tb.symbol} className="glass-card border-white/5 bg-white/[0.02] hover-elevate transition-all rounded-2xl overflow-hidden group">
+                      <div className="p-6 relative">
+                        <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
+                          <Coins className="w-16 h-16 rotate-12" />
+                        </div>
+                        <div className="flex justify-between items-start mb-6">
                           <div>
-                            <p className="text-sm font-bold">{execution.action?.title || 'Action Completed'}</p>
-                            <p className="text-[10px] text-muted-foreground font-medium">
-                              {execution.campaign?.title} • {execution.action?.rewardAmount} {execution.campaign?.tokenName}
-                            </p>
+                            <span className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em] mb-1 block">{tb.symbol} Network</span>
+                            <div className="text-3xl font-black font-display text-primary">{tb.balance}</div>
+                          </div>
+                          {Number(tb.pending) > 0 && (
+                            <div className="flex flex-col items-end">
+                              <Badge variant="outline" className="text-[9px] font-black text-yellow-500 bg-yellow-500/10 border-yellow-500/20 px-2 py-1 rounded-lg uppercase">
+                                PENDING
+                              </Badge>
+                              <span className="text-xs font-bold text-yellow-500/70 mt-1">{tb.pending}</span>
+                            </div>
+                          )}
+                        </div>
+                        <div className="grid grid-cols-2 gap-4 pt-6 border-t border-white/5">
+                          <div>
+                            <span className="text-[9px] font-bold text-muted-foreground uppercase block mb-0.5">Total Earned</span>
+                            <span className="text-sm font-bold">{tb.earned}</span>
+                          </div>
+                          {tb.price && (
+                            <div className="text-right">
+                              <span className="text-[9px] font-bold text-muted-foreground uppercase block mb-0.5">Value (USD)</span>
+                              <span className="text-sm font-black text-primary/80 font-mono">${(Number(tb.balance) * Number(tb.price)).toFixed(2)}</span>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    </Card>
+                  ))}
+                </div>
+              ) : (
+                <div className="flex flex-col items-center justify-center p-12 rounded-3xl bg-white/[0.02] border-2 border-dashed border-white/5">
+                  <Activity className="w-12 h-12 text-muted-foreground mb-4 opacity-20" />
+                  <p className="text-muted-foreground font-display font-bold uppercase tracking-widest">No active rewards</p>
+                </div>
+              )}
+            </section>
+
+            <section>
+              <div className="flex items-center gap-3 mb-6">
+                <div className="p-2 rounded-xl bg-primary/10">
+                  <Activity className="w-5 h-5 text-primary" />
+                </div>
+                <h2 className="text-2xl font-black font-display uppercase italic tracking-tight">Recent Activity</h2>
+              </div>
+              <Card className="glass-card border-white/5 bg-white/[0.01] rounded-2xl">
+                <CardContent className="p-0">
+                  {executions && executions.length > 0 ? (
+                    <div className="divide-y divide-white/5">
+                      {executions.slice(0, 10).map((execution: any) => (
+                        <div key={execution.id} className="flex items-center justify-between p-4 hover:bg-white/[0.02] transition-colors">
+                          <div className="flex items-center gap-4">
+                            <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center">
+                              <CheckCircle className="w-5 h-5 text-primary opacity-70" />
+                            </div>
+                            <div>
+                              <p className="font-bold text-sm">{execution.action?.title || 'Action Completed'}</p>
+                              <p className="text-[10px] text-muted-foreground uppercase tracking-widest">{execution.campaign?.title}</p>
+                            </div>
+                          </div>
+                          <div className="flex flex-col items-end gap-1">
+                            <Badge 
+                              variant="outline" 
+                              className={execution.status === 'paid' 
+                                ? 'bg-primary/10 text-primary border-primary/20 text-[9px] font-black uppercase' 
+                                : 'bg-yellow-500/10 text-yellow-500 border-yellow-500/20 text-[9px] font-black uppercase'}
+                            >
+                              {execution.status}
+                            </Badge>
+                            <span className="text-[9px] font-mono text-muted-foreground">
+                              {execution.createdAt ? format(new Date(execution.createdAt), 'MMM d, HH:mm') : 'RECENT'}
+                            </span>
                           </div>
                         </div>
-                        <div className="text-right">
-                          <p className="text-[10px] font-bold text-muted-foreground uppercase">
-                            {execution.createdAt ? format(new Date(execution.createdAt), 'MMM d, HH:mm') : 'Recently'}
-                          </p>
-                          <p className={`text-[9px] font-bold uppercase tracking-wider ${execution.status === 'paid' ? 'text-primary' : execution.status === 'rejected' ? 'text-destructive' : 'text-yellow-500'}`}>
-                            {execution.status}
-                          </p>
-                        </div>
-                      </div>
-                    ))
+                      ))}
+                    </div>
                   ) : (
-                    <div className="text-center py-8 text-muted-foreground">
-                      <CheckCircle className="w-8 h-8 mx-auto mb-2 opacity-20" />
-                      <p className="text-xs">No activity yet</p>
+                    <div className="p-12 text-center">
+                      <p className="text-muted-foreground font-bold uppercase tracking-widest text-xs">No execution history</p>
                     </div>
                   )}
+                </CardContent>
+              </Card>
+            </section>
+          </div>
+
+          <div className="space-y-8">
+            <Card className="glass-card border-primary/20 bg-primary/5 rounded-3xl overflow-hidden relative group">
+              <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-transparent to-transparent opacity-50" />
+              <CardHeader className="relative z-10">
+                <div className="w-12 h-12 rounded-2xl bg-primary flex items-center justify-center mb-4 shadow-[0_0_30px_rgba(34,197,94,0.5)]">
+                  <TrendingUp className="w-6 h-6 text-primary-foreground" />
                 </div>
+                <CardTitle className="text-3xl font-black font-display uppercase leading-tight italic">Ecosystem<br/>Contribution</CardTitle>
+                <CardDescription className="text-primary-foreground/70 font-medium">Your global impact score within the Dropy network.</CardDescription>
+              </CardHeader>
+              <CardContent className="relative z-10 pt-0">
+                <div className="flex items-baseline gap-2 mb-4">
+                  <span className="text-5xl font-black font-display text-primary">{stats?.tasksCompleted || 0}</span>
+                  <span className="text-sm font-bold text-primary/60 uppercase">Actions</span>
+                </div>
+                <div className="space-y-4">
+                  <div className="w-full h-2 rounded-full bg-black/40 overflow-hidden">
+                    <div 
+                      className="h-full bg-primary shadow-[0_0_15px_rgba(34,197,94,0.8)]" 
+                      style={{ width: `${Math.min(100, (stats?.tasksCompleted || 0) * 10)}%` }}
+                    />
+                  </div>
+                  <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest text-center">Next milestone: {(Math.floor((stats?.tasksCompleted || 0) / 10) + 1) * 10} actions</p>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="glass-card border-white/5 bg-white/[0.01] rounded-3xl overflow-hidden">
+              <CardHeader>
+                <CardTitle className="text-xl font-black font-display uppercase italic">Quick Links</CardTitle>
+              </CardHeader>
+              <CardContent className="grid gap-3">
+                {[
+                  { title: "Explore Campaigns", icon: Megaphone, href: "/earn" },
+                  { title: "Network Status", icon: Activity, href: "/stats" },
+                  { title: "Help Center", icon: ShieldAlert, href: "/about" }
+                ].map((link) => (
+                  <Button 
+                    key={link.title}
+                    variant="outline" 
+                    asChild
+                    className="justify-start h-14 rounded-2xl border-white/5 bg-white/[0.02] hover:bg-primary/10 hover:border-primary/20 transition-all group"
+                  >
+                    <Link href={link.href}>
+                      <a className="flex items-center gap-4 w-full">
+                        <div className="p-2 rounded-xl bg-white/5 group-hover:bg-primary/20 transition-colors">
+                          <link.icon className="w-4 h-4 group-hover:text-primary transition-colors" />
+                        </div>
+                        <span className="font-bold text-sm tracking-tight">{link.title}</span>
+                      </a>
+                    </Link>
+                  </Button>
+                ))}
               </CardContent>
             </Card>
           </div>
