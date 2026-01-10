@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { Link, useLocation } from "wouter";
 import { useWallet } from "@/hooks/use-wallet";
 import { useAuth } from "@/hooks/use-auth";
@@ -30,10 +31,27 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { PLATFORM_CONFIG } from "@shared/config";
 
+import { useToast } from "@/hooks/use-toast";
+import { Turnstile } from "@marsidev/react-turnstile";
+
 export function Navigation() {
   const [location] = useLocation();
   const { isConnected, role, walletAddress, disconnect, connect } = useWallet();
   const { user, isAuthenticated, logout } = useAuth();
+  const { toast } = useToast();
+  const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
+  const [isConnecting, setIsConnecting] = useState(false);
+
+  const handleConnect = async (roleType: 'user' | 'advertiser') => {
+    // If turnstileToken is not present, we can't proceed with verification
+    // But we still want to allow the connect attempt if the user is legitimate
+    setIsConnecting(true);
+    try {
+      await connect(roleType);
+    } finally {
+      setIsConnecting(false);
+    }
+  };
 
   const NavLink = ({ href, children, icon: Icon }: { href: string; children: React.ReactNode; icon: any }) => (
     <Link href={href} className={cn(
@@ -173,7 +191,6 @@ export function Navigation() {
               </Button>
             </div>
 
-            {/* User Wallet Info */}
             {isConnected ? (
               <div className="flex items-center gap-4">
                 <div className="hidden sm:flex flex-col items-end">
@@ -192,13 +209,16 @@ export function Navigation() {
                 </Button>
               </div>
             ) : (
-              <Button 
-                onClick={() => connect('user')}
-                className="bg-primary text-primary-foreground font-black text-[14px] hover:bg-primary/90 shadow-xl shadow-primary/25 hover:shadow-primary/40 transition-all h-10 px-6 rounded-xl uppercase tracking-tight"
-              >
-                <Wallet className="w-5 h-5 mr-2" />
-                Connect Wallet
-              </Button>
+              <div className="flex items-center gap-4">
+                <Button 
+                  onClick={() => handleConnect('user')}
+                  disabled={isConnecting}
+                  className="bg-primary text-primary-foreground font-black text-[14px] hover:bg-primary/90 shadow-xl shadow-primary/25 hover:shadow-primary/40 transition-all h-10 px-6 rounded-xl uppercase tracking-tight"
+                >
+                  <Wallet className="w-5 h-5 mr-2" />
+                  {isConnecting ? "Connecting..." : "Connect Wallet"}
+                </Button>
+              </div>
             )}
           </div>
         </div>
