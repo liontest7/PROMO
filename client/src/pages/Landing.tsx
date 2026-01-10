@@ -126,10 +126,19 @@ export default function Landing() {
               {[
                 { label: "Active Campaigns", value: stats?.activeCampaigns || "0" },
                 { label: "Community Members", value: stats?.totalUsers || "1,240" },
-                { label: "Verified Projects", value: stats?.totalVerifiedProjects || "0" },
+                { label: "Verified Projects", value: stats?.totalVerifiedProjects || "3", mascot: true },
                 { label: "Rewards Paid (Tokens)", value: stats ? stats.totalPaid : "450k" },
               ].map((stat, i) => (
-                <div key={i} className="text-center p-4 rounded-2xl bg-white/5 border border-white/5 backdrop-blur-sm group hover:border-primary/30 transition-all flex flex-col justify-center min-h-[100px]">
+                <div key={i} className="relative text-center p-4 rounded-2xl bg-white/5 border border-white/5 backdrop-blur-sm group hover:border-primary/30 transition-all flex flex-col justify-center min-h-[100px]">
+                  {stat.mascot && (
+                    <div className="absolute -top-12 left-1/2 -translate-x-1/2 w-16 h-16 pointer-events-none">
+                      <img 
+                        src="https://i.ibb.co/nM5YkVjq/1.png" 
+                        alt="" 
+                        className="w-full h-full object-contain drop-shadow-[0_0_10px_rgba(34,197,94,0.5)]" 
+                      />
+                    </div>
+                  )}
                   <h3 className="text-xl md:text-3xl font-display font-black text-white mb-1 tracking-tighter">{stat.value}</h3>
                   <p className="text-[9px] md:text-[10px] text-muted-foreground uppercase font-black tracking-widest leading-tight">{stat.label}</p>
                 </div>
@@ -142,13 +151,6 @@ export default function Landing() {
       {/* Featured Campaigns Section - MOVED UP AS REQUESTED */}
       <section className="py-24 border-y border-white/5 bg-black/20" data-testid="section-active-campaigns">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col items-center mb-8">
-            <img 
-              src="https://i.ibb.co/nM5YkVjq/1.png" 
-              alt="MemeDrop Mascot" 
-              className="w-24 h-24 object-contain drop-shadow-[0_0_15px_rgba(34,197,94,0.4)]" 
-            />
-          </div>
           <div className="flex flex-col md:flex-row justify-between items-end gap-6 mb-12">
             <div>
               <h2 className="text-4xl font-display font-bold mb-2">Active Campaigns</h2>
