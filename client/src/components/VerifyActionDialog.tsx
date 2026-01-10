@@ -180,7 +180,10 @@ export function VerifyActionDialog({ action, campaign, open, onOpenChange }: Ver
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md bg-background/95 backdrop-blur-xl border-white/10 rounded-[2rem] shadow-[0_0_50px_rgba(0,0,0,0.5)] overflow-hidden p-0">
+      <DialogContent 
+        onOpenAutoFocus={(e) => e.preventDefault()}
+        className="sm:max-w-md bg-background/95 backdrop-blur-xl border-white/10 rounded-[2rem] shadow-[0_0_50px_rgba(0,0,0,0.5)] overflow-hidden p-0"
+      >
         <DialogHeader className="p-8 pb-4">
           <DialogTitle className="text-2xl font-black uppercase tracking-tight text-white">
             {isHolderCampaign ? "Eligibility Check" : <>Complete Task <span className="text-primary text-sm font-mono bg-primary/10 px-2 py-0.5 rounded">+{action.rewardAmount} {campaign.tokenName}</span></>}
