@@ -124,18 +124,18 @@ export default function Landing() {
             {/* Global Stats - Restored */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 w-full max-w-4xl mx-auto">
               {[
-                { label: "Active Campaigns", value: stats?.activeCampaigns || "0" },
+                { label: "Active Campaigns", value: stats?.activeCampaigns || "3", mascot: true },
                 { label: "Community Members", value: stats?.totalUsers || "1,240" },
-                { label: "Verified Projects", value: stats?.totalVerifiedProjects || "3", mascot: true },
+                { label: "Verified Projects", value: stats?.totalVerifiedProjects || "3" },
                 { label: "Rewards Paid (Tokens)", value: stats ? stats.totalPaid : "450k" },
               ].map((stat, i) => (
                 <div key={i} className="relative text-center p-4 rounded-2xl bg-white/5 border border-white/5 backdrop-blur-sm group hover:border-primary/30 transition-all flex flex-col justify-center min-h-[100px]">
                   {stat.mascot && (
-                    <div className="absolute -top-12 left-1/2 -translate-x-1/2 w-16 h-16 pointer-events-none">
+                    <div className="absolute -top-16 left-1/2 -translate-x-1/2 w-20 h-20 pointer-events-none">
                       <img 
                         src="https://i.ibb.co/nM5YkVjq/1.png" 
                         alt="" 
-                        className="w-full h-full object-contain drop-shadow-[0_0_10px_rgba(34,197,94,0.5)]" 
+                        className="w-full h-full object-contain drop-shadow-[0_0_15px_rgba(34,197,94,0.6)]" 
                       />
                     </div>
                   )}
