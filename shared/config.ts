@@ -32,6 +32,8 @@ export const PLATFORM_CONFIG = {
       phantom: "https://play-lh.googleusercontent.com/obRvW02OTYLzJuvic1ZbVDVXLXzI0Vt_JGOjlxZ92XMdBF_i3kqU92u9SgHvJ5pySdM",
       solflare: "https://solflare.com/favicon.ico",
       bybit: "https://www.bybit.com/favicon.ico",
+      pumpfun: "https://i.ibb.co/gMb1wq1s/pump-fun-logo.webp",
+      jupiter: "https://jup.ag/favicon.ico"
     }
   },
   CONSTANTS: {

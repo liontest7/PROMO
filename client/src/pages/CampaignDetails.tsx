@@ -1,7 +1,7 @@
 import { useRoute } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { Campaign, Action, Execution } from "@shared/schema";
-import { Loader2, ArrowLeft, ExternalLink, ShieldCheck, Coins, Users, CheckCircle, ArrowRight, Twitter, Send, Zap } from "lucide-react";
+import { Loader2, ArrowLeft, ExternalLink, ShieldCheck, Coins, Users, CheckCircle, ArrowRight, Twitter, Send, Zap, Globe, Share2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -59,7 +59,6 @@ export default function CampaignDetails() {
     }
     if (!campaign) return;
 
-    console.log("Triggering holder verification from details...");
     setSelectedAction({ 
       action: { 
         id: 0, 
@@ -82,117 +81,147 @@ export default function CampaignDetails() {
     );
   }
 
-  if (!campaign) return <div>Campaign not found</div>;
+  if (!campaign) return <div className="min-h-screen bg-background flex items-center justify-center text-white">Campaign not found</div>;
 
   return (
     <div className="min-h-screen bg-background pb-20">
       <Navigation />
-      <div className="container max-w-6xl mx-auto px-4 py-12">
-        <Link href="/earn">
-          <Button variant="ghost" className="mb-8 gap-2 hover:bg-white/5 text-white">
-            <ArrowLeft className="w-4 h-4" /> Back to Explore
-          </Button>
-        </Link>
-
-        <div className="grid lg:grid-cols-3 gap-12">
-          <div className="lg:col-span-2 space-y-12">
-            <div className="relative rounded-3xl overflow-hidden h-[350px] border border-white/5 group shadow-2xl">
-              <img 
-                src={campaign.bannerUrl || ""} 
-                alt={campaign.title}
-                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent" />
-              <div className="absolute bottom-8 left-8 flex items-end gap-6">
-                <div className="relative">
-                  <img 
-                    src={campaign.logoUrl || ""} 
-                    alt="Logo" 
-                    className="w-24 h-24 rounded-2xl border-4 border-background bg-card object-cover shadow-xl"
-                  />
-                  <div className="absolute -bottom-2 -right-2 bg-primary rounded-full p-1 border-2 border-background">
-                    <CheckCircle className="w-4 h-4 text-primary-foreground" />
-                  </div>
-                </div>
-                <div className="mb-2">
-                  <div className="flex gap-2 mb-3">
-                    <Badge variant="outline" className="bg-primary/10 border-primary/20 text-primary font-bold">
-                      {campaign.tokenName}
-                    </Badge>
-                    <Badge className="bg-green-500/20 text-green-400 border-green-500/30">
-                      ACTIVE
-                    </Badge>
-                  </div>
-                  <h1 className="text-4xl font-display font-black text-white tracking-tight drop-shadow-lg">{campaign.title}</h1>
+      
+      {/* Hero Header Section */}
+      <div className="relative w-full h-[400px] border-b border-white/5 overflow-hidden">
+        <img 
+          src={campaign.bannerUrl || ""} 
+          alt={campaign.title}
+          className="w-full h-full object-cover opacity-60"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent" />
+        
+        <div className="absolute bottom-0 left-0 w-full">
+          <div className="container max-w-6xl mx-auto px-4 pb-12">
+            <Link href="/earn">
+              <Button variant="ghost" className="mb-6 gap-2 hover:bg-white/5 text-white/70 hover:text-white transition-colors">
+                <ArrowLeft className="w-4 h-4" /> Back to Explore
+              </Button>
+            </Link>
+            
+            <div className="flex flex-col md:flex-row items-start md:items-end gap-6">
+              <div className="relative group">
+                <img 
+                  src={campaign.logoUrl || ""} 
+                  alt="Logo" 
+                  className="w-32 h-32 rounded-3xl border-4 border-background bg-card object-cover shadow-2xl transition-transform group-hover:scale-105 duration-300"
+                />
+                <div className="absolute -bottom-2 -right-2 bg-primary rounded-full p-1.5 border-4 border-background shadow-lg">
+                  <CheckCircle className="w-5 h-5 text-primary-foreground" />
                 </div>
               </div>
-            </div>
-
-            <section className="space-y-6">
-              <div className="flex items-center justify-between bg-primary/5 p-4 rounded-2xl border border-primary/20">
-                <div>
-                  <h2 className="text-2xl font-display font-black text-primary">Campaign Tasks</h2>
-                  <p className="text-xs text-muted-foreground uppercase tracking-widest font-bold">Complete tasks to earn {campaign.tokenName}</p>
+              
+              <div className="flex-1 space-y-3">
+                <div className="flex flex-wrap gap-2">
+                  <Badge variant="outline" className="bg-primary/10 border-primary/20 text-primary font-bold px-3 py-1">
+                    {campaign.tokenName}
+                  </Badge>
+                  <Badge className="bg-green-500/20 text-green-400 border-green-500/30 px-3 py-1 font-bold">
+                    ACTIVE
+                  </Badge>
                 </div>
-                <div className="text-right">
-                  <p className="text-[10px] text-muted-foreground uppercase font-black">Total Reward</p>
-                  <p className="text-xl font-black text-primary">{campaign.rewardPerWallet || '0'} {campaign.tokenName}</p>
+                <h1 className="text-4xl md:text-5xl font-display font-black text-white tracking-tight drop-shadow-xl">
+                  {campaign.title}
+                </h1>
+              </div>
+              
+              <div className="flex gap-3">
+                <Button 
+                  variant="outline" 
+                  size="icon" 
+                  className="rounded-2xl border-white/10 bg-white/5 hover:bg-white/10 text-white transition-all h-12 w-12"
+                  onClick={() => {
+                    const text = encodeURIComponent(`Check out ${campaign.title} on MemeDrop! #Solana`);
+                    window.open(`https://twitter.com/intent/tweet?text=${text}&url=${encodeURIComponent(window.location.href)}`, '_blank');
+                  }}
+                >
+                  <Twitter className="w-5 h-5" />
+                </Button>
+                <Button 
+                  variant="outline" 
+                  size="icon" 
+                  className="rounded-2xl border-white/10 bg-white/5 hover:bg-white/10 text-white transition-all h-12 w-12"
+                  onClick={() => {
+                    navigator.clipboard.writeText(window.location.href);
+                    toast({ title: "Link copied!" });
+                  }}
+                >
+                  <Share2 className="w-5 h-5" />
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="container max-w-6xl mx-auto px-4 py-12">
+        <div className="grid lg:grid-cols-3 gap-8">
+          
+          {/* Main Content Area */}
+          <div className="lg:col-span-2 space-y-12">
+            
+            {/* Campaign Tasks Section */}
+            <section className="space-y-6">
+              <div className="flex items-center justify-between">
+                <h2 className="text-2xl font-display font-black text-white tracking-tight">Available Tasks</h2>
+                <div className="flex items-center gap-3 bg-primary/10 px-4 py-2 rounded-2xl border border-primary/20">
+                  <span className="text-[10px] font-black text-primary uppercase tracking-widest">Potential Earning</span>
+                  <span className="text-lg font-black text-primary">{campaign.rewardPerWallet || '0'} {campaign.tokenName}</span>
                 </div>
               </div>
 
               <div className="grid gap-4">
                 {campaign.campaignType === 'holder_qualification' ? (
-                  <Card className="glass-card border-primary/20 bg-primary/5 overflow-hidden group hover:border-primary/40 transition-all">
+                  <Card className="glass-card border-primary/20 bg-primary/5 overflow-hidden group hover:border-primary/40 transition-all rounded-3xl">
                     <CardContent className="p-0">
                       <Button 
                         className="w-full h-24 justify-between px-8 bg-transparent hover:bg-primary/5 text-primary transition-all border-0 rounded-none"
                         onClick={handleHolderClick}
                       >
                         <div className="flex items-center gap-6">
-                          <div className="w-12 h-12 rounded-2xl bg-primary/20 flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
-                            <ShieldCheck className="w-7 h-7" />
+                          <div className="w-14 h-14 rounded-2xl bg-primary/20 flex items-center justify-center shrink-0 group-hover:scale-110 transition-all shadow-inner">
+                            <ShieldCheck className="w-8 h-8" />
                           </div>
-                          <div className="text-left space-y-1">
-                            <p className="text-xl font-black uppercase tracking-tight">Holder Verification</p>
-                            <p className="text-sm font-bold opacity-70">Hold {campaign.minHoldingAmount} {campaign.tokenName} for {campaign.minHoldingDuration} days</p>
+                          <div className="text-left">
+                            <p className="text-xl font-black uppercase tracking-tight text-white">Holder Verification</p>
+                            <p className="text-sm font-bold text-white/50">Hold {campaign.minHoldingAmount} {campaign.tokenName} for {campaign.minHoldingDuration} days</p>
                           </div>
                         </div>
-                        <div className="flex items-center gap-4">
-                          <div className="text-right hidden sm:block">
-                            <p className="text-[10px] font-black opacity-50 uppercase">Reward</p>
-                            <p className="text-lg font-black">{campaign.rewardPerWallet} {campaign.tokenName}</p>
-                          </div>
-                          <div className="bg-primary text-primary-foreground font-black px-6 py-3 rounded-xl shadow-lg shadow-primary/20 group-hover:shadow-primary/40 transition-all">
-                            START
-                          </div>
+                        <div className="bg-primary text-primary-foreground font-black px-8 py-4 rounded-2xl shadow-xl shadow-primary/20 group-hover:shadow-primary/40 group-hover:-translate-y-0.5 transition-all">
+                          START VERIFICATION
                         </div>
                       </Button>
                     </CardContent>
                   </Card>
                 ) : (
                   campaign.actions?.map((action) => (
-                    <Card key={action.id} className="glass-card border-white/5 bg-white/5 overflow-hidden group hover:border-primary/30 transition-all">
+                    <Card key={action.id} className="glass-card border-white/5 bg-white/5 overflow-hidden group hover:border-primary/30 transition-all rounded-3xl">
                       <CardContent className="p-0">
                         <Button 
                           className="w-full h-20 justify-between px-8 bg-transparent hover:bg-primary/5 transition-all border-0 rounded-none"
                           onClick={() => handleActionClick(action)}
                         >
                           <div className="flex items-center gap-5">
-                            <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-all">
+                            <div className="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center text-white/70 group-hover:bg-primary group-hover:text-white transition-all shadow-inner border border-white/5">
                               {action.type === 'twitter' ? <Twitter className="w-5 h-5" /> : action.type === 'telegram' ? <Send className="w-5 h-5" /> : <ExternalLink className="w-5 h-5" />}
                             </div>
                             <div className="text-left">
                               <p className="font-black text-white uppercase tracking-tight">{action.title}</p>
-                              <p className="text-[10px] text-muted-foreground uppercase font-bold">{action.type} task</p>
+                              <p className="text-[10px] text-white/40 uppercase font-bold tracking-widest">{action.type} task</p>
                             </div>
                           </div>
-                          <div className="flex items-center gap-4">
+                          <div className="flex items-center gap-6">
                             <div className="text-right hidden sm:block">
-                              <p className="text-[10px] font-black opacity-50 uppercase">Reward</p>
-                              <p className="text-sm font-black text-primary">+{action.rewardAmount} {campaign.tokenName}</p>
+                              <p className="text-[10px] font-black text-white/30 uppercase tracking-widest">Reward</p>
+                              <p className="text-lg font-black text-primary">+{action.rewardAmount} {campaign.tokenName}</p>
                             </div>
-                            <div className="bg-white/10 text-white font-black px-4 py-2 rounded-lg group-hover:bg-primary group-hover:text-white transition-all">
-                              VERIFY
+                            <div className="bg-white/5 text-white font-black px-6 py-3 rounded-xl group-hover:bg-primary group-hover:text-white transition-all border border-white/10">
+                              COMPLETE
                             </div>
                           </div>
                         </Button>
@@ -203,25 +232,32 @@ export default function CampaignDetails() {
               </div>
             </section>
 
+            {/* Market Overview Section */}
             <section className="space-y-6">
-              <div className="flex items-center justify-between">
-                <h2 className="text-2xl font-display font-black text-white drop-shadow-sm">Market Overview</h2>
-                <div className="flex gap-2">
-                  <Button variant="outline" size="sm" className="h-8 text-[10px] font-black border-white/10 bg-white/5 hover:bg-primary/20 hover:border-primary/40 transition-all gap-2 text-white" asChild>
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <h2 className="text-2xl font-display font-black text-white tracking-tight">Market Overview</h2>
+                <div className="flex flex-wrap gap-2">
+                  <Button variant="outline" size="sm" className="h-9 text-[10px] font-black border-white/10 bg-white/5 hover:bg-[#FF8C00]/20 hover:border-[#FF8C00]/40 transition-all gap-2 text-white rounded-xl group" asChild>
+                    <a href={`https://pump.fun/${campaign.tokenAddress}`} target="_blank" rel="noreferrer">
+                      <img src={CONFIG.ui.walletIcons.pumpfun} className="w-4 h-4 rounded-md" />
+                      PUMP.FUN
+                    </a>
+                  </Button>
+                  <Button variant="outline" size="sm" className="h-9 text-[10px] font-black border-white/10 bg-white/5 hover:bg-[#08D6F1]/20 hover:border-[#08D6F1]/40 transition-all gap-2 text-white rounded-xl group" asChild>
                     <a href={`https://dexscreener.com/solana/${campaign.tokenAddress}`} target="_blank" rel="noreferrer">
-                      <img src={CONFIG.ui.walletIcons.bybit} className="w-3 h-3 grayscale opacity-70 group-hover:grayscale-0" />
+                      <img src={CONFIG.ui.walletIcons.bybit} className="w-4 h-4 rounded-md grayscale opacity-70 group-hover:grayscale-0 group-hover:opacity-100" />
                       DEXSCREENER
                     </a>
                   </Button>
-                  <Button variant="outline" size="sm" className="h-8 text-[10px] font-black border-white/10 bg-white/5 hover:bg-primary/20 hover:border-primary/40 transition-all gap-2 text-white" asChild>
+                  <Button variant="outline" size="sm" className="h-9 text-[10px] font-black border-white/10 bg-white/5 hover:bg-[#BEF32C]/20 hover:border-[#BEF32C]/40 transition-all gap-2 text-white rounded-xl group" asChild>
                     <a href={`https://jup.ag/swap/SOL-${campaign.tokenAddress}`} target="_blank" rel="noreferrer">
-                      <img src="https://jup.ag/favicon.ico" className="w-3 h-3" />
+                      <img src={CONFIG.ui.walletIcons.jupiter} className="w-4 h-4" />
                       JUPITER
                     </a>
                   </Button>
                 </div>
               </div>
-              <div className="w-full h-[500px] rounded-3xl overflow-hidden border border-white/10 bg-black/40 backdrop-blur-md relative shadow-2xl">
+              <div className="w-full h-[500px] rounded-[32px] overflow-hidden border border-white/10 bg-black/40 backdrop-blur-md relative shadow-2xl">
                 <iframe 
                   src={`https://dexscreener.com/solana/${campaign.tokenAddress}?embed=1&theme=dark&trades=0&info=0`}
                   className="w-full h-full border-0"
@@ -230,180 +266,165 @@ export default function CampaignDetails() {
               </div>
             </section>
 
-            <section className="space-y-4">
-              <h2 className="text-2xl font-display font-bold text-white drop-shadow-sm">About the Project</h2>
-              <div className="text-white/70 leading-relaxed text-lg whitespace-pre-wrap font-medium drop-shadow-sm">
-                {campaign.description}
+            {/* About Section */}
+            <section className="space-y-6">
+              <h2 className="text-2xl font-display font-black text-white tracking-tight">About the Project</h2>
+              <div className="bg-white/5 p-8 rounded-[32px] border border-white/5">
+                <div className="text-white/70 leading-relaxed text-lg whitespace-pre-wrap font-medium">
+                  {campaign.description}
+                </div>
               </div>
             </section>
 
-            <div className="grid md:grid-cols-2 gap-6">
-              <Card className="glass-card border-primary/10 bg-primary/5">
-                <CardHeader>
-                  <CardTitle className="text-sm uppercase tracking-widest text-primary flex items-center gap-2">
+            {/* Proofs Section */}
+            <section className="grid md:grid-cols-2 gap-6">
+              <Card className="glass-card border-white/5 bg-white/5 rounded-[32px] overflow-hidden">
+                <CardHeader className="border-b border-white/5 pb-4">
+                  <CardTitle className="text-sm uppercase tracking-widest text-primary flex items-center gap-2 font-black">
                     <ShieldCheck className="w-4 h-4" /> Deposit Proof
                   </CardTitle>
                 </CardHeader>
-                <CardContent>
-                  <p className="text-xs text-muted-foreground mb-4">Verification of token deposit for this campaign.</p>
-                  <div className="flex items-center justify-between p-3 bg-black/40 rounded-xl border border-white/5">
-                    <span className="text-[10px] font-mono text-muted-foreground truncate mr-4">{campaign.tokenAddress}</span>
-                    <Button variant="ghost" size="icon" className="h-8 w-8" asChild>
+                <CardContent className="pt-6">
+                  <p className="text-xs text-white/50 mb-4">On-chain verification of the rewards budget deposit.</p>
+                  <div className="flex items-center justify-between p-4 bg-black/40 rounded-2xl border border-white/5 group hover:border-primary/30 transition-all">
+                    <span className="text-[11px] font-mono text-white/40 truncate mr-4">{campaign.tokenAddress}</span>
+                    <Button variant="ghost" size="icon" className="h-9 w-9 rounded-xl hover:bg-primary/20 text-primary" asChild>
                       <a href={`https://solscan.io/token/${campaign.tokenAddress}`} target="_blank" rel="noreferrer">
-                        <ExternalLink className="w-3 h-3" />
+                        <ExternalLink className="w-4 h-4" />
                       </a>
                     </Button>
                   </div>
                 </CardContent>
               </Card>
 
-              <Card className="glass-card border-secondary/10 bg-secondary/5">
-                <CardHeader>
-                  <CardTitle className="text-sm uppercase tracking-widest text-secondary flex items-center gap-2">
-                    <Coins className="w-4 h-4" /> Reward Proof
+              <Card className="glass-card border-white/5 bg-white/5 rounded-[32px] overflow-hidden">
+                <CardHeader className="border-b border-white/5 pb-4">
+                  <CardTitle className="text-sm uppercase tracking-widest text-secondary flex items-center gap-2 font-black">
+                    <Coins className="w-4 h-4" /> Reward Allocation
                   </CardTitle>
                 </CardHeader>
-                <CardContent>
-                  <p className="text-xs text-muted-foreground mb-4">Total budget locked for distributions.</p>
-                  <div className="flex items-center justify-between p-3 bg-black/40 rounded-xl border border-white/5">
-                    <span className="text-sm font-bold text-white">{campaign.totalBudget} {campaign.tokenName}</span>
-                    <Badge variant="outline" className="border-secondary/20 text-secondary">LOCKED</Badge>
+                <CardContent className="pt-6">
+                  <p className="text-xs text-white/50 mb-4">Total tokens currently locked for distributions.</p>
+                  <div className="flex items-center justify-between p-4 bg-black/40 rounded-2xl border border-white/5">
+                    <span className="text-lg font-black text-white">{campaign.totalBudget} {campaign.tokenName}</span>
+                    <Badge variant="outline" className="border-secondary/30 text-secondary bg-secondary/5 px-3 py-1 rounded-lg">LOCKED</Badge>
                   </div>
                 </CardContent>
               </Card>
-            </div>
-
-            <section className="space-y-6">
-              <div className="flex items-center justify-between">
-                <h2 className="text-2xl font-display font-bold text-white">Reward Proofs & Winners</h2>
-                <Badge variant="secondary" className="gap-1 px-3">
-                  <CheckCircle className="w-3 h-3 text-primary" /> {participants?.filter(p => p.status === 'paid').length || 0} Claimed
-                </Badge>
-              </div>
-              <div className="space-y-3">
-                {participantsLoading ? (
-                  <Loader2 className="w-6 h-6 animate-spin text-primary mx-auto" />
-                ) : participants && participants.length > 0 ? (
-                  participants.map((p, i) => (
-                    <div key={i} className="flex items-center justify-between p-4 bg-white/5 rounded-2xl border border-white/5 hover:border-primary/20 transition-all group">
-                      <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center font-mono text-xs text-primary border border-primary/10">
-                          {p.user.walletAddress.substring(0, 2)}
-                        </div>
-                        <div>
-                          <p className="text-sm font-bold text-white font-mono" data-testid={`participant-address-${i}`}>
-                            {p.user.walletAddress.substring(0, 6)}...{p.user.walletAddress.substring(p.user.walletAddress.length - 4)}
-                          </p>
-                          <div className="flex items-center gap-2">
-                            <p className="text-[10px] text-muted-foreground uppercase font-bold tracking-wider">
-                              {p.status === 'paid' ? 'Rewards Claimed' : 'Verified'} {formatDistanceToNow(new Date(p.createdAt || Date.now()), { addSuffix: true })}
-                            </p>
-                            {p.status === 'paid' && (
-                              <Badge variant="outline" className="h-4 text-[8px] bg-primary/10 text-primary border-primary/20 py-0">ON-CHAIN</Badge>
-                            )}
-                          </div>
-                        </div>
-                      </div>
-                      <div className="flex items-center gap-3">
-                        {p.status === 'paid' ? (
-                          <div className="flex items-center gap-2">
-                            <Button variant="ghost" size="sm" className="h-9 px-4 text-xs font-black text-primary gap-2 bg-primary/10 hover:bg-primary hover:text-white border border-primary/20 transition-all" asChild>
-                              <a href={`https://solscan.io/tx/${p.transactionSignature || '#'}`} target="_blank" rel="noreferrer">
-                                VIEW ON SOLSCAN <ExternalLink className="w-3.5 h-3.5" />
-                              </a>
-                            </Button>
-                            <div className="w-9 h-9 rounded-full bg-primary/20 flex items-center justify-center text-primary border border-primary/30">
-                              <CheckCircle className="w-5 h-5" />
-                            </div>
-                          </div>
-                        ) : (
-                          <Badge className="font-bold px-4 py-1.5 bg-yellow-500/10 text-yellow-500 border border-yellow-500/20 uppercase tracking-widest text-[10px]">
-                            VERIFIED
-                          </Badge>
-                        )}
-                      </div>
-                    </div>
-                  ))
-                ) : (
-                  <p className="text-center text-muted-foreground py-10 bg-white/5 rounded-3xl border border-dashed border-white/10 italic">
-                    Be the first to participate in this campaign!
-                  </p>
-                )}
-              </div>
             </section>
           </div>
 
-          <div className="space-y-8">
-            <Card className="glass-card border-primary/20 shadow-2xl overflow-hidden">
-              <CardHeader className="bg-primary/10 border-b border-primary/10">
-                <CardTitle className="text-sm uppercase tracking-widest text-primary flex items-center justify-between">
-                  Campaign Info
-                  <Badge className="bg-primary text-primary-foreground font-black">ACTIVE</Badge>
+          {/* Sidebar Area */}
+          <div className="space-y-6">
+            <Card className="glass-card border-primary/20 bg-primary/5 rounded-[32px] overflow-hidden shadow-2xl sticky top-24">
+              <CardHeader className="bg-primary/10 border-b border-primary/10 py-6">
+                <CardTitle className="text-xs uppercase tracking-[0.2em] text-primary flex items-center justify-between font-black">
+                  Campaign Stats
+                  <Badge className="bg-primary text-primary-foreground font-black px-3">ACTIVE</Badge>
                 </CardTitle>
               </CardHeader>
-              <CardContent className="p-6 space-y-6">
-                <div className="space-y-4">
-                  <div className="flex justify-between items-center text-sm">
-                    <span className="text-muted-foreground font-medium">Network</span>
-                    <span className="font-bold text-white flex items-center gap-1.5">
-                      <img src="https://raw.githubusercontent.com/solana-labs/token-list/main/assets/mainnet/So11111111111111111111111111111111111111112/logo.png" alt="Solana" className="w-4 h-4" />
-                      Solana
+              <CardContent className="p-8 space-y-8">
+                <div className="space-y-6">
+                  <div className="flex justify-between items-center">
+                    <span className="text-white/40 text-sm font-bold uppercase tracking-wider">Network</span>
+                    <span className="font-black text-white flex items-center gap-2">
+                      <img src="https://raw.githubusercontent.com/solana-labs/token-list/main/assets/mainnet/So11111111111111111111111111111111111111112/logo.png" alt="Solana" className="w-5 h-5" />
+                      SOLANA
                     </span>
                   </div>
-                  <div className="flex justify-between items-center text-sm">
-                    <span className="text-muted-foreground font-medium">Reward</span>
-                    <span className="font-bold text-primary">{campaign.rewardPerWallet || '0'} {campaign.tokenName}</span>
+                  <div className="flex justify-between items-center">
+                    <span className="text-white/40 text-sm font-bold uppercase tracking-wider">Verified Participants</span>
+                    <span className="font-black text-white text-lg">{participants?.length || 0}</span>
                   </div>
-                  <div className="flex justify-between items-center text-sm">
-                    <span className="text-muted-foreground font-medium">Created</span>
-                    <span className="font-bold text-white">{formatDistanceToNow(new Date(campaign.createdAt || Date.now()), { addSuffix: true })}</span>
+                  <div className="flex justify-between items-center">
+                    <span className="text-white/40 text-sm font-bold uppercase tracking-wider">Rewards Distributed</span>
+                    <span className="font-black text-primary text-lg">
+                      {participants?.filter(p => p.status === 'paid').length * Number(campaign.rewardPerWallet || 0)} {campaign.tokenName}
+                    </span>
                   </div>
                 </div>
 
-                <div className="pt-6 border-t border-white/5 space-y-4">
-                  <div className="grid grid-cols-2 gap-2">
-                    <Button variant="outline" className="gap-2 border-white/10 hover:bg-white/5 text-white" asChild>
-                      <a href={campaign.websiteUrl || "#"} target="_blank" rel="noreferrer">
-                        Website <ExternalLink className="w-3 h-3" />
-                      </a>
-                    </Button>
-                    <Button variant="outline" className="gap-2 border-white/10 hover:bg-white/5 text-white" asChild>
-                      <a href={campaign.twitterUrl || "#"} target="_blank" rel="noreferrer">
-                        Twitter <Twitter className="w-3 h-3" />
-                      </a>
-                    </Button>
-                  </div>
-                  
-                  <Button 
-                    className="w-full gap-2 bg-[#1DA1F2] hover:bg-[#1DA1F2]/90 text-white font-black"
-                    onClick={() => {
-                      const text = encodeURIComponent(`Check out ${campaign.title} on MemeDrop! Complete tasks to earn ${campaign.tokenName} rewards. #Solana #MemeDrop`);
-                      const url = encodeURIComponent(window.location.href);
-                      window.open(`https://twitter.com/intent/tweet?text=${text}&url=${url}`, '_blank');
-                    }}
-                  >
-                    SHARE ON X <Twitter className="w-4 h-4" />
+                <div className="pt-8 border-t border-white/5 space-y-4">
+                  <Button variant="outline" className="w-full gap-3 border-white/10 bg-white/5 hover:bg-white/10 text-white font-black h-12 rounded-2xl transition-all" asChild>
+                    <a href={campaign.websiteUrl || "#"} target="_blank" rel="noreferrer">
+                      PROJECT WEBSITE <Globe className="w-4 h-4" />
+                    </a>
+                  </Button>
+                  <Button variant="outline" className="w-full gap-3 border-white/10 bg-white/5 hover:bg-white/10 text-white font-black h-12 rounded-2xl transition-all" asChild>
+                    <a href={campaign.twitterUrl || "#"} target="_blank" rel="noreferrer">
+                      FOLLOW TWITTER <Twitter className="w-4 h-4" />
+                    </a>
                   </Button>
                 </div>
               </CardContent>
             </Card>
 
-            <Card className="bg-primary/5 border-primary/20">
-              <CardContent className="p-4 flex items-start gap-4">
-                <div className="w-10 h-10 rounded-xl bg-primary/20 flex items-center justify-center shrink-0">
-                  <ShieldCheck className="w-6 h-6 text-primary" />
-                </div>
-                <div>
-                  <p className="text-xs font-black text-primary uppercase tracking-wider mb-1">Secured by MemeDrop</p>
-                  <p className="text-[10px] text-muted-foreground leading-relaxed">
-                    This project has been verified. Rewards are managed by MemeDrop's smart contract to ensure fair distribution.
-                  </p>
-                </div>
-              </CardContent>
+            <Card className="bg-white/5 border-white/10 rounded-[32px] p-6 flex items-start gap-4">
+              <div className="w-12 h-12 rounded-2xl bg-primary/20 flex items-center justify-center shrink-0 shadow-inner">
+                <ShieldCheck className="w-7 h-7 text-primary" />
+              </div>
+              <div className="space-y-1">
+                <p className="text-xs font-black text-primary uppercase tracking-widest">MemeDrop Verified</p>
+                <p className="text-[11px] text-white/50 leading-relaxed font-medium">
+                  Project verified by our core team. Rewards are locked in on-chain vaults for guaranteed distribution.
+                </p>
+              </div>
             </Card>
+          </div>
+
+          {/* Full Width Participants Section */}
+          <div className="lg:col-span-3 space-y-8 mt-12">
+            <div className="flex items-center justify-between border-b border-white/5 pb-6">
+              <h2 className="text-2xl font-display font-black text-white tracking-tight">Recent Winners & Proofs</h2>
+              <Badge variant="secondary" className="gap-2 px-4 py-2 bg-white/5 text-white border-white/10 rounded-xl">
+                <CheckCircle className="w-4 h-4 text-primary" /> {participants?.filter(p => p.status === 'paid').length || 0} Distributions Complete
+              </Badge>
+            </div>
+            
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {participantsLoading ? (
+                <div className="col-span-full py-20 flex justify-center">
+                  <Loader2 className="w-10 h-10 animate-spin text-primary" />
+                </div>
+              ) : participants && participants.length > 0 ? (
+                participants.map((p, i) => (
+                  <div key={i} className="flex items-center justify-between p-5 bg-white/5 rounded-[24px] border border-white/5 hover:border-primary/20 transition-all group shadow-sm">
+                    <div className="flex items-center gap-4">
+                      <div className="w-12 h-12 rounded-full bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center font-mono text-xs text-primary border border-primary/10 shadow-inner">
+                        {p.user.walletAddress.substring(0, 2)}
+                      </div>
+                      <div>
+                        <p className="text-sm font-black text-white font-mono" data-testid={`participant-address-${i}`}>
+                          {p.user.walletAddress.substring(0, 6)}...{p.user.walletAddress.substring(p.user.walletAddress.length - 4)}
+                        </p>
+                        <p className="text-[10px] text-white/40 uppercase font-black tracking-wider">
+                          {formatDistanceToNow(new Date(p.createdAt || Date.now()), { addSuffix: true })}
+                        </p>
+                      </div>
+                    </div>
+                    {p.status === 'paid' ? (
+                      <Button variant="ghost" size="icon" className="h-10 w-10 rounded-xl bg-primary/10 text-primary hover:bg-primary hover:text-white transition-all border border-primary/20" asChild>
+                        <a href={`https://solscan.io/tx/${p.transactionSignature || '#'}`} target="_blank" rel="noreferrer">
+                          <ExternalLink className="w-4 h-4" />
+                        </a>
+                      </Button>
+                    ) : (
+                      <Badge className="font-black px-3 py-1 bg-yellow-500/10 text-yellow-500 border border-yellow-500/20 uppercase tracking-widest text-[8px] rounded-lg">
+                        VERIFIED
+                      </Badge>
+                    )}
+                  </div>
+                ))
+              ) : (
+                <div className="col-span-full text-center text-white/30 py-20 bg-white/5 rounded-[40px] border border-dashed border-white/10 italic font-medium">
+                  Be the first project supporter to claim rewards!
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </div>
+      
       <VerifyActionDialog 
         open={!!selectedAction} 
         onOpenChange={(open) => !open && setSelectedAction(null)}
