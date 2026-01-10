@@ -10,7 +10,7 @@ export const APP_CONFIG = {
       "https://i.ibb.co/pBnZXZps/20260109-2049-Image-Generation-remix-01kej1dxwve5s9jwddtakxjtga.png",
   },
   token: {
-    symbol: "MEME",
+    symbol: "$MDrop",
     name: "MemeDrop Token",
     address: "EPjFW33rdvq2zhpks87j3jt7jjh8p7wlwnvxy3cb68", // Placeholder for user to edit
     price: 0.42,

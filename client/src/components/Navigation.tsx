@@ -53,8 +53,8 @@ export function Navigation() {
         <div className="flex h-20 items-center justify-between">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-4 group cursor-pointer">
-            <div className="w-12 h-12 rounded-xl overflow-hidden shadow-xl shadow-primary/20 group-hover:shadow-primary/40 transition-all">
-              <img src={APP_CONFIG.assets.logo} alt="Logo" className="w-full h-full object-cover scale-110 group-hover:scale-125 transition-transform duration-500" />
+            <div className="w-12 h-12 rounded-xl overflow-visible group-hover:shadow-primary/40 transition-all">
+              <img src={APP_CONFIG.assets.logo} alt="Logo" className="w-full h-full object-contain scale-110 group-hover:scale-125 transition-transform duration-500" />
             </div>
             <span className="font-display font-black text-3xl tracking-tighter bg-gradient-to-r from-white via-white to-gray-400 bg-clip-text text-transparent">
               {APP_CONFIG.platformName}

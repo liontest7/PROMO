@@ -211,9 +211,13 @@ export default function Landing() {
                 </div>
               </div>
               <div className="flex justify-center relative">
-                <div className="w-80 h-80 rounded-full bg-primary/20 flex items-center justify-center border-[12px] border-primary/10 animate-pulse">
-                  <img src={APP_CONFIG.assets.logo} alt="Token" className="w-48 h-48 object-contain drop-shadow-[0_0_30px_rgba(34,197,94,0.4)]" />
-                </div>
+                <motion.div 
+                  animate={{ y: [0, -20, 0] }}
+                  transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+                  className="w-[400px] h-[400px] rounded-full bg-primary/20 flex items-center justify-center border-[12px] border-primary/10"
+                >
+                  <img src={APP_CONFIG.assets.logo} alt="Token" className="w-64 h-64 object-contain drop-shadow-[0_0_50px_rgba(34,197,94,0.6)]" />
+                </motion.div>
               </div>
             </div>
           </div>
