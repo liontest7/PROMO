@@ -6,6 +6,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { WalletProvider, useWallet } from "@/hooks/use-wallet";
 import { OnboardingSocials } from "@/components/onboarding/OnboardingSocials";
 import { motion, AnimatePresence } from "framer-motion";
+import { Footer } from "@/components/Footer";
 
 import Landing from "@/pages/Landing";
 import Earn from "@/pages/Earn";
@@ -90,7 +91,12 @@ function App() {
         <TooltipProvider>
           <Toaster />
           <OnboardingSocials />
-          <Router />
+          <div className="flex flex-col min-h-screen">
+            <div className="flex-grow">
+              <Router />
+            </div>
+            <Footer />
+          </div>
         </TooltipProvider>
       </WalletProvider>
     </QueryClientProvider>

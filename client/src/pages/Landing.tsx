@@ -14,36 +14,6 @@ import { useQuery } from "@tanstack/react-query";
 import { APP_CONFIG } from "@/config";
 import { PLATFORM_CONFIG } from "@shared/config";
 
-function Footer() {
-  return (
-    <footer className="py-16 bg-black border-t border-white/5" data-testid="footer-main">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 md:grid-cols-3 items-center gap-12 text-center md:text-left">
-          <div className="flex flex-col items-center md:items-start gap-4">
-            <div className="flex items-center gap-3">
-              <img src={APP_CONFIG.assets.logo} alt="Logo" className="w-10 h-10" />
-              <span className="font-display font-black text-2xl tracking-tighter">MEMEDROP</span>
-            </div>
-            <p className="text-xs text-muted-foreground max-w-xs font-medium uppercase tracking-widest leading-loose">
-              The leading Pay-Per-Action platform for the Solana ecosystem.
-            </p>
-          </div>
-          <div className="flex justify-center gap-12 font-black text-xs uppercase tracking-tighter">
-            <Link href="/earn" className="hover:text-primary transition-all" data-testid="footer-link-explore">Explore</Link>
-            <Link href="/about" className="hover:text-primary transition-all" data-testid="footer-link-about">About</Link>
-            <a href={PLATFORM_CONFIG.SOCIAL_LINKS.TWITTER} target="_blank" rel="noreferrer" className="hover:text-primary transition-all" data-testid="footer-link-twitter">Twitter</a>
-            <a href={PLATFORM_CONFIG.SOCIAL_LINKS.TELEGRAM} target="_blank" rel="noreferrer" className="hover:text-primary transition-all" data-testid="footer-link-telegram">Telegram</a>
-          </div>
-          <div className="flex flex-col items-center md:items-end gap-2">
-            <p className="text-xs text-muted-foreground font-bold">© 2026 MEMEDROP INC.</p>
-            <p className="text-[10px] text-muted-foreground/50">BUILDING ON SOLANA MAINNET-BETA</p>
-          </div>
-        </div>
-      </div>
-    </footer>
-  );
-}
-
 function EarnContentOnly() {
   const { data: campaigns, isLoading } = useCampaigns();
   const { isConnected } = useWallet();
@@ -191,7 +161,16 @@ export default function Landing() {
       </section>
 
       {/* Features */}
-      <section className="py-24">
+      <section className="py-24 relative overflow-hidden">
+        {/* Floating character asset */}
+        <motion.div 
+          className="absolute -right-20 top-40 w-64 h-64 opacity-20 pointer-events-none hidden lg:block"
+          animate={{ rotate: [0, 5, -5, 0], y: [0, 20, 0] }}
+          transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+        >
+          <img src="https://ibb.co/s9MN3Dqp" alt="" className="w-full h-full object-contain" />
+        </motion.div>
+
         <div className="max-w-7xl mx-auto px-4">
           <div className="bg-gradient-to-br from-primary/10 to-secondary/10 rounded-[40px] p-8 md:p-16 border border-white/10 relative overflow-hidden">
             <div className="absolute top-0 right-0 w-64 h-64 bg-primary/10 blur-[100px] -z-10" />
@@ -255,9 +234,6 @@ export default function Landing() {
           </div>
         </div>
       </section>
-
-      {/* New Clean Footer */}
-      <Footer />
     </div>
   );
 }

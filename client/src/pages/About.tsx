@@ -113,7 +113,16 @@ export default function About() {
         </section>
 
         {/* Roadmap Section */}
-        <section className="py-20 mb-24">
+        <section className="py-20 mb-24 relative">
+          {/* Floating character asset */}
+          <motion.div 
+            className="absolute -left-20 bottom-0 w-48 h-48 opacity-20 pointer-events-none hidden lg:block"
+            animate={{ rotate: [0, -5, 5, 0], x: [0, 20, 0] }}
+            transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
+          >
+            <img src="https://ibb.co/s9MN3Dqp" alt="" className="w-full h-full object-contain" />
+          </motion.div>
+
           <div className="text-center mb-16">
             <h2 className="text-4xl font-display font-bold mb-4">MemeDrop Roadmap</h2>
             <p className="text-muted-foreground">Our journey to revolutionizing Solana marketing.</p>
