@@ -25,7 +25,6 @@ import confetti from "canvas-confetti";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { type Action, type Campaign, type Execution, type CampaignWithActions } from "@shared/schema";
 import { VerifyActionDialog } from "@/components/VerifyActionDialog";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
 
 export default function CampaignDetails() {
   const { id, symbol } = useParams();
