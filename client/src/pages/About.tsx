@@ -4,6 +4,7 @@ import { ShieldCheck, Rocket, Coins, Users, Zap, Globe, Target, BarChart3, Searc
 import { Card, CardContent } from "@/components/ui/card";
 import { useQuery } from "@tanstack/react-query";
 import { APP_CONFIG } from "@/config";
+import { PLATFORM_CONFIG } from "@shared/config";
 
 export default function About() {
   const { data: stats } = useQuery<{
