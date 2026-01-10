@@ -409,6 +409,7 @@ export async function registerRoutes(
   app.get('/api/leaderboard', async (req, res) => {
     try {
       const { timeframe } = req.query; // all_time, monthly, weekly
+      // Fetch all users to ensure we show everyone, including those with 0 points
       const leaders = await storage.getLeaderboard();
       
       const formatted = await Promise.all(leaders.map(async (u, i) => {
@@ -419,7 +420,7 @@ export async function registerRoutes(
           rank: i + 1,
           name: u.walletAddress.slice(0, 4) + "..." + u.walletAddress.slice(-4),
           fullWallet: u.walletAddress,
-          points: u.reputationScore,
+          points: u.reputationScore || 0,
           avatar: u.walletAddress.slice(0, 2).toUpperCase(),
           tasks: completedCount
         };

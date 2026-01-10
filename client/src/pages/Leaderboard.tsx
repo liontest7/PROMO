@@ -15,7 +15,8 @@ export default function Leaderboard() {
   const itemsPerPage = 10;
 
   const { data: leaders, isLoading } = useQuery<any[]>({
-    queryKey: ["/api/leaderboard", timeframe]
+    queryKey: ["/api/leaderboard", timeframe],
+    staleTime: 10000
   });
 
   if (isLoading) {
@@ -39,14 +40,21 @@ export default function Leaderboard() {
       <main className="max-w-6xl mx-auto px-4 py-16">
         <div className="text-center mb-16 relative">
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-primary/10 blur-[100px] rounded-full" />
-          <div className="relative z-10">
-            <div className="inline-flex p-4 rounded-3xl bg-yellow-500/10 border border-yellow-500/20 mb-6 shadow-[0_0_30px_rgba(234,179,8,0.1)]">
-              <Trophy className="w-12 h-12 text-yellow-500" />
+          <div className="relative z-10 flex flex-col md:flex-row items-center justify-center gap-8">
+            <div className="text-center md:text-left">
+              <h1 className="text-6xl font-display font-black uppercase italic tracking-tighter mb-4 leading-none text-white">
+                Hall <span className="text-primary">of Fame</span>
+              </h1>
+              <p className="text-white uppercase tracking-[0.4em] text-[10px] font-black italic">Top Ecosystem Contributors • Real-time Sync</p>
             </div>
-            <h1 className="text-6xl font-display font-black uppercase italic tracking-tighter mb-4 leading-none text-white">
-              Hall <span className="text-primary">of Fame</span>
-            </h1>
-            <p className="text-white uppercase tracking-[0.4em] text-[10px] font-black italic">Top Ecosystem Contributors • Real-time Sync</p>
+            <div className="relative group">
+              <div className="absolute inset-0 bg-primary/20 blur-2xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity" />
+              <img 
+                src="https://i.ibb.co/5Xd708DM/20260110-2035-Dropy-Wins-Trophy-remix-01kemjzex0f9xvh2emrc9tk4jy.png" 
+                alt="Dropy Trophy" 
+                className="w-32 h-32 object-contain relative z-10 drop-shadow-[0_0_30px_rgba(34,197,94,0.3)]"
+              />
+            </div>
           </div>
 
           <div className="flex justify-center gap-3 mt-10 relative z-10">
@@ -65,8 +73,8 @@ export default function Leaderboard() {
                 className={cn(
                   "rounded-2xl font-black uppercase tracking-widest text-[10px] h-10 px-6 transition-all",
                   timeframe === t.id 
-                    ? "bg-primary text-primary-foreground shadow-[0_0_20px_rgba(34,197,94,0.4)]" 
-                    : "bg-white/5 border-white/10 text-white/60 hover:text-white hover:bg-white/10"
+                    ? "bg-primary text-white shadow-[0_0_20px_rgba(34,197,94,0.4)] border-primary" 
+                    : "bg-white/5 border-white/10 text-white hover:text-white hover:bg-white/10"
                 )}
               >
                 <t.icon className="w-3.5 h-3.5 mr-2" />
