@@ -75,6 +75,7 @@ export const campaigns = pgTable("campaigns", {
   requirements: jsonb("requirements").$type<{
     minSolBalance?: number;
     walletAgeDays?: number;
+    minWalletAgeDays?: number;
   }>(),
   createdAt: timestamp("created_at").defaultNow(),
 });

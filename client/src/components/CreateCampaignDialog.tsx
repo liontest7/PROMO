@@ -49,6 +49,7 @@ const formSchema = insertCampaignSchema.extend({
   twitterUrl: z.string().url("Invalid Twitter URL").optional().or(z.literal("")),
   telegramUrl: z.string().url("Invalid Telegram URL").optional().or(z.literal("")),
   minSolBalance: z.coerce.number().min(0).default(0),
+  minWalletAgeDays: z.coerce.number().min(0).default(0),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -87,6 +88,7 @@ export function CreateCampaignDialog() {
       twitterUrl: "",
       telegramUrl: "",
       minSolBalance: 0,
+      minWalletAgeDays: 0,
       campaignType: undefined as any,
       actions: [],
       creatorId: userId || undefined
@@ -443,13 +445,22 @@ export function CreateCampaignDialog() {
                       </div>
                     </div>
 
-                    <FormField control={form.control} name="minSolBalance" render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="text-primary font-bold">Anti-Bot: Min SOL Balance</FormLabel>
-                        <FormControl><Input type="number" step="0.01" {...field} className="bg-primary/5" /></FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )} />
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <FormField control={form.control} name="minSolBalance" render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-primary font-bold">Anti-Bot: Min SOL Balance</FormLabel>
+                          <FormControl><Input type="number" step="0.01" {...field} className="bg-primary/5" /></FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )} />
+                      <FormField control={form.control} name="minWalletAgeDays" render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-primary font-bold">Anti-Bot: Min Wallet Age (Days)</FormLabel>
+                          <FormControl><Input type="number" {...field} className="bg-primary/5" /></FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )} />
+                    </div>
 
                     {watchedType === "engagement" && (
                       <div className="space-y-4 pt-4 border-t border-white/5">

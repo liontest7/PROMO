@@ -216,23 +216,23 @@ export default function Dashboard() {
               
               <Card className="glass-card border-white/5 rounded-2xl bg-white/[0.02]">
                 <CardHeader className="flex flex-row items-center justify-between pb-2">
-                  <CardTitle className="text-sm font-medium text-muted-foreground">Tasks Completed</CardTitle>
-                  <Activity className="h-4 w-4 text-secondary" />
+                  <CardTitle className="text-sm font-medium text-muted-foreground">Reputation Score</CardTitle>
+                  <Trophy className="h-4 w-4 text-yellow-500" />
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl font-bold font-display">{stats?.tasksCompleted || 0}</div>
-                  <p className="text-xs text-muted-foreground mt-1 text-primary font-bold">{stats?.reputation || 100} REP POINTS</p>
+                  <div className="text-3xl font-bold font-display text-primary">{stats?.reputation || 100}</div>
+                  <p className="text-[10px] text-muted-foreground uppercase font-black tracking-widest mt-1">Trust Level: Verified</p>
                 </CardContent>
               </Card>
 
               <Card className="glass-card border-white/5 rounded-2xl bg-white/[0.02]">
                 <CardHeader className="flex flex-row items-center justify-between pb-2">
-                  <CardTitle className="text-sm font-medium text-muted-foreground">SOL Balance</CardTitle>
-                  <Wallet className="h-4 w-4 text-primary" />
+                  <CardTitle className="text-sm font-medium text-muted-foreground">Tasks Completed</CardTitle>
+                  <Activity className="h-4 w-4 text-secondary" />
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl font-bold font-display">{solBalance !== null ? solBalance.toFixed(4) : "0.0000"}</div>
-                  <p className="text-xs text-muted-foreground mt-1">Wallet Funds</p>
+                  <div className="text-3xl font-bold font-display">{stats?.tasksCompleted || 0}</div>
+                  <p className="text-[10px] text-muted-foreground uppercase font-black tracking-widest mt-1">Global Ranking: --</p>
                 </CardContent>
               </Card>
             </div>
