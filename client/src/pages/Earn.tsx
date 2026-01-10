@@ -50,7 +50,7 @@ export default function Earn() {
   const [sortBy, setSortBy] = useState<"newest" | "reward_high" | "reward_low">("newest");
 
   const filteredCampaigns = campaigns?.filter(c => {
-    const matchesTab = activeTab === "active" ? c.status === "active" : c.status === "closed";
+    const matchesTab = activeTab === "active" ? c.status === "active" : (c.status === "completed" || c.status === "paused");
     if (!matchesTab) return false;
 
     const matchesSearch = 
