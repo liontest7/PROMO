@@ -1,26 +1,9 @@
-import { pgTable, text, serial, integer, boolean, timestamp, numeric, jsonb, varchar } from "drizzle-orm/pg-core";
+import { pgTable, text, serial, integer, boolean, timestamp, numeric, jsonb } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
-import { relations, sql } from "drizzle-orm";
-
-export * from "./models/auth";
+import { relations } from "drizzle-orm";
 
 // === TABLE DEFINITIONS ===
-
-// User storage table.
-// (IMPORTANT) This table is mandatory for Replit Auth, don't drop it.
-export const replitUsers = pgTable("replit_users", {
-  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  email: varchar("email").unique(),
-  firstName: varchar("first_name"),
-  lastName: varchar("last_name"),
-  profileImageUrl: varchar("profile_image_url"),
-  createdAt: timestamp("created_at").defaultNow(),
-  updatedAt: timestamp("updated_at").defaultNow(),
-});
-
-export type UpsertReplitUser = typeof replitUsers.$inferInsert;
-export type ReplitUser = typeof replitUsers.$inferSelect;
 
 export const users = pgTable("users", {
   id: serial("id").primaryKey(),
@@ -31,7 +14,6 @@ export const users = pgTable("users", {
   twitterHandle: text("twitter_handle"),
   telegramHandle: text("telegram_handle"),
   isBlocked: boolean("is_blocked").default(false).notNull(),
-  replitId: text("replit_id"), // Added to link with Replit Auth
   createdAt: timestamp("created_at").defaultNow(),
 });
 
@@ -58,13 +40,13 @@ export const campaigns = pgTable("campaigns", {
   description: text("description").notNull(),
   tokenName: text("token_name").notNull(),
   tokenAddress: text("token_address").notNull(),
-  totalBudget: numeric("total_budget").notNull(), // Using numeric for token amounts
+  totalBudget: numeric("total_budget").notNull(),
   remainingBudget: numeric("remaining_budget").notNull(),
-  bannerUrl: text("banner_url"), // Added for professional look
-  logoUrl: text("logo_url"), // Added for professional look
-  websiteUrl: text("website_url"), // Project website
-  twitterUrl: text("twitter_url"), // Project Twitter
-  telegramUrl: text("telegram_url"), // Project Telegram
+  bannerUrl: text("banner_url"),
+  logoUrl: text("logo_url"),
+  websiteUrl: text("website_url"),
+  twitterUrl: text("twitter_url"),
+  telegramUrl: text("telegram_url"),
   campaignType: text("campaign_type", { enum: ["engagement", "holder_qualification"] }).default("engagement").notNull(),
   minHoldingAmount: numeric("min_holding_amount"),
   minHoldingDuration: integer("min_holding_duration"), // in days
@@ -92,7 +74,7 @@ export const actions = pgTable("actions", {
   id: serial("id").primaryKey(),
   campaignId: integer("campaign_id").references(() => campaigns.id).notNull(),
   type: text("type", { enum: ["website", "telegram", "twitter"] }).notNull(),
-  title: text("title").notNull(), // e.g., "Follow us on Twitter"
+  title: text("title").notNull(),
   rewardAmount: numeric("reward_amount").notNull(),
   url: text("url").notNull(),
   maxExecutions: integer("max_executions"),
@@ -105,7 +87,7 @@ export const executions = pgTable("executions", {
   campaignId: integer("campaign_id").references(() => campaigns.id).notNull(),
   userId: integer("user_id").references(() => users.id).notNull(),
   status: text("status", { enum: ["pending", "verified", "paid", "rejected", "waiting"] }).default("pending").notNull(),
-  transactionSignature: text("transaction_signature"), // For on-chain proof if needed
+  transactionSignature: text("transaction_signature"),
   createdAt: timestamp("created_at").defaultNow(),
 });
 
@@ -207,9 +189,9 @@ export type CreateCampaignRequest = InsertCampaign & {
 export type VerifyActionRequest = {
   actionId: number;
   userWallet: string;
-  proof?: string; // e.g., tweet URL or signature
-  handle?: string; // New field for social handle verification
-  socialVerified?: boolean; // Flag if social account was verified
+  proof?: string;
+  handle?: string;
+  socialVerified?: boolean;
 };
 
 // Response Types

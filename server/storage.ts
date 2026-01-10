@@ -15,7 +15,7 @@ export interface IStorage {
   createUser(user: InsertUser): Promise<User>;
   updateUserReputation(id: number, score: number): Promise<User>;
   updateUserSocials(id: number, socials: { twitterHandle?: string; telegramHandle?: string }): Promise<User>;
-  updateUserRole(id: number, role: string): Promise<User>;
+  updateUserRole(id: number, role: "user" | "advertiser" | "admin"): Promise<User>;
   updateUserBlockStatus(id: number, isBlocked: boolean): Promise<User>;
 
   // Campaign
@@ -75,7 +75,7 @@ export class DatabaseStorage implements IStorage {
     return user;
   }
 
-  async updateUserRole(id: number, role: any): Promise<User> {
+  async updateUserRole(id: number, role: "user" | "advertiser" | "admin"): Promise<User> {
     const [user] = await db.update(users)
       .set({ role })
       .where(eq(users.id, id))
@@ -87,15 +87,6 @@ export class DatabaseStorage implements IStorage {
     const [user] = await db.update(users)
       .set({ isBlocked })
       .where(eq(users.id, id))
-      .returning();
-    return user;
-  }
-
-  async linkReplitUser(walletAddress: string, replitId: string): Promise<User> {
-    const [user] = await db
-      .update(users)
-      .set({ replitId })
-      .where(eq(users.walletAddress, walletAddress))
       .returning();
     return user;
   }
@@ -179,7 +170,9 @@ export class DatabaseStorage implements IStorage {
     for (const execution of userExecutions) {
       const [action] = await db.select().from(actions).where(eq(actions.id, execution.actionId));
       const [campaign] = await db.select().from(campaigns).where(eq(campaigns.id, execution.campaignId));
-      results.push({ ...execution, action, campaign });
+      if (action && campaign) {
+        results.push({ ...execution, action, campaign });
+      }
     }
     return results;
   }

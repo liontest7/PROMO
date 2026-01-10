@@ -4,7 +4,6 @@ import { storage } from "./storage";
 import { api } from "@shared/routes";
 import { z } from "zod";
 import { insertCampaignSchema, insertActionSchema } from "@shared/schema";
-import { setupAuth, registerAuthRoutes } from "./replit_integrations/auth";
 
 import { Connection, PublicKey } from "@solana/web3.js";
 import { db } from "./db";
@@ -27,9 +26,6 @@ export async function registerRoutes(
   app: Express
 ): Promise<Server> {
   app.use("/api", apiLimiter);
-
-  await setupAuth(app);
-  registerAuthRoutes(app);
 
   app.use(async (req, res, next) => {
     const walletAddress = req.headers['x-wallet-address'] || req.body?.walletAddress;
