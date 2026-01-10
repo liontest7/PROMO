@@ -152,7 +152,16 @@ export default function CampaignDetails() {
     );
   }
 
-  if (!campaign) return <div className="min-h-screen bg-background flex items-center justify-center text-white font-black tracking-widest uppercase">Campaign not found</div>;
+  if (!campaign) return (
+    <div className="min-h-screen bg-background flex flex-col items-center justify-center space-y-4">
+      <h2 className="text-2xl font-black text-white uppercase tracking-widest">Campaign Not Found</h2>
+      <Link href="/earn">
+        <Button variant="outline" className="gap-2 border-white/10 hover:bg-white/5">
+          <ArrowLeft className="w-4 h-4" /> Return to Earn Rewards
+        </Button>
+      </Link>
+    </div>
+  );
 
   return (
     <div className="min-h-screen bg-background pb-20">

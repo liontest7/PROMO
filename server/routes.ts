@@ -425,7 +425,6 @@ export async function registerRoutes(
       
       // Calculate real burn data
       // Based on platform rules: 10,000 $DROP burned per campaign creation
-      // Plus a percentage of rewards if applicable, but for now we'll use the fixed amount
       const totalBurnedValue = allCampaigns.length * 10000;
       const totalBurned = totalBurnedValue.toLocaleString();
       
@@ -435,7 +434,7 @@ export async function registerRoutes(
         totalUsers: totalUsersCount.toLocaleString(),
         totalPaid: totalPaidValue.toLocaleString(),
         totalBurned: totalBurned,
-        totalValueDistributed: (totalPaidValue * 0.5).toFixed(2) // Mock value for "Total Value" in USD if needed
+        totalValueDistributed: (totalPaidValue * 0.5).toFixed(2)
       });
     } catch (err) {
       console.error("Global stats error:", err);
@@ -529,7 +528,7 @@ export async function registerRoutes(
   });
 
   // Seed Data
-  // seed(); // Commented out to prevent mock data on restart if database has real data
+  seed().catch(console.error);
 
   return httpServer;
 }
