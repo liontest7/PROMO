@@ -37,12 +37,12 @@ export function Navigation() {
 
   const NavLink = ({ href, children, icon: Icon }: { href: string; children: React.ReactNode; icon: any }) => (
     <Link href={href} className={cn(
-      "flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200",
+      "flex items-center gap-2 px-4 py-2 rounded-lg text-base font-bold transition-all duration-200",
       location === href 
-        ? "bg-primary/10 text-primary border border-primary/20 shadow-[0_0_10px_rgba(34,197,94,0.1)]" 
-        : "text-muted-foreground hover:text-foreground hover:bg-white/5"
+        ? "bg-primary/15 text-white border border-primary/30 shadow-[0_0_15px_rgba(34,197,94,0.2)]" 
+        : "text-white/70 hover:text-white hover:bg-white/10"
     )}>
-      <Icon className="w-4 h-4" />
+      <Icon className="w-5 h-5" />
       {children}
     </Link>
   );
@@ -53,8 +53,8 @@ export function Navigation() {
         <div className="flex h-20 items-center justify-between">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-4 group cursor-pointer">
-            <div className="w-12 h-12 rounded-xl overflow-visible group-hover:shadow-primary/40 transition-all">
-              <img src={APP_CONFIG.assets.logo} alt="Logo" className="w-full h-full object-contain scale-110 group-hover:scale-125 transition-transform duration-500" />
+            <div className="w-16 h-16 overflow-visible">
+              <img src={APP_CONFIG.assets.logo} alt="Logo" className="w-full h-full object-contain scale-125 group-hover:scale-150 transition-transform duration-500" />
             </div>
             <span className="font-display font-black text-3xl tracking-tighter bg-gradient-to-r from-white via-white to-gray-400 bg-clip-text text-transparent">
               {APP_CONFIG.platformName}
