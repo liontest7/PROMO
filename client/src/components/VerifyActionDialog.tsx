@@ -22,9 +22,10 @@ interface VerifyActionDialogProps {
   campaign: Campaign | null;
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  onSuccess?: (actionId: number) => void;
 }
 
-export function VerifyActionDialog({ action, campaign, open, onOpenChange }: VerifyActionDialogProps) {
+export function VerifyActionDialog({ action, campaign, open, onOpenChange, onSuccess }: VerifyActionDialogProps) {
   const verifyMutation = useVerifyAction();
   const { walletAddress, isConnected, connect } = useWallet();
   const { toast } = useToast();
@@ -106,6 +107,7 @@ export function VerifyActionDialog({ action, campaign, open, onOpenChange }: Ver
                   title: "Eligibility Verified!",
                   description: "You are eligible to claim your reward.",
                 });
+                if (onSuccess) onSuccess(0);
                 setTimeout(() => {
                   onOpenChange(false);
                 }, 2000);
@@ -162,6 +164,7 @@ export function VerifyActionDialog({ action, campaign, open, onOpenChange }: Ver
               title: "Action Verified!",
               description: "Go to your dashboard to claim your rewards in one batch.",
             });
+            if (onSuccess) onSuccess(action.id);
             setTimeout(() => {
               onOpenChange(false);
             }, 2000);
