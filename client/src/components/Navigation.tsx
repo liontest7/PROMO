@@ -68,17 +68,21 @@ export function Navigation() {
                 <>
                   <NavLink href="/dashboard" icon={Trophy}>My Dashboard</NavLink>
                   {(role === "advertiser" || (role as any) === "admin") && (
-                    <Button 
-                      variant="ghost" 
-                      size="icon" 
-                      asChild 
-                      className="h-10 w-10 rounded-full bg-primary/10 text-primary hover:bg-primary/20 transition-all border border-primary/20 ml-2 p-0 flex items-center justify-center shrink-0 overflow-hidden"
-                      title={role === "advertiser" ? "Admin Console" : "Admin Panel"}
-                    >
-                      <Link href={role === "advertiser" ? "/advertiser" : "/admin"} className="flex items-center justify-center w-full h-full">
-                        {role === "advertiser" ? <LayoutDashboard className="h-5 w-5" /> : <ShieldAlert className="h-5 w-5" />}
-                      </Link>
-                    </Button>
+                    <div className="flex items-center ml-2 p-1 rounded-full bg-primary/10 border border-primary/20 shrink-0">
+                      <Button 
+                        variant="ghost" 
+                        size="icon" 
+                        asChild 
+                        className="h-8 w-8 rounded-full text-primary hover:bg-primary/20 transition-all p-0 flex items-center justify-center overflow-hidden"
+                        title={role === "advertiser" ? "Admin Console" : "Admin Panel"}
+                      >
+                        <Link href={role === "advertiser" ? "/advertiser" : "/admin"}>
+                          <a className="flex items-center justify-center w-full h-full">
+                            {role === "advertiser" ? <LayoutDashboard className="h-4 w-4" /> : <ShieldAlert className="h-4 w-4" />}
+                          </a>
+                        </Link>
+                      </Button>
+                    </div>
                   )}
                 </>
               )}
