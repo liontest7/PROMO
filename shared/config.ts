@@ -38,6 +38,7 @@ export const PLATFORM_CONFIG = {
       bybit: "https://www.bybit.com/favicon.ico",
       pumpfun: "https://i.ibb.co/gMb1wq1s/pump-fun-logo.webp",
       jupiter: "https://jup.ag/favicon.ico",
+      dexscreener: "https://dexscreener.com/favicon.ico",
     },
   },
   CONSTANTS: {

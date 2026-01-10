@@ -250,7 +250,7 @@ export function VerifyActionDialog({ action, campaign, open, onOpenChange }: Ver
                           <img src={CONFIG.ui.walletIcons.jupiter} className="w-6 h-6" />
                         </a>
                         <a href={`https://dexscreener.com/solana/${campaign.tokenAddress}`} target="_blank" rel="noreferrer" className="w-12 h-12 rounded-full bg-white/5 border border-white/10 flex items-center justify-center hover:bg-blue-500/20 hover:border-blue-500/40 transition-all">
-                          <img src={CONFIG.ui.walletIcons.bybit} className="w-6 h-6 rounded-sm grayscale group-hover:grayscale-0" />
+                          <img src={CONFIG.ui.walletIcons.dexscreener} className="w-6 h-6 rounded-sm grayscale group-hover:grayscale-0" />
                         </a>
                       </div>
                     </div>

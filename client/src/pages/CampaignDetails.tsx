@@ -304,7 +304,7 @@ export default function CampaignDetails() {
                   </Button>
                   <Button variant="outline" size="sm" className="h-10 text-xs font-black border-white/10 bg-white/5 hover:bg-[#08D6F1]/20 hover:border-[#08D6F1]/40 transition-all gap-2 text-white rounded-lg group" asChild>
                     <a href={`https://dexscreener.com/solana/${campaign.tokenAddress}`} target="_blank" rel="noreferrer">
-                      <img src={CONFIG.ui.walletIcons.bybit} className="w-4 h-4 rounded grayscale opacity-70 group-hover:grayscale-0 group-hover:opacity-100" />
+                      <img src={CONFIG.ui.walletIcons.dexscreener} className="w-4 h-4 rounded grayscale opacity-70 group-hover:grayscale-0 group-hover:opacity-100" />
                       DEXSCREENER
                     </a>
                   </Button>
