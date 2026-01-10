@@ -59,7 +59,7 @@ export function TermsModal() {
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && handleClose()}>
-      <DialogContent className="max-w-2xl max-h-[90vh] glass-card border-white/10 flex flex-col p-0 overflow-hidden shadow-[0_0_50px_rgba(34,197,94,0.1)]">
+      <DialogContent className="max-w-2xl max-h-[90vh] glass-card border-white/20 flex flex-col p-0 overflow-hidden shadow-[0_0_50px_rgba(255,255,255,0.05)] ring-1 ring-white/10">
         <DialogHeader className="p-10 border-b border-white/5 bg-gradient-to-br from-primary/10 via-transparent to-transparent relative">
           <div className="flex items-center justify-between gap-8">
             <div className="flex-1 text-left">
@@ -70,12 +70,12 @@ export function TermsModal() {
                 Please read and accept our Terms to continue.
               </p>
             </div>
-            <div className="shrink-0 relative">
-              <div className="absolute inset-0 bg-primary/20 blur-2xl rounded-full" />
+            <div className="shrink-0 relative mr-4">
+              <div className="absolute inset-0 bg-primary/20 blur-3xl rounded-full scale-150" />
               <img 
                 src={PLATFORM_CONFIG.ASSETS.LEGAL_BANNER} 
                 alt="Legal mascot"
-                className="w-32 h-32 object-contain relative z-10 drop-shadow-[0_0_20px_rgba(34,197,94,0.3)]"
+                className="w-40 h-40 object-contain relative z-10 drop-shadow-[0_0_30px_rgba(34,197,94,0.4)]"
               />
             </div>
           </div>
