@@ -9,7 +9,7 @@ export function Footer() {
           <div className="flex flex-col items-center md:items-start gap-4">
             <div className="flex items-center gap-3">
               <img src={PLATFORM_CONFIG.ASSETS.MAIN_LOGO} alt="Logo" className="w-10 h-10 object-contain" />
-              <span className="font-display font-black text-2xl tracking-tighter text-white">MEMEDROP</span>
+              <span className="font-display font-black text-2xl tracking-tighter text-white uppercase">{PLATFORM_CONFIG.TOKEN_SYMBOL}</span>
             </div>
             <p className="text-xs text-muted-foreground max-w-xs font-medium uppercase tracking-widest leading-loose">
               The leading Pay-Per-Action platform for the Solana ecosystem.
@@ -22,7 +22,7 @@ export function Footer() {
             <a href={PLATFORM_CONFIG.SOCIAL_LINKS.TELEGRAM} target="_blank" rel="noreferrer" className="hover:text-primary transition-all text-white/70 hover:text-white" data-testid="footer-link-telegram">Telegram</a>
           </div>
           <div className="flex flex-col items-center md:items-end gap-2">
-            <p className="text-xs text-muted-foreground font-bold text-white/40">© 2026 MEMEDROP INC.</p>
+            <p className="text-xs text-muted-foreground font-bold text-white/40">© 2026 {PLATFORM_CONFIG.TOKEN_SYMBOL} INC.</p>
             <p className="text-[10px] text-muted-foreground/30 uppercase tracking-widest font-black">Building on Solana Mainnet-Beta</p>
           </div>
         </div>

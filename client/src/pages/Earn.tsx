@@ -77,7 +77,7 @@ export default function Earn() {
   return (
     <div className="min-h-screen bg-background text-foreground">
       <header>
-        <title>Explore Campaigns - Earn Crypto | MemeDrop</title>
+        <title>Explore Campaigns - Earn Crypto | {PLATFORM_CONFIG.TOKEN_SYMBOL}</title>
         <meta name="description" content="Discover active marketing campaigns on Solana. Complete Twitter, Telegram, and website tasks to earn project tokens." />
       </header>
       <Navigation />

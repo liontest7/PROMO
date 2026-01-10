@@ -69,8 +69,8 @@ export default function Landing() {
   return (
     <div className="min-h-screen bg-background text-foreground overflow-hidden">
       <header>
-        <title>MemeDrop - The #1 Solana Marketing Platform</title>
-        <meta name="description" content="Connect, complete tasks, and earn crypto rewards instantly on Solana. The premier engagement platform for real users and authentic growth." />
+        <title>{PLATFORM_CONFIG.TOKEN_SYMBOL} - The #1 Solana Marketing Platform</title>
+        <meta name="description" content={`Connect, complete tasks, and earn crypto rewards instantly on Solana. The premier engagement platform for real users and authentic growth.`} />
       </header>
       <Navigation />
       
@@ -95,7 +95,7 @@ export default function Landing() {
               <span className="text-primary neon-text italic">Drive Real Growth</span>
             </h1>
             <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto mb-12 leading-relaxed font-medium">
-              MemeDrop is Solana's premier Pay-Per-Action platform. Connect with high-conviction users through verified on-chain holder qualification and social engagement. 
+              {PLATFORM_CONFIG.TOKEN_SYMBOL} is Solana's premier Pay-Per-Action platform. Connect with high-conviction users through verified on-chain holder qualification and social engagement. 
               Built for projects that demand authentic community growth.
             </p>
 
@@ -194,7 +194,7 @@ export default function Landing() {
                 <div className="w-[400px] h-[400px] rounded-full bg-primary/20 flex items-center justify-center border-[12px] border-primary/10">
                   <motion.img 
                     src={PLATFORM_CONFIG.ASSETS.MAIN_LOGO} 
-                    alt="MemeDrop Character" 
+                    alt={`${PLATFORM_CONFIG.TOKEN_SYMBOL} Character`} 
                     animate={{ y: [0, -30, 0] }}
                     transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
                     className="w-80 h-80 object-contain drop-shadow-[0_0_60px_rgba(34,197,94,0.7)] translate-x-1" 

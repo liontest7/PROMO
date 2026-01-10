@@ -26,8 +26,8 @@ export default function About() {
   return (
     <div className="min-h-screen bg-background text-foreground">
       <header>
-        <title>About MemeDrop - Solana Engagement Revolution</title>
-        <meta name="description" content="Learn how MemeDrop is revolutionizing marketing on Solana by connecting projects with real, verified users." />
+        <title>About {PLATFORM_CONFIG.TOKEN_SYMBOL} - Solana Engagement Revolution</title>
+        <meta name="description" content={`Learn how ${PLATFORM_CONFIG.TOKEN_SYMBOL} is revolutionizing marketing on Solana by connecting projects with real, verified users.`} />
       </header>
       <Navigation />
       
@@ -43,7 +43,7 @@ export default function About() {
             <span className="text-primary">The Future of Crypto Growth</span>
           </motion.h1>
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-            MemeDrop has officially launched Phase 1: Holder Qualification. This model focuses on building genuine, long-term value by rewarding users who commit to projects through verified on-chain holdings. 
+            {PLATFORM_CONFIG.TOKEN_SYMBOL} has officially launched Phase 1: Holder Qualification. This model focuses on building genuine, long-term value by rewarding users who commit to projects through verified on-chain holdings. 
             No more high-cost engagement APIs – just pure on-chain verification and real community support. 
             <br/><br/>
             Our mission is to create a deflationary ecosystem where every campaign burns ${PLATFORM_CONFIG.TOKEN_SYMBOL}, rewarding the entire community.
@@ -70,7 +70,7 @@ export default function About() {
               <div className="aspect-square rounded-3xl overflow-hidden bg-gradient-to-br from-primary/20 to-secondary/20 border border-white/10 flex items-center justify-center p-8 group">
                 <img 
                   src={PLATFORM_CONFIG.ASSETS.CHARACTER_QUESTION} 
-                  alt="MemeDrop Character" 
+                  alt={`${PLATFORM_CONFIG.TOKEN_SYMBOL} Character`} 
                   className="w-full h-full object-contain drop-shadow-[0_0_20px_rgba(34,197,94,0.3)] group-hover:scale-105 transition-transform duration-500" 
                 />
               </div>
@@ -94,7 +94,7 @@ export default function About() {
                   </div>
                   <div>
                     <h4 className="text-xl font-bold mb-2">For Investors</h4>
-                    <p className="text-muted-foreground">Sustainable growth through $MEME burns. Every new campaign increases scarcity, rewarding long-term believers in the MemeDrop vision.</p>
+                    <p className="text-muted-foreground">Sustainable growth through ${PLATFORM_CONFIG.TOKEN_SYMBOL} burns. Every new campaign increases scarcity, rewarding long-term believers in the {PLATFORM_CONFIG.TOKEN_SYMBOL} vision.</p>
                   </div>
                 </div>
                 <div className="flex gap-6">
@@ -114,7 +114,7 @@ export default function About() {
         {/* Roadmap Section */}
         <section className="py-20 mb-24">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-display font-bold mb-4">MemeDrop Roadmap</h2>
+            <h2 className="text-4xl font-display font-bold mb-4">{PLATFORM_CONFIG.TOKEN_SYMBOL} Roadmap</h2>
             <p className="text-muted-foreground">Our journey to revolutionizing Solana marketing.</p>
           </div>
           
@@ -172,7 +172,7 @@ export default function About() {
             <div className="w-32 h-32 shrink-0">
               <img 
                 src={PLATFORM_CONFIG.ASSETS.ABOUT_MASCOT} 
-                alt="MemeDrop Mascot" 
+                alt={`${PLATFORM_CONFIG.TOKEN_SYMBOL} Mascot`} 
                 className="w-full h-full object-contain drop-shadow-[0_0_15px_rgba(34,197,94,0.4)]" 
               />
             </div>

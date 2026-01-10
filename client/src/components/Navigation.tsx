@@ -55,8 +55,8 @@ export function Navigation() {
             <div className="w-16 h-16 overflow-visible">
               <img src={PLATFORM_CONFIG.ASSETS.MAIN_LOGO} alt="Logo" className="w-full h-full object-contain scale-125 group-hover:scale-150 transition-transform duration-500" />
             </div>
-            <span className="font-display font-black text-3xl tracking-tighter bg-gradient-to-r from-white via-white to-gray-400 bg-clip-text text-transparent group-hover:scale-110 transition-transform duration-500 origin-left">
-              MEMEDROP
+            <span className="font-display font-black text-3xl tracking-tighter bg-gradient-to-r from-white via-white to-gray-400 bg-clip-text text-transparent group-hover:scale-110 transition-transform duration-500 origin-left uppercase">
+              {PLATFORM_CONFIG.TOKEN_SYMBOL}
             </span>
           </Link>
 
@@ -91,7 +91,7 @@ export function Navigation() {
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-56 glass-card border-white/10 bg-background/95 backdrop-blur-xl">
                   <div className="p-2 text-[10px] font-black uppercase text-muted-foreground tracking-widest border-b border-white/5 mb-1">
-                    Buy $MEME on DEX
+                    Buy ${PLATFORM_CONFIG.TOKEN_SYMBOL} on DEX
                   </div>
                   <DropdownMenuItem asChild className="cursor-pointer focus:bg-primary/10 focus:text-primary">
                     <a href={PLATFORM_CONFIG.TOKEN_DETAILS.BUY_LINKS.PUMP_FUN} target="_blank" rel="noreferrer" className="flex items-center gap-3 w-full py-2">
