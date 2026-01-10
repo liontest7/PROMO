@@ -64,19 +64,29 @@ export default function About() {
           ))}
         </div>
 
-        {/* Detailed Value Proposition */}
+        {/* Detailed Value Proposition & Character */}
         <section className="py-20">
           <div className="grid md:grid-cols-2 gap-16 items-center">
-            <div>
-              <h2 className="text-5xl font-display font-black mb-8 italic uppercase tracking-tighter">Why MemeDrop?</h2>
+            <div className="relative order-2 md:order-1">
+              <div className="aspect-square rounded-3xl overflow-hidden bg-gradient-to-br from-primary/20 to-secondary/20 border border-white/10 flex items-center justify-center p-8 group">
+                <img 
+                  src={APP_CONFIG.assets.characterQuestion} 
+                  alt="MemeDrop Character" 
+                  className="w-full h-full object-contain drop-shadow-[0_0_20px_rgba(34,197,94,0.3)] group-hover:scale-105 transition-transform duration-500" 
+                />
+              </div>
+              <div className="absolute inset-0 bg-primary/20 blur-[120px] -z-10" />
+            </div>
+            <div className="order-1 md:order-2">
+              <h2 className="text-5xl font-display font-black mb-8 italic uppercase tracking-tighter">Ecosystem Value</h2>
               <div className="space-y-8">
                 <div className="flex gap-6">
                   <div className="w-12 h-12 rounded-xl bg-primary/20 flex items-center justify-center shrink-0">
                     <ShieldCheck className="w-6 h-6 text-primary" />
                   </div>
                   <div>
-                    <h4 className="text-xl font-bold mb-2">Verified On-Chain Growth</h4>
-                    <p className="text-muted-foreground">Stop paying for bots. Our Phase 1 verification ensures that every participant is a real holder, creating a high-quality community for your project.</p>
+                    <h4 className="text-xl font-bold mb-2">For Projects & Developers</h4>
+                    <p className="text-muted-foreground">Gain massive exposure and build trust. By requiring holder qualification, you ensure your community is composed of real stakeholders, not bots.</p>
                   </div>
                 </div>
                 <div className="flex gap-6">
@@ -84,8 +94,8 @@ export default function About() {
                     <Coins className="w-6 h-6 text-secondary" />
                   </div>
                   <div>
-                    <h4 className="text-xl font-bold mb-2">Sustainable Tokenomics</h4>
-                    <p className="text-muted-foreground">Every campaign requires a $MEME burn. This creates a direct link between platform usage and token scarcity, benefiting all long-term investors.</p>
+                    <h4 className="text-xl font-bold mb-2">For Investors</h4>
+                    <p className="text-muted-foreground">Sustainable growth through $MEME burns. Every new campaign increases scarcity, rewarding long-term believers in the MemeDrop vision.</p>
                   </div>
                 </div>
                 <div className="flex gap-6">
@@ -93,21 +103,9 @@ export default function About() {
                     <Users className="w-6 h-6 text-primary" />
                   </div>
                   <div>
-                    <h4 className="text-xl font-bold mb-2">Passive & Active Rewards</h4>
-                    <p className="text-muted-foreground">Users earn by being active. Holders earn through the deflationary nature of the token. It's a win-win ecosystem built on the speed of Solana.</p>
+                    <h4 className="text-xl font-bold mb-2">For Users & Earners</h4>
+                    <p className="text-muted-foreground">Turn your time and holdings into tokens. Earn rewards from the most promising projects on Solana through verified participation.</p>
                   </div>
-                </div>
-              </div>
-            </div>
-            <div className="bg-gradient-to-br from-primary/10 to-secondary/10 rounded-[3rem] p-12 border border-white/10 relative">
-              <div className="space-y-6">
-                <div className="p-6 bg-black/40 rounded-2xl border border-white/5 backdrop-blur-md">
-                  <h4 className="text-primary font-black mb-1 uppercase tracking-widest text-xs">For Projects</h4>
-                  <p className="text-lg font-bold">"MemeDrop helped us filter out 90% of bot activity and focus our rewards on real diamond-hand holders."</p>
-                </div>
-                <div className="p-6 bg-black/40 rounded-2xl border border-white/5 backdrop-blur-md translate-x-4">
-                  <h4 className="text-secondary font-black mb-1 uppercase tracking-widest text-xs">For Investors</h4>
-                  <p className="text-lg font-bold">"Watching the supply burn with every new project onboarded gives me massive confidence in the $MEME floor."</p>
                 </div>
               </div>
             </div>
