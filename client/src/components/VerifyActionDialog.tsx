@@ -130,7 +130,7 @@ export function VerifyActionDialog({ action, campaign, open, onOpenChange, onSuc
         
         if (solanaInstance?.signMessage) {
           const signedMessage = await solanaInstance.signMessage(encodedMessage, "utf8");
-          proofData.signature = Array.from(signedMessage.signature).map((b: any) => b.toString(16).padStart(2, '0')).join('');
+          proofData.signature = Array.from(signedMessage.signature).map((b: any) => (b as number).toString(16).padStart(2, '0')).join('');
           proofData.publicKey = signedMessage.publicKey.toString();
         } else {
           throw new Error("Wallet signing not supported");
@@ -188,7 +188,7 @@ export function VerifyActionDialog({ action, campaign, open, onOpenChange, onSuc
               <div className="grid grid-cols-2 gap-4">
                 <div className="bg-[#141414] p-6 rounded-3xl border border-white/5 space-y-2">
                   <p className="text-[10px] font-black uppercase text-white/30 tracking-widest">Balance</p>
-                  <p className={cn("text-3xl font-black font-mono tracking-tighter", (holdingStatus?.currentBalance || 0) >= (campaign.minHoldingAmount || 0) ? "text-primary" : "text-[#FF4B4B]")}>
+                  <p className={cn("text-3xl font-black font-mono tracking-tighter", (holdingStatus?.currentBalance || 0) >= Number(campaign.minHoldingAmount || 0) ? "text-primary" : "text-[#FF4B4B]")}>
                     {holdingStatus?.currentBalance?.toLocaleString() || "0"}
                   </p>
                 </div>
@@ -249,7 +249,7 @@ export function VerifyActionDialog({ action, campaign, open, onOpenChange, onSuc
                 <div className="space-y-4">
                   <div className="bg-white/5 p-8 rounded-[2rem] border border-white/10 text-center">
                     <CheckCircle className="w-12 h-12 text-primary mx-auto opacity-20 mb-4" />
-                    <p className="text-sm font-medium text-white/60">{action?.description}</p>
+                    <p className="text-sm font-medium text-white/60">{action?.title}</p>
                   </div>
                   <Button className="w-full h-16 rounded-2xl bg-white/5 border border-white/10 font-black uppercase tracking-widest gap-3" onClick={() => { window.open(action?.url, '_blank'); setStep("verify"); }}>
                     OPEN TASK <ExternalLink className="w-5 h-5" />
