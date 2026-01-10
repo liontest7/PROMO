@@ -14,7 +14,7 @@ export const PLATFORM_CONFIG = {
     BUY_LINKS: {
       PUMP_FUN: "https://pump.fun/",
       DEX_SCREENER: "https://dexscreener.com/solana/",
-      JUPITER: "https://jup.ag/swap/SOL-MEME",
+      JUPITER: "https://jup.ag/swap?sell=So11111111111111111111111111111111111111112&buy=",
       PUMP_FUN_LOGO: "https://i.ibb.co/gMb1wq1s/pump-fun-logo.webp",
     },
   },

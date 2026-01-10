@@ -66,10 +66,12 @@ export function VerifyActionDialog({ action, campaign, open, onOpenChange }: Ver
   const formatDuration = (days: number) => {
     if (days < 0) return "0s";
     const totalSeconds = Math.floor(days * 24 * 60 * 60);
-    const h = Math.floor(totalSeconds / 3600);
+    const d = Math.floor(totalSeconds / 86400);
+    const h = Math.floor((totalSeconds % 86400) / 3600);
     const m = Math.floor((totalSeconds % 3600) / 60);
     const s = totalSeconds % 60;
     
+    if (d > 0) return `${d}d ${h}h ${m}m`;
     if (h > 0) return `${h}h ${m}m ${s}s`;
     if (m > 0) return `${m}m ${s}s`;
     return `${s}s`;
@@ -226,7 +228,7 @@ export function VerifyActionDialog({ action, campaign, open, onOpenChange }: Ver
                       <div className="text-right">
                         <p className="text-[10px] font-black text-white/30 uppercase tracking-widest">Hold Time</p>
                         <p className="text-sm font-black text-primary">
-                          {holdingStatus.holdDuration !== undefined ? formatDuration(holdingStatus.holdDuration) : "0s"}
+                          {holdingStatus.holdDuration !== undefined ? formatDuration(holdingStatus.holdDuration) : "0s"} / {campaign.minHoldingDuration} {Number(campaign.minHoldingDuration) === 1 ? 'DAY' : 'DAYS'}
                         </p>
                       </div>
                     </div>
@@ -256,7 +258,7 @@ export function VerifyActionDialog({ action, campaign, open, onOpenChange }: Ver
                       <a href={`https://pump.fun/${campaign.tokenAddress}`} target="_blank" rel="noreferrer" className="w-14 h-14 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center hover:bg-[#FF8C00]/20 hover:border-[#FF8C00]/40 transition-all shadow-xl group">
                         <img src={CONFIG.ui.walletIcons.pumpfun} className="w-7 h-7 rounded-sm transition-transform group-hover:scale-110" />
                       </a>
-                      <a href={`https://jup.ag/swap/SOL-${campaign.tokenAddress}`} target="_blank" rel="noreferrer" className="w-14 h-14 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center hover:bg-[#BEF32C]/20 hover:border-[#BEF32C]/40 transition-all shadow-xl group">
+                      <a href={`${CONFIG.TOKEN_DETAILS.BUY_LINKS.JUPITER}${campaign.tokenAddress}`} target="_blank" rel="noreferrer" className="w-14 h-14 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center hover:bg-[#BEF32C]/20 hover:border-[#BEF32C]/40 transition-all shadow-xl group">
                         <img src={CONFIG.ui.walletIcons.jupiter} className="w-7 h-7 transition-transform group-hover:scale-110" />
                       </a>
                       <a href={`https://dexscreener.com/solana/${campaign.tokenAddress}`} target="_blank" rel="noreferrer" className="w-14 h-14 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center hover:bg-blue-500/20 hover:border-blue-500/40 transition-all shadow-xl group">
