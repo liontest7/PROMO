@@ -406,5 +406,21 @@ export async function registerRoutes(
     }
   });
 
+  app.get('/api/leaderboard', async (req, res) => {
+    try {
+      const leaders = await storage.getLeaderboard();
+      const formatted = leaders.map((u, i) => ({
+        rank: i + 1,
+        name: u.walletAddress.slice(0, 4) + "..." + u.walletAddress.slice(-4),
+        points: u.reputationScore,
+        avatar: u.walletAddress.slice(0, 2).toUpperCase(),
+        tasks: 0 // Placeholder for now or aggregate
+      }));
+      res.json(formatted);
+    } catch (err) {
+      res.status(500).json({ message: "Failed to fetch leaderboard" });
+    }
+  });
+
   return httpServer;
 }

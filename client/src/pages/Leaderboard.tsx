@@ -9,17 +9,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 export default function Leaderboard() {
   const { data: leaders, isLoading } = useQuery<any[]>({
-    queryKey: ["/api/leaderboard"],
-    queryFn: async () => {
-      // For now using mock logic but structured for API
-      return [
-        { rank: 1, name: "SolanaWhale", points: 12500, avatar: "SW", tasks: 142 },
-        { rank: 2, name: "CryptoKing", points: 10200, avatar: "CK", tasks: 98 },
-        { rank: 3, name: "DropyHunter", points: 8900, avatar: "DH", tasks: 85 },
-        { rank: 4, name: "AirdropFarmer", points: 7600, avatar: "AF", tasks: 72 },
-        { rank: 5, name: "MoonWalker", points: 6500, avatar: "MW", tasks: 64 },
-      ];
-    }
+    queryKey: ["/api/leaderboard"]
   });
 
   if (isLoading) {

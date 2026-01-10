@@ -46,6 +46,7 @@ export interface IStorage {
   getAllUsers(): Promise<User[]>;
   getAllCampaigns(): Promise<(Campaign & { actions: Action[] })[]>;
   getAllExecutions(): Promise<(Execution & { user: User, campaign: Campaign, action: Action })[]>;
+  getLeaderboard(): Promise<User[]>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -290,6 +291,14 @@ export class DatabaseStorage implements IStorage {
       }
     }
     return results;
+  }
+
+  async getLeaderboard(): Promise<User[]> {
+    return await db.select()
+      .from(users)
+      .where(eq(users.role, "user"))
+      .orderBy(desc(users.reputationScore))
+      .limit(50);
   }
 }
 
