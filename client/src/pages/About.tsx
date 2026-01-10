@@ -9,6 +9,7 @@ export default function About() {
   const { data: stats } = useQuery<{
     totalUsers: string;
     totalPaid: string;
+    totalBurned: string;
     activeCampaigns: number;
     totalVerifiedProjects: number;
   }>({
@@ -18,10 +19,10 @@ export default function About() {
 
   const statsItems = [
     { label: "Active Campaigns", value: stats?.activeCampaigns || "0", icon: Search },
-    { label: "Community Members", value: stats?.totalUsers || "1", icon: Users },
+    { label: "Community Members", value: stats?.totalUsers || "0", icon: Users },
     { label: "Verified Projects", value: stats?.totalVerifiedProjects || "0", icon: ShieldCheck },
-    { label: "Rewards Paid", value: stats ? `${stats.totalPaid} TOKENS` : "0.03 TOKENS", icon: Coins },
-    { label: "Tokens Burned", value: PLATFORM_CONFIG.STATS.TOTAL_BURNED.toLocaleString(), icon: Zap, isBurn: true },
+    { label: "Rewards Paid", value: stats ? `${stats.totalPaid} TOKENS` : "0 TOKENS", icon: Coins },
+    { label: "Tokens Burned", value: stats?.totalBurned || "0", icon: Zap, isBurn: true },
   ];
 
   return (

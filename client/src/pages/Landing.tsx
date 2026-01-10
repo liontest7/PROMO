@@ -127,10 +127,10 @@ export default function Landing() {
               {/* Global Stats - Restored */}
               <div className="grid grid-cols-2 md:grid-cols-5 gap-4 w-full max-w-5xl mx-auto">
                 {[
-                  { label: "Active Campaigns", value: stats?.activeCampaigns || "3", mascot: true },
-                  { label: "Community Members", value: stats?.totalUsers || "1,240" },
-                  { label: "Verified Projects", value: stats?.totalVerifiedProjects || "3" },
-                  { label: "Rewards Paid (Tokens)", value: stats ? stats.totalPaid : "450k" },
+                  { label: "Active Campaigns", value: stats?.activeCampaigns || "0", mascot: true },
+                  { label: "Community Members", value: stats?.totalUsers || "0" },
+                  { label: "Verified Projects", value: stats?.totalVerifiedProjects || "0" },
+                  { label: "Rewards Paid (Tokens)", value: stats?.totalPaid || "0" },
                   { label: "Total Tokens Burned", value: stats?.totalBurned || "0", isBurn: true },
                 ].map((stat, i) => (
                   <div key={i} className={`relative text-center p-4 rounded-2xl bg-white/5 border border-white/5 backdrop-blur-sm group hover:border-primary/30 transition-all flex flex-col justify-center min-h-[100px] ${stat.isBurn ? 'border-orange-500/20 bg-orange-500/5 hover:border-orange-500/50' : ''}`}>

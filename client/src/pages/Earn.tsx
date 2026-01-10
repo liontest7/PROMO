@@ -32,6 +32,8 @@ export default function Earn() {
 
   const { data: campaigns, isLoading } = useCampaigns();
 
+  const [activeTab, setActiveTab] = useState<"active" | "closed">("active");
+
   const handleActionClick = (action: Action, campaign: Campaign) => {
     if (!isConnected) {
       toast({
@@ -48,6 +50,9 @@ export default function Earn() {
   const [sortBy, setSortBy] = useState<"newest" | "reward_high" | "reward_low">("newest");
 
   const filteredCampaigns = campaigns?.filter(c => {
+    const matchesTab = activeTab === "active" ? c.status === "active" : c.status === "closed";
+    if (!matchesTab) return false;
+
     const matchesSearch = 
       ((c.title || "").toLowerCase()).includes(searchTerm.toLowerCase()) || 
       ((c.tokenName || "").toLowerCase()).includes(searchTerm.toLowerCase()) ||
@@ -88,6 +93,23 @@ export default function Earn() {
           <div className="flex-1">
             <h1 className="text-4xl font-display font-bold mb-2">Explore Campaigns</h1>
             <p className="text-muted-foreground">Complete tasks and earn crypto rewards instantly.</p>
+            
+            <div className="flex gap-4 mt-6">
+              <Button 
+                variant={activeTab === "active" ? "default" : "outline"}
+                onClick={() => setActiveTab("active")}
+                className="rounded-xl font-bold"
+              >
+                Active
+              </Button>
+              <Button 
+                variant={activeTab === "closed" ? "default" : "outline"}
+                onClick={() => setActiveTab("closed")}
+                className="rounded-xl font-bold"
+              >
+                Closed
+              </Button>
+            </div>
           </div>
           
           <div className="flex flex-col sm:flex-row w-full md:w-auto gap-3">
