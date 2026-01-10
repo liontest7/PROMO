@@ -409,16 +409,19 @@ export async function registerRoutes(
   app.get('/api/leaderboard', async (req, res) => {
     try {
       const allUsers = await storage.getAllUsers();
-      console.log(`[Leaderboard API] Found ${allUsers.length} total users in DB`);
+      // Filter out admin or other roles, but keep all regular users even with 0 points
+      const userLeaders = allUsers.filter(u => u.role === 'user' || !u.role);
       
-      const userLeaders = allUsers.filter(u => u.role === 'user');
-      console.log(`[Leaderboard API] Filtered to ${userLeaders.length} users with role='user'`);
+      console.log(`[Leaderboard API] Found ${allUsers.length} total users, ${userLeaders.length} users with 'user' role`);
       
       userLeaders.sort((a, b) => {
         const scoreA = a.reputationScore || 0;
         const scoreB = b.reputationScore || 0;
         if (scoreB !== scoreA) return scoreB - scoreA;
-        return new Date(a.createdAt || 0).getTime() - new Date(b.createdAt || 0).getTime();
+        // Registration tiebreaker
+        const dateA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+        const dateB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+        return dateA - dateB;
       });
 
       const limitedLeaders = userLeaders.slice(0, 100);

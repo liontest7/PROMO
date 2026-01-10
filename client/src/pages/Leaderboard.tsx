@@ -16,7 +16,8 @@ export default function Leaderboard() {
 
   const { data: leaders, isLoading } = useQuery<any[]>({
     queryKey: ["/api/leaderboard", timeframe],
-    refetchInterval: 10000,
+    refetchInterval: 300000, // Refresh every 5 minutes (300,000ms)
+    staleTime: 60000,      // Data is fresh for 1 minute
   });
 
   if (isLoading) {
