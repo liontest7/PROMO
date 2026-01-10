@@ -73,7 +73,9 @@ export default function Landing() {
         <title>{PLATFORM_CONFIG.TOKEN_SYMBOL} - The #1 Solana Marketing Platform</title>
         <meta name="description" content={`Connect, complete tasks, and earn crypto rewards instantly on Solana. The premier engagement platform for real users and authentic growth.`} />
       </header>
-      <Navigation />
+      <div className="sticky top-0 z-50">
+        <Navigation />
+      </div>
       
       {/* Hero Section */}
       <section className="relative pt-20 pb-20 overflow-hidden">

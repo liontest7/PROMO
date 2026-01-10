@@ -5,6 +5,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { WalletProvider, useWallet } from "@/hooks/use-wallet";
 import { OnboardingSocials } from "@/components/onboarding/OnboardingSocials";
+import { ScrollToTop } from "@/components/ScrollToTop";
 import { motion, AnimatePresence } from "framer-motion";
 import { Footer } from "@/components/Footer";
 
@@ -90,6 +91,7 @@ function App() {
       <WalletProvider>
         <TooltipProvider>
           <Toaster />
+          <ScrollToTop />
           <OnboardingSocials />
           <div className="flex flex-col min-h-screen">
             <div className="flex-grow">
