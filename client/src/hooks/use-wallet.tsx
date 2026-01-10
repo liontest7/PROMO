@@ -178,6 +178,12 @@ export function WalletProvider({ children }: { children: ReactNode }) {
     }
   };
 
+  const { data: userStats, refetch: refetchStats } = useQuery<any>({
+    queryKey: [api.users.stats.path, walletAddress],
+    enabled: !!walletAddress,
+    staleTime: 30000,
+  });
+
   const connect = async (selectedRole: "user" | "advertiser") => {
     setPendingRole(selectedRole);
     setShowSelector(true);
