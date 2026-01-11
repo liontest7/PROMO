@@ -18,6 +18,9 @@ export interface IStorage {
   updateUserRole(id: number, role: "user" | "advertiser" | "admin"): Promise<User>;
   updateUserBlockStatus(id: number, isBlocked: boolean): Promise<User>;
 
+  // Fraud Monitoring
+  getSuspiciousUsers(): Promise<User[]>;
+
   // Campaign
   getCampaigns(creatorId?: number): Promise<(Campaign & { actions: Action[] })[]>;
   getCampaign(id: number): Promise<(Campaign & { actions: Action[] }) | undefined>;
@@ -106,6 +109,14 @@ export class DatabaseStorage implements IStorage {
       .where(eq(users.id, id))
       .returning();
     return user;
+  }
+
+  async getSuspiciousUsers(): Promise<User[]> {
+    // Flag users with high reputation (>200) or high balance (>50) for review
+    return await db.select()
+      .from(users)
+      .where(sql`${users.reputationScore} > 200 OR ${users.balance}::numeric > 50`)
+      .orderBy(desc(users.reputationScore));
   }
 
   async getCampaigns(creatorId?: number): Promise<(Campaign & { actions: Action[] })[]> {

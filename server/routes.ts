@@ -558,6 +558,11 @@ export async function registerRoutes(
         logError("Solana RPC", "Primary and Fallback RPCs are unreachable.");
       }
 
+      const suspiciousUsers = await storage.getSuspiciousUsers();
+      if (suspiciousUsers.length > 0) {
+        logError("Security", `${suspiciousUsers.length} users flagged for high activity/balance.`);
+      }
+
       res.json({
         uptime: process.uptime(),
         memory: process.memoryUsage(),

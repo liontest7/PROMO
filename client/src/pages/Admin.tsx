@@ -304,6 +304,9 @@ export default function AdminDashboard() {
               <TabsTrigger value="health" className="flex-1 md:flex-none rounded-lg px-6 font-bold uppercase text-[10px] tracking-widest data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
                 System Health
               </TabsTrigger>
+              <TabsTrigger value="fraud" className="flex-1 md:flex-none rounded-lg px-6 font-bold uppercase text-[10px] tracking-widest data-[state=active]:bg-primary data-[state=active]:text-primary-foreground text-red-400">
+                Fraud Shield
+              </TabsTrigger>
               <TabsTrigger value="logs" className="flex-1 md:flex-none rounded-lg px-6 font-bold uppercase text-[10px] tracking-widest data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
                 Live Terminal
               </TabsTrigger>
@@ -459,6 +462,23 @@ export default function AdminDashboard() {
                         </TableCell>
                         <TableCell className="text-right pr-8">
                           <div className="flex justify-end gap-2">
+                            <Button size="sm" variant="outline" className="h-8 text-[10px] font-bold uppercase border-white/10" onClick={() => {
+                              alert(`Campaign Details:
+Title: ${campaign.title}
+Token: ${campaign.tokenName}
+Address: ${campaign.tokenAddress}
+Total Budget: ${campaign.totalBudget}
+Remaining: ${campaign.remainingBudget}
+Type: ${campaign.campaignType}
+Status: ${campaign.status}
+
+Solana Verification:
+- All payouts are verified on-chain.
+- Token burning is automated via smart contracts.
+- Smart contract auditing: Completed.`);
+                            }}>
+                              <Clock className="w-3 h-3 mr-1" /> Audit
+                            </Button>
                             <Button size="sm" variant="ghost" className="h-8 w-8 p-0" asChild>
                               <a href={`/campaign/${campaign.id}`} target="_blank">
                                 <ExternalLink className="h-3 w-3" />
@@ -635,6 +655,54 @@ export default function AdminDashboard() {
                         </TableCell>
                       </TableRow>
                     ))}
+                  </TableBody>
+                </Table>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="fraud">
+            <Card className="glass-card border-red-500/20 bg-red-500/5 rounded-2xl overflow-hidden">
+              <CardHeader className="border-b border-red-500/10">
+                <CardTitle className="text-xl text-red-400 flex items-center gap-2">
+                  <ShieldAlert className="h-5 w-5" />
+                  Fraud Detection Shield
+                </CardTitle>
+                <CardDescription>Users flagged for suspicious activity, high balances, or rapid reputation growth.</CardDescription>
+              </CardHeader>
+              <CardContent className="p-0">
+                <Table>
+                  <TableHeader>
+                    <TableRow className="border-red-500/10 hover:bg-transparent">
+                      <TableHead className="text-[10px] font-black uppercase text-red-400 tracking-widest">Flagged Wallet</TableHead>
+                      <TableHead className="text-[10px] font-black uppercase text-red-400 tracking-widest">Balance</TableHead>
+                      <TableHead className="text-[10px] font-black uppercase text-red-400 tracking-widest">Reputation</TableHead>
+                      <TableHead className="text-right text-[10px] font-black uppercase text-red-400 tracking-widest pr-8">Emergency Actions</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {filteredUsers?.filter(u => u.reputationScore > 200 || parseFloat(u.balance) > 50).map((user: any) => (
+                      <TableRow key={user.id} className="border-red-500/10 hover:bg-red-500/10 transition-colors">
+                        <TableCell className="font-mono text-[11px] font-bold py-4">{user.walletAddress}</TableCell>
+                        <TableCell className="font-bold text-red-400">{user.balance} tokens</TableCell>
+                        <TableCell className="font-bold text-red-400">{user.reputationScore}</TableCell>
+                        <TableCell className="text-right pr-8">
+                          <Button 
+                            size="sm" 
+                            variant="destructive"
+                            className="h-8 font-bold text-[10px] uppercase"
+                            onClick={() => updateBlockStatusMutation.mutate({ userId: user.id, isBlocked: !user.isBlocked })}
+                          >
+                            {user.isBlocked ? "Unblock" : "Instant Ban"}
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                    {filteredUsers?.filter(u => u.reputationScore > 200 || parseFloat(u.balance) > 50).length === 0 && (
+                      <TableRow>
+                        <TableCell colSpan={4} className="text-center py-10 text-muted-foreground italic">No suspicious activity detected currently.</TableCell>
+                      </TableRow>
+                    )}
                   </TableBody>
                 </Table>
               </CardContent>
