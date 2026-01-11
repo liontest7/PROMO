@@ -20,7 +20,9 @@ import {
   LifeBuoy,
   RefreshCcw,
   Zap,
-  Trash2
+  Trash2,
+  Coins,
+  Star
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -39,7 +41,8 @@ import {
   ExternalLink,
   ShieldCheck,
   Ban,
-  UserCheck
+  UserCheck,
+  Terminal
 } from "lucide-react";
 import { queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
@@ -131,6 +134,38 @@ export default function AdminDashboard() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/admin/users"] });
       toast({ title: "Success", description: "User block status updated" });
+    }
+  });
+
+  const adjustBalanceMutation = useMutation({
+    mutationFn: async ({ userId, balance }: { userId: number, balance: string }) => {
+      const res = await fetch(`/api/admin/users/${userId}/adjust-balance`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ balance })
+      });
+      if (!res.ok) throw new Error('Failed to adjust balance');
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/users"] });
+      toast({ title: "Success", description: "User balance adjusted" });
+    }
+  });
+
+  const adjustReputationMutation = useMutation({
+    mutationFn: async ({ userId, reputation }: { userId: number, reputation: number }) => {
+      const res = await fetch(`/api/admin/users/${userId}/adjust-reputation`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ reputation })
+      });
+      if (!res.ok) throw new Error('Failed to adjust reputation');
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/users"] });
+      toast({ title: "Success", description: "User reputation adjusted" });
     }
   });
 
@@ -303,6 +338,9 @@ export default function AdminDashboard() {
               <TabsTrigger value="health" className="flex-1 md:flex-none rounded-lg px-6 font-bold uppercase text-[10px] tracking-widest data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
                 System Health
               </TabsTrigger>
+              <TabsTrigger value="logs" className="flex-1 md:flex-none rounded-lg px-6 font-bold uppercase text-[10px] tracking-widest data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+                Live Terminal
+              </TabsTrigger>
             </TabsList>
 
             <div className="relative w-full md:w-72">
@@ -364,6 +402,28 @@ export default function AdminDashboard() {
                         </TableCell>
                         <TableCell className="text-right pr-8">
                           <div className="flex justify-end gap-2">
+                            <Button 
+                              size="sm" 
+                              variant="outline" 
+                              className="h-8 border-primary/20 text-primary hover:bg-primary/10 px-3 font-bold text-[10px] uppercase"
+                              onClick={() => {
+                                const newBalance = prompt("Enter new balance:", user.balance);
+                                if (newBalance !== null) adjustBalanceMutation.mutate({ userId: user.id, balance: newBalance });
+                              }}
+                            >
+                              <Coins className="w-3 h-3 mr-1" /> Bal
+                            </Button>
+                            <Button 
+                              size="sm" 
+                              variant="outline" 
+                              className="h-8 border-yellow-500/20 text-yellow-500 hover:bg-yellow-500/10 px-3 font-bold text-[10px] uppercase"
+                              onClick={() => {
+                                const newRep = prompt("Enter new reputation score:", user.reputationScore);
+                                if (newRep !== null) adjustReputationMutation.mutate({ userId: user.id, reputation: parseInt(newRep) });
+                              }}
+                            >
+                              <Star className="w-3 h-3 mr-1" /> Rep
+                            </Button>
                             <Button 
                               size="sm" 
                               variant={user.isBlocked ? "default" : "outline"}
@@ -633,6 +693,39 @@ export default function AdminDashboard() {
                     ))}
                   </TableBody>
                 </Table>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="logs">
+            <Card className="glass-card border-white/10 bg-black rounded-2xl overflow-hidden font-mono">
+              <CardHeader className="border-b border-white/5 bg-white/[0.02]">
+                <CardTitle className="text-xl flex items-center gap-2">
+                  <Terminal className="h-5 w-5 text-primary" />
+                  Live Terminal Logs
+                </CardTitle>
+                <CardDescription>Real-time system events, RPC status, and security alerts.</CardDescription>
+              </CardHeader>
+              <CardContent className="p-4 h-[500px] overflow-y-auto space-y-2">
+                {systemHealth?.errorLogs?.map((log: any, i: number) => (
+                  <div key={i} className="text-[11px] leading-relaxed flex gap-3">
+                    <span className="text-muted-foreground opacity-50">[{format(new Date(log.timestamp), 'HH:mm:ss')}]</span>
+                    <span className={cn(
+                      "font-black uppercase tracking-tighter",
+                      log.source === 'Solana RPC' ? 'text-blue-400' : 'text-primary'
+                    )}>[{log.source}]</span>
+                    <span className="text-white/80">{log.message}</span>
+                  </div>
+                ))}
+                {(executions || []).slice(0, 10).map((exec: any, i: number) => (
+                  <div key={`exec-${i}`} className="text-[11px] leading-relaxed flex gap-3">
+                    <span className="text-muted-foreground opacity-50">[{format(new Date(exec.createdAt), 'HH:mm:ss')}]</span>
+                    <span className="text-green-400 font-black uppercase tracking-tighter">[EXECUTION]</span>
+                    <span className="text-white/80">
+                      User {exec.user?.walletAddress.slice(0,6)}... completed {exec.action?.type} for {exec.campaign?.title} (Status: {exec.status})
+                    </span>
+                  </div>
+                ))}
               </CardContent>
             </Card>
           </TabsContent>

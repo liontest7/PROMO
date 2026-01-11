@@ -17,6 +17,8 @@ export interface IStorage {
   updateUserSocials(id: number, socials: { twitterHandle?: string; telegramHandle?: string }): Promise<User>;
   updateUserRole(id: number, role: "user" | "advertiser" | "admin"): Promise<User>;
   updateUserBlockStatus(id: number, isBlocked: boolean): Promise<User>;
+  adjustUserBalance(id: number, amount: string): Promise<User>;
+  adjustUserReputation(id: number, amount: number): Promise<User>;
 
   // Campaign
   getCampaigns(creatorId?: number): Promise<(Campaign & { actions: Action[] })[]>;
@@ -103,6 +105,22 @@ export class DatabaseStorage implements IStorage {
   async updateUserBlockStatus(id: number, isBlocked: boolean): Promise<User> {
     const [user] = await db.update(users)
       .set({ isBlocked })
+      .where(eq(users.id, id))
+      .returning();
+    return user;
+  }
+
+  async adjustUserBalance(id: number, balance: string): Promise<User> {
+    const [user] = await db.update(users)
+      .set({ balance })
+      .where(eq(users.id, id))
+      .returning();
+    return user;
+  }
+
+  async adjustUserReputation(id: number, reputationScore: number): Promise<User> {
+    const [user] = await db.update(users)
+      .set({ reputationScore })
       .where(eq(users.id, id))
       .returning();
     return user;

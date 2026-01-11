@@ -512,6 +512,26 @@ export async function registerRoutes(
     }
   });
 
+  app.post('/api/admin/users/:id/adjust-balance', async (req, res) => {
+    try {
+      const { balance } = req.body;
+      const user = await storage.adjustUserBalance(parseInt(req.params.id), balance);
+      res.json(user);
+    } catch (err) {
+      res.status(500).json({ message: "Failed to adjust balance" });
+    }
+  });
+
+  app.post('/api/admin/users/:id/adjust-reputation', async (req, res) => {
+    try {
+      const { reputation } = req.body;
+      const user = await storage.adjustUserReputation(parseInt(req.params.id), reputation);
+      res.json(user);
+    } catch (err) {
+      res.status(500).json({ message: "Failed to adjust reputation" });
+    }
+  });
+
   app.patch('/api/admin/campaigns/:id/budget', async (req, res) => {
     try {
       const { totalBudget } = req.body;
