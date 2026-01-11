@@ -244,7 +244,19 @@ export function CreateCampaignDialog() {
         setOpen(false);
         setStep("edit");
         form.reset();
-        toast({ title: "Campaign Launched!", description: `Successfully created campaign.` });
+        import("canvas-confetti").then((confetti) => {
+          confetti.default({
+            particleCount: 150,
+            spread: 70,
+            origin: { y: 0.6 },
+            colors: ['#22c55e', '#16a34a', '#ffffff']
+          });
+        });
+        toast({ 
+          title: "Campaign Launched!", 
+          description: "Your project is now live and secured on the Solana network.",
+          variant: "default"
+        });
       },
       onError: (error: any) => {
         toast({ title: "Launch Failed", description: error.message || "Something went wrong.", variant: "destructive" });

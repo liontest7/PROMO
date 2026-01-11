@@ -56,9 +56,10 @@ export const campaigns = pgTable("campaigns", {
   creatorId: integer("creator_id").references(() => users.id).notNull(),
   requirements: jsonb("requirements").$type<{
     minSolBalance?: number;
-    walletAgeDays?: number;
     minWalletAgeDays?: number;
+    walletAgeDays?: number;
   }>(),
+  celebrationTriggered: boolean("celebration_triggered").default(false).notNull(),
   createdAt: timestamp("created_at").defaultNow(),
 });
 
