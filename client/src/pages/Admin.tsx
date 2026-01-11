@@ -1,5 +1,8 @@
+import { useState, useEffect } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Navigation } from "@/components/Navigation";
+import { Input } from "@/components/ui/input";
+import { Search } from "lucide-react";
 import { 
   Table, 
   TableBody, 
@@ -33,10 +36,24 @@ import { format } from "date-fns";
 
 export default function AdminDashboard() {
   const { toast } = useToast();
+  const [searchTerm, setSearchTerm] = useState("");
   
   const { data: users, isLoading: loadingUsers } = useQuery<any[]>({
     queryKey: ["/api/admin/users"],
   });
+
+  // ... (previous queries)
+
+  const filteredUsers = users?.filter(u => 
+    u.walletAddress.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    u.role.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  const filteredCampaigns = campaigns?.filter(c => 
+    c.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    c.tokenName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    c.tokenAddress.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   const { data: campaigns, isLoading: loadingCampaigns } = useQuery<any[]>({
     queryKey: ["/api/admin/campaigns"],
@@ -225,18 +242,28 @@ export default function AdminDashboard() {
 
         {/* Main Console Area */}
         <Tabs defaultValue="users" className="w-full">
-          <div className="flex items-center justify-between mb-6">
-            <TabsList className="bg-white/5 border border-white/10 p-1 rounded-xl">
-              <TabsTrigger value="users" className="rounded-lg px-6 font-bold uppercase text-[10px] tracking-widest data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+          <div className="flex flex-col md:flex-row items-center justify-between mb-6 gap-4">
+            <TabsList className="bg-white/5 border border-white/10 p-1 rounded-xl w-full md:w-auto">
+              <TabsTrigger value="users" className="flex-1 md:flex-none rounded-lg px-6 font-bold uppercase text-[10px] tracking-widest data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
                 Protocol Users
               </TabsTrigger>
-              <TabsTrigger value="campaigns" className="rounded-lg px-6 font-bold uppercase text-[10px] tracking-widest data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+              <TabsTrigger value="campaigns" className="flex-1 md:flex-none rounded-lg px-6 font-bold uppercase text-[10px] tracking-widest data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
                 Active Campaigns
               </TabsTrigger>
-              <TabsTrigger value="executions" className="rounded-lg px-6 font-bold uppercase text-[10px] tracking-widest data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+              <TabsTrigger value="executions" className="flex-1 md:flex-none rounded-lg px-6 font-bold uppercase text-[10px] tracking-widest data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
                 Live Feed
               </TabsTrigger>
             </TabsList>
+
+            <div className="relative w-full md:w-72">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Input 
+                placeholder="Search wallets, projects..." 
+                className="pl-10 bg-white/5 border-white/10"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+            </div>
           </div>
 
           <TabsContent value="users">
@@ -257,7 +284,7 @@ export default function AdminDashboard() {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {users?.map((user: any) => (
+                    {filteredUsers?.map((user: any) => (
                       <TableRow key={user.id} className="border-white/5 hover:bg-white/[0.02] transition-colors">
                         <TableCell className="font-mono text-[11px] font-bold py-4">
                           <span className="text-primary mr-1 opacity-50">#</span>
@@ -336,7 +363,7 @@ export default function AdminDashboard() {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {campaigns?.map((campaign: any) => (
+                    {filteredCampaigns?.map((campaign: any) => (
                       <TableRow key={campaign.id} className="border-white/5 hover:bg-white/[0.02] transition-colors">
                         <TableCell className="py-4">
                           <div className="flex items-center gap-3">
