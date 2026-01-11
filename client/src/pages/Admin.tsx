@@ -3,6 +3,7 @@ import { useQuery, useMutation } from "@tanstack/react-query";
 import { Navigation } from "@/components/Navigation";
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
+import { cn } from "@/lib/utils";
 import { 
   Table, 
   TableBody, 
@@ -42,19 +43,6 @@ export default function AdminDashboard() {
     queryKey: ["/api/admin/users"],
   });
 
-  // ... (previous queries)
-
-  const filteredUsers = users?.filter(u => 
-    u.walletAddress.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    u.role.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
-  const filteredCampaigns = campaigns?.filter(c => 
-    c.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    c.tokenName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    c.tokenAddress.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
   const { data: campaigns, isLoading: loadingCampaigns } = useQuery<any[]>({
     queryKey: ["/api/admin/campaigns"],
   });
@@ -72,6 +60,23 @@ export default function AdminDashboard() {
   }>({
     queryKey: ["/api/admin/stats"],
   });
+
+  const filteredUsers = users?.filter(u => 
+    u.walletAddress.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    u.role.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  const filteredCampaigns = campaigns?.filter(c => 
+    c.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    c.tokenName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    c.tokenAddress.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  const filteredExecutions = executions?.filter(e => 
+    e.user?.walletAddress.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    e.campaign?.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    e.action?.type.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   const updateRoleMutation = useMutation({
     mutationFn: async ({ userId, role }: { userId: number, role: string }) => {
@@ -448,32 +453,35 @@ export default function AdminDashboard() {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {executions?.map((execution: any) => (
+                    {filteredExecutions?.map((execution: any) => (
                       <TableRow key={execution.id} className="border-white/5 hover:bg-white/[0.02] transition-colors">
-                        <TableCell className="py-4">
-                          <div className="flex items-center gap-2">
-                            <div className="w-2 h-2 rounded-full bg-primary shadow-[0_0_8px_rgba(34,197,94,0.4)]" />
-                            <span className="font-mono text-[11px] font-bold">{execution.user?.walletAddress?.slice(0, 12)}...</span>
+                        <TableCell className="font-mono text-[10px] py-4">
+                          <div className="flex flex-col">
+                            <span className="font-bold text-primary">{execution.user?.walletAddress?.slice(0, 6)}...{execution.user?.walletAddress?.slice(-4)}</span>
+                            <span className="text-muted-foreground opacity-50">USER_ID: {execution.userId}</span>
                           </div>
                         </TableCell>
                         <TableCell>
                           <div className="flex flex-col">
-                            <span className="text-xs font-bold">{execution.action?.title}</span>
-                            <span className="text-[10px] text-muted-foreground font-medium uppercase tracking-tighter">PROJECT: {execution.campaign?.title}</span>
+                            <span className="text-xs font-bold">{execution.campaign?.title}</span>
+                            <span className="text-[10px] uppercase text-muted-foreground">{execution.action?.type}</span>
                           </div>
                         </TableCell>
                         <TableCell>
                           <Badge 
                             variant="outline" 
-                            className={execution.status === 'paid' 
-                              ? 'bg-primary/10 text-primary border-primary/20 text-[9px] font-black uppercase' 
-                              : 'bg-yellow-500/10 text-yellow-500 border-yellow-500/20 text-[9px] font-black uppercase'}
+                            className={cn(
+                              "text-[9px] font-black uppercase",
+                              execution.status === 'paid' ? 'bg-green-500/10 text-green-500 border-green-500/20' :
+                              execution.status === 'verified' ? 'bg-blue-500/10 text-blue-500 border-blue-500/20' :
+                              'bg-yellow-500/10 text-yellow-500 border-yellow-500/20'
+                            )}
                           >
                             {execution.status}
                           </Badge>
                         </TableCell>
-                        <TableCell className="text-right pr-8 text-xs font-mono text-muted-foreground">
-                          {execution.createdAt ? format(new Date(execution.createdAt), 'HH:mm:ss') : 'LIVE'}
+                        <TableCell className="text-right text-[10px] font-medium text-muted-foreground pr-8">
+                          {execution.createdAt ? format(new Date(execution.createdAt), 'HH:mm:ss') : 'Unknown'}
                         </TableCell>
                       </TableRow>
                     ))}
