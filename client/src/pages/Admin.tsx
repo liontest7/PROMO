@@ -20,9 +20,7 @@ import {
   LifeBuoy,
   RefreshCcw,
   Zap,
-  Trash2,
-  Coins,
-  Star
+  Trash2
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -134,38 +132,6 @@ export default function AdminDashboard() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/admin/users"] });
       toast({ title: "Success", description: "User block status updated" });
-    }
-  });
-
-  const adjustBalanceMutation = useMutation({
-    mutationFn: async ({ userId, balance }: { userId: number, balance: string }) => {
-      const res = await fetch(`/api/admin/users/${userId}/adjust-balance`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ balance })
-      });
-      if (!res.ok) throw new Error('Failed to adjust balance');
-      return res.json();
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/admin/users"] });
-      toast({ title: "Success", description: "User balance adjusted" });
-    }
-  });
-
-  const adjustReputationMutation = useMutation({
-    mutationFn: async ({ userId, reputation }: { userId: number, reputation: number }) => {
-      const res = await fetch(`/api/admin/users/${userId}/adjust-reputation`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ reputation })
-      });
-      if (!res.ok) throw new Error('Failed to adjust reputation');
-      return res.json();
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/admin/users"] });
-      toast({ title: "Success", description: "User reputation adjusted" });
     }
   });
 
@@ -402,28 +368,6 @@ export default function AdminDashboard() {
                         </TableCell>
                         <TableCell className="text-right pr-8">
                           <div className="flex justify-end gap-2">
-                            <Button 
-                              size="sm" 
-                              variant="outline" 
-                              className="h-8 border-primary/20 text-primary hover:bg-primary/10 px-3 font-bold text-[10px] uppercase"
-                              onClick={() => {
-                                const newBalance = prompt("Enter new balance:", user.balance);
-                                if (newBalance !== null) adjustBalanceMutation.mutate({ userId: user.id, balance: newBalance });
-                              }}
-                            >
-                              <Coins className="w-3 h-3 mr-1" /> Bal
-                            </Button>
-                            <Button 
-                              size="sm" 
-                              variant="outline" 
-                              className="h-8 border-yellow-500/20 text-yellow-500 hover:bg-yellow-500/10 px-3 font-bold text-[10px] uppercase"
-                              onClick={() => {
-                                const newRep = prompt("Enter new reputation score:", user.reputationScore);
-                                if (newRep !== null) adjustReputationMutation.mutate({ userId: user.id, reputation: parseInt(newRep) });
-                              }}
-                            >
-                              <Star className="w-3 h-3 mr-1" /> Rep
-                            </Button>
                             <Button 
                               size="sm" 
                               variant={user.isBlocked ? "default" : "outline"}
