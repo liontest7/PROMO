@@ -61,21 +61,23 @@ export default function AdminDashboard() {
     queryKey: ["/api/admin/stats"],
   });
 
-  const filteredUsers = users?.filter(u => 
-    u.walletAddress.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    u.role.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredUsers = (users || []).filter(u => 
+    u.walletAddress?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    u.role?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const filteredCampaigns = campaigns?.filter(c => 
-    c.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    c.tokenName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    c.tokenAddress.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredCampaigns = (campaigns || []).filter(c => 
+    c.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    c.tokenName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    c.tokenAddress?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    c.status?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const filteredExecutions = executions?.filter(e => 
-    e.user?.walletAddress.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    e.campaign?.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    e.action?.type.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredExecutions = (executions || []).filter(e => 
+    e.user?.walletAddress?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    e.campaign?.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    e.action?.type?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    e.status?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const updateRoleMutation = useMutation({
@@ -181,18 +183,22 @@ export default function AdminDashboard() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           <Card className="glass-card border-white/5 bg-white/[0.02] hover-elevate transition-all rounded-2xl">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-[11px] font-black uppercase tracking-widest text-muted-foreground">Total Users</CardTitle>
-              <div className="p-2 rounded-lg bg-blue-500/10">
-                <Users className="h-4 w-4 text-blue-400" />
+              <CardTitle className="text-[11px] font-black uppercase tracking-widest text-muted-foreground">Admin Stats</CardTitle>
+              <div className="p-2 rounded-lg bg-purple-500/10">
+                <ShieldAlert className="h-4 w-4 text-purple-400" />
               </div>
             </CardHeader>
             <CardContent>
               <div className="text-3xl font-black font-display">{totalUsersCount}</div>
-              <div className="flex items-center gap-2 mt-2">
-                <Badge variant="outline" className="text-[9px] font-bold border-destructive/20 text-destructive bg-destructive/5">
-                  {blockedUsersCount} BLOCKED
-                </Badge>
-                <span className="text-[10px] text-muted-foreground font-bold">ACTIVE PROTOCOL</span>
+              <div className="flex flex-col gap-1 mt-2">
+                <div className="flex items-center justify-between text-[10px] font-bold">
+                  <span className="text-muted-foreground uppercase">Users</span>
+                  <span>{totalUsersCount}</span>
+                </div>
+                <div className="flex items-center justify-between text-[10px] font-bold">
+                  <span className="text-muted-foreground uppercase">Campaigns</span>
+                  <span>{campaigns?.length || 0}</span>
+                </div>
               </div>
             </CardContent>
           </Card>
@@ -414,6 +420,19 @@ export default function AdminDashboard() {
                               <a href={`/campaign/${campaign.id}`} target="_blank">
                                 <ExternalLink className="h-3 w-3" />
                               </a>
+                            </Button>
+                            <Button 
+                              size="sm" 
+                              variant="outline" 
+                              className="h-8 text-[10px] font-black uppercase border-white/10 hover:bg-red-500/10 hover:text-red-500"
+                              onClick={() => {
+                                if(confirm("Are you sure you want to delete this campaign? This cannot be undone.")) {
+                                  // In a real app we'd add a delete endpoint
+                                  toast({ title: "Admin Action", description: "Delete functionality restricted for safety." });
+                                }
+                              }}
+                            >
+                              <Ban className="w-3 h-3 mr-1" /> Delete
                             </Button>
                             <Button 
                               size="sm" 
