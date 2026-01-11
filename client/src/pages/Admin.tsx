@@ -641,8 +641,3 @@ export default function AdminDashboard() {
     </div>
   );
 }
-        </Tabs>
-      </div>
-    </div>
-  );
-}
