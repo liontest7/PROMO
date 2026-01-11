@@ -165,16 +165,18 @@ export async function registerRoutes(
 
   app.post(api.campaigns.create.path, async (req, res) => {
     try {
+      console.log(`[Campaign] Creating new campaign request from ${req.body.walletAddress}`);
       const body = req.body;
       const { signature, walletAddress } = body;
       
       // Verification logic placeholder for professional security
       if (signature) {
-        console.log(`Verifying signature for ${walletAddress}`);
+        console.log(`[Auth] Verifying signature for ${walletAddress}`);
       }
 
       const campaignData = insertCampaignSchema.parse(body);
       const campaign = await storage.createCampaign(campaignData);
+      console.log(`[Campaign] Created campaign ID: ${campaign.id} (${campaign.tokenName})`);
 
       const actionsData = z.array(insertActionSchema.omit({ campaignId: true })).parse(body.actions);
       for (const action of actionsData) {
@@ -188,9 +190,10 @@ export async function registerRoutes(
       res.status(201).json(result);
     } catch (err) {
       if (err instanceof z.ZodError) {
+        console.warn(`[Campaign] Validation error:`, err.errors);
         return res.status(400).json({ message: err.errors[0].message });
       }
-      console.error(err);
+      console.error(`[Campaign] Creation failed:`, err);
       res.status(500).json({ message: "Failed to create campaign" });
     }
   });
@@ -202,10 +205,13 @@ export async function registerRoutes(
       const parsedProof = JSON.parse(req.body.proof || "{}");
       const isAutoFetch = parsedProof.isAutoFetch === true;
       
+      console.log(`[Execution] Verification request for action ${req.body.actionId} from ${req.body.userWallet}`);
+      
       // Basic anti-fraud: Check for multiple wallets from same IP
       // In production, use a proper redis-based rate limiter or IP track
       
       if (!turnstileToken && !isAutoFetch) {
+        console.warn(`[Security] Missing Turnstile token for ${req.body.userWallet}`);
         return res.status(400).json({ message: "Security verification required" });
       }
 

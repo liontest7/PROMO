@@ -128,8 +128,12 @@ function App() {
           <WalletProvider>
             <TooltipProvider>
               <Helmet>
-                <title>MemeDrop - Solana Crypto Marketing Platform</title>
-                <meta name="description" content="MemeDrop is a pay-per-action marketing platform built for the Solana ecosystem. Earn tokens by completing engagement tasks." />
+                <title>MemeDrop - Solana Pay-Per-Action Marketing Platform</title>
+                <meta name="description" content="MemeDrop is the leading pay-per-action marketing platform on Solana. Launch high-engagement campaigns, reward real users, and grow your crypto community." />
+                <meta property="og:title" content="MemeDrop - Solana Pay-Per-Action Marketing Platform" />
+                <meta property="og:description" content="The most effective way to grow your Solana project through verified social engagement and on-chain actions." />
+                <meta property="og:type" content="website" />
+                <meta name="twitter:card" content="summary_large_image" />
               </Helmet>
               <Toaster />
               <TermsModal />

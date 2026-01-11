@@ -1,175 +1,168 @@
-# Design Guidelines: Solana Crypto Promotion Platform
+# Design Guidelines: Solana Campaign Marketing Platform
 
 ## Design Approach
-**System-Based with Crypto Industry References**: Drawing from Coinbase's trust-centric UI, Phantom Wallet's modern minimalism, and Binance's data-rich layouts. Focus on clarity, professionalism, and reducing cognitive load for campaign management.
+**Reference-Based**: Drawing from Coinbase's trust-centric UI, Stripe's marketing clarity, and ProductHunt's celebration design. Prioritizing conversion-optimized layouts with professional crypto aesthetic and strategic celebration moments.
 
-## Core Design Principles
-- **Trust Through Transparency**: Clear hierarchy, generous whitespace, prominent verification indicators
-- **Data Density with Breathing Room**: Information-rich without feeling cluttered
-- **Professional Crypto Aesthetic**: Sharp, modern, tech-forward but accessible
+## Core Principles
+- **Trust Through Clarity**: Professional, data-rich layouts with generous breathing room
+- **Strategic Celebration**: Confetti/success animations for campaign milestones only
+- **SEO-First Structure**: Content hierarchy optimized for discoverability
 
 ---
 
 ## Typography System
 
-**Font Stack**: 
-- Primary: Inter (Google Fonts) - Modern, highly legible for UI
-- Accent: Space Grotesk (Google Fonts) - Technical feel for headings/stats
+**Fonts** (Google Fonts CDN):
+- Primary: Inter - All UI, body text
+- Accent: Space Grotesk - Headlines, campaign titles, stats
+- Monospace: JetBrains Mono - Token amounts, wallet addresses
 
 **Hierarchy**:
-- H1: Space Grotesk, 2.5rem (40px), font-bold - Campaign titles, dashboard headers
-- H2: Space Grotesk, 1.875rem (30px), font-semibold - Section headers
-- H3: Inter, 1.25rem (20px), font-semibold - Card headers, campaign names
-- Body Large: Inter, 1rem (16px), font-normal - Primary content
-- Body Small: Inter, 0.875rem (14px), font-normal - Metadata, secondary info
-- Caption: Inter, 0.75rem (12px), font-medium - Labels, tags, badges
-- Monospace Stats: JetBrains Mono, variable sizes - Token amounts, addresses
+- H1: Space Grotesk, 3rem, font-bold - Hero headlines, landing page titles
+- H2: Space Grotesk, 2rem, font-semibold - Section headers
+- H3: Inter, 1.5rem, font-semibold - Campaign names, card titles
+- Body: Inter, 1rem, font-normal - Content
+- Small: Inter, 0.875rem - Metadata, captions
+- Label: Inter, 0.75rem, font-medium, uppercase, tracking-wide - Tags, badges
 
 ---
 
-## Layout & Spacing System
+## Layout & Spacing
 
-**Spacing Scale**: Tailwind units of 2, 4, 6, 8, 12, 16, 20, 24
-- Component padding: p-6 to p-8
-- Section spacing: py-12 to py-16
-- Card gaps: gap-6
-- Button padding: px-6 py-3 (standard), px-8 py-4 (primary CTAs)
-- Container max-width: max-w-7xl
+**Spacing Scale**: Tailwind units 4, 6, 8, 12, 16, 20, 24
+- Section padding: py-20 (desktop), py-12 (mobile)
+- Card padding: p-8
+- Component gaps: gap-6
+- Container: max-w-7xl
 
-**Grid Strategy**:
-- Dashboard: 3-column grid (lg:grid-cols-3) for campaign cards
-- Campaign details: 2-column split (left: info, right: actions/stats)
-- Mobile: Always single column stack
+**Grid Patterns**:
+- Campaign showcase: 3-column (lg:grid-cols-3)
+- Feature sections: 2-column (lg:grid-cols-2)
+- Stats: 4-column (lg:grid-cols-4)
+- Mobile: Always single column
+
+---
+
+## Page Structure
+
+### Landing Page Layout
+
+**Hero Section** (h-screen min):
+- Full-width background: Gradient mesh with Solana-themed abstract shapes
+- Overlay image: 3D rendered Solana coin/token floating with subtle glow
+- Centered content max-w-4xl:
+  - H1 headline emphasizing campaign reach
+  - Subheadline (Body Large) highlighting key benefits
+  - Dual CTA buttons (px-8 py-4): "Launch Campaign" (primary) + "View Active Campaigns" (secondary with backdrop-blur-md bg-white/10)
+  - Trust indicators below: "10,000+ Campaigns Launched" | "50M+ Rewards Distributed"
+- Buttons use backdrop-blur-md, semi-transparent backgrounds for image overlay
+
+**Platform Features Section** (py-20):
+- Grid of 6 feature cards (lg:grid-cols-3, gap-8)
+- Each card: Icon (Heroicons 32px), H3 title, description, supporting metric
+- Cards have subtle border, rounded-2xl, p-8
+
+**Active Campaigns Showcase** (py-24):
+- Header with count badge + filter tabs
+- 3-column campaign card grid
+- Each card: Banner image (16:9), campaign logo (overlapping, -mt-12), title, stats grid, action buttons
+
+**Success Stories** (py-20):
+- 2-column layout
+- Left: Large campaign showcase with metrics
+- Right: Stacked testimonial cards with creator photos, quotes, verified badges
+
+**SEO-Optimized Content Section** (py-16):
+- max-w-prose centered
+- H2 + rich text content explaining platform value
+- Internal links to campaign categories
+- Structured with semantic HTML headings
+
+**Final CTA Section** (py-24):
+- Centered, max-w-3xl
+- H2 headline + supporting text
+- Large primary button
+- Background: Subtle gradient with geometric pattern overlay
+
+**Footer** (py-16):
+- 4-column grid: Platform links, Campaign categories, Resources, Social + Newsletter signup
+- Bottom bar: Copyright, legal links, Solana verification badge
 
 ---
 
 ## Component Library
 
-### Navigation Header
-- Fixed top, backdrop blur effect
-- Left: Logo + platform name
-- Center: Main navigation (Dashboard, Campaigns, Analytics)
-- Right: Wallet connection button (prominent), user profile dropdown
+### Navigation
+- Fixed, backdrop-blur-lg, border-b
+- Logo + platform name (left)
+- Main links: Campaigns, Launch, Analytics (center)
+- Wallet connect button + user menu (right)
 - Height: h-20
-- Include verified badge icon next to connected wallet address
-
-### Wallet Connection Button
-- Primary CTA styling with icon (wallet icon from Heroicons)
-- Shows abbreviated address when connected (0x1234...5678)
-- Disconnect option in dropdown
-- Visual indicator for connection status (dot icon)
 
 ### Campaign Cards
-**Structure** (each card: border, rounded-2xl, p-6):
-- Top: Campaign banner image (16:9 ratio, rounded-xl)
-- Badge overlay: Status indicator (Active/Completed/Pending)
-- Campaign logo (circular, -mt-8 overlapping banner, border-4)
-- Title (H3) + Creator info
-- Stats row: 4 columns (Participants, Rewards Pool, End Date, Completion %)
-- Action buttons row: X, Telegram, Website (icon buttons with labels)
-- Footer: "View Details" link
+- Banner image: 16:9 ratio, rounded-t-2xl
+- Status badge overlay (top-right): Active/Ending Soon
+- Campaign logo: Circular, 96px, overlapping banner with border-4
+- Content padding: p-6
+- Stats grid: 4 metrics (Participants, Pool, Time Left, Completion %)
+- Social action buttons: Icon + platform name, px-4 py-2
+- "View Campaign" link at bottom
 
-### Campaign List View
-- Filter bar: Search, status filter, sort dropdown
-- Active count badge
-- Grid layout with 6 spacing between cards
-- Pagination at bottom
+### Trust Elements
+- Verified badges next to campaign creators
+- Audit status labels
+- Security tooltips (info icon with Heroicons)
 
-### Campaign Detail Page
-**Layout**: 2-column (lg:grid-cols-3 with left col-span-2)
+### Celebration Components
+- Confetti animation: Campaign milestone completions only (using canvas-confetti library)
+- Success toasts: Top-right, rounded-xl, with icon
+- Subtle pulse animations on reward claims
 
-Left Panel:
-- Hero banner (full-width, rounded-2xl)
-- Campaign info section (p-8, organized in definition list format)
-- Task checklist (each task: checkbox, icon, description, reward amount)
-- Requirements section (expandable accordions)
+### Stats Display
+- Monospace font for token amounts
+- Token symbol in Space Grotesk bold
+- USD conversion below in muted text
+- Large numbers use Space Grotesk for visual impact
 
-Right Panel (sticky):
-- Stats card: Total rewards, participants, time remaining (countdown)
-- Quick actions: Social platform buttons (large, vertical stack)
-- Share campaign button
-- Report/flag option (subtle)
-
-### Action Buttons (Social Tasks)
-- Platform icon + label layout
-- Twitter/X: Bird icon
-- Telegram: Paper plane icon
-- Website: Globe icon
-- Size: px-6 py-4, gap-3 between icon and text
-- Completion checkmark appears on completed tasks
-
-### Dashboard Overview
-- Top: Welcome message + wallet balance card
-- Stats grid: 4 columns (Total Campaigns, Active, Rewards Earned, Pending Claims)
-- Recent activity feed (timeline design with icons)
-- Active campaigns section (horizontal scroll cards on mobile)
+### Form Elements
+- Input height: h-12
+- Rounded-lg borders
+- Label above input (font-medium, text-sm)
+- Helper text below (text-xs)
+- Search bars: Icon prefix (Heroicons)
 
 ---
 
-## Images Guidelines
+## Images Strategy
 
-**Hero Section**: 
-- NOT using traditional hero - Leading with immediate campaign grid/dashboard
-- Top section: Gradient mesh background (decorative, subtle) with welcome message overlay
+**Hero**: 
+- Primary: 3D rendered Solana-themed visual (coin, blockchain network, abstract shapes)
+- Background: Gradient mesh with geometric overlays
+- All images full-width, high-resolution
 
-**Campaign Banners**: 
-- Required for each campaign: 1200x675px (16:9)
-- Showcases project branding, promotional graphics
-- Overlay: Semi-transparent gradient (top-to-bottom) for text legibility
-- Buttons on banners: Backdrop blur (backdrop-blur-md), semi-transparent background
+**Campaign Banners**:
+- Required: 1200x675px minimum
+- Project branding showcases
+- Gradient overlay for text legibility
 
-**Campaign Logos**:
-- Circular, 120x120px minimum
-- Border treatment for depth
-- Placed overlapping banner (negative margin)
+**Feature Icons**:
+- Use Heroicons (outline style) throughout
+- Consistent 24px or 32px sizing
 
-**Platform Icons**:
-- Use Heroicons for UI icons (outline style)
-- Social platform logos via Font Awesome brands
-
-**Background Elements**:
-- Subtle geometric patterns (grid dots, mesh gradients) for visual interest
-- Never overwhelm content - extremely low opacity
-
----
-
-## Special Components
-
-### Trust Indicators
-- Verified badge icons next to campaign creators
-- "Audited" labels for verified projects
-- Security info tooltips
-
-### Token/Reward Display
-- Monospace font for amounts
-- Token symbol in bold
-- USD equivalent in smaller, muted text below
-
-### Progress Indicators
-- Circular progress rings for campaign completion
-- Linear progress bars for individual tasks
-- Visual countdown timers (days:hours:minutes)
-
-### Notification Toasts
-- Top-right positioning
-- Transaction success/pending states
-- Wallet connection status
-
-### Empty States
-- Illustration placeholders for no campaigns
-- Helpful CTA to create first campaign
-- Centered, friendly messaging
+**Backgrounds**:
+- Subtle dot grids, mesh gradients at very low opacity
+- Never compete with foreground content
 
 ---
 
 ## Accessibility & Polish
 
-- All interactive elements: min-height 44px (touch targets)
-- Form inputs: Consistent height h-12, rounded-lg
-- Focus states: Prominent outline, 2px offset
-- Loading skeletons for async data
-- Smooth transitions (transition-all duration-200)
-- Hover states: Subtle scale/shadow changes
-- Icon sizes: Consistent 20px or 24px throughout
+- Touch targets: min-h-11 (44px)
+- Focus rings: 2px offset, high contrast
+- Transitions: duration-200 for micro-interactions
+- Loading states: Skeleton screens for cards
+- Hover: Subtle scale (scale-105) or shadow elevation
+- Icon consistency: 20px (inline), 24px (standalone)
+- Empty states: Helpful messaging with CTA
 
-This design creates a professional, trustworthy crypto platform that prioritizes clarity and user confidence while maintaining modern web app standards.
+This design creates a high-converting marketing platform that balances professional crypto credibility with engaging celebration moments, optimized for both user experience and search visibility.
