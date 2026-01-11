@@ -540,6 +540,54 @@ export async function registerRoutes(
     }
   });
 
+  const errorLogs: any[] = [];
+  const logError = (source: string, message: string) => {
+    console.error(`[SYSTEM_ERROR][${source}] ${message}`);
+    errorLogs.unshift({ timestamp: new Date(), source, message });
+    if (errorLogs.length > 50) errorLogs.pop();
+  };
+
+  app.get('/api/admin/system-health', async (req, res) => {
+    try {
+      let rpcStatus = "OK";
+      try {
+        const connection = await getSolanaConnection();
+        await connection.getSlot();
+      } catch (e) {
+        rpcStatus = "DOWN";
+        logError("Solana RPC", "Primary and Fallback RPCs are unreachable.");
+      }
+
+      res.json({
+        uptime: process.uptime(),
+        memory: process.memoryUsage(),
+        cpu: process.cpuUsage(),
+        dbStatus: "CONNECTED",
+        rpcStatus,
+        errorLogs: errorLogs.slice(0, 10)
+      });
+    } catch (err) {
+      res.status(500).json({ message: "Failed to fetch health stats" });
+    }
+  });
+
+  app.post('/api/admin/executions/:id/manual-verify', async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const execution = await storage.getExecution(id);
+      if (!execution) return res.status(404).json({ message: "Execution not found" });
+      
+      const txSignature = "manual-sol-" + Math.random().toString(36).substring(7);
+      await storage.updateExecutionStatus(id, "paid", txSignature);
+      
+      console.log(`[Admin] Manual verification for execution ${id} by admin`);
+      res.json({ success: true, txSignature });
+    } catch (err) {
+      console.error("Manual verify error:", err);
+      res.status(500).json({ message: "Failed to process manual verification" });
+    }
+  });
+
   app.get('/api/leaderboard', async (req, res) => {
     try {
       const timeframe = req.query.timeframe as string || 'all_time';

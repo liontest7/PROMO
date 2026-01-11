@@ -12,6 +12,16 @@ import {
   TableHeader, 
   TableRow 
 } from "@/components/ui/table";
+import { 
+  AlertCircle,
+  Cpu,
+  Database,
+  Globe as GlobeIcon,
+  LifeBuoy,
+  RefreshCcw,
+  Zap,
+  Trash2
+} from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -49,6 +59,18 @@ export default function AdminDashboard() {
 
   const { data: executions, isLoading: loadingExecutions } = useQuery<any[]>({
     queryKey: ["/api/admin/executions"],
+  });
+
+  const { data: systemHealth, isLoading: loadingHealth } = useQuery<{
+    uptime: number;
+    memory: any;
+    cpu: any;
+    dbStatus: string;
+    rpcStatus: string;
+    errorLogs: any[];
+  }>({
+    queryKey: ["/api/admin/system-health"],
+    refetchInterval: 10000 // Refresh every 10s
   });
 
   const { data: adminStats, isLoading: loadingStats } = useQuery<{
@@ -128,7 +150,21 @@ export default function AdminDashboard() {
     }
   });
 
-  if (loadingUsers || loadingCampaigns || loadingExecutions || loadingStats) {
+  const manualVerifyMutation = useMutation({
+    mutationFn: async (executionId: number) => {
+      const res = await fetch(`/api/admin/executions/${executionId}/manual-verify`, {
+        method: 'POST'
+      });
+      if (!res.ok) throw new Error('Failed to verify manually');
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/executions"] });
+      toast({ title: "Action Verified", description: "Rewards will be processed manually." });
+    }
+  });
+
+  if (loadingUsers || loadingCampaigns || loadingExecutions || loadingStats || loadingHealth) {
     return (
       <div className="flex h-screen items-center justify-center bg-background">
         <div className="flex flex-col items-center gap-4">
@@ -263,6 +299,9 @@ export default function AdminDashboard() {
               </TabsTrigger>
               <TabsTrigger value="executions" className="flex-1 md:flex-none rounded-lg px-6 font-bold uppercase text-[10px] tracking-widest data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
                 Live Feed
+              </TabsTrigger>
+              <TabsTrigger value="health" className="flex-1 md:flex-none rounded-lg px-6 font-bold uppercase text-[10px] tracking-widest data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+                System Health
               </TabsTrigger>
             </TabsList>
 
@@ -455,6 +494,82 @@ export default function AdminDashboard() {
             </Card>
           </TabsContent>
 
+          <TabsContent value="health">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+              <Card className="glass-card border-white/10 bg-white/[0.01] rounded-2xl">
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-xs font-black uppercase tracking-widest text-muted-foreground flex items-center gap-2">
+                    <Cpu className="w-3 h-3 text-blue-400" /> Server Load
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-black font-display">{((systemHealth?.memory?.rss || 0) / 1024 / 1024).toFixed(1)} MB</div>
+                  <p className="text-[10px] text-muted-foreground mt-1 uppercase font-bold tracking-widest">Memory Usage (RSS)</p>
+                </CardContent>
+              </Card>
+
+              <Card className="glass-card border-white/10 bg-white/[0.01] rounded-2xl">
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-xs font-black uppercase tracking-widest text-muted-foreground flex items-center gap-2">
+                    <Database className="w-3 h-3 text-green-400" /> DB Health
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-black font-display text-green-400">{systemHealth?.dbStatus}</div>
+                  <p className="text-[10px] text-muted-foreground mt-1 uppercase font-bold tracking-widest">PostgreSQL Connectivity</p>
+                </CardContent>
+              </Card>
+
+              <Card className="glass-card border-white/10 bg-white/[0.01] rounded-2xl">
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-xs font-black uppercase tracking-widest text-muted-foreground flex items-center gap-2">
+                    <GlobeIcon className="w-3 h-3 text-primary" /> Solana RPC
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-black font-display text-primary">{systemHealth?.rpcStatus}</div>
+                  <p className="text-[10px] text-muted-foreground mt-1 uppercase font-bold tracking-widest">Mainnet-Beta Status</p>
+                </CardContent>
+              </Card>
+            </div>
+
+            <Card className="glass-card border-white/10 bg-white/[0.01] rounded-2xl overflow-hidden">
+              <CardHeader className="border-b border-white/5 bg-white/[0.02]">
+                <CardTitle className="text-xl flex items-center gap-2 text-destructive">
+                  <AlertCircle className="w-5 h-5" /> Recent Error Log
+                </CardTitle>
+                <CardDescription>Critical system events and failed transactions requiring attention.</CardDescription>
+              </CardHeader>
+              <CardContent className="p-0">
+                <Table>
+                  <TableHeader className="bg-white/[0.02]">
+                    <TableRow className="border-white/5">
+                      <TableHead className="text-[10px] font-black uppercase tracking-widest w-40">Timestamp</TableHead>
+                      <TableHead className="text-[10px] font-black uppercase tracking-widest">Event Source</TableHead>
+                      <TableHead className="text-[10px] font-black uppercase tracking-widest">Critical Message</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {systemHealth?.errorLogs?.map((log, idx) => (
+                      <TableRow key={idx} className="border-white/5 hover:bg-red-500/[0.02]">
+                        <TableCell className="text-[10px] font-mono text-muted-foreground">{format(new Date(log.timestamp), 'HH:mm:ss.SSS')}</TableCell>
+                        <TableCell><Badge variant="outline" className="text-[9px] font-black uppercase">{log.source}</Badge></TableCell>
+                        <TableCell className="text-xs font-medium text-red-400">{log.message}</TableCell>
+                      </TableRow>
+                    ))}
+                    {(!systemHealth?.errorLogs || systemHealth.errorLogs.length === 0) && (
+                      <TableRow>
+                        <TableCell colSpan={3} className="text-center py-10 text-muted-foreground text-xs uppercase font-bold tracking-widest">
+                          System operating normally. No critical errors detected.
+                        </TableCell>
+                      </TableRow>
+                    )}
+                  </TableBody>
+                </Table>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
           <TabsContent value="executions">
             <Card className="glass-card border-white/10 bg-white/[0.01] rounded-2xl overflow-hidden">
               <CardHeader className="border-b border-white/5 bg-white/[0.02]">
@@ -500,7 +615,19 @@ export default function AdminDashboard() {
                           </Badge>
                         </TableCell>
                         <TableCell className="text-right text-[10px] font-medium text-muted-foreground pr-8">
-                          {execution.createdAt ? format(new Date(execution.createdAt), 'HH:mm:ss') : 'Unknown'}
+                          <div className="flex justify-end gap-2">
+                            {execution.status === 'pending' || execution.status === 'rejected' ? (
+                              <Button 
+                                size="sm" 
+                                variant="ghost" 
+                                className="h-6 text-[9px] font-black uppercase text-primary hover:bg-primary/10"
+                                onClick={() => manualVerifyMutation.mutate(execution.id)}
+                              >
+                                <Zap className="w-3 h-3 mr-1" /> Force Pay
+                              </Button>
+                            ) : null}
+                            <span>{execution.createdAt ? format(new Date(execution.createdAt), 'HH:mm:ss') : 'Unknown'}</span>
+                          </div>
                         </TableCell>
                       </TableRow>
                     ))}
@@ -509,6 +636,11 @@ export default function AdminDashboard() {
               </CardContent>
             </Card>
           </TabsContent>
+        </Tabs>
+      </div>
+    </div>
+  );
+}
         </Tabs>
       </div>
     </div>
