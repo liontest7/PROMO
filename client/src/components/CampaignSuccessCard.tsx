@@ -51,12 +51,11 @@ export function CampaignSuccessCard({ campaign, open, onClose }: CampaignSuccess
             const images = clonedElement.getElementsByTagName('img');
             for (let i = 0; i < images.length; i++) {
               const img = images[i];
-              img.crossOrigin = "anonymous";
-              // Appending a dummy param can sometimes bypass cached tainted images
-              if (img.src.includes('i.ibb.co') || img.src.includes('logo')) {
-                const url = new URL(img.src);
-                url.searchParams.set('t', Date.now().toString());
-                img.src = url.toString();
+              // Use a proxy for external images to avoid CORS issues with html2canvas
+              const originalSrc = img.src.split('?')[0];
+              if (originalSrc.startsWith('http') && !originalSrc.includes(window.location.host)) {
+                img.src = `https://api.allorigins.win/raw?url=${encodeURIComponent(originalSrc)}`;
+                img.crossOrigin = "anonymous";
               }
             }
 
