@@ -15,16 +15,12 @@ interface UserTableProps {
   users: any[];
   onUpdateBlockStatus: (userId: number, isBlocked: boolean) => void;
   onUpdateRole: (userId: number, role: string) => void;
-  onUpdateBalance: (userId: number, balance: string) => void;
-  onUpdateReputation: (userId: number, reputationScore: number) => void;
 }
 
 export function UserTable({ 
   users, 
   onUpdateBlockStatus, 
-  onUpdateRole,
-  onUpdateBalance,
-  onUpdateReputation
+  onUpdateRole
 }: UserTableProps) {
   return (
     <Table>
@@ -74,28 +70,6 @@ export function UserTable({
             </TableCell>
             <TableCell className="text-right pr-8">
               <div className="flex justify-end gap-2">
-                <Button 
-                  size="sm" 
-                  variant="outline" 
-                  className="h-8 text-[10px] font-bold uppercase border-white/10"
-                  onClick={() => {
-                    const val = prompt("Enter new balance:", user.balance);
-                    if (val !== null) onUpdateBalance(user.id, val);
-                  }}
-                >
-                  Balance
-                </Button>
-                <Button 
-                  size="sm" 
-                  variant="outline" 
-                  className="h-8 text-[10px] font-bold uppercase border-white/10"
-                  onClick={() => {
-                    const val = prompt("Enter new trust score:", user.reputationScore);
-                    if (val !== null) onUpdateReputation(user.id, parseInt(val));
-                  }}
-                >
-                  Trust
-                </Button>
                 <Button 
                   size="sm" 
                   variant={user.isBlocked ? "default" : "outline"}

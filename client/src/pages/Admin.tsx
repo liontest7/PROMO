@@ -52,6 +52,7 @@ export default function AdminDashboard() {
     totalExecutions: number;
     totalRewardsPaid: number;
     blockedUsers: number;
+    suspiciousUsers?: number;
   }>({
     queryKey: ["/api/admin/stats"],
   });
@@ -207,8 +208,6 @@ export default function AdminDashboard() {
                   users={filteredUsers}
                   onUpdateBlockStatus={(userId, isBlocked) => updateBlockStatusMutation.mutate({ userId, isBlocked })}
                   onUpdateRole={(userId, role) => updateRoleMutation.mutate({ userId, role })}
-                  onUpdateBalance={(userId, balance) => updateBalanceMutation.mutate({ userId, balance })}
-                  onUpdateReputation={(userId, reputationScore) => updateReputationMutation.mutate({ userId, reputationScore })}
                 />
               </CardContent>
             </Card>
