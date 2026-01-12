@@ -28,7 +28,7 @@ export function CampaignSuccessCard({ campaign, open, onClose }: CampaignSuccess
     
     setIsExporting(true);
     try {
-      await new Promise(resolve => setTimeout(resolve, 200));
+      await new Promise(resolve => setTimeout(resolve, 300));
       
       const canvas = await html2canvas(element, {
         backgroundColor: "#0a0a0a",
@@ -42,9 +42,14 @@ export function CampaignSuccessCard({ campaign, open, onClose }: CampaignSuccess
             clonedElement.style.transform = "none";
             clonedElement.style.borderRadius = "0";
             clonedElement.style.width = "400px";
-            // Hide interactive elements in export
-            const noExport = clonedElement.querySelectorAll(".data-no-export");
-            noExport.forEach(el => (el as HTMLElement).style.display = "none");
+            
+            // CRITICAL: Set height to only show up to the missions section
+            const interactiveArea = clonedDoc.querySelector(".data-no-export-area");
+            if (interactiveArea) {
+              const rect = interactiveArea.getBoundingClientRect();
+              clonedElement.style.height = `${rect.top}px`;
+              (interactiveArea as HTMLElement).style.display = "none";
+            }
           }
         }
       });
@@ -119,17 +124,21 @@ export function CampaignSuccessCard({ campaign, open, onClose }: CampaignSuccess
                   <div className="flex items-center gap-4 mb-6">
                     <div className="relative group">
                       <div className="absolute -inset-1 bg-gradient-to-r from-primary to-emerald-500 rounded-2xl blur opacity-40 group-hover:opacity-60 transition duration-1000" />
-                      <div className="relative w-20 h-20 rounded-xl bg-black border border-white/20 overflow-hidden shadow-2xl flex items-center justify-center">
+                      <div className="relative w-20 h-20 rounded-xl bg-black border border-white/20 overflow-hidden shadow-2xl flex items-center justify-center z-[100]">
                         {campaign.logoUrl ? (
                           <img 
+                            key={campaign.logoUrl}
                             crossOrigin="anonymous" 
                             src={campaign.logoUrl} 
-                            className="w-full h-full object-cover relative z-40" 
+                            className="w-full h-full object-cover relative z-[110]" 
                             alt="Logo" 
-                            style={{ display: 'block' }}
+                            style={{ display: 'block', minWidth: '100%', minHeight: '100%' }}
+                            onLoad={(e) => {
+                              (e.target as HTMLImageElement).style.opacity = '1';
+                            }}
                           />
                         ) : (
-                          <div className="w-full h-full flex items-center justify-center bg-primary/10 relative z-40">
+                          <div className="w-full h-full flex items-center justify-center bg-primary/10 relative z-[110]">
                             <Coins className="w-10 h-10 text-primary" />
                           </div>
                         )}
@@ -201,39 +210,41 @@ export function CampaignSuccessCard({ campaign, open, onClose }: CampaignSuccess
                 </p>
 
                 {/* Interactive Controls (Hidden in Export via onclone) */}
-                <div className="grid grid-cols-2 gap-3 w-full data-no-export mb-4">
-                  <Button 
-                    variant="outline" 
-                    className="border-white/20 hover:bg-white/10 font-black h-12 rounded-2xl text-white text-sm"
-                    onClick={handleShare}
-                  >
-                    <Share2 className="w-4 h-4 mr-2" /> Share
-                  </Button>
-                  <Button 
-                    variant="outline" 
-                    className="border-white/20 hover:bg-white/10 font-black h-12 rounded-2xl text-white text-sm"
-                    onClick={handleDownload}
-                    disabled={isExporting}
-                  >
-                    <Download className="w-4 h-4 mr-2" /> {isExporting ? "Saving..." : "Export"}
-                  </Button>
-                </div>
-                
-                <div className="w-full data-no-export flex justify-center">
-                  <Button 
-                    className="w-full h-12 rounded-2xl font-black text-sm shadow-[0_10px_30px_rgba(34,197,94,0.3)] hover:shadow-[0_15px_40px_rgba(34,197,94,0.4)] transition-all group max-w-[320px]"
-                    onClick={() => {
-                      onClose();
-                      setLocation(`/c/${campaign.tokenName.toLowerCase()}`);
-                    }}
-                  >
-                    ENTER PROJECT HUB <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
-                  </Button>
+                <div className="w-full data-no-export-area">
+                  <div className="flex items-center justify-center gap-3 w-full mb-4">
+                    <Button 
+                      variant="outline" 
+                      className="flex-1 border-white/20 hover:bg-white/10 font-black h-12 rounded-2xl text-white text-sm max-w-[160px]"
+                      onClick={handleShare}
+                    >
+                      <Share2 className="w-4 h-4 mr-2" /> Share
+                    </Button>
+                    <Button 
+                      variant="outline" 
+                      className="flex-1 border-white/20 hover:bg-white/10 font-black h-12 rounded-2xl text-white text-sm max-w-[160px]"
+                      onClick={handleDownload}
+                      disabled={isExporting}
+                    >
+                      <Download className="w-4 h-4 mr-2" /> {isExporting ? "Saving..." : "Export"}
+                    </Button>
+                  </div>
+                  
+                  <div className="w-full flex justify-center">
+                    <Button 
+                      className="w-full h-12 rounded-2xl font-black text-sm shadow-[0_10px_30px_rgba(34,197,94,0.3)] hover:shadow-[0_15px_40px_rgba(34,197,94,0.4)] transition-all group max-w-[332px]"
+                      onClick={() => {
+                        onClose();
+                        setLocation(`/c/${campaign.tokenName.toLowerCase()}`);
+                      }}
+                    >
+                      ENTER PROJECT HUB <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
+                    </Button>
+                  </div>
                 </div>
               </div>
 
               {/* Copyright Section - Only visible in Card, Hidden in Export via onclone if needed, but requested at bottom */}
-              <div className="p-4 flex justify-center opacity-80 pointer-events-none">
+              <div className="p-4 flex justify-center opacity-80 pointer-events-none data-no-export-area">
                 <p className="text-[9px] font-black tracking-[0.4em] uppercase text-primary">MemeDrop © 2026</p>
               </div>
             </div>
@@ -242,10 +253,10 @@ export function CampaignSuccessCard({ campaign, open, onClose }: CampaignSuccess
       </DialogContent>
       
       <style>{`
-        #campaign-card-export .data-no-export {
+        #campaign-card-export .data-no-export-area {
           display: flex !important;
         }
-        canvas + #campaign-card-export .data-no-export {
+        canvas + #campaign-card-export .data-no-export-area {
           display: none !important;
         }
       `}</style>
