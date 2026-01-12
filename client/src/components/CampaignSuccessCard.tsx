@@ -28,13 +28,13 @@ export function CampaignSuccessCard({ campaign, open, onClose }: CampaignSuccess
     
     setIsExporting(true);
     try {
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      await new Promise(resolve => setTimeout(resolve, 1500));
       
       const canvas = await html2canvas(element, {
         backgroundColor: "#0a0a0a",
         scale: 2.5,
         useCORS: true,
-        allowTaint: true, // Allow tainting as a fallback
+        allowTaint: true,
         logging: true,
         imageTimeout: 30000,
         onclone: (clonedDoc) => {
@@ -45,6 +45,22 @@ export function CampaignSuccessCard({ campaign, open, onClose }: CampaignSuccess
             clonedElement.style.width = "440px";
             clonedElement.style.margin = "0";
             clonedElement.style.display = "block";
+
+            // Force proxy for all external images in the clone to ensure they are captured
+            const images = clonedElement.getElementsByTagName('img');
+            for (let i = 0; i < images.length; i++) {
+              const img = images[i];
+              const originalSrc = img.src;
+              if (originalSrc.startsWith('http') && !originalSrc.includes(window.location.host)) {
+                // Remove any existing proxy and wrap again
+                const cleanUrl = originalSrc.includes('api.allorigins.win') 
+                  ? decodeURIComponent(originalSrc.split('url=')[1])
+                  : originalSrc;
+                
+                img.src = `https://api.allorigins.win/raw?url=${encodeURIComponent(cleanUrl)}`;
+                img.crossOrigin = "anonymous";
+              }
+            }
 
             // Ensure ticker is properly aligned in export
             const ticker = clonedElement.querySelector(".campaign-ticker-badge");
