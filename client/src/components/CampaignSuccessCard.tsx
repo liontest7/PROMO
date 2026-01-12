@@ -59,7 +59,7 @@ export function CampaignSuccessCard({ campaign, open, onClose }: CampaignSuccess
   };
 
   const handleShare = async () => {
-    const url = `${window.location.origin}/campaign/${campaign.id}`;
+    const url = `${window.location.origin}/c/${campaign.tokenName.toLowerCase()}`;
     if (navigator.share) {
       try {
         await navigator.share({
@@ -97,8 +97,12 @@ export function CampaignSuccessCard({ campaign, open, onClose }: CampaignSuccess
               
               <div className="relative z-10 p-8 flex flex-col items-center">
                 {/* Header Section */}
-                <div className="w-16 h-16 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center mb-4 shadow-inner">
-                  <Rocket className="w-8 h-8 text-primary animate-pulse" />
+                <div className="w-20 h-20 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center mb-4 shadow-inner overflow-hidden">
+                  <img 
+                    src="https://i.ibb.co/xtwDPsFy/20260112-1450-Image-Generation-remix-01kes42kp5ft5r4tfh6znvs9c0-1.png" 
+                    className="w-full h-full object-cover" 
+                    alt="Success Icon" 
+                  />
                 </div>
                 
                 <h2 className="text-4xl font-black font-display text-white mb-1 uppercase tracking-tighter italic">
@@ -115,12 +119,12 @@ export function CampaignSuccessCard({ campaign, open, onClose }: CampaignSuccess
                   <div className="flex items-center gap-4 mb-6">
                     <div className="relative group">
                       <div className="absolute -inset-1 bg-gradient-to-r from-primary to-emerald-500 rounded-2xl blur opacity-25 group-hover:opacity-50 transition duration-1000" />
-                      <div className="relative w-16 h-16 rounded-xl bg-black border border-white/10 overflow-hidden">
+                      <div className="relative w-16 h-16 rounded-xl bg-black border border-white/10 overflow-hidden shadow-2xl">
                         {campaign.logoUrl ? (
                           <img 
                             crossOrigin="anonymous" 
                             src={campaign.logoUrl} 
-                            className="w-full h-full object-cover" 
+                            className="w-full h-full object-cover relative z-10" 
                             alt="Logo" 
                           />
                         ) : (
@@ -197,7 +201,7 @@ export function CampaignSuccessCard({ campaign, open, onClose }: CampaignSuccess
                 </p>
 
                 {/* Interactive Controls (Hidden in Export via onclone) */}
-                <div className="grid grid-cols-2 gap-3 w-full data-no-export">
+                <div className="grid grid-cols-2 gap-3 w-full data-no-export mb-4">
                   <Button 
                     variant="outline" 
                     className="border-white/10 hover:bg-white/5 font-bold h-12 rounded-2xl text-white"
@@ -213,11 +217,14 @@ export function CampaignSuccessCard({ campaign, open, onClose }: CampaignSuccess
                   >
                     <Download className="w-4 h-4 mr-2" /> {isExporting ? "Saving..." : "Export"}
                   </Button>
+                </div>
+                
+                <div className="w-full data-no-export">
                   <Button 
-                    className="col-span-2 h-14 rounded-2xl font-black text-md shadow-[0_10px_30px_rgba(34,197,94,0.2)] hover:shadow-[0_15px_40px_rgba(34,197,94,0.3)] transition-all group"
+                    className="col-span-2 h-12 rounded-2xl font-black text-sm shadow-[0_10px_30px_rgba(34,197,94,0.2)] hover:shadow-[0_15px_40px_rgba(34,197,94,0.3)] transition-all group"
                     onClick={() => {
                       onClose();
-                      setLocation(`/campaign/${campaign.id}`);
+                      setLocation(`/c/${campaign.tokenName.toLowerCase()}`);
                     }}
                   >
                     ENTER PROJECT HUB <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
