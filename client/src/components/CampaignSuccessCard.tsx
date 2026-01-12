@@ -28,13 +28,13 @@ export function CampaignSuccessCard({ campaign, open, onClose }: CampaignSuccess
     
     setIsExporting(true);
     try {
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      await new Promise(resolve => setTimeout(resolve, 800));
       
       const canvas = await html2canvas(element, {
         backgroundColor: "#0a0a0a",
         scale: 2.5,
         useCORS: true,
-        allowTaint: true,
+        allowTaint: false,
         logging: true,
         imageTimeout: 30000,
         onclone: (clonedDoc) => {
@@ -45,22 +45,6 @@ export function CampaignSuccessCard({ campaign, open, onClose }: CampaignSuccess
             clonedElement.style.width = "440px";
             clonedElement.style.margin = "0";
             clonedElement.style.display = "block";
-
-            // Force proxy for all external images in the clone to ensure they are captured
-            const images = clonedElement.getElementsByTagName('img');
-            for (let i = 0; i < images.length; i++) {
-              const img = images[i];
-              const originalSrc = img.src;
-              if (originalSrc.startsWith('http') && !originalSrc.includes(window.location.host)) {
-                // Remove any existing proxy and wrap again
-                const cleanUrl = originalSrc.includes('api.allorigins.win') 
-                  ? decodeURIComponent(originalSrc.split('url=')[1])
-                  : originalSrc;
-                
-                img.src = `https://api.allorigins.win/raw?url=${encodeURIComponent(cleanUrl)}`;
-                img.crossOrigin = "anonymous";
-              }
-            }
 
             // Ensure ticker is properly aligned in export
             const ticker = clonedElement.querySelector(".campaign-ticker-badge");
@@ -162,6 +146,7 @@ export function CampaignSuccessCard({ campaign, open, onClose }: CampaignSuccess
                       <div className="relative w-20 h-20 rounded-xl bg-black border border-white/20 overflow-hidden shadow-2xl flex items-center justify-center z-[100]">
                         <img 
                           key={campaign.logoUrl}
+                          crossOrigin="anonymous"
                           src={campaign.logoUrl} 
                           className="w-full h-full object-cover relative z-[110]" 
                           alt="Logo" 
@@ -169,12 +154,6 @@ export function CampaignSuccessCard({ campaign, open, onClose }: CampaignSuccess
                           loading="eager"
                           onLoad={(e) => {
                             (e.target as HTMLImageElement).style.opacity = '1';
-                          }}
-                          onError={(e) => {
-                             const img = e.target as HTMLImageElement;
-                             if (!img.src.includes('api.allorigins.win')) {
-                               img.src = `https://api.allorigins.win/raw?url=${encodeURIComponent(campaign.logoUrl)}`;
-                             }
                           }}
                         />
                       </div>
