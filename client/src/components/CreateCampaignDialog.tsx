@@ -144,20 +144,12 @@ export function CreateCampaignDialog() {
 
       const [dexData, pumpData, moralisData] = await Promise.all([dexPromise, pumpPromise, moralisPromise]);
 
-      if (moralisData && moralisData.mint) {
-        if (moralisData.symbol) mergedMetadata.tokenName = moralisData.symbol;
-        if (moralisData.name && !mergedMetadata.title) mergedMetadata.title = `${moralisData.name} Growth Campaign`;
-        if (moralisData.logo) mergedMetadata.logoUrl = moralisData.logo;
-        if (moralisData.description) mergedMetadata.description = moralisData.description;
-        if (moralisData.links?.website) mergedMetadata.websiteUrl = moralisData.links.website;
-        if (moralisData.links?.twitter) mergedMetadata.twitterUrl = moralisData.links.twitter;
-      }
-
       if (pumpData && pumpData.success && pumpData.result) {
         const res = pumpData.result;
         if (!mergedMetadata.tokenName) mergedMetadata.tokenName = res.symbol;
         if (!mergedMetadata.title) mergedMetadata.title = `${res.name} Growth Campaign`;
-        if (!mergedMetadata.logoUrl) mergedMetadata.logoUrl = res.image;
+        // Prioritize pump.fun (imagedelivery.net) over others because it's capture-friendly
+        mergedMetadata.logoUrl = `https://imagedelivery.net/WL1JOIJiM_NAChp6rtB6Cw/coin-image/${address}/86x86?alpha=true`;
         if (!mergedMetadata.description) mergedMetadata.description = res.description;
       }
 
@@ -166,13 +158,26 @@ export function CreateCampaignDialog() {
         const token = bestPair.baseToken;
         if (token.symbol) mergedMetadata.tokenName = token.symbol;
         if (token.name && !mergedMetadata.title) mergedMetadata.title = `${token.name} Growth Campaign`;
-        if (bestPair.info?.imageUrl && !mergedMetadata.logoUrl) mergedMetadata.logoUrl = bestPair.info.imageUrl;
+        // DexScreener is also good for capture
+        if (!mergedMetadata.logoUrl && bestPair.info?.imageUrl) {
+           mergedMetadata.logoUrl = bestPair.info.imageUrl;
+        }
         if (bestPair.info?.header) mergedMetadata.bannerUrl = bestPair.info.header;
         if (bestPair.info?.websites?.[0]?.url) mergedMetadata.websiteUrl = bestPair.info.websites[0].url;
         const twitter = bestPair.info?.socials?.find((s: any) => s.type === 'twitter');
         if (twitter?.url) mergedMetadata.twitterUrl = twitter.url;
         const telegram = bestPair.info?.socials?.find((s: any) => s.type === 'telegram');
         if (telegram?.url) mergedMetadata.telegramUrl = telegram.url;
+      }
+
+      if (moralisData && moralisData.mint) {
+        if (moralisData.symbol && !mergedMetadata.tokenName) mergedMetadata.tokenName = moralisData.symbol;
+        if (moralisData.name && !mergedMetadata.title) mergedMetadata.title = `${moralisData.name} Growth Campaign`;
+        // Only use Moralis as a last resort if we don't have a logo yet
+        if (moralisData.logo && !mergedMetadata.logoUrl) mergedMetadata.logoUrl = moralisData.logo;
+        if (moralisData.description && !mergedMetadata.description) mergedMetadata.description = moralisData.description;
+        if (moralisData.links?.website && !mergedMetadata.websiteUrl) mergedMetadata.websiteUrl = moralisData.links.website;
+        if (moralisData.links?.twitter && !mergedMetadata.twitterUrl) mergedMetadata.twitterUrl = moralisData.links.twitter;
       }
 
       if (Object.keys(mergedMetadata).length > 0) {
