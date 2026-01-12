@@ -159,12 +159,12 @@ export function Footer() {
           <div className="flex items-center gap-6">
             <div className="flex items-center gap-2 group cursor-default">
               <div className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
-              <span className="text-[10px] font-black text-white/50 group-hover:text-primary transition-colors uppercase tracking-[0.15em]">System Operational</span>
+              <span className="text-sm font-bold text-white/50 group-hover:text-primary transition-colors uppercase tracking-widest">System Operational</span>
             </div>
             <div className="hidden sm:block w-px h-3 bg-white/10" />
             <div className="flex items-center gap-4">
-              <Link href="/privacy" className="text-[12px] text-white/70 hover:text-primary transition-colors uppercase tracking-widest font-black">Privacy</Link>
-              <Link href="/terms" className="text-[12px] text-white/70 hover:text-primary transition-colors uppercase tracking-widest font-black">Terms</Link>
+              <Link href="/privacy" className="text-sm font-bold text-white/70 hover:text-primary transition-colors uppercase tracking-widest">Privacy</Link>
+              <Link href="/terms" className="text-sm font-bold text-white/70 hover:text-primary transition-colors uppercase tracking-widest">Terms</Link>
             </div>
           </div>
         </div>
