@@ -23,7 +23,7 @@ import { PLATFORM_CONFIG } from "@shared/config";
 import { cn } from "@/lib/utils";
 
 // Identity Sync Module
-const IdentitySync = ({ isAuthenticated }: { isAuthenticated: boolean }) => (
+const IdentitySync = ({ isAuthenticated, user, logout }: { isAuthenticated: boolean; user: any; logout: () => void }) => (
   <Card className="glass-card border border-white/10 bg-white/[0.02] rounded-[2rem] overflow-hidden p-1 shadow-xl lg:max-w-md ml-auto">
     <CardHeader className="p-6 pb-4">
       <CardTitle className="text-xl font-black font-display uppercase italic tracking-tighter leading-none text-white">Identity Sync</CardTitle>
@@ -60,18 +60,55 @@ const IdentitySync = ({ isAuthenticated }: { isAuthenticated: boolean }) => (
           </div>
         </div>
       ) : (
-        <div className="p-4 rounded-xl bg-primary/5 border border-primary/10 relative overflow-hidden">
-          <div className="flex items-center gap-3">
-            <div className="p-2 rounded-lg bg-primary/20">
-              <ShieldCheck className="w-5 h-5 text-primary" />
+        <div className="p-4 rounded-xl bg-primary/10 border border-primary/20 flex items-center gap-4 relative overflow-hidden group shadow-lg">
+          <Avatar className="h-12 w-12 border-2 border-background shadow-[0_0_20px_rgba(34,197,94,0.2)] relative z-10">
+            <AvatarImage src={user?.profileImageUrl || ""} />
+            <AvatarFallback className="bg-primary/20"><UserIcon className="w-6 h-6 text-primary" /></AvatarFallback>
+          </Avatar>
+          <div className="flex-1 relative z-10">
+            <div className="flex items-center gap-2">
+              <Twitter className="w-3 h-3 text-blue-400" />
+              <span className="text-[9px] font-black uppercase tracking-widest text-white/40">Verified Identity</span>
             </div>
-            <div>
-              <p className="text-xs font-black uppercase tracking-widest text-white">Identity Verified</p>
-              <p className="text-[10px] text-white/40 font-bold uppercase tracking-widest">Protocol Node Active</p>
-            </div>
+            <p className="text-base font-black font-display tracking-tight text-white uppercase italic">{user?.firstName || 'Dropy Sentinel'}</p>
+            <Badge className="bg-primary/20 text-primary border-none text-[8px] font-black mt-1 uppercase tracking-widest">Node Synced</Badge>
+          </div>
+          <Button variant="ghost" size="icon" className="h-8 w-8 rounded-lg text-white/30 hover:text-destructive hover:bg-destructive/10 relative z-10 transition-all" onClick={() => logout()}>
+            <LogOut className="w-4 h-4" />
+          </Button>
+          <div className="absolute bottom-0 right-0 p-2 opacity-5">
+            <ShieldCheck className="w-10 h-10 text-primary" />
           </div>
         </div>
       )}
+
+      <div className="p-4 rounded-xl bg-blue-600/5 border border-blue-600/10 relative overflow-hidden group shadow-lg opacity-60 grayscale hover:grayscale-0 transition-all">
+        <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-all duration-700">
+          <Send className="w-12 h-12" />
+        </div>
+        <div className="relative z-10 text-left space-y-3">
+          <div className="flex items-center gap-2 mb-1">
+            <div className="p-1.5 rounded-lg bg-blue-600/20 border border-blue-600/30">
+              <Send className="w-4 h-4 text-blue-500" />
+            </div>
+            <span className="text-[11px] font-black uppercase tracking-widest text-white italic">TG Identity</span>
+          </div>
+          <div className="flex flex-col gap-2">
+            <Button 
+              variant="outline"
+              disabled
+              className="w-full border-white/10 hover:bg-white/5 text-white/40 gap-3 font-black text-[10px] h-10 rounded-lg transition-all uppercase tracking-widest cursor-not-allowed"
+            >
+              Initiate Secure Link
+            </Button>
+            <div className="flex justify-center py-1">
+              <div className="w-full h-[30px] flex items-center justify-center text-[8px] text-white/10 uppercase font-black tracking-tighter border border-dashed border-white/5 rounded-md px-2 text-center">
+                Phase 2 Only
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </CardContent>
   </Card>
 );
