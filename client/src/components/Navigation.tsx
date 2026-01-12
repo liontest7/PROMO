@@ -108,17 +108,6 @@ export function Navigation() {
 
           <div className="flex items-center gap-4">
             <div className="hidden lg:flex items-center gap-3 mr-4 pr-4 border-r border-white/10">
-              <Button 
-                variant="ghost" 
-                size="icon" 
-                className="w-10 h-10 rounded-full border border-white/10 text-white/70 hover:text-white hover:bg-white/5 transition-all"
-                asChild
-                title="Leaderboard"
-              >
-                <Link href="/leaderboard">
-                  <Trophy className="w-5 h-5" />
-                </Link>
-              </Button>
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button 
@@ -167,6 +156,17 @@ export function Navigation() {
 
             {/* Social Links */}
             <div className="hidden lg:flex items-center gap-3 mr-2">
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                className="w-10 h-10 rounded-full border border-white/10 text-white/70 hover:text-white hover:bg-white/5 transition-all shadow-lg shadow-black/20"
+                asChild
+                title="Leaderboard"
+              >
+                <Link href="/leaderboard">
+                  <Trophy className="w-5 h-5" />
+                </Link>
+              </Button>
               <Button 
                 variant="ghost" 
                 size="icon" 
