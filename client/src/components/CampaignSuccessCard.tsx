@@ -46,6 +46,18 @@ export function CampaignSuccessCard({ campaign, open, onClose }: CampaignSuccess
             clonedElement.style.margin = "0";
             clonedElement.style.display = "block";
 
+            // Force proxy for images in the clone to ensure they are captured
+            const images = clonedElement.getElementsByTagName('img');
+            for (let i = 0; i < images.length; i++) {
+              const img = images[i];
+              if (img.src.startsWith('http') && !img.src.includes(window.location.host)) {
+                // Ensure we use the proxy for export
+                const originalUrl = img.getAttribute('data-original-src') || img.src;
+                img.src = `https://api.allorigins.win/raw?url=${encodeURIComponent(originalUrl)}`;
+                img.crossOrigin = "anonymous";
+              }
+            }
+
             // Ensure ticker is properly aligned in export
             const ticker = clonedElement.querySelector(".campaign-ticker-badge");
             if (ticker) {
@@ -147,6 +159,7 @@ export function CampaignSuccessCard({ campaign, open, onClose }: CampaignSuccess
                         <img 
                           key={campaign.logoUrl}
                           src={campaign.logoUrl} 
+                          data-original-src={campaign.logoUrl}
                           className="w-full h-full object-cover relative z-[110]" 
                           alt="Logo" 
                           style={ { display: 'block', minWidth: '100%', minHeight: '100%', opacity: 1 } }
@@ -158,7 +171,13 @@ export function CampaignSuccessCard({ campaign, open, onClose }: CampaignSuccess
                             const img = e.target as HTMLImageElement;
                             const currentSrc = img.src;
                             
-                            // Try Cloudflare fallback first if not already trying it
+                            // Try Jupiter fallback first
+                            if (!currentSrc.includes('tokens.jup.ag')) {
+                               img.src = `https://tokens.jup.ag/token/${campaign.tokenAddress}`;
+                               return;
+                            }
+
+                            // Try Cloudflare fallback
                             if (!currentSrc.includes('imagedelivery.net')) {
                                img.src = `https://imagedelivery.net/WL1JOIJiM_NAChp6rtB6Cw/coin-image/${campaign.tokenAddress}/86x86?alpha=true`;
                                return;
