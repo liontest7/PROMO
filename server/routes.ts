@@ -12,30 +12,9 @@ import { eq, desc } from "drizzle-orm";
 import rateLimit from "express-rate-limit";
 
 import { ADMIN_CONFIG, CONFIG } from "@shared/config";
+import { getSolanaConnection } from "./services/solana";
+import { verifyTurnstile, checkIpFraud } from "./services/security";
 import fetch from "node-fetch";
-
-async function getSolanaConnection() {
-  const endpoints = CONFIG.SOLANA_RPC_ENDPOINTS || ["https://api.mainnet-beta.solana.com"];
-  for (const endpoint of endpoints) {
-    try {
-      const connection = new Connection(endpoint, 'confirmed');
-      // Simple health check
-      await connection.getSlot();
-      return connection;
-    } catch (err) {
-      console.warn(`RPC Failover: ${endpoint} failed, trying next...`);
-    }
-  }
-  throw new Error("All Solana RPC endpoints failed");
-}
-
-const apiLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 100,
-  standardHeaders: true,
-  legacyHeaders: false,
-  message: { message: "Too many requests from this IP, please try again after 15 minutes" }
-});
 
 export async function registerRoutes(
   httpServer: Server,
