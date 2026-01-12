@@ -23,12 +23,12 @@ export function CampaignSuccessCard({ campaign, open, onClose }: CampaignSuccess
   if (!campaign) return null;
 
   const handleDownload = async () => {
-    const element = document.getElementById("campaign-card-export");
+    const element = document.getElementById("campaign-card-capture-area");
     if (!element) return;
     
     setIsExporting(true);
     try {
-      await new Promise(resolve => setTimeout(resolve, 500));
+      await new Promise(resolve => setTimeout(resolve, 600));
       
       const canvas = await html2canvas(element, {
         backgroundColor: "#0a0a0a",
@@ -37,20 +37,12 @@ export function CampaignSuccessCard({ campaign, open, onClose }: CampaignSuccess
         allowTaint: true,
         logging: true,
         onclone: (clonedDoc) => {
-          const clonedElement = clonedDoc.getElementById("campaign-card-export");
+          const clonedElement = clonedDoc.getElementById("campaign-card-capture-area");
           if (clonedElement) {
             clonedElement.style.transform = "none";
             clonedElement.style.borderRadius = "0";
-            clonedElement.style.width = "400px";
-            
-            // CRITICAL: Hide the interactive area AND resize the canvas
-            const noExportArea = clonedElement.querySelector(".data-no-export-area");
-            if (noExportArea) {
-              (noExportArea as HTMLElement).style.display = "none";
-              // Force height to be above the buttons
-              const rect = noExportArea.getBoundingClientRect();
-              clonedElement.style.height = `${noExportArea.parentElement?.scrollHeight || 800}px`;
-            }
+            clonedElement.style.width = "440px";
+            clonedElement.style.margin = "0";
           }
         }
       });
@@ -72,7 +64,7 @@ export function CampaignSuccessCard({ campaign, open, onClose }: CampaignSuccess
       try {
         await navigator.share({
           title: campaign.title,
-          text: `Check out our new ${campaign.tokenName} campaign on MemeDrop!`,
+          text: `Check out our new ${campaign.tokenName} campaign on Dropy!`,
           url: url,
         });
       } catch (err) {
@@ -86,27 +78,29 @@ export function CampaignSuccessCard({ campaign, open, onClose }: CampaignSuccess
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-lg bg-transparent border-none p-0 shadow-none overflow-visible">
-        <div className="absolute top-4 right-4 z-[200]">
+      <DialogContent className="sm:max-w-lg bg-transparent border-none p-0 shadow-none overflow-visible [&>button]:hidden">
+        {/* Custom Close Button */}
+        <div className="absolute -top-12 right-0 z-[200]">
            <Button 
              variant="ghost" 
              size="icon" 
-             className="h-8 w-8 rounded-full bg-white/10 hover:bg-white/20 text-white/70 hover:text-white transition-colors"
+             className="h-10 w-10 rounded-full bg-white/10 hover:bg-white/20 text-white/70 hover:text-white transition-colors"
              onClick={onClose}
            >
-             <X className="h-4 w-4" />
+             <X className="h-6 w-6" />
            </Button>
         </div>
+
         <AnimatePresence>
           <motion.div
             initial={ { scale: 0.9, opacity: 0, y: 20 } }
             animate={ { scale: 1, opacity: 1, y: 0 } }
-            className="relative"
+            className="relative flex flex-col items-center"
           >
+            {/* 1. CAPTURE AREA (Only this part is exported) */}
             <div 
-              id="campaign-card-export"
-              className="relative bg-[#0a0a0a] border border-white/20 rounded-[32px] overflow-hidden shadow-2xl"
-              style={ { width: '100%', maxWidth: '440px', margin: '0 auto' } }
+              id="campaign-card-capture-area"
+              className="relative bg-[#0a0a0a] border border-white/20 rounded-[32px] overflow-hidden shadow-2xl w-full max-w-[440px]"
             >
               <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-primary/20 to-transparent opacity-50" />
               <div className="absolute -top-20 -right-20 w-40 h-40 bg-primary/10 blur-[80px] rounded-full" />
@@ -145,7 +139,6 @@ export function CampaignSuccessCard({ campaign, open, onClose }: CampaignSuccess
                             alt="Logo" 
                             style={ { display: 'block', minWidth: '100%', minHeight: '100%', opacity: 1 } }
                             onError={(e) => {
-                              console.log("Logo load failed, using fallback");
                               (e.target as HTMLImageElement).src = `https://avatar.vercel.sh/${campaign.tokenName}.png?size=80`;
                             }}
                           />
@@ -217,61 +210,52 @@ export function CampaignSuccessCard({ campaign, open, onClose }: CampaignSuccess
                 </div>
 
                 {/* Footer Message */}
-                <p className="text-[11px] text-white/70 font-bold mb-8 max-w-[300px] text-center">
+                <p className="text-[11px] text-white/70 font-bold mb-4 max-w-[300px] text-center">
                   Join the movement. Earn rewards. Support <span className="text-white font-black">${campaign.tokenName}</span>.
                 </p>
-
-                {/* Interactive Controls (Hidden in Export via onclone) */}
-                <div className="w-full data-no-export-area space-y-4">
-                  <div className="flex items-center justify-center gap-3 w-full">
-                    <Button 
-                      variant="outline" 
-                      className="flex-1 border-white/20 hover:bg-white/10 font-black h-12 rounded-2xl text-white text-sm max-w-[160px]"
-                      onClick={handleShare}
-                    >
-                      <Share2 className="w-4 h-4 mr-2" /> Share
-                    </Button>
-                    <Button 
-                      variant="outline" 
-                      className="flex-1 border-white/20 hover:bg-white/10 font-black h-12 rounded-2xl text-white text-sm max-w-[160px]"
-                      onClick={handleDownload}
-                      disabled={isExporting}
-                    >
-                      <Download className="w-4 h-4 mr-2" /> {isExporting ? "Saving..." : "Export"}
-                    </Button>
-                  </div>
-                  
-                  <div className="w-full flex justify-center pt-2">
-                    <Button 
-                      className="w-full h-12 rounded-2xl font-black text-sm shadow-[0_10px_30px_rgba(34,197,94,0.3)] hover:shadow-[0_15px_40px_rgba(34,197,94,0.4)] transition-all group max-w-[332px]"
-                      onClick={() => {
-                        onClose();
-                        setLocation(`/c/${campaign.tokenName.toLowerCase()}`);
-                      }}
-                    >
-                      ENTER PROJECT HUB <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
-                    </Button>
-                  </div>
-                </div>
               </div>
 
-              {/* Copyright Section - Only visible in Card, Hidden in Export via onclone if needed, but requested at bottom */}
-              <div className="p-4 flex justify-center opacity-80 pointer-events-none data-no-export-area">
+              {/* Copyright Section */}
+              <div className="p-4 flex justify-center opacity-80 pointer-events-none border-t border-white/5 bg-white/[0.02]">
                 <p className="text-[9px] font-black tracking-[0.4em] uppercase text-primary">Dropy © 2026</p>
+              </div>
+            </div>
+
+            {/* 2. EXTERNAL BUTTONS AREA (Not exported) */}
+            <div className="w-full max-w-[440px] mt-6 space-y-4">
+              <div className="flex items-center justify-center gap-3 w-full">
+                <Button 
+                  variant="outline" 
+                  className="flex-1 border-white/20 hover:bg-white/10 font-black h-12 rounded-2xl text-white text-sm"
+                  onClick={handleShare}
+                >
+                  <Share2 className="w-4 h-4 mr-2" /> Share
+                </Button>
+                <Button 
+                  variant="outline" 
+                  className="flex-1 border-white/20 hover:bg-white/10 font-black h-12 rounded-2xl text-white text-sm"
+                  onClick={handleDownload}
+                  disabled={isExporting}
+                >
+                  <Download className="w-4 h-4 mr-2" /> {isExporting ? "Saving..." : "Export"}
+                </Button>
+              </div>
+              
+              <div className="w-full flex justify-center">
+                <Button 
+                  className="w-full h-12 rounded-2xl font-black text-sm shadow-[0_10px_30px_rgba(34,197,94,0.3)] hover:shadow-[0_15px_40px_rgba(34,197,94,0.4)] transition-all group"
+                  onClick={() => {
+                    onClose();
+                    setLocation(`/c/${campaign.tokenName.toLowerCase()}`);
+                  }}
+                >
+                  ENTER PROJECT HUB <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
+                </Button>
               </div>
             </div>
           </motion.div>
         </AnimatePresence>
       </DialogContent>
-      
-      <style>{`
-        #campaign-card-export .data-no-export-area {
-          display: flex !important;
-        }
-        canvas + #campaign-card-export .data-no-export-area {
-          display: none !important;
-        }
-      `}</style>
     </Dialog>
   );
 }
