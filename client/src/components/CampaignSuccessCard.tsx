@@ -4,7 +4,7 @@ import {
   DialogContent,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Share2, Download, Rocket, Users, Coins, CheckCircle2, Trophy, ArrowRight } from "lucide-react";
+import { Share2, Download, Rocket, Users, Coins, CheckCircle2, Trophy, ArrowRight, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import html2canvas from "html2canvas";
 import { useLocation } from "wouter";
@@ -87,6 +87,16 @@ export function CampaignSuccessCard({ campaign, open, onClose }: CampaignSuccess
   return (
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-lg bg-transparent border-none p-0 shadow-none overflow-visible">
+        <div className="absolute top-4 right-4 z-[200]">
+           <Button 
+             variant="ghost" 
+             size="icon" 
+             className="h-8 w-8 rounded-full bg-white/10 hover:bg-white/20 text-white/70 hover:text-white transition-colors"
+             onClick={onClose}
+           >
+             <X className="h-4 w-4" />
+           </Button>
+        </div>
         <AnimatePresence>
           <motion.div
             initial={ { scale: 0.9, opacity: 0, y: 20 } }
@@ -126,14 +136,24 @@ export function CampaignSuccessCard({ campaign, open, onClose }: CampaignSuccess
                     <div className="relative group">
                       <div className="absolute -inset-1 bg-gradient-to-r from-primary to-emerald-500 rounded-2xl blur opacity-40 group-hover:opacity-60 transition duration-1000" />
                       <div className="relative w-20 h-20 rounded-xl bg-black border border-white/20 overflow-hidden shadow-2xl flex items-center justify-center z-[100]">
-                        <img 
-                          key={campaign.logoUrl}
-                          crossOrigin="anonymous" 
-                          src={campaign.logoUrl || ""} 
-                          className="w-full h-full object-cover relative z-[110]" 
-                          alt="Logo" 
-                          style={{ display: 'block', minWidth: '100%', minHeight: '100%', opacity: 1 }}
-                        />
+                        {campaign.logoUrl ? (
+                          <img 
+                            key={campaign.logoUrl}
+                            crossOrigin="anonymous" 
+                            src={campaign.logoUrl} 
+                            className="w-full h-full object-cover relative z-[110]" 
+                            alt="Logo" 
+                            style={ { display: 'block', minWidth: '100%', minHeight: '100%', opacity: 1 } }
+                            onError={(e) => {
+                              console.log("Logo load failed, using fallback");
+                              (e.target as HTMLImageElement).src = `https://avatar.vercel.sh/${campaign.tokenName}.png?size=80`;
+                            }}
+                          />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center bg-primary/10 relative z-[110]">
+                            <Coins className="w-10 h-10 text-primary" />
+                          </div>
+                        )}
                       </div>
                     </div>
                     <div className="flex-1 min-w-0">
@@ -221,7 +241,7 @@ export function CampaignSuccessCard({ campaign, open, onClose }: CampaignSuccess
                     </Button>
                   </div>
                   
-                  <div className="w-full flex justify-center">
+                  <div className="w-full flex justify-center pt-2">
                     <Button 
                       className="w-full h-12 rounded-2xl font-black text-sm shadow-[0_10px_30px_rgba(34,197,94,0.3)] hover:shadow-[0_15px_40px_rgba(34,197,94,0.4)] transition-all group max-w-[332px]"
                       onClick={() => {
@@ -237,7 +257,7 @@ export function CampaignSuccessCard({ campaign, open, onClose }: CampaignSuccess
 
               {/* Copyright Section - Only visible in Card, Hidden in Export via onclone if needed, but requested at bottom */}
               <div className="p-4 flex justify-center opacity-80 pointer-events-none data-no-export-area">
-                <p className="text-[9px] font-black tracking-[0.4em] uppercase text-primary">MemeDrop © 2026</p>
+                <p className="text-[9px] font-black tracking-[0.4em] uppercase text-primary">Dropy © 2026</p>
               </div>
             </div>
           </motion.div>
