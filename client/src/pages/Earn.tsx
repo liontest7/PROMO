@@ -214,7 +214,7 @@ export default function Earn() {
                             id={filter.id} 
                             checked={activeFilters.includes(filter.id)}
                             onCheckedChange={() => toggleFilter(filter.id)}
-                            className="w-4.5 h-4.5"
+                            className="w-5 h-5 border-white/20 data-[state=checked]:bg-primary data-[state=checked]:border-primary"
                           />
                           <Label htmlFor={filter.id} className="text-[13px] font-bold capitalize cursor-pointer">
                             {filter.label}
