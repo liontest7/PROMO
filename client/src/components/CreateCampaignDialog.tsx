@@ -256,10 +256,9 @@ export function CreateCampaignDialog() {
             colors: ['#22c55e', '#16a34a', '#ffffff']
           });
         });
-        // Delay showing the success card slightly to allow confetti to start
-        setTimeout(() => {
-          setShowSuccessCard(true);
-        }, 500);
+        // Show success card immediately
+        setCreatedCampaign(data);
+        setShowSuccessCard(true);
       },
       onError: (error: any) => {
         toast({ title: "Launch Failed", description: error.message || "Something went wrong.", variant: "destructive" });
