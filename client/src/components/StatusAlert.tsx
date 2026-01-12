@@ -17,9 +17,9 @@ export function StatusAlert({ status }: StatusAlertProps) {
       description: "Verification in Progress",
       explanation: "Our systems have flagged your recent activities for manual validation. This is a standard procedure to ensure community quality and platform security.",
       timeframe: "ESTIMATED REVIEW: 24H - 3 BUSINESS DAYS",
-      accent: "shadow-[0_0_50px_rgba(234,179,8,0.2)]",
-      borderColor: "border-yellow-500/50",
-      glowColor: "rgba(234, 179, 8, 0.5)"
+      accent: "text-primary",
+      borderColor: "border-primary/20",
+      statusText: "SUSPENDED"
     },
     blocked: {
       image: "https://i.ibb.co/77Cx4NQ/20260112-1333-Image-Generation-remix-01kerzkqj6f8z9rdnw442j7tte.png",
@@ -27,9 +27,9 @@ export function StatusAlert({ status }: StatusAlertProps) {
       description: "Permanent System Ban",
       explanation: "Fatal violation detected. Our multi-layer fraud detection has confirmed activities that compromise our ecosystem. This decision is final and non-negotiable.",
       timeframe: "STATUS: PERMANENTLY RESTRICTED",
-      accent: "shadow-[0_0_50px_rgba(239,68,68,0.3)]",
-      borderColor: "border-red-500/50",
-      glowColor: "rgba(239, 68, 68, 0.5)"
+      accent: "text-destructive",
+      borderColor: "border-destructive/20",
+      statusText: "BLOCKED"
     },
   }[status];
 
@@ -38,102 +38,75 @@ export function StatusAlert({ status }: StatusAlertProps) {
       <motion.div 
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        className="absolute inset-0 bg-background/98 backdrop-blur-2xl"
+        className="absolute inset-0 bg-background/90 backdrop-blur-md"
       />
       
       <motion.div
-        initial={{ opacity: 0, scale: 0.9, y: 30 }}
-        animate={{ opacity: 1, scale: 1, y: 0 }}
-        className="relative w-full max-w-xl z-10"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="relative w-full max-w-lg z-10"
       >
-        {/* Animated Glow Backlight */}
-        <motion.div 
-          animate={{ 
-            scale: [1, 1.1, 1],
-            opacity: [0.3, 0.5, 0.3]
-          }}
-          transition={{ duration: 4, repeat: Infinity }}
-          className="absolute inset-0 blur-[100px] rounded-full"
-          style={{ backgroundColor: content.glowColor }}
-        />
-        
-        <div className={`relative glass-card border-2 ${content.borderColor} rounded-3xl p-10 flex flex-col items-center text-center space-y-8 ${content.accent}`}>
-          {/* Custom Visual Asset */}
-          <motion.div
-            initial={{ y: -20, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ delay: 0.2 }}
-            className="relative group"
-          >
-            <div className="absolute inset-0 bg-primary/20 blur-3xl rounded-full group-hover:bg-primary/30 transition-all duration-500" />
-            <div className="relative w-48 h-48 rounded-2xl overflow-hidden border-2 border-white/10 shadow-2xl">
+        <div className={`relative bg-[#0a0a0a]/80 border ${content.borderColor} rounded-[32px] p-10 flex flex-col items-center text-center space-y-8 shadow-2xl`}>
+          
+          {/* Header Image Section */}
+          <div className="relative">
+            <div className="w-32 h-32 rounded-2xl overflow-hidden border border-white/10 bg-muted/20">
               <img 
                 src={content.image} 
                 alt={status}
                 className="w-full h-full object-cover"
               />
             </div>
-            {/* Status Badge */}
-            <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 px-6 py-2 bg-background border-2 border-white/10 rounded-full shadow-xl">
-               <p className={`text-xs font-black tracking-[0.2em] uppercase ${status === 'blocked' ? 'text-red-500' : 'text-yellow-500'}`}>
-                 {status}
+            <div className="absolute -bottom-3 left-1/2 -translate-x-1/2 px-4 py-1 bg-black rounded-full border border-white/10">
+               <p className="text-[10px] font-black tracking-widest text-yellow-500 uppercase">
+                 {content.statusText}
                </p>
             </div>
-          </motion.div>
+          </div>
 
-          <div className="space-y-3 pt-4">
-            <h2 className="text-4xl font-display font-black tracking-tighter uppercase italic neon-text leading-none">
+          <div className="space-y-2">
+            <h2 className={`text-2xl font-display font-black tracking-tight ${content.accent} leading-tight`}>
               {content.title}
             </h2>
-            <p className="text-2xl font-bold text-foreground tracking-tight">
+            <p className="text-lg font-bold text-foreground">
               {content.description}
             </p>
           </div>
 
-          <div className="w-full h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
-
-          <div className="space-y-6 max-w-md">
-            <p className="text-base text-muted-foreground leading-relaxed font-medium">
+          <div className="space-y-6 max-w-xs">
+            <p className="text-sm text-muted-foreground/80 leading-relaxed font-medium">
               {content.explanation}
             </p>
             
-            <div className="flex flex-col items-center gap-3">
-              <div className="px-5 py-2 rounded-xl bg-white/5 border border-white/10 flex items-center gap-3">
-                <ShieldAlert className={`w-5 h-5 ${status === 'blocked' ? 'text-red-500' : 'text-yellow-500'}`} />
-                <span className="text-sm font-mono font-bold tracking-tight text-foreground/80 italic">
+            <div className="flex justify-center">
+              <div className="px-4 py-2 rounded-xl bg-white/5 border border-white/10 flex items-center gap-2">
+                <ShieldAlert className="w-4 h-4 text-muted-foreground" />
+                <span className="text-[10px] font-mono font-bold tracking-tight text-muted-foreground uppercase">
                   {content.timeframe}
                 </span>
               </div>
             </div>
           </div>
 
-          <div className="pt-6 flex flex-col sm:flex-row gap-4 w-full max-w-md">
-            <Button 
-              size="lg"
-              variant="outline" 
+          <div className="pt-4 flex items-center justify-center gap-8 w-full max-w-xs">
+            <button 
               onClick={() => disconnect()}
-              className="flex-1 gap-3 hover-elevate bg-white/5 border-white/10 text-lg font-bold uppercase tracking-tighter italic"
+              className="flex items-center gap-2 text-sm font-bold text-white/90 hover:text-white transition-colors"
             >
-              <LogOut className="w-5 h-5" />
-              Disconnect
-            </Button>
-            <Button 
-              size="lg"
-              variant="ghost"
-              className="flex-1 gap-3 text-muted-foreground hover:text-foreground text-lg font-bold uppercase tracking-tighter italic"
-              asChild
+              <LogOut className="w-4 h-4" />
+              <span className="border-b border-white/20 pb-0.5">DISCONNECT</span>
+            </button>
+            <button 
+              className="flex items-center gap-2 text-sm font-bold text-muted-foreground hover:text-foreground transition-colors"
             >
-              <a href="/support" target="_blank" rel="noreferrer">
-                <HelpCircle className="w-5 h-5" />
-                Support
-              </a>
-            </Button>
+              <HelpCircle className="w-4 h-4" />
+              <span className="pb-0.5">SUPPORT</span>
+            </button>
           </div>
 
-          <div className="pt-4 opacity-30 flex items-center gap-2">
-             <div className="w-2 h-2 rounded-full animate-pulse bg-primary" />
-             <p className="text-[10px] font-mono tracking-[0.3em] uppercase">
-               MemeDrop Secure Protocol Active
+          <div className="pt-2 opacity-20">
+             <p className="text-[9px] font-mono tracking-[0.2em] uppercase">
+               © MEMEDROP SECURE PROTOCOL ACTIVE
              </p>
           </div>
         </div>
