@@ -35,7 +35,7 @@ export function CampaignSuccessCard({ campaign, open, onClose }: CampaignSuccess
         scale: 2.5,
         useCORS: true,
         allowTaint: true,
-        logging: true,
+        logging: false,
         imageTimeout: 30000,
         onclone: (clonedDoc) => {
           const clonedElement = clonedDoc.getElementById("campaign-card-capture-area");
@@ -46,15 +46,18 @@ export function CampaignSuccessCard({ campaign, open, onClose }: CampaignSuccess
             clonedElement.style.margin = "0";
             clonedElement.style.display = "block";
 
-            // Force proxy for images in the clone to ensure they are captured
+            // Fix images in the clone for capture
             const images = clonedElement.getElementsByTagName('img');
             for (let i = 0; i < images.length; i++) {
               const img = images[i];
-              if (img.src.startsWith('http') && !img.src.includes(window.location.host)) {
-                // Ensure we use the proxy for export
-                const originalUrl = img.getAttribute('data-original-src') || img.src;
-                img.src = `https://api.allorigins.win/raw?url=${encodeURIComponent(originalUrl)}`;
-                img.crossOrigin = "anonymous";
+              const originalSrc = img.getAttribute('data-original-src') || img.src;
+              
+              if (originalSrc.startsWith('http') && !originalSrc.includes(window.location.host)) {
+                // Use a reliable proxy only for images that might have CORS issues
+                if (originalSrc.includes('moralis.io') || originalSrc.includes('dexscreener.com')) {
+                   img.src = `https://api.allorigins.win/raw?url=${encodeURIComponent(originalSrc)}`;
+                   img.crossOrigin = "anonymous";
+                }
               }
             }
 
@@ -171,21 +174,22 @@ export function CampaignSuccessCard({ campaign, open, onClose }: CampaignSuccess
                             const img = e.target as HTMLImageElement;
                             const currentSrc = img.src;
                             
-                            // Try Jupiter fallback first
-                            if (!currentSrc.includes('tokens.jup.ag')) {
-                               img.src = `https://tokens.jup.ag/token/${campaign.tokenAddress}`;
-                               return;
-                            }
-
-                            // Try Cloudflare fallback
+                            // Try Cloudflare fallback (usually most compatible)
                             if (!currentSrc.includes('imagedelivery.net')) {
                                img.src = `https://imagedelivery.net/WL1JOIJiM_NAChp6rtB6Cw/coin-image/${campaign.tokenAddress}/86x86?alpha=true`;
                                return;
                             }
+
+                            // Try DexScreener fallback
+                            if (!currentSrc.includes('cdn.dexscreener.com')) {
+                               img.src = `https://cdn.dexscreener.com/token-images/solana/${campaign.tokenAddress}.png`;
+                               return;
+                            }
                             
-                            // Last resort: Proxy
-                            if (!currentSrc.includes('api.allorigins.win')) {
-                               img.src = `https://api.allorigins.win/raw?url=${encodeURIComponent(campaign.logoUrl)}`;
+                            // Try Jupiter fallback
+                            if (!currentSrc.includes('tokens.jup.ag')) {
+                               img.src = `https://tokens.jup.ag/token/${campaign.tokenAddress}`;
+                               return;
                             }
                           }}
                         />
