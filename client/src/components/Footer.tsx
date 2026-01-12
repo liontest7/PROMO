@@ -1,5 +1,6 @@
 import { Link } from "wouter";
 import { PLATFORM_CONFIG } from "@shared/config";
+import { useWallet } from "@/hooks/use-wallet";
 import { 
   Twitter, 
   Send, 
@@ -11,6 +12,7 @@ import { Separator } from "@/components/ui/separator";
 
 export function Footer() {
   const currentYear = new Date().getFullYear();
+  const { isConnected, role } = useWallet();
 
   const footerLinks = {
     platform: [
@@ -78,6 +80,17 @@ export function Footer() {
                     </Link>
                   </li>
                 ))}
+                {isConnected && (role === "advertiser" || (role as any) === "admin" || (role as any) === "superadmin") && (
+                  <li>
+                    <Link 
+                      href={(role as any) === "admin" || (role as any) === "superadmin" ? "/admin" : "/advertiser"}
+                      className="group flex items-center text-muted-foreground hover:text-primary transition-colors text-sm font-bold"
+                    >
+                      <ChevronRight className="w-3 h-3 mr-1 opacity-0 -ml-4 group-hover:opacity-100 group-hover:ml-0 transition-all duration-300" />
+                      ADMIN PANEL
+                    </Link>
+                  </li>
+                )}
               </ul>
             </div>
 
@@ -150,8 +163,8 @@ export function Footer() {
             </div>
             <div className="hidden sm:block w-px h-3 bg-white/10" />
             <div className="flex items-center gap-4">
-              <Link href="/privacy" className="text-[10px] text-muted-foreground/60 hover:text-white transition-colors uppercase tracking-widest font-black">Privacy</Link>
-              <Link href="/terms" className="text-[10px] text-muted-foreground/60 hover:text-white transition-colors uppercase tracking-widest font-black">Terms</Link>
+              <Link href="/privacy" className="text-[12px] text-white/70 hover:text-primary transition-colors uppercase tracking-widest font-black">Privacy</Link>
+              <Link href="/terms" className="text-[12px] text-white/70 hover:text-primary transition-colors uppercase tracking-widest font-black">Terms</Link>
             </div>
           </div>
         </div>
