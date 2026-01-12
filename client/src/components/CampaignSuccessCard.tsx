@@ -28,15 +28,15 @@ export function CampaignSuccessCard({ campaign, open, onClose }: CampaignSuccess
     
     setIsExporting(true);
     try {
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      await new Promise(resolve => setTimeout(resolve, 800));
       
       const canvas = await html2canvas(element, {
         backgroundColor: "#0a0a0a",
-        scale: 3,
+        scale: 2.5,
         useCORS: true,
-        allowTaint: true, // Allow tainted images for easier capture of cross-origin assets
+        allowTaint: false,
         logging: true,
-        imageTimeout: 15000,
+        imageTimeout: 30000,
         onclone: (clonedDoc) => {
           const clonedElement = clonedDoc.getElementById("campaign-card-capture-area");
           if (clonedElement) {
@@ -44,20 +44,14 @@ export function CampaignSuccessCard({ campaign, open, onClose }: CampaignSuccess
             clonedElement.style.borderRadius = "0";
             clonedElement.style.width = "440px";
             clonedElement.style.margin = "0";
-            
-            // Fix ticker positioning in export
+            clonedElement.style.display = "block";
+
+            // Ensure ticker is properly aligned in export
             const ticker = clonedElement.querySelector(".campaign-ticker-badge");
             if (ticker) {
               (ticker as HTMLElement).style.display = "inline-flex";
-              (ticker as HTMLElement).style.marginTop = "2px";
-              (ticker as HTMLElement).style.verticalAlign = "middle";
-            }
-
-            // Force images to reload in clone
-            const images = clonedElement.getElementsByTagName('img');
-            for (let i = 0; i < images.length; i++) {
-              const src = images[i].src;
-              images[i].src = src + (src.includes('?') ? '&' : '?') + 't=' + new Date().getTime();
+              (ticker as HTMLElement).style.marginTop = "0px";
+              (ticker as HTMLElement).style.transform = "translateY(-1px)";
             }
           }
         }
@@ -145,13 +139,17 @@ export function CampaignSuccessCard({ campaign, open, onClose }: CampaignSuccess
                   <div className="flex items-center gap-4 mb-4">
                     <div className="relative group">
                       <div className="absolute -inset-1 bg-gradient-to-r from-primary to-emerald-500 rounded-2xl blur opacity-40 group-hover:opacity-60 transition duration-1000" />
-                      <div className="relative w-16 h-16 rounded-xl bg-black border border-white/20 overflow-hidden shadow-2xl flex items-center justify-center z-[100]">
+                      <div className="relative w-20 h-20 rounded-xl bg-black border border-white/20 overflow-hidden shadow-2xl flex items-center justify-center z-[100]">
                         <img 
                           key={campaign.logoUrl}
+                          crossOrigin="anonymous" 
                           src={campaign.logoUrl} 
                           className="w-full h-full object-cover relative z-[110]" 
                           alt="Logo" 
                           style={ { display: 'block', minWidth: '100%', minHeight: '100%', opacity: 1 } }
+                          onLoad={(e) => {
+                            (e.target as HTMLImageElement).style.opacity = '1';
+                          }}
                         />
                       </div>
                     </div>
