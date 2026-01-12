@@ -4,7 +4,7 @@ import {
   DialogContent,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Share2, Download, ExternalLink, Rocket, Users, Coins, CheckCircle2, Trophy, ArrowRight } from "lucide-react";
+import { Share2, Download, Rocket, Users, Coins, CheckCircle2, Trophy, ArrowRight } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import html2canvas from "html2canvas";
 import { useLocation } from "wouter";
@@ -28,11 +28,11 @@ export function CampaignSuccessCard({ campaign, open, onClose }: CampaignSuccess
     
     setIsExporting(true);
     try {
-      await new Promise(resolve => setTimeout(resolve, 100));
+      await new Promise(resolve => setTimeout(resolve, 200));
       
       const canvas = await html2canvas(element, {
         backgroundColor: "#0a0a0a",
-        scale: 3,
+        scale: 2.5,
         useCORS: true,
         allowTaint: true,
         logging: false,
@@ -42,6 +42,9 @@ export function CampaignSuccessCard({ campaign, open, onClose }: CampaignSuccess
             clonedElement.style.transform = "none";
             clonedElement.style.borderRadius = "0";
             clonedElement.style.width = "400px";
+            // Hide interactive elements in export
+            const noExport = clonedElement.querySelectorAll(".data-no-export");
+            noExport.forEach(el => (el as HTMLElement).style.display = "none");
           }
         }
       });
@@ -94,7 +97,7 @@ export function CampaignSuccessCard({ campaign, open, onClose }: CampaignSuccess
               
               <div className="relative z-10 p-8 flex flex-col items-center">
                 {/* Header Section */}
-                <div className="w-24 h-24 mb-4 overflow-hidden flex items-center justify-center">
+                <div className="w-36 h-36 mb-4 overflow-hidden flex items-center justify-center">
                   <img 
                     src="https://i.ibb.co/xtwDPsFy/20260112-1450-Image-Generation-remix-01kes42kp5ft5r4tfh6znvs9c0-1.png" 
                     className="w-full h-full object-contain" 
@@ -121,25 +124,23 @@ export function CampaignSuccessCard({ campaign, open, onClose }: CampaignSuccess
                           <img 
                             crossOrigin="anonymous" 
                             src={campaign.logoUrl} 
-                            className="w-full h-full object-cover relative z-20" 
+                            className="w-full h-full object-cover relative z-40" 
                             alt="Logo" 
-                            style={{ display: 'block', visibility: 'visible' }}
+                            style={{ display: 'block' }}
                           />
                         ) : (
-                          <div className="w-full h-full flex items-center justify-center bg-primary/10">
+                          <div className="w-full h-full flex items-center justify-center bg-primary/10 relative z-40">
                             <Coins className="w-10 h-10 text-primary" />
                           </div>
                         )}
-                        <div className="absolute inset-0 z-10 bg-black/40" />
                       </div>
                     </div>
                     <div className="flex-1 min-w-0">
-                      <h3 className="font-black text-2xl leading-tight text-white truncate uppercase tracking-tight">{campaign.title}</h3>
-                      <div className="flex items-center gap-2">
+                      <h3 className="font-black text-lg leading-tight text-white uppercase tracking-tight break-words">{campaign.title}</h3>
+                      <div className="mt-1">
                         <Badge variant="outline" className="bg-primary/20 border-primary/40 text-primary text-[12px] font-black py-0.5 px-3 h-6">
                           ${campaign.tokenName}
                         </Badge>
-                        <span className="text-white/80 text-[11px] font-black uppercase tracking-widest">SOLANA NETWORK</span>
                       </div>
                     </div>
                   </div>
@@ -231,8 +232,8 @@ export function CampaignSuccessCard({ campaign, open, onClose }: CampaignSuccess
                 </div>
               </div>
 
-              {/* Decorative Corner Elements */}
-              <div className="absolute bottom-4 left-0 right-0 flex justify-center opacity-80 pointer-events-none">
+              {/* Copyright Section - Only visible in Card, Hidden in Export via onclone if needed, but requested at bottom */}
+              <div className="p-4 flex justify-center opacity-80 pointer-events-none">
                 <p className="text-[9px] font-black tracking-[0.4em] uppercase text-primary">MemeDrop © 2026</p>
               </div>
             </div>
