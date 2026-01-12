@@ -28,14 +28,15 @@ export function CampaignSuccessCard({ campaign, open, onClose }: CampaignSuccess
     
     setIsExporting(true);
     try {
-      await new Promise(resolve => setTimeout(resolve, 600));
+      await new Promise(resolve => setTimeout(resolve, 800));
       
       const canvas = await html2canvas(element, {
         backgroundColor: "#0a0a0a",
-        scale: 2.5,
+        scale: 3,
         useCORS: true,
-        allowTaint: true,
+        allowTaint: false,
         logging: true,
+        imageTimeout: 15000,
         onclone: (clonedDoc) => {
           const clonedElement = clonedDoc.getElementById("campaign-card-capture-area");
           if (clonedElement) {
@@ -43,6 +44,12 @@ export function CampaignSuccessCard({ campaign, open, onClose }: CampaignSuccess
             clonedElement.style.borderRadius = "0";
             clonedElement.style.width = "440px";
             clonedElement.style.margin = "0";
+            
+            // Fix ticker positioning in export
+            const ticker = clonedElement.querySelector(".campaign-ticker-badge");
+            if (ticker) {
+              (ticker as HTMLElement).style.marginTop = "4px";
+            }
           }
         }
       });
@@ -141,8 +148,8 @@ export function CampaignSuccessCard({ campaign, open, onClose }: CampaignSuccess
                     </div>
                     <div className="flex-1 min-w-0">
                       <h3 className="font-black text-base leading-tight text-white uppercase tracking-tight break-words">{campaign.title}</h3>
-                      <div className="mt-1">
-                        <Badge variant="outline" className="bg-primary/20 border-primary/40 text-primary text-[11px] font-black py-0 px-2.5 h-5">
+                      <div className="mt-1 flex items-center">
+                        <Badge variant="outline" className="campaign-ticker-badge bg-primary/20 border-primary/40 text-primary text-[11px] font-black py-0 px-2.5 h-5">
                           ${campaign.tokenName}
                         </Badge>
                       </div>
@@ -154,18 +161,18 @@ export function CampaignSuccessCard({ campaign, open, onClose }: CampaignSuccess
                     <div className="bg-white/[0.05] border border-white/10 rounded-2xl p-3.5 flex flex-col gap-0.5">
                       <div className="flex items-center gap-1 text-white/90">
                         <Trophy className="w-3.5 h-3.5 text-primary" />
-                        <span className="text-[9px] uppercase font-black tracking-widest">Total Reward</span>
+                        <span className="text-[10.5px] uppercase font-black tracking-widest whitespace-nowrap">Total Reward</span>
                       </div>
-                      <p className="text-lg font-black text-white">
+                      <p className="text-xl font-black text-white">
                         {Number(campaign.totalBudget).toLocaleString()} <span className="text-primary text-xs tracking-normal">${campaign.tokenName}</span>
                       </p>
                     </div>
                     <div className="bg-white/[0.05] border border-white/10 rounded-2xl p-3.5 flex flex-col gap-0.5">
                       <div className="flex items-center gap-1 text-white/90">
                         <Users className="w-3.5 h-3.5 text-primary" />
-                        <span className="text-[9px] uppercase font-black tracking-widest">Participants</span>
+                        <span className="text-[10.5px] uppercase font-black tracking-widest whitespace-nowrap">Participants</span>
                       </div>
-                      <p className="text-lg font-black text-white">
+                      <p className="text-xl font-black text-white">
                         {campaign.maxClaims || (campaign.actions?.reduce((acc: number, a: any) => acc + (a.maxExecutions || 0), 0)) || 0}
                         <span className="text-white/60 text-[10px] ml-1 font-black uppercase">Slots</span>
                       </p>
@@ -200,14 +207,14 @@ export function CampaignSuccessCard({ campaign, open, onClose }: CampaignSuccess
                 </div>
 
                 {/* Footer Message */}
-                <p className="text-[12px] text-white/80 font-black mb-3 text-center whitespace-nowrap">
+                <p className="text-[12px] text-white/80 font-black mb-1 text-center whitespace-nowrap">
                   Join the movement. Earn rewards. Support <span className="text-white">${campaign.tokenName}</span>.
                 </p>
               </div>
 
               {/* Copyright Section */}
-              <div className="p-3 flex justify-center opacity-80 pointer-events-none border-t border-white/5 bg-white/[0.02]">
-                <p className="text-[8px] font-black tracking-[0.4em] uppercase text-primary">Dropy © 2026</p>
+              <div className="p-3.5 flex justify-center opacity-90 pointer-events-none border-t border-white/5 bg-white/[0.02]">
+                <p className="text-[10px] font-black tracking-[0.5em] uppercase text-primary">Dropy © 2026</p>
               </div>
             </div>
 
