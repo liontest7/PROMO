@@ -28,14 +28,14 @@ export function CampaignSuccessCard({ campaign, open, onClose }: CampaignSuccess
     
     setIsExporting(true);
     try {
-      await new Promise(resolve => setTimeout(resolve, 300));
+      await new Promise(resolve => setTimeout(resolve, 500));
       
       const canvas = await html2canvas(element, {
         backgroundColor: "#0a0a0a",
         scale: 2.5,
         useCORS: true,
         allowTaint: true,
-        logging: false,
+        logging: true,
         onclone: (clonedDoc) => {
           const clonedElement = clonedDoc.getElementById("campaign-card-export");
           if (clonedElement) {
@@ -43,12 +43,13 @@ export function CampaignSuccessCard({ campaign, open, onClose }: CampaignSuccess
             clonedElement.style.borderRadius = "0";
             clonedElement.style.width = "400px";
             
-            // CRITICAL: Set height to only show up to the missions section
-            const interactiveArea = clonedDoc.querySelector(".data-no-export-area");
-            if (interactiveArea) {
-              const rect = interactiveArea.getBoundingClientRect();
-              clonedElement.style.height = `${rect.top}px`;
-              (interactiveArea as HTMLElement).style.display = "none";
+            // CRITICAL: Hide the interactive area AND resize the canvas
+            const noExportArea = clonedElement.querySelector(".data-no-export-area");
+            if (noExportArea) {
+              (noExportArea as HTMLElement).style.display = "none";
+              // Force height to be above the buttons
+              const rect = noExportArea.getBoundingClientRect();
+              clonedElement.style.height = `${noExportArea.parentElement?.scrollHeight || 800}px`;
             }
           }
         }
@@ -125,23 +126,14 @@ export function CampaignSuccessCard({ campaign, open, onClose }: CampaignSuccess
                     <div className="relative group">
                       <div className="absolute -inset-1 bg-gradient-to-r from-primary to-emerald-500 rounded-2xl blur opacity-40 group-hover:opacity-60 transition duration-1000" />
                       <div className="relative w-20 h-20 rounded-xl bg-black border border-white/20 overflow-hidden shadow-2xl flex items-center justify-center z-[100]">
-                        {campaign.logoUrl ? (
-                          <img 
-                            key={campaign.logoUrl}
-                            crossOrigin="anonymous" 
-                            src={campaign.logoUrl} 
-                            className="w-full h-full object-cover relative z-[110]" 
-                            alt="Logo" 
-                            style={{ display: 'block', minWidth: '100%', minHeight: '100%' }}
-                            onLoad={(e) => {
-                              (e.target as HTMLImageElement).style.opacity = '1';
-                            }}
-                          />
-                        ) : (
-                          <div className="w-full h-full flex items-center justify-center bg-primary/10 relative z-[110]">
-                            <Coins className="w-10 h-10 text-primary" />
-                          </div>
-                        )}
+                        <img 
+                          key={campaign.logoUrl}
+                          crossOrigin="anonymous" 
+                          src={campaign.logoUrl || ""} 
+                          className="w-full h-full object-cover relative z-[110]" 
+                          alt="Logo" 
+                          style={{ display: 'block', minWidth: '100%', minHeight: '100%', opacity: 1 }}
+                        />
                       </div>
                     </div>
                     <div className="flex-1 min-w-0">
@@ -210,8 +202,8 @@ export function CampaignSuccessCard({ campaign, open, onClose }: CampaignSuccess
                 </p>
 
                 {/* Interactive Controls (Hidden in Export via onclone) */}
-                <div className="w-full data-no-export-area">
-                  <div className="flex items-center justify-center gap-3 w-full mb-4">
+                <div className="w-full data-no-export-area space-y-4">
+                  <div className="flex items-center justify-center gap-3 w-full">
                     <Button 
                       variant="outline" 
                       className="flex-1 border-white/20 hover:bg-white/10 font-black h-12 rounded-2xl text-white text-sm max-w-[160px]"
