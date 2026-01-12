@@ -10,6 +10,7 @@ import { Search, Filter, X, Plus, Coins } from "lucide-react";
 import { type Action, type Campaign } from "@shared/schema";
 import { type Action as ActionType, type Campaign as CampaignType } from "@shared/schema";
 import { motion } from "framer-motion";
+import { cn } from "@/lib/utils";
 import { PLATFORM_CONFIG } from "@shared/config";
 import {
   Popover,
@@ -54,6 +55,8 @@ export default function Earn() {
 
   const [minReward, setMinReward] = useState<string>("");
   const [sortBy, setSortBy] = useState<"newest" | "reward_high" | "reward_low">("newest");
+  const [currentPage, setCurrentPage] = useState(1);
+  const ITEMS_PER_PAGE = 12;
 
   const filteredCampaigns = campaigns?.filter(c => {
     const matchesTab = activeTab === "active" ? c.status === "active" : (c.status === "completed" || c.status === "paused");
@@ -80,15 +83,22 @@ export default function Earn() {
       c.actions.some(a => activeFilters.includes(a.type));
     return matchesSearch && matchesFilter && matchesReward;
   }).sort((a, b) => {
-    if (sortBy === "reward_high") return parseFloat(b.rewardPerWallet || "0") - parseFloat(a.rewardPerWallet || "0");
-    if (sortBy === "reward_low") return parseFloat(a.rewardPerWallet || "0") - parseFloat(b.rewardPerWallet || "0");
+    if (sortBy === "reward_high") return parseFloat(b.totalBudget || "0") - parseFloat(a.totalBudget || "0");
+    if (sortBy === "reward_low") return parseFloat(a.totalBudget || "0") - parseFloat(b.totalBudget || "0");
     return b.id - a.id; // Newest first
   });
+
+  const totalPages = Math.ceil((filteredCampaigns?.length || 0) / ITEMS_PER_PAGE);
+  const paginatedCampaigns = filteredCampaigns?.slice(
+    (currentPage - 1) * ITEMS_PER_PAGE,
+    currentPage * ITEMS_PER_PAGE
+  );
 
   const toggleFilter = (type: string) => {
     setActiveFilters(prev => 
       prev.includes(type) ? prev.filter(t => t !== type) : [...prev, type]
     );
+    setCurrentPage(1); // Reset to first page on filter change
   };
 
   return (
@@ -230,15 +240,56 @@ export default function Earn() {
             ))}
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {filteredCampaigns?.map((campaign: CampaignType & { actions: ActionType[] }) => (
-              <CampaignCard 
-                key={campaign.id} 
-                campaign={campaign} 
-                onActionClick={(action: ActionType) => handleActionClick(action, campaign)}
-              />
-            ))}
-          </div>
+          <>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {paginatedCampaigns?.map((campaign: CampaignType & { actions: ActionType[] }) => (
+                <CampaignCard 
+                  key={campaign.id} 
+                  campaign={campaign} 
+                  onActionClick={(action: ActionType) => handleActionClick(action, campaign)}
+                />
+              ))}
+            </div>
+
+            {totalPages > 1 && (
+              <div className="flex justify-center items-center gap-2 mt-12">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+                  disabled={currentPage === 1}
+                  className="rounded-xl border-white/10"
+                >
+                  Previous
+                </Button>
+                <div className="flex items-center gap-1">
+                  {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                    <Button
+                      key={page}
+                      variant={currentPage === page ? "default" : "ghost"}
+                      size="sm"
+                      onClick={() => setCurrentPage(page)}
+                      className={cn(
+                        "w-8 h-8 rounded-lg font-bold",
+                        currentPage === page ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-white"
+                      )}
+                    >
+                      {page}
+                    </Button>
+                  ))}
+                </div>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+                  disabled={currentPage === totalPages}
+                  className="rounded-xl border-white/10"
+                >
+                  Next
+                </Button>
+              </div>
+            )}
+          </>
         )}
 
         {!isLoading && filteredCampaigns?.length === 0 && (
