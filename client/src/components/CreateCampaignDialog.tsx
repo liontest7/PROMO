@@ -142,26 +142,38 @@ export function CreateCampaignDialog() {
         .then(res => res.json())
         .catch(() => null);
 
-      const [dexData, pumpData, moralisData] = await Promise.all([dexPromise, pumpPromise, moralisPromise]);
+      // Fetch Jupiter as well as it's often more reliable for captures
+      const jupPromise = fetch(`https://tokens.jup.ag/token/${address}`)
+        .then(res => res.json())
+        .catch(() => null);
+
+      const [dexData, pumpData, moralisData, jupData] = await Promise.all([dexPromise, pumpPromise, moralisPromise, jupPromise]);
 
       // Initialize logoUrl as empty string to track if we found a good one
       mergedMetadata.logoUrl = "";
 
+      // 1. TOP PRIORITY: PumpFun (imagedelivery.net) - Best for capture
       if (pumpData && pumpData.success && pumpData.result) {
         const res = pumpData.result;
         if (!mergedMetadata.tokenName) mergedMetadata.tokenName = res.symbol;
         if (!mergedMetadata.title) mergedMetadata.title = `${res.name} Growth Campaign`;
-        // Prioritize pump.fun (imagedelivery.net) over others because it's capture-friendly
         mergedMetadata.logoUrl = `https://imagedelivery.net/WL1JOIJiM_NAChp6rtB6Cw/coin-image/${address}/86x86?alpha=true`;
         if (!mergedMetadata.description) mergedMetadata.description = res.description;
       }
 
+      // 2. SECOND PRIORITY: Jupiter - Usually allows CORS/Capture
+      if (!mergedMetadata.logoUrl && jupData && jupData.logoURI) {
+        mergedMetadata.logoUrl = jupData.logoURI;
+        if (jupData.symbol && !mergedMetadata.tokenName) mergedMetadata.tokenName = jupData.symbol;
+      }
+
+      // 3. THIRD PRIORITY: DexScreener
       if (dexData && dexData.pairs && dexData.pairs.length > 0) {
         const bestPair = dexData.pairs.sort((a: any, b: any) => (b.liquidity?.usd || 0) - (a.liquidity?.usd || 0))[0];
         const token = bestPair.baseToken;
         if (token.symbol && !mergedMetadata.tokenName) mergedMetadata.tokenName = token.symbol;
         if (token.name && !mergedMetadata.title) mergedMetadata.title = `${token.name} Growth Campaign`;
-        // DexScreener is also good for capture, but pump.fun is preferred
+        
         if (!mergedMetadata.logoUrl && bestPair.info?.imageUrl) {
            mergedMetadata.logoUrl = bestPair.info.imageUrl;
         }
@@ -173,10 +185,10 @@ export function CreateCampaignDialog() {
         if (telegram?.url) mergedMetadata.telegramUrl = telegram.url;
       }
 
+      // 4. LAST RESORT: Moralis
       if (moralisData && moralisData.mint) {
         if (moralisData.symbol && !mergedMetadata.tokenName) mergedMetadata.tokenName = moralisData.symbol;
         if (moralisData.name && !mergedMetadata.title) mergedMetadata.title = `${moralisData.name} Growth Campaign`;
-        // Use Moralis URL ONLY as a last resort
         if (moralisData.logo && !mergedMetadata.logoUrl) {
            mergedMetadata.logoUrl = moralisData.logo;
         }
