@@ -25,7 +25,7 @@ export default function PrivacyPolicy() {
                 </h1>
                 <div className="flex items-center gap-2 text-muted-foreground/60 font-black uppercase tracking-[0.2em] text-[10px]">
                   <Eye className="w-3 h-3" />
-                  Last Updated: January 10, 2026
+                  Last Updated: January 12, 2026
                 </div>
               </div>
               <div className="shrink-0 relative">
@@ -50,9 +50,10 @@ export default function PrivacyPolicy() {
                   <ul className="grid grid-cols-1 md:grid-cols-2 gap-3">
                     {[
                       "Public Solana wallet addresses",
-                      "Social media handles for verification",
-                      "Anti-bot verification data (Cloudflare)",
+                      "Social media handles and Oauth profiles for verification",
+                      "Anti-bot verification data (Cloudflare Turnstile)",
                       "IP-Wallet association tracking for fraud prevention",
+                      "Protocol Reputation and XP progress data",
                       "Anonymous session analytics",
                       "On-chain transaction history"
                     ].map((item, idx) => (

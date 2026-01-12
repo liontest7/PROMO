@@ -45,10 +45,10 @@ export default function About() {
             <span className="text-primary">The Future of Growth</span>
           </motion.h1>
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-            {PLATFORM_CONFIG.TOKEN_SYMBOL} has officially launched Phase 1: Holder Qualification. This model focuses on building genuine, long-term value by rewarding users who commit to projects through verified on-chain holdings. 
-            No more high-cost engagement APIs – just pure on-chain verification and real community support. 
+            {PLATFORM_CONFIG.TOKEN_SYMBOL} has officially launched Phase 1: Holder Qualification & Identity Sync. This model focuses on building genuine, long-term value by rewarding users who commit to projects through verified on-chain holdings and authentic social engagement. 
+            No more high-cost engagement APIs – just pure on-chain verification, bot protection, and real community support. 
             <br/><br/>
-            Our mission is to create a deflationary ecosystem where every campaign burns ${PLATFORM_CONFIG.TOKEN_SYMBOL}, rewarding the entire community.
+            Our mission is to create a deflationary ecosystem where every campaign burns ${PLATFORM_CONFIG.TOKEN_SYMBOL}, rewarding the entire community while maintaining protocol-level security.
           </p>
         </div>
 

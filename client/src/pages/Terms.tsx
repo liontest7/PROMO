@@ -25,7 +25,7 @@ export default function TermsOfService() {
                 </h1>
                 <div className="flex items-center gap-2 text-muted-foreground/60 font-black uppercase tracking-[0.2em] text-[10px]">
                   <FileText className="w-3 h-3" />
-                  Last Updated: January 10, 2026
+                  Last Updated: January 12, 2026
                 </div>
               </div>
               <div className="shrink-0 relative">
@@ -60,9 +60,9 @@ export default function TermsOfService() {
 
               <section className="relative pl-12">
                 <div className="absolute left-0 top-1 text-primary/40 font-black text-2xl italic tracking-tighter">03</div>
-                <h2 className="text-white font-black text-xl mb-4 uppercase tracking-tight">3. No Guarantee of Rewards</h2>
+                <h2 className="text-white font-black text-xl mb-4 uppercase tracking-tight">3. No Guarantee of Rewards & Reputation</h2>
                 <p className="text-white/90 leading-relaxed font-medium">
-                  Rewards are not guaranteed. The Platform reserves the right to modify, delay, reduce, or cancel reward distributions at any time due to technical issues, abuse prevention, verification failure, liquidity limitations, or protocol updates.
+                  Rewards and Protocol Reputation points are not guaranteed. The Platform reserves the right to modify, delay, reduce, or cancel reward distributions and reputation scores at any time due to technical issues, abuse prevention, verification failure, liquidity limitations, or protocol updates.
                 </p>
               </section>
 
