@@ -103,9 +103,9 @@ export class DatabaseStorage implements IStorage {
     return user;
   }
 
-  async updateUserBlockStatus(id: number, isBlocked: boolean): Promise<User> {
+  async updateUserStatus(id: number, status: "active" | "suspended" | "blocked"): Promise<User> {
     const [user] = await db.update(users)
-      .set({ isBlocked })
+      .set({ status })
       .where(eq(users.id, id))
       .returning();
     return user;

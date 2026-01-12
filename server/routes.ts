@@ -45,8 +45,11 @@ export async function registerRoutes(
     const walletAddress = req.headers['x-wallet-address'] || req.body?.walletAddress;
     if (walletAddress && typeof walletAddress === 'string') {
       const user = await storage.getUserByWallet(walletAddress);
-      if (user?.isBlocked) {
-        return res.status(403).json({ message: "Your account is blocked. Please contact support." });
+      if (user?.status === 'blocked') {
+        return res.status(403).json({ message: "Your account is permanently blocked for security reasons." });
+      }
+      if (user?.status === 'suspended') {
+        return res.status(403).json({ message: "Your account is temporarily suspended for review. Please check back later." });
       }
     }
     next();
@@ -530,13 +533,13 @@ export async function registerRoutes(
     }
   });
 
-  app.post('/api/admin/users/:id/block', async (req, res) => {
+  app.post('/api/admin/users/:id/status', async (req, res) => {
     try {
-      const { isBlocked } = req.body;
-      const user = await storage.updateUserBlockStatus(parseInt(req.params.id), isBlocked);
+      const { status } = req.body;
+      const user = await storage.updateUserStatus(parseInt(req.params.id), status);
       res.json(user);
     } catch (err) {
-      res.status(500).json({ message: "Failed to update block status" });
+      res.status(500).json({ message: "Failed to update status" });
     }
   });
 
@@ -561,7 +564,8 @@ export async function registerRoutes(
         activeCampaigns: campaigns.filter(c => c.status === 'active').length,
         totalExecutions: executions.length,
         totalRewardsPaid,
-        blockedUsers: users.filter(u => u.isBlocked).length
+        blockedUsers: users.filter(u => u.status === 'blocked').length,
+        suspendedUsers: users.filter(u => u.status === 'suspended').length
       });
     } catch (err) {
       res.status(500).json({ message: "Failed to fetch admin stats" });

@@ -8,18 +8,24 @@ import {
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { UserCheck, Ban } from "lucide-react";
+import { UserCheck, Ban, ShieldAlert, Clock } from "lucide-react";
 import { format } from "date-fns";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 interface UserTableProps {
   users: any[];
-  onUpdateBlockStatus: (userId: number, isBlocked: boolean) => void;
+  onUpdateStatus: (userId: number, status: string) => void;
   onUpdateRole: (userId: number, role: string) => void;
 }
 
 export function UserTable({ 
   users, 
-  onUpdateBlockStatus, 
+  onUpdateStatus, 
   onUpdateRole
 }: UserTableProps) {
   return (
@@ -40,6 +46,19 @@ export function UserTable({
             <TableCell className="font-mono text-[11px] font-bold py-4">
               <span className="text-primary mr-1 opacity-50">#</span>
               {user.walletAddress}
+            </TableCell>
+            <TableCell>
+              <Badge 
+                variant={user.status === 'blocked' ? 'destructive' : user.status === 'suspended' ? 'outline' : 'secondary'}
+                className={cn(
+                  "text-[10px] font-black uppercase tracking-widest",
+                  user.status === 'blocked' && "bg-red-500/20 text-red-500 border-red-500/30",
+                  user.status === 'suspended' && "bg-yellow-500/20 text-yellow-500 border-yellow-500/30",
+                  user.status === 'active' && "bg-green-500/20 text-green-500 border-green-500/30"
+                )}
+              >
+                {user.status}
+              </Badge>
             </TableCell>
             <TableCell>
               <Badge 
@@ -70,17 +89,41 @@ export function UserTable({
             </TableCell>
             <TableCell className="text-right pr-8">
               <div className="flex justify-end gap-2">
-                <Button 
-                  size="sm" 
-                  variant={user.isBlocked ? "default" : "outline"}
-                  className={user.isBlocked 
-                    ? "h-8 bg-green-500/10 text-green-500 border-green-500/20 hover:bg-green-500/20 px-4 font-bold text-[10px] uppercase" 
-                    : "h-8 border-red-500/20 text-red-400 hover:bg-red-500/10 px-4 font-bold text-[10px] uppercase"}
-                  onClick={() => onUpdateBlockStatus(user.id, !user.isBlocked)}
-                >
-                  {user.isBlocked ? <UserCheck className="w-3 h-3 mr-1" /> : <Ban className="w-3 h-3 mr-1" />}
-                  {user.isBlocked ? "Unblock" : "Block"}
-                </Button>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button 
+                      size="sm" 
+                      variant="outline" 
+                      className="h-8 border-white/10 font-bold text-[10px] uppercase"
+                    >
+                      <ShieldAlert className="w-3 h-3 mr-1" />
+                      Status
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="bg-black/90 border-white/10 backdrop-blur-xl">
+                    <DropdownMenuItem 
+                      className="text-xs font-bold uppercase tracking-wider text-green-500 hover:bg-green-500/10"
+                      onClick={() => onUpdateStatus(user.id, 'active')}
+                    >
+                      <UserCheck className="w-3 h-3 mr-2" />
+                      Set Active
+                    </DropdownMenuItem>
+                    <DropdownMenuItem 
+                      className="text-xs font-bold uppercase tracking-wider text-yellow-500 hover:bg-yellow-500/10"
+                      onClick={() => onUpdateStatus(user.id, 'suspended')}
+                    >
+                      <Clock className="w-3 h-3 mr-2" />
+                      Suspend (Check)
+                    </DropdownMenuItem>
+                    <DropdownMenuItem 
+                      className="text-xs font-bold uppercase tracking-wider text-red-500 hover:bg-red-500/10"
+                      onClick={() => onUpdateStatus(user.id, 'blocked')}
+                    >
+                      <Ban className="w-3 h-3 mr-2" />
+                      Block Permanent
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
                 <Button 
                   size="sm" 
                   variant="ghost"

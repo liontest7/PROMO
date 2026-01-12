@@ -52,6 +52,7 @@ export default function AdminDashboard() {
     totalExecutions: number;
     totalRewardsPaid: number;
     blockedUsers: number;
+    suspendedUsers: number;
     suspiciousUsers?: number;
   }>({
     queryKey: ["/api/admin/stats"],
@@ -92,19 +93,19 @@ export default function AdminDashboard() {
     }
   });
 
-  const updateBlockStatusMutation = useMutation({
-    mutationFn: async ({ userId, isBlocked }: { userId: number, isBlocked: boolean }) => {
-      const res = await fetch(`/api/admin/users/${userId}/block`, {
+  const updateStatusMutation = useMutation({
+    mutationFn: async ({ userId, status }: { userId: number, status: string }) => {
+      const res = await fetch(`/api/admin/users/${userId}/status`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ isBlocked })
+        body: JSON.stringify({ status })
       });
-      if (!res.ok) throw new Error('Failed to update block status');
+      if (!res.ok) throw new Error('Failed to update status');
       return res.json();
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/admin/users"] });
-      toast({ title: "Success", description: "User block status updated" });
+      toast({ title: "Success", description: "User status updated" });
     }
   });
 
@@ -206,7 +207,7 @@ export default function AdminDashboard() {
               <CardContent className="p-0">
                 <UserTable 
                   users={filteredUsers}
-                  onUpdateBlockStatus={(userId, isBlocked) => updateBlockStatusMutation.mutate({ userId, isBlocked })}
+                  onUpdateStatus={(userId, status) => updateStatusMutation.mutate({ userId, status })}
                   onUpdateRole={(userId, role) => updateRoleMutation.mutate({ userId, role })}
                 />
               </CardContent>
