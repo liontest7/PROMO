@@ -22,6 +22,60 @@ import { Link } from "wouter";
 import { PLATFORM_CONFIG } from "@shared/config";
 import { cn } from "@/lib/utils";
 
+// Identity Sync Module
+const IdentitySync = ({ isAuthenticated }: { isAuthenticated: boolean }) => (
+  <Card className="glass-card border border-white/10 bg-white/[0.02] rounded-[2rem] overflow-hidden p-1 shadow-xl lg:max-w-md ml-auto">
+    <CardHeader className="p-6 pb-4">
+      <CardTitle className="text-xl font-black font-display uppercase italic tracking-tighter leading-none text-white">Identity Sync</CardTitle>
+      <div className="h-0.5 w-12 bg-white/20 mt-3 rounded-full" />
+    </CardHeader>
+    <CardContent className="p-6 pt-0 space-y-4">
+      {!isAuthenticated ? (
+        <div className="p-4 rounded-xl bg-blue-500/5 border border-blue-500/10 relative overflow-hidden group shadow-lg">
+          <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-all duration-700">
+            <Twitter className="w-12 h-12" />
+          </div>
+          <div className="relative z-10 text-left space-y-3">
+            <div className="flex items-center gap-2 mb-1">
+              <div className="p-1.5 rounded-lg bg-blue-500/20 border border-blue-500/30">
+                <Twitter className="w-4 h-4 text-blue-400" />
+              </div>
+              <span className="text-[11px] font-black uppercase tracking-widest text-white italic">X Identity Sync</span>
+            </div>
+            <p className="text-[10px] text-white/40 font-bold uppercase tracking-widest leading-relaxed">
+              Verify your X account to unlock high-yield engagement campaigns.
+            </p>
+            <div className="flex flex-col gap-2">
+              <Button 
+                className="w-full bg-blue-500 hover:bg-blue-600 text-white gap-3 font-black text-[10px] h-10 rounded-lg shadow-md transition-all active-elevate-2 uppercase tracking-widest"
+              >
+                Connect Protocol Node
+              </Button>
+              <div className="flex justify-center py-2">
+                <div id="cf-turnstile-placeholder" className="w-full min-h-[50px] flex items-center justify-center text-[9px] text-white/20 uppercase font-black tracking-widest border border-dashed border-white/10 rounded-lg px-2 text-center">
+                  Bot Protection Active
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      ) : (
+        <div className="p-4 rounded-xl bg-primary/5 border border-primary/10 relative overflow-hidden">
+          <div className="flex items-center gap-3">
+            <div className="p-2 rounded-lg bg-primary/20">
+              <ShieldCheck className="w-5 h-5 text-primary" />
+            </div>
+            <div>
+              <p className="text-xs font-black uppercase tracking-widest text-white">Identity Verified</p>
+              <p className="text-[10px] text-white/40 font-bold uppercase tracking-widest">Protocol Node Active</p>
+            </div>
+          </div>
+        </div>
+      )}
+    </CardContent>
+  </Card>
+);
+
 export default function Dashboard() {
   const { walletAddress, userId, solBalance } = useWallet();
   const { toast } = useToast();
