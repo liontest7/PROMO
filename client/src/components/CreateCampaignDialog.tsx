@@ -259,6 +259,8 @@ export function CreateCampaignDialog() {
         // Show success card immediately
         setCreatedCampaign(data);
         setShowSuccessCard(true);
+        // Dispatch custom event to ensure state update if needed
+        window.dispatchEvent(new CustomEvent('campaign-created', { detail: data }));
       },
       onError: (error: any) => {
         toast({ title: "Launch Failed", description: error.message || "Something went wrong.", variant: "destructive" });
