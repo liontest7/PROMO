@@ -34,7 +34,7 @@ export function CampaignSuccessCard({ campaign, open, onClose }: CampaignSuccess
         backgroundColor: "#0a0a0a",
         scale: 2.5,
         useCORS: true,
-        allowTaint: false,
+        allowTaint: true,
         logging: true,
         imageTimeout: 30000,
         onclone: (clonedDoc) => {
@@ -146,7 +146,6 @@ export function CampaignSuccessCard({ campaign, open, onClose }: CampaignSuccess
                       <div className="relative w-20 h-20 rounded-xl bg-black border border-white/20 overflow-hidden shadow-2xl flex items-center justify-center z-[100]">
                         <img 
                           key={campaign.logoUrl}
-                          crossOrigin="anonymous"
                           src={campaign.logoUrl} 
                           className="w-full h-full object-cover relative z-[110]" 
                           alt="Logo" 
@@ -154,6 +153,21 @@ export function CampaignSuccessCard({ campaign, open, onClose }: CampaignSuccess
                           loading="eager"
                           onLoad={(e) => {
                             (e.target as HTMLImageElement).style.opacity = '1';
+                          }}
+                          onError={(e) => {
+                            const img = e.target as HTMLImageElement;
+                            const currentSrc = img.src;
+                            
+                            // Try Cloudflare fallback first if not already trying it
+                            if (!currentSrc.includes('imagedelivery.net')) {
+                               img.src = `https://imagedelivery.net/WL1JOIJiM_NAChp6rtB6Cw/coin-image/${campaign.tokenAddress}/86x86?alpha=true`;
+                               return;
+                            }
+                            
+                            // Last resort: Proxy
+                            if (!currentSrc.includes('api.allorigins.win')) {
+                               img.src = `https://api.allorigins.win/raw?url=${encodeURIComponent(campaign.logoUrl)}`;
+                            }
                           }}
                         />
                       </div>
