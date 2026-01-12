@@ -158,8 +158,8 @@ export function Footer() {
 
           <div className="flex items-center gap-6">
             <div className="flex items-center gap-2 group cursor-default">
-              <div className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse shadow-[0_0_4px_rgba(34,197,94,0.4)]" />
-              <span className="text-[10px] font-black text-primary transition-colors uppercase tracking-[0.15em] opacity-80 group-hover:opacity-100 transition-opacity">System Operational</span>
+              <div className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse shadow-[0_0_2px_rgba(34,197,94,0.3)]" />
+              <span className="text-[10px] font-black text-primary transition-colors uppercase tracking-[0.15em] opacity-60 group-hover:opacity-100 transition-opacity">System Operational</span>
             </div>
             <div className="hidden sm:block w-px h-3 bg-white/10" />
             <div className="flex items-center gap-4">
