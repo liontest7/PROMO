@@ -141,6 +141,8 @@ export default function Landing() {
                         <img 
                           src={PLATFORM_CONFIG.ASSETS.LANDING_MASCOT} 
                           alt="" 
+                          loading="eager"
+                          decoding="async"
                           className="w-full h-full object-contain drop-shadow-[0_0_18px_rgba(34,197,94,0.65)]" 
                         />
                       </div>
@@ -206,6 +208,8 @@ export default function Landing() {
                     <motion.img 
                       src={PLATFORM_CONFIG.ASSETS.DEFLATIONARY_MONK} 
                       alt="Deflationary Monk" 
+                      loading="eager"
+                      decoding="async"
                       animate={{ y: [0, -30, 0] }}
                       transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
                       className="w-80 h-80 object-contain drop-shadow-[0_0_60px_rgba(34,197,94,0.7)] translate-x-1" 

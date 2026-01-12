@@ -33,6 +33,8 @@ export default function TermsOfService() {
                 <img 
                   src={PLATFORM_CONFIG.ASSETS.LEGAL_BANNER} 
                   alt="Terms banner"
+                  loading="eager"
+                  decoding="async"
                   className="w-48 h-48 md:w-64 md:h-64 object-contain relative z-10 drop-shadow-[0_0_20px_rgba(34,197,94,0.3)]"
                 />
               </div>

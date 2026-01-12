@@ -73,6 +73,8 @@ export default function About() {
                 <img 
                   src={PLATFORM_CONFIG.ASSETS.CHARACTER_QUESTION} 
                   alt={`${PLATFORM_CONFIG.TOKEN_SYMBOL} Character`} 
+                  loading="eager"
+                  decoding="async"
                   className="w-full h-full object-contain drop-shadow-[0_0_20px_rgba(34,197,94,0.3)] group-hover:scale-105 transition-transform duration-500" 
                 />
               </div>
@@ -175,6 +177,8 @@ export default function About() {
               <img 
                 src={PLATFORM_CONFIG.ASSETS.ABOUT_MASCOT} 
                 alt={`${PLATFORM_CONFIG.TOKEN_SYMBOL} Mascot`} 
+                loading="eager"
+                decoding="async"
                 className="w-full h-full object-contain drop-shadow-[0_0_15px_rgba(34,197,94,0.4)]" 
               />
             </div>
