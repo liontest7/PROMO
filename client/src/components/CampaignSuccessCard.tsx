@@ -28,12 +28,11 @@ export function CampaignSuccessCard({ campaign, open, onClose }: CampaignSuccess
     
     setIsExporting(true);
     try {
-      // Small delay to ensure images are loaded and DOM is ready
       await new Promise(resolve => setTimeout(resolve, 100));
       
       const canvas = await html2canvas(element, {
-        backgroundColor: "#0a0a0a", // solid background to avoid transparency issues
-        scale: 3, // higher scale for better quality
+        backgroundColor: "#0a0a0a",
+        scale: 3,
         useCORS: true,
         allowTaint: true,
         logging: false,
@@ -41,8 +40,8 @@ export function CampaignSuccessCard({ campaign, open, onClose }: CampaignSuccess
           const clonedElement = clonedDoc.getElementById("campaign-card-export");
           if (clonedElement) {
             clonedElement.style.transform = "none";
-            clonedElement.style.borderRadius = "0"; // sharp corners for export looks better sometimes
-            clonedElement.style.width = "400px"; // fixed width for consistent export
+            clonedElement.style.borderRadius = "0";
+            clonedElement.style.width = "400px";
           }
         }
       });
@@ -85,22 +84,20 @@ export function CampaignSuccessCard({ campaign, open, onClose }: CampaignSuccess
             animate={ { scale: 1, opacity: 1, y: 0 } }
             className="relative"
           >
-            {/* Main Exportable Container */}
             <div 
               id="campaign-card-export"
-              className="relative bg-[#0a0a0a] border border-white/10 rounded-[32px] overflow-hidden shadow-2xl"
+              className="relative bg-[#0a0a0a] border border-white/20 rounded-[32px] overflow-hidden shadow-2xl"
               style={ { width: '100%', maxWidth: '440px', margin: '0 auto' } }
             >
-              {/* Decorative Header Background */}
               <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-primary/20 to-transparent opacity-50" />
               <div className="absolute -top-20 -right-20 w-40 h-40 bg-primary/10 blur-[80px] rounded-full" />
               
               <div className="relative z-10 p-8 flex flex-col items-center">
                 {/* Header Section */}
-                <div className="w-20 h-20 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center mb-4 shadow-inner overflow-hidden">
+                <div className="w-24 h-24 mb-4 overflow-hidden flex items-center justify-center">
                   <img 
                     src="https://i.ibb.co/xtwDPsFy/20260112-1450-Image-Generation-remix-01kes42kp5ft5r4tfh6znvs9c0-1.png" 
-                    className="w-full h-full object-cover" 
+                    className="w-full h-full object-contain" 
                     alt="Success Icon" 
                   />
                 </div>
@@ -109,84 +106,86 @@ export function CampaignSuccessCard({ campaign, open, onClose }: CampaignSuccess
                   CAMPAIGN <span className="text-primary">LIVE!</span>
                 </h2>
                 <div className="flex items-center gap-2 mb-6">
-                  <div className="h-[1px] w-8 bg-white/20" />
-                  <span className="text-[10px] uppercase font-bold tracking-[0.2em] text-muted-foreground">Broadcasted to Solana</span>
-                  <div className="h-[1px] w-8 bg-white/20" />
+                  <div className="h-[1px] w-8 bg-white/40" />
+                  <span className="text-[11px] uppercase font-bold tracking-[0.2em] text-white">Broadcasted to Solana</span>
+                  <div className="h-[1px] w-8 bg-white/40" />
                 </div>
 
                 {/* Project Identity Card */}
-                <div className="w-full bg-white/[0.03] border border-white/10 rounded-3xl p-6 mb-6 backdrop-blur-sm">
+                <div className="w-full bg-white/[0.05] border border-white/20 rounded-3xl p-6 mb-6 backdrop-blur-md">
                   <div className="flex items-center gap-4 mb-6">
                     <div className="relative group">
-                      <div className="absolute -inset-1 bg-gradient-to-r from-primary to-emerald-500 rounded-2xl blur opacity-25 group-hover:opacity-50 transition duration-1000" />
-                      <div className="relative w-16 h-16 rounded-xl bg-black border border-white/10 overflow-hidden shadow-2xl">
+                      <div className="absolute -inset-1 bg-gradient-to-r from-primary to-emerald-500 rounded-2xl blur opacity-40 group-hover:opacity-60 transition duration-1000" />
+                      <div className="relative w-20 h-20 rounded-xl bg-black border border-white/20 overflow-hidden shadow-2xl flex items-center justify-center">
                         {campaign.logoUrl ? (
                           <img 
                             crossOrigin="anonymous" 
                             src={campaign.logoUrl} 
-                            className="w-full h-full object-cover relative z-10" 
+                            className="w-full h-full object-cover relative z-20" 
                             alt="Logo" 
+                            style={{ display: 'block', visibility: 'visible' }}
                           />
                         ) : (
-                          <div className="w-full h-full flex items-center justify-center bg-primary/5">
-                            <Coins className="w-8 h-8 text-primary/40" />
+                          <div className="w-full h-full flex items-center justify-center bg-primary/10">
+                            <Coins className="w-10 h-10 text-primary" />
                           </div>
                         )}
+                        <div className="absolute inset-0 z-10 bg-black/40" />
                       </div>
                     </div>
                     <div className="flex-1 min-w-0">
-                      <h3 className="font-black text-xl leading-tight text-white truncate uppercase tracking-tight">{campaign.title}</h3>
+                      <h3 className="font-black text-2xl leading-tight text-white truncate uppercase tracking-tight">{campaign.title}</h3>
                       <div className="flex items-center gap-2">
-                        <Badge variant="outline" className="bg-primary/10 border-primary/20 text-primary text-[10px] font-black py-0 px-2 h-5">
+                        <Badge variant="outline" className="bg-primary/20 border-primary/40 text-primary text-[12px] font-black py-0.5 px-3 h-6">
                           ${campaign.tokenName}
                         </Badge>
-                        <span className="text-muted-foreground text-[10px] font-bold uppercase tracking-widest">SOLANA NETWORK</span>
+                        <span className="text-white/80 text-[11px] font-black uppercase tracking-widest">SOLANA NETWORK</span>
                       </div>
                     </div>
                   </div>
 
                   {/* Campaign Stats Grid */}
                   <div className="grid grid-cols-2 gap-3">
-                    <div className="bg-white/[0.02] border border-white/5 rounded-2xl p-4 flex flex-col gap-1">
-                      <div className="flex items-center gap-1.5 text-muted-foreground">
-                        <Trophy className="w-3 h-3 text-primary" />
-                        <span className="text-[9px] uppercase font-black tracking-widest">Total Reward</span>
+                    <div className="bg-white/[0.05] border border-white/10 rounded-2xl p-4 flex flex-col gap-1">
+                      <div className="flex items-center gap-1.5 text-white/90">
+                        <Trophy className="w-4 h-4 text-primary" />
+                        <span className="text-[10px] uppercase font-black tracking-widest">Total Reward</span>
                       </div>
-                      <p className="text-lg font-black text-white">
-                        {Number(campaign.totalBudget).toLocaleString()} <span className="text-primary text-xs tracking-normal">${campaign.tokenName}</span>
+                      <p className="text-xl font-black text-white">
+                        {Number(campaign.totalBudget).toLocaleString()} <span className="text-primary text-sm tracking-normal">${campaign.tokenName}</span>
                       </p>
                     </div>
-                    <div className="bg-white/[0.02] border border-white/5 rounded-2xl p-4 flex flex-col gap-1">
-                      <div className="flex items-center gap-1.5 text-muted-foreground">
-                        <Users className="w-3 h-3 text-primary" />
-                        <span className="text-[9px] uppercase font-black tracking-widest">Participants</span>
+                    <div className="bg-white/[0.05] border border-white/10 rounded-2xl p-4 flex flex-col gap-1">
+                      <div className="flex items-center gap-1.5 text-white/90">
+                        <Users className="w-4 h-4 text-primary" />
+                        <span className="text-[10px] uppercase font-black tracking-widest">Participants</span>
                       </div>
-                      <p className="text-lg font-black text-white">
+                      <p className="text-xl font-black text-white">
                         {campaign.maxClaims || (campaign.actions?.reduce((acc: number, a: any) => acc + (a.maxExecutions || 0), 0)) || 0}
-                        <span className="text-muted-foreground text-xs ml-1 font-bold">SLOTS</span>
+                        <span className="text-white/60 text-xs ml-1 font-black uppercase">Slots</span>
                       </p>
                     </div>
                   </div>
 
                   {/* Tasks Preview */}
                   {campaign.campaignType === 'holder_qualification' ? (
-                    <div className="mt-4 p-4 bg-primary/5 border border-primary/10 rounded-2xl">
+                    <div className="mt-4 p-5 bg-primary/10 border border-primary/20 rounded-2xl">
                       <div className="flex items-center gap-2 mb-2">
-                        <CheckCircle2 className="w-3 h-3 text-primary" />
-                        <span className="text-[9px] uppercase font-black tracking-widest text-primary">Requirement</span>
+                        <CheckCircle2 className="w-4 h-4 text-primary" />
+                        <span className="text-[10px] uppercase font-black tracking-widest text-primary">Requirement</span>
                       </div>
-                      <p className="text-xs text-white/90 font-bold leading-tight">
+                      <p className="text-[13px] text-white font-black leading-tight">
                         Hold {Number(campaign.minHoldingAmount).toLocaleString()} ${campaign.tokenName} for {campaign.minHoldingDuration} days to qualify.
                       </p>
                     </div>
                   ) : (
                     <div className="mt-4 space-y-2">
                        <div className="flex items-center gap-2">
-                        <span className="text-[9px] uppercase font-black tracking-widest text-muted-foreground">Missions</span>
-                        <div className="h-[1px] flex-1 bg-white/5" />
+                        <span className="text-[10px] uppercase font-black tracking-widest text-white/60">Missions</span>
+                        <div className="h-[1px] flex-1 bg-white/20" />
                       </div>
                       {(campaign.actions || []).slice(0, 2).map((action: any, i: number) => (
-                        <div key={i} className="flex items-center justify-between text-[11px] font-bold text-white/70 bg-white/5 rounded-lg px-3 py-2">
+                        <div key={i} className="flex items-center justify-between text-[12px] font-black text-white bg-white/10 rounded-xl px-4 py-3 border border-white/5">
                           <span>{action.title}</span>
                           <span className="text-primary">+{action.rewardAmount} ${campaign.tokenName}</span>
                         </div>
@@ -196,22 +195,22 @@ export function CampaignSuccessCard({ campaign, open, onClose }: CampaignSuccess
                 </div>
 
                 {/* Footer Message */}
-                <p className="text-[10px] text-muted-foreground font-medium mb-8 max-w-[280px]">
-                  Join the movement. Earn rewards. Support <span className="text-white font-bold">{campaign.tokenName}</span>.
+                <p className="text-[11px] text-white/70 font-bold mb-8 max-w-[300px] text-center">
+                  Join the movement. Earn rewards. Support <span className="text-white font-black">${campaign.tokenName}</span>.
                 </p>
 
                 {/* Interactive Controls (Hidden in Export via onclone) */}
                 <div className="grid grid-cols-2 gap-3 w-full data-no-export mb-4">
                   <Button 
                     variant="outline" 
-                    className="border-white/10 hover:bg-white/5 font-bold h-12 rounded-2xl text-white"
+                    className="border-white/20 hover:bg-white/10 font-black h-12 rounded-2xl text-white text-sm"
                     onClick={handleShare}
                   >
                     <Share2 className="w-4 h-4 mr-2" /> Share
                   </Button>
                   <Button 
                     variant="outline" 
-                    className="border-white/10 hover:bg-white/5 font-bold h-12 rounded-2xl text-white"
+                    className="border-white/20 hover:bg-white/10 font-black h-12 rounded-2xl text-white text-sm"
                     onClick={handleDownload}
                     disabled={isExporting}
                   >
@@ -219,9 +218,9 @@ export function CampaignSuccessCard({ campaign, open, onClose }: CampaignSuccess
                   </Button>
                 </div>
                 
-                <div className="w-full data-no-export">
+                <div className="w-full data-no-export flex justify-center">
                   <Button 
-                    className="col-span-2 h-12 rounded-2xl font-black text-sm shadow-[0_10px_30px_rgba(34,197,94,0.2)] hover:shadow-[0_15px_40px_rgba(34,197,94,0.3)] transition-all group"
+                    className="w-full h-12 rounded-2xl font-black text-sm shadow-[0_10px_30px_rgba(34,197,94,0.3)] hover:shadow-[0_15px_40px_rgba(34,197,94,0.4)] transition-all group max-w-[320px]"
                     onClick={() => {
                       onClose();
                       setLocation(`/c/${campaign.tokenName.toLowerCase()}`);
@@ -233,15 +232,14 @@ export function CampaignSuccessCard({ campaign, open, onClose }: CampaignSuccess
               </div>
 
               {/* Decorative Corner Elements */}
-              <div className="absolute bottom-0 right-0 p-4 opacity-20 pointer-events-none">
-                <p className="text-[8px] font-black tracking-[0.3em] uppercase">MemeDrop © 2026</p>
+              <div className="absolute bottom-4 left-0 right-0 flex justify-center opacity-80 pointer-events-none">
+                <p className="text-[9px] font-black tracking-[0.4em] uppercase text-primary">MemeDrop © 2026</p>
               </div>
             </div>
           </motion.div>
         </AnimatePresence>
       </DialogContent>
       
-      {/* CSS to hide buttons in export */}
       <style>{`
         #campaign-card-export .data-no-export {
           display: flex !important;
