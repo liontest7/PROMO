@@ -16,7 +16,7 @@ export interface IStorage {
   updateUserReputation(id: number, score: number): Promise<User>;
   updateUserSocials(id: number, socials: { twitterHandle?: string; telegramHandle?: string }): Promise<User>;
   updateUserRole(id: number, role: "user" | "advertiser" | "admin"): Promise<User>;
-  updateUserBlockStatus(id: number, isBlocked: boolean): Promise<User>;
+  updateUserStatus(id: number, status: "active" | "suspended" | "blocked"): Promise<User>;
 
   // Fraud Monitoring
   getSuspiciousUsers(): Promise<User[]>;

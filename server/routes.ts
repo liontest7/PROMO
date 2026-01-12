@@ -421,8 +421,11 @@ export async function registerRoutes(
       }).reverse();
 
       const executionsByDate = allExecutions.reduce((acc: any, e) => {
-        const date = new Date(e.createdAt).toISOString().split('T')[0];
-        acc[date] = (acc[date] || 0) + 1;
+        const createdAt = e.createdAt;
+        if (createdAt) {
+          const date = new Date(createdAt).toISOString().split('T')[0];
+          acc[date] = (acc[date] || 0) + 1;
+        }
         return acc;
       }, {});
 
@@ -473,7 +476,9 @@ export async function registerRoutes(
       const activeCount = allCampaigns.filter(c => c.status === 'active').length;
       const users = await db.select().from(usersTable);
       const totalUsersCount = users.length;
-      const paidExecutions = await db.select().from(executionsTable).innerJoin(actionsTable, eq(executionsTable.actionId, actionsTable.id)).where(eq(executionsTable.status, 'paid'));
+      const paidExecutions = await db.select().from(executionsTable)
+        .innerJoin(actionsTable, eq(executionsTable.actionId, actionsTable.id))
+        .where(eq(executionsTable.status, 'paid'));
       const totalPaidValue = paidExecutions.reduce((sum, e) => sum + Number(e.actions.rewardAmount), 0);
       
       const totalFees = allCampaigns.length * CONFIG.TOKENOMICS.CREATION_FEE;
