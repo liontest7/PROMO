@@ -15,15 +15,24 @@ interface UserTableProps {
   users: any[];
   onUpdateBlockStatus: (userId: number, isBlocked: boolean) => void;
   onUpdateRole: (userId: number, role: string) => void;
+  onUpdateBalance: (userId: number, balance: string) => void;
+  onUpdateReputation: (userId: number, reputationScore: number) => void;
 }
 
-export function UserTable({ users, onUpdateBlockStatus, onUpdateRole }: UserTableProps) {
+export function UserTable({ 
+  users, 
+  onUpdateBlockStatus, 
+  onUpdateRole,
+  onUpdateBalance,
+  onUpdateReputation
+}: UserTableProps) {
   return (
     <Table>
       <TableHeader className="bg-white/[0.02]">
         <TableRow className="border-white/5 hover:bg-transparent">
           <TableHead className="text-[10px] font-black uppercase text-muted-foreground tracking-widest">Wallet Identifier</TableHead>
           <TableHead className="text-[10px] font-black uppercase text-muted-foreground tracking-widest">Permission Level</TableHead>
+          <TableHead className="text-[10px] font-black uppercase text-muted-foreground tracking-widest">Balance</TableHead>
           <TableHead className="text-[10px] font-black uppercase text-muted-foreground tracking-widest">Trust Score</TableHead>
           <TableHead className="text-[10px] font-black uppercase text-muted-foreground tracking-widest">Joined Protocol</TableHead>
           <TableHead className="text-right text-[10px] font-black uppercase text-muted-foreground tracking-widest pr-8">Actions</TableHead>
@@ -46,6 +55,11 @@ export function UserTable({ users, onUpdateBlockStatus, onUpdateRole }: UserTabl
             </TableCell>
             <TableCell>
               <div className="flex items-center gap-2">
+                <span className="text-xs font-mono font-bold">{user.balance}</span>
+              </div>
+            </TableCell>
+            <TableCell>
+              <div className="flex items-center gap-2">
                 <span className="text-sm font-bold font-display">{user.reputationScore}</span>
                 <div className="w-12 h-1.5 rounded-full bg-white/5 overflow-hidden">
                   <div 
@@ -62,6 +76,28 @@ export function UserTable({ users, onUpdateBlockStatus, onUpdateRole }: UserTabl
               <div className="flex justify-end gap-2">
                 <Button 
                   size="sm" 
+                  variant="outline" 
+                  className="h-8 text-[10px] font-bold uppercase border-white/10"
+                  onClick={() => {
+                    const val = prompt("Enter new balance:", user.balance);
+                    if (val !== null) onUpdateBalance(user.id, val);
+                  }}
+                >
+                  Balance
+                </Button>
+                <Button 
+                  size="sm" 
+                  variant="outline" 
+                  className="h-8 text-[10px] font-bold uppercase border-white/10"
+                  onClick={() => {
+                    const val = prompt("Enter new trust score:", user.reputationScore);
+                    if (val !== null) onUpdateReputation(user.id, parseInt(val));
+                  }}
+                >
+                  Trust
+                </Button>
+                <Button 
+                  size="sm" 
                   variant={user.isBlocked ? "default" : "outline"}
                   className={user.isBlocked 
                     ? "h-8 bg-green-500/10 text-green-500 border-green-500/20 hover:bg-green-500/20 px-4 font-bold text-[10px] uppercase" 
@@ -69,18 +105,16 @@ export function UserTable({ users, onUpdateBlockStatus, onUpdateRole }: UserTabl
                   onClick={() => onUpdateBlockStatus(user.id, !user.isBlocked)}
                 >
                   {user.isBlocked ? <UserCheck className="w-3 h-3 mr-1" /> : <Ban className="w-3 h-3 mr-1" />}
-                  {user.isBlocked ? "Unblock" : "Block User"}
+                  {user.isBlocked ? "Unblock" : "Block"}
                 </Button>
-                {user.role !== 'admin' && (
-                  <Button 
-                    size="sm" 
-                    variant="ghost"
-                    className="h-8 text-[10px] font-black uppercase hover:bg-primary/10 hover:text-primary"
-                    onClick={() => onUpdateRole(user.id, 'admin')}
-                  >
-                    Upgrade to Admin
-                  </Button>
-                )}
+                <Button 
+                  size="sm" 
+                  variant="ghost"
+                  className="h-8 text-[10px] font-black uppercase hover:bg-primary/10 hover:text-primary"
+                  onClick={() => onUpdateRole(user.id, user.role === 'admin' ? 'user' : 'admin')}
+                >
+                  {user.role === 'admin' ? 'Demote' : 'Promote'}
+                </Button>
               </div>
             </TableCell>
           </TableRow>
