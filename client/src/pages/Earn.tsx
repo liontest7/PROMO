@@ -177,21 +177,21 @@ export default function Earn() {
                       )}
                     </div>
 
-                    <div className="space-y-2">
-                      <Label className="text-xs text-muted-foreground uppercase font-black">Min Reward Amount</Label>
+                    <div className="space-y-2.5">
+                      <Label className="text-[11px] text-muted-foreground uppercase font-black tracking-wider">Min Reward Amount</Label>
                       <Input 
                         type="number"
                         placeholder="0.00"
-                        className="h-8 bg-white/5 border-white/10"
+                        className="h-9 bg-white/5 border-white/10 text-sm"
                         value={minReward}
                         onChange={(e) => setMinReward(e.target.value)}
                       />
                     </div>
 
-                    <div className="space-y-2">
-                      <Label className="text-xs text-muted-foreground uppercase font-black">Sort By</Label>
+                    <div className="space-y-2.5">
+                      <Label className="text-[11px] text-muted-foreground uppercase font-black tracking-wider">Sort By</Label>
                       <select 
-                        className="w-full h-8 bg-white/5 border border-white/10 rounded-md px-2 text-sm text-white focus:outline-none focus:border-primary/50"
+                        className="w-full h-9 bg-white/5 border border-white/10 rounded-md px-2 text-sm text-white focus:outline-none focus:border-primary/50"
                         value={sortBy}
                         onChange={(e) => setSortBy(e.target.value as any)}
                       >
@@ -201,21 +201,22 @@ export default function Earn() {
                       </select>
                     </div>
 
-                    <div className="space-y-3">
-                      <Label className="text-xs text-muted-foreground uppercase font-black">Task Types</Label>
+                    <div className="space-y-3.5">
+                      <Label className="text-[11px] text-muted-foreground uppercase font-black tracking-wider">Task Types</Label>
                       {[
                         { id: 'holder', label: 'Holder Qualification' },
                         { id: 'twitter', label: 'Twitter Follow' },
                         { id: 'telegram', label: 'Join Telegram' },
                         { id: 'website', label: 'Visit Website' }
                       ].map((filter) => (
-                        <div key={filter.id} className="flex items-center space-x-2">
+                        <div key={filter.id} className="flex items-center space-x-2.5">
                           <Checkbox 
                             id={filter.id} 
                             checked={activeFilters.includes(filter.id)}
                             onCheckedChange={() => toggleFilter(filter.id)}
+                            className="w-4.5 h-4.5"
                           />
-                          <Label htmlFor={filter.id} className="text-sm font-medium capitalize cursor-pointer">
+                          <Label htmlFor={filter.id} className="text-[13px] font-bold capitalize cursor-pointer">
                             {filter.label}
                           </Label>
                         </div>
@@ -252,26 +253,28 @@ export default function Earn() {
             </div>
 
             {totalPages > 1 && (
-              <div className="flex justify-center items-center gap-2 mt-12">
+              <div className="flex justify-center items-center gap-3 mt-16">
                 <Button
                   variant="outline"
-                  size="sm"
+                  size="default"
                   onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
                   disabled={currentPage === 1}
-                  className="rounded-xl border-white/10"
+                  className="rounded-xl border-white/10 px-6 font-bold h-11"
                 >
                   Previous
                 </Button>
-                <div className="flex items-center gap-1">
+                <div className="flex items-center gap-2">
                   {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
                     <Button
                       key={page}
                       variant={currentPage === page ? "default" : "ghost"}
-                      size="sm"
+                      size="default"
                       onClick={() => setCurrentPage(page)}
                       className={cn(
-                        "w-8 h-8 rounded-lg font-bold",
-                        currentPage === page ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-white"
+                        "w-11 h-11 rounded-xl font-bold text-base transition-all",
+                        currentPage === page 
+                          ? "bg-primary text-primary-foreground shadow-[0_0_15px_rgba(34,197,94,0.3)]" 
+                          : "text-muted-foreground hover:text-white hover:bg-white/5"
                       )}
                     >
                       {page}
@@ -280,10 +283,10 @@ export default function Earn() {
                 </div>
                 <Button
                   variant="outline"
-                  size="sm"
+                  size="default"
                   onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
                   disabled={currentPage === totalPages}
-                  className="rounded-xl border-white/10"
+                  className="rounded-xl border-white/10 px-6 font-bold h-11"
                 >
                   Next
                 </Button>
