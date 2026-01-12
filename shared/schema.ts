@@ -60,6 +60,7 @@ export const campaigns = pgTable("campaigns", {
     walletAgeDays?: number;
   }>(),
   celebrationTriggered: boolean("celebration_triggered").default(false).notNull(),
+  initialMarketCap: numeric("initial_market_cap"),
   createdAt: timestamp("created_at").defaultNow(),
 });
 

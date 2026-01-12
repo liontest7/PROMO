@@ -51,6 +51,7 @@ const formSchema = insertCampaignSchema.extend({
   telegramUrl: z.string().url("Invalid Telegram URL").optional().or(z.literal("")),
   minSolBalance: z.coerce.number().min(0).default(0),
   minWalletAgeDays: z.coerce.number().min(0).default(0),
+  initialMarketCap: z.string().optional().or(z.literal("")),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -206,6 +207,18 @@ export function CreateCampaignDialog() {
         if (mergedMetadata.websiteUrl) form.setValue('websiteUrl', mergedMetadata.websiteUrl);
         if (mergedMetadata.twitterUrl) form.setValue('twitterUrl', mergedMetadata.twitterUrl);
         if (mergedMetadata.telegramUrl) form.setValue('telegramUrl', mergedMetadata.telegramUrl);
+        
+        // Handle Market Cap from different sources
+        let mcValue = "";
+        if (moralisData?.market_cap_usd) {
+          mcValue = moralisData.market_cap_usd.toString();
+        } else if (dexData?.pairs?.[0]?.fdv) {
+          mcValue = dexData.pairs[0].fdv.toString();
+        }
+        if (mcValue) {
+          form.setValue('initialMarketCap', mcValue);
+        }
+
         toast({ title: "Metadata Loaded", description: `Successfully retrieved token details.` });
       } else {
         toast({ title: "Limited Data", description: "Found token but could not retrieve full metadata.", variant: "default" });
