@@ -15,6 +15,7 @@ import { SystemHealth } from "@/components/admin/SystemHealth";
 import { FraudShield } from "@/components/admin/FraudShield";
 import { AuditDialog } from "@/components/admin/AuditDialog";
 import { LiveTerminal } from "@/components/admin/LiveTerminal";
+import { AdminAnalytics } from "@/components/admin/AdminAnalytics";
 
 export default function AdminDashboard() {
   const { toast } = useToast();
@@ -164,6 +165,9 @@ export default function AdminDashboard() {
               <TabsTrigger value="users" className="flex-1 md:flex-none rounded-lg px-6 font-bold uppercase text-[10px] tracking-widest data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
                 Protocol Users
               </TabsTrigger>
+              <TabsTrigger value="analytics" className="flex-1 md:flex-none rounded-lg px-6 font-bold uppercase text-[10px] tracking-widest data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+                Analytics
+              </TabsTrigger>
               <TabsTrigger value="campaigns" className="flex-1 md:flex-none rounded-lg px-6 font-bold uppercase text-[10px] tracking-widest data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
                 Active Campaigns
               </TabsTrigger>
@@ -208,6 +212,10 @@ export default function AdminDashboard() {
                 />
               </CardContent>
             </Card>
+          </TabsContent>
+
+          <TabsContent value="analytics">
+            <AdminAnalytics />
           </TabsContent>
 
           <TabsContent value="campaigns">

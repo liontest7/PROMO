@@ -16,6 +16,14 @@ import { getSolanaConnection } from "./services/solana";
 import { verifyTurnstile, checkIpFraud } from "./services/security";
 import fetch from "node-fetch";
 
+const apiLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 100,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { message: "Too many requests from this IP, please try again after 15 minutes" }
+});
+
 export async function registerRoutes(
   httpServer: Server,
   app: Express
@@ -374,6 +382,40 @@ export async function registerRoutes(
     } catch (err) {
       console.error("Verification error:", err);
       res.status(400).json({ message: "Invalid request" });
+    }
+  });
+
+  app.get('/api/admin/analytics', async (req, res) => {
+    try {
+      const allCampaigns = await storage.getAllCampaigns();
+      const allExecutions = await storage.getAllExecutions();
+      const allUsers = await storage.getAllUsers();
+
+      // Basic stats
+      const stats = {
+        totalUsers: allUsers.length,
+        totalCampaigns: allCampaigns.length,
+        totalExecutions: allExecutions.length,
+        activeCampaigns: allCampaigns.filter(c => c.status === 'active').length,
+      };
+
+      // Execution trend (last 7 days)
+      const last7Days = [...Array(7)].map((_, i) => {
+        const d = new Date();
+        d.setDate(d.getDate() - i);
+        return d.toISOString().split('T')[0];
+      }).reverse();
+
+      const trend = last7Days.map(date => {
+        const count = allExecutions.filter(e => 
+          new Date(e.createdAt).toISOString().split('T')[0] === date
+        ).length;
+        return { date, count };
+      });
+
+      res.json({ stats, trend });
+    } catch (err) {
+      res.status(500).json({ message: "Failed to fetch analytics" });
     }
   });
 

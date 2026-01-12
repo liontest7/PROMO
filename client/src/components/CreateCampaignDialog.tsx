@@ -29,6 +29,7 @@ import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
 import { Plus, Trash2, Rocket, Eye, CheckCircle2, Globe, Twitter, Send, Loader2, Coins } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { CampaignSuccessCard } from "./CampaignSuccessCard";
 
 // Form Schema
 const formSchema = insertCampaignSchema.extend({
@@ -57,6 +58,8 @@ type FormValues = z.infer<typeof formSchema>;
 export function CreateCampaignDialog() {
   const [open, setOpen] = useState(false);
   const [step, setStep] = useState<"edit" | "preview">("edit");
+  const [createdCampaign, setCreatedCampaign] = useState<any>(null);
+  const [showSuccessCard, setShowSuccessCard] = useState(false);
   const { mutate: createCampaign, isPending } = useCreateCampaign();
   const { isConnected, userId, connect } = useWallet();
   const { toast } = useToast();
@@ -240,7 +243,8 @@ export function CreateCampaignDialog() {
     };
 
     createCampaign(formattedValues as any, {
-      onSuccess: () => {
+      onSuccess: (data) => {
+        setCreatedCampaign(data);
         setOpen(false);
         setStep("edit");
         form.reset();
@@ -252,11 +256,7 @@ export function CreateCampaignDialog() {
             colors: ['#22c55e', '#16a34a', '#ffffff']
           });
         });
-        toast({ 
-          title: "Campaign Launched!", 
-          description: "Your project is now live and secured on the Solana network.",
-          variant: "default"
-        });
+        setShowSuccessCard(true);
       },
       onError: (error: any) => {
         toast({ title: "Launch Failed", description: error.message || "Something went wrong.", variant: "destructive" });
