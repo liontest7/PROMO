@@ -54,7 +54,8 @@ export function CampaignSuccessCard({ campaign, open, onClose }: CampaignSuccess
               
               if (originalSrc.startsWith('http') && !originalSrc.includes(window.location.host)) {
                 // Use a reliable proxy only for images that might have CORS issues
-                if (originalSrc.includes('moralis.io') || originalSrc.includes('dexscreener.com')) {
+                // DexScreener and Moralis are known to have issues
+                if (originalSrc.includes('moralis.io') || originalSrc.includes('dexscreener.com') || originalSrc.includes('cdn.dexscreener.com')) {
                    img.src = `https://api.allorigins.win/raw?url=${encodeURIComponent(originalSrc)}`;
                    img.crossOrigin = "anonymous";
                 }

@@ -153,12 +153,22 @@ export function CreateCampaignDialog() {
         if (!mergedMetadata.description) mergedMetadata.description = res.description;
       }
 
+      if (moralisData && moralisData.mint) {
+        if (moralisData.symbol && !mergedMetadata.tokenName) mergedMetadata.tokenName = moralisData.symbol;
+        if (moralisData.name && !mergedMetadata.title) mergedMetadata.title = `${moralisData.name} Growth Campaign`;
+        // Use Moralis URL but we'll proxy it during export if needed
+        if (moralisData.logo && !mergedMetadata.logoUrl) mergedMetadata.logoUrl = moralisData.logo;
+        if (moralisData.description && !mergedMetadata.description) mergedMetadata.description = moralisData.description;
+        if (moralisData.links?.website && !mergedMetadata.websiteUrl) mergedMetadata.websiteUrl = moralisData.links.website;
+        if (moralisData.links?.twitter && !mergedMetadata.twitterUrl) mergedMetadata.twitterUrl = moralisData.links.twitter;
+      }
+
       if (dexData && dexData.pairs && dexData.pairs.length > 0) {
         const bestPair = dexData.pairs.sort((a: any, b: any) => (b.liquidity?.usd || 0) - (a.liquidity?.usd || 0))[0];
         const token = bestPair.baseToken;
         if (token.symbol) mergedMetadata.tokenName = token.symbol;
         if (token.name && !mergedMetadata.title) mergedMetadata.title = `${token.name} Growth Campaign`;
-        // DexScreener is also good for capture
+        // DexScreener is also known to have CORS issues sometimes, keep as lower priority
         if (!mergedMetadata.logoUrl && bestPair.info?.imageUrl) {
            mergedMetadata.logoUrl = bestPair.info.imageUrl;
         }
@@ -168,16 +178,6 @@ export function CreateCampaignDialog() {
         if (twitter?.url) mergedMetadata.twitterUrl = twitter.url;
         const telegram = bestPair.info?.socials?.find((s: any) => s.type === 'telegram');
         if (telegram?.url) mergedMetadata.telegramUrl = telegram.url;
-      }
-
-      if (moralisData && moralisData.mint) {
-        if (moralisData.symbol && !mergedMetadata.tokenName) mergedMetadata.tokenName = moralisData.symbol;
-        if (moralisData.name && !mergedMetadata.title) mergedMetadata.title = `${moralisData.name} Growth Campaign`;
-        // Only use Moralis as a last resort if we don't have a logo yet
-        if (moralisData.logo && !mergedMetadata.logoUrl) mergedMetadata.logoUrl = moralisData.logo;
-        if (moralisData.description && !mergedMetadata.description) mergedMetadata.description = moralisData.description;
-        if (moralisData.links?.website && !mergedMetadata.websiteUrl) mergedMetadata.websiteUrl = moralisData.links.website;
-        if (moralisData.links?.twitter && !mergedMetadata.twitterUrl) mergedMetadata.twitterUrl = moralisData.links.twitter;
       }
 
       if (Object.keys(mergedMetadata).length > 0) {
