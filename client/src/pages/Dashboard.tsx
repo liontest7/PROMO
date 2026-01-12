@@ -119,9 +119,8 @@ export default function Dashboard() {
   }
 
   const tasksCompleted = stats?.tasksCompleted || 0;
-  const level = Math.floor(tasksCompleted / 10);
-  const nextMilestone = (level + 1) * 10;
-  const progress = (tasksCompleted % 10) * 10;
+  const level = Math.floor((user?.reputationScore || 0) / 100) + 1;
+  const progress = (user?.reputationScore ? (user.reputationScore % 100) : 0);
   
   // Rank change simulation for visual requirement
   const rankChange = tasksCompleted > 0 ? "up" : "stable";
@@ -156,7 +155,12 @@ export default function Dashboard() {
                 </h1>
                 <Badge className="bg-primary/20 text-primary border-2 border-primary/40 text-[10px] font-black uppercase px-3 py-0.5 tracking-widest rounded-lg">PLATINUM NODE</Badge>
               </div>
-              <p className="text-white/60 font-black uppercase tracking-[0.2em] text-[11px] bg-white/5 inline-block px-3 py-1 rounded-full border border-white/10">Protocol Status: Active & Verified</p>
+              <div className="flex items-center gap-2">
+                <p className="text-white/60 font-black uppercase tracking-[0.2em] text-[11px] bg-white/5 inline-block px-3 py-1 rounded-full border border-white/10">Protocol Status: Active & Verified</p>
+                <Badge className="bg-yellow-500/20 text-yellow-500 border border-yellow-500/30 text-[9px] font-black uppercase px-2 py-0.5 tracking-[0.2em] rounded-full italic shadow-[0_0_10px_rgba(234,179,8,0.2)]">
+                  SENTINEL RANK
+                </Badge>
+              </div>
             </div>
           </div>
           
@@ -164,7 +168,7 @@ export default function Dashboard() {
             <div className="flex flex-col p-6 rounded-[2rem] bg-black/40 border border-white/10 hover:border-primary/50 transition-all group/card shadow-lg backdrop-blur-md">
               <span className="text-[10px] font-black text-white/40 uppercase tracking-[0.3em] mb-2">Protocol Reputation</span>
               <div className="flex items-center gap-3">
-                <span className="text-4xl font-black font-display text-primary drop-shadow-[0_0_15px_rgba(34,197,94,0.5)]">{stats?.reputation || 0}</span>
+                <span className="text-4xl font-black font-display text-primary drop-shadow-[0_0_15px_rgba(34,197,94,0.5)]">{user?.reputationScore || 0}</span>
                 <Trophy className="w-5 h-5 text-primary opacity-50 group-hover/card:opacity-100 transition-opacity" />
               </div>
             </div>
@@ -174,7 +178,7 @@ export default function Dashboard() {
                 {rankChange === "up" && <ArrowUpRight className="w-5 h-5 text-primary animate-bounce-slow" />}
               </div>
               <div className="flex items-center gap-3">
-                <span className="text-4xl font-black font-display text-white">#{Math.max(1, (stats as any)?.totalUsers || 1) - (stats?.reputation || 0)}</span>
+                <span className="text-4xl font-black font-display text-white">#{Math.max(1, (stats as any)?.totalUsers || 100) - (user?.reputationScore || 0)}</span>
                 {rankChange === "up" && <span className="text-sm font-black text-primary font-display border border-primary/30 bg-primary/20 px-2 rounded-lg">+3</span>}
               </div>
             </div>
@@ -205,8 +209,8 @@ export default function Dashboard() {
                           </div>
                           {Number(tb.pending) > 0 && (
                             <div className="flex flex-col items-end">
-                              <Badge className="text-[8px] font-black text-yellow-500 bg-yellow-500/10 border border-yellow-500/30 px-2 py-1 rounded-lg uppercase tracking-widest">
-                                PENDING
+                              <Badge className="text-[8px] font-black text-yellow-500 bg-yellow-500/10 border border-yellow-500/30 px-2 py-1 rounded-lg uppercase tracking-widest animate-pulse">
+                                VERIFYING ASSETS
                               </Badge>
                               <span className="text-sm font-black text-yellow-500 mt-1 font-mono">+{tb.pending}</span>
                             </div>
@@ -300,7 +304,7 @@ export default function Dashboard() {
               <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(34,197,94,0.3),transparent_70%)] opacity-70 rounded-[2rem]" />
               <CardHeader className="relative z-10 p-6 pb-2">
                 <div className="flex items-center justify-between gap-3">
-                  <CardTitle className="text-2xl font-black font-display uppercase leading-none italic tracking-tighter text-white">Ecosystem <span className="text-primary drop-shadow-[0_0_10px_rgba(34,197,94,0.4)]">Impact</span></CardTitle>
+                  <CardTitle className="text-2xl font-black font-display uppercase leading-none italic tracking-tighter text-white">Protocol <span className="text-primary drop-shadow-[0_0_10px_rgba(34,197,94,0.4)]">Reputation</span></CardTitle>
                   <TooltipProvider delayDuration={0}>
                     <Tooltip>
                       <TooltipTrigger asChild>
@@ -337,14 +341,17 @@ export default function Dashboard() {
               </CardHeader>
               <CardContent className="relative z-10 p-6 pt-0 space-y-6">
                 <div className="flex items-baseline gap-2">
-                  <span className="text-[4rem] font-black font-display text-primary tracking-tighter leading-none drop-shadow-[0_0_15px_rgba(34,197,94,0.5)]">{tasksCompleted}</span>
-                  <span className="text-lg font-black text-primary/60 uppercase italic tracking-widest">Actions</span>
+                  <span className="text-[4rem] font-black font-display text-primary tracking-tighter leading-none drop-shadow-[0_0_15px_rgba(34,197,94,0.5)]">{user?.reputationScore || 0}</span>
+                  <span className="text-lg font-black text-primary/60 uppercase italic tracking-widest">Score</span>
                 </div>
                 
                 <div className="space-y-4">
                   <div className="flex justify-between items-end">
-                    <span className="text-[11px] font-black text-white/40 uppercase tracking-widest">Evolution Progress</span>
-                    <span className="text-xl font-black font-display text-primary italic tracking-tight drop-shadow-md">{progress}%</span>
+                    <span className="text-[11px] font-black text-white/40 uppercase tracking-widest">Protocol Evolution</span>
+                    <div className="flex items-center gap-2">
+                      <span className="text-[10px] font-black text-primary/60 uppercase tracking-widest">{user?.reputationScore || 0} Points</span>
+                      <span className="text-xl font-black font-display text-primary italic tracking-tight drop-shadow-md">{progress}%</span>
+                    </div>
                   </div>
                   <div className="w-full h-8 rounded-full bg-black/90 overflow-hidden p-1.5 border border-white/10 shadow-inner relative">
                     <div 
@@ -355,7 +362,7 @@ export default function Dashboard() {
                     </div>
                     <div className="absolute inset-0 flex items-center justify-center">
                       <span className="text-[10px] font-black text-white uppercase tracking-[0.2em] drop-shadow-md">
-                        {tasksCompleted % 10} / 10 ACTIONS
+                        {user?.reputationScore ? (user.reputationScore % 100) : 0} / 100 XP
                       </span>
                     </div>
                   </div>
@@ -385,13 +392,16 @@ export default function Dashboard() {
                         <div className="p-1.5 rounded-lg bg-blue-500/20 border border-blue-500/30">
                           <Twitter className="w-4 h-4 text-blue-400" />
                         </div>
-                        <span className="text-[11px] font-black uppercase tracking-widest text-white italic">X IDENTITY</span>
+                        <span className="text-[11px] font-black uppercase tracking-widest text-white italic">X IDENTITY SYNC</span>
                       </div>
+                      <p className="text-[10px] text-white/40 font-bold uppercase tracking-widest leading-relaxed">
+                        Verify your X account to unlock high-yield engagement campaigns.
+                      </p>
                       <div className="flex flex-col gap-2">
                         <Button 
                           className="w-full bg-blue-500 hover:bg-blue-600 text-white gap-3 font-black text-[10px] h-10 rounded-lg shadow-md transition-all active-elevate-2 uppercase tracking-widest"
                         >
-                          SYNC PROTOCOL NODE
+                          CONNECT PROTOCOL NODE
                         </Button>
                         <div className="flex justify-center py-2">
                           <div id="cf-turnstile-placeholder" className="w-full min-h-[50px] flex items-center justify-center text-[9px] text-white/20 uppercase font-black tracking-widest border border-dashed border-white/10 rounded-lg px-2 text-center">

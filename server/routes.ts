@@ -16,18 +16,29 @@ import { getSolanaConnection } from "./services/solana";
 import { verifyTurnstile, checkIpFraud } from "./services/security";
 import fetch from "node-fetch";
 
-const apiLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 100,
-  standardHeaders: true,
-  legacyHeaders: false,
-  message: { message: "Too many requests from this IP, please try again after 15 minutes" }
-});
-
 export async function registerRoutes(
   httpServer: Server,
   app: Express
 ): Promise<Server> {
+  // Verifications & Security
+  app.post("/api/security/verify-turnstile", async (req, res) => {
+    try {
+      const { token } = req.body;
+      const success = await verifyTurnstile(token);
+      res.json({ success });
+    } catch (error) {
+      res.status(500).json({ success: false });
+    }
+  });
+
+  const apiLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: 100,
+    standardHeaders: true,
+    legacyHeaders: false,
+    message: { message: "Too many requests from this IP, please try again after 15 minutes" }
+  });
+
   app.use("/api", apiLimiter);
 
   app.use(async (req, res, next) => {
@@ -406,12 +417,16 @@ export async function registerRoutes(
         return d.toISOString().split('T')[0];
       }).reverse();
 
-      const trend = last7Days.map(date => {
-        const count = allExecutions.filter(e => 
-          new Date(e.createdAt).toISOString().split('T')[0] === date
-        ).length;
-        return { date, count };
-      });
+      const executionsByDate = allExecutions.reduce((acc: any, e) => {
+        const date = new Date(e.createdAt).toISOString().split('T')[0];
+        acc[date] = (acc[date] || 0) + 1;
+        return acc;
+      }, {});
+
+      const trend = last7Days.map(date => ({
+        date,
+        count: executionsByDate[date] || 0
+      }));
 
       res.json({ stats, trend });
     } catch (err) {
