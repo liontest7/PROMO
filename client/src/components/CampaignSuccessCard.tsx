@@ -28,7 +28,7 @@ export function CampaignSuccessCard({ campaign, open, onClose }: CampaignSuccess
     
     setIsExporting(true);
     try {
-      await new Promise(resolve => setTimeout(resolve, 800));
+      await new Promise(resolve => setTimeout(resolve, 1000));
       
       const canvas = await html2canvas(element, {
         backgroundColor: "#0a0a0a",
@@ -37,6 +37,7 @@ export function CampaignSuccessCard({ campaign, open, onClose }: CampaignSuccess
         allowTaint: false,
         logging: true,
         imageTimeout: 30000,
+        proxy: undefined, // Explicitly clear any proxy
         onclone: (clonedDoc) => {
           const clonedElement = clonedDoc.getElementById("campaign-card-capture-area");
           if (clonedElement) {
@@ -46,10 +47,25 @@ export function CampaignSuccessCard({ campaign, open, onClose }: CampaignSuccess
             clonedElement.style.margin = "0";
             clonedElement.style.display = "block";
 
+            // Force reload images in the clone to ensure they are captured
+            const images = clonedElement.getElementsByTagName('img');
+            for (let i = 0; i < images.length; i++) {
+              const img = images[i];
+              img.crossOrigin = "anonymous";
+              // Appending a dummy param can sometimes bypass cached tainted images
+              if (img.src.includes('i.ibb.co') || img.src.includes('logo')) {
+                const url = new URL(img.src);
+                url.searchParams.set('t', Date.now().toString());
+                img.src = url.toString();
+              }
+            }
+
             // Ensure ticker is properly aligned in export
             const ticker = clonedElement.querySelector(".campaign-ticker-badge");
             if (ticker) {
               (ticker as HTMLElement).style.display = "inline-flex";
+              (ticker as HTMLElement).style.alignItems = "center";
+              (ticker as HTMLElement).style.justifyContent = "center";
               (ticker as HTMLElement).style.marginTop = "0px";
               (ticker as HTMLElement).style.transform = "translateY(-1px)";
             }
@@ -120,8 +136,10 @@ export function CampaignSuccessCard({ campaign, open, onClose }: CampaignSuccess
                 <div className="w-32 h-32 mb-3 overflow-hidden flex items-center justify-center">
                   <img 
                     src="https://i.ibb.co/xtwDPsFy/20260112-1450-Image-Generation-remix-01kes42kp5ft5r4tfh6znvs9c0-1.png" 
+                    crossOrigin="anonymous"
                     className="w-full h-full object-contain" 
                     alt="Success Icon" 
+                    loading="eager"
                   />
                 </div>
                 
@@ -147,6 +165,7 @@ export function CampaignSuccessCard({ campaign, open, onClose }: CampaignSuccess
                           className="w-full h-full object-cover relative z-[110]" 
                           alt="Logo" 
                           style={ { display: 'block', minWidth: '100%', minHeight: '100%', opacity: 1 } }
+                          loading="eager"
                           onLoad={(e) => {
                             (e.target as HTMLImageElement).style.opacity = '1';
                           }}
