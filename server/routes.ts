@@ -216,15 +216,8 @@ export async function registerRoutes(
       }
 
       if (turnstileToken) {
-        const verifyUrl = "https://challenges.cloudflare.com/turnstile/v0/siteverify";
-        const verifyRes = await fetch(verifyUrl, {
-          method: "POST",
-          body: `secret=${process.env.TURNSTILE_SECRET_KEY}&response=${turnstileToken}`,
-          headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        });
-
-        const verifyJson = await verifyRes.json() as { success: boolean };
-        if (!verifyJson.success) {
+        const success = await verifyTurnstile(turnstileToken);
+        if (!success) {
           return res.status(400).json({ message: "Security verification failed. Please try again." });
         }
       }
@@ -244,11 +237,10 @@ export async function registerRoutes(
         const campaign = await storage.getCampaign(input.actionId);
         if (campaign && campaign.campaignType === 'holder_qualification') {
           // Anti-Fraud check
-          const associatedWallets = await storage.getWalletsByIp(userIp || 'unknown');
-          if (associatedWallets.length > 5 && !associatedWallets.includes(input.userWallet)) {
+          const isSafe = await checkIpFraud(userIp || 'unknown', input.userWallet);
+          if (!isSafe) {
             return res.status(403).json({ message: "Fraud detected: Too many wallets from this IP" });
           }
-          await storage.logIpWalletAssociation(userIp || 'unknown', input.userWallet);
 
           // Anti-Bot: Sybil protection checks
           try {
@@ -546,6 +538,26 @@ export async function registerRoutes(
     errorLogs.unshift({ timestamp: new Date(), source, message });
     if (errorLogs.length > 50) errorLogs.pop();
   };
+
+  app.post('/api/admin/users/:id/balance', async (req, res) => {
+    try {
+      const { balance } = req.body;
+      const [user] = await db.update(usersTable).set({ balance }).where(eq(usersTable.id, parseInt(req.params.id))).returning();
+      res.json(user);
+    } catch (err) {
+      res.status(500).json({ message: "Failed to update balance" });
+    }
+  });
+
+  app.post('/api/admin/users/:id/reputation', async (req, res) => {
+    try {
+      const { reputationScore } = req.body;
+      const [user] = await db.update(usersTable).set({ reputationScore }).where(eq(usersTable.id, parseInt(req.params.id))).returning();
+      res.json(user);
+    } catch (err) {
+      res.status(500).json({ message: "Failed to update reputation" });
+    }
+  });
 
   app.get('/api/admin/system-health', async (req, res) => {
     try {

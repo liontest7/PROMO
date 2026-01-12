@@ -106,6 +106,38 @@ export default function AdminDashboard() {
     }
   });
 
+  const updateBalanceMutation = useMutation({
+    mutationFn: async ({ userId, balance }: { userId: number, balance: string }) => {
+      const res = await fetch(`/api/admin/users/${userId}/balance`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ balance })
+      });
+      if (!res.ok) throw new Error('Failed to update balance');
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/users"] });
+      toast({ title: "Success", description: "User balance updated" });
+    }
+  });
+
+  const updateReputationMutation = useMutation({
+    mutationFn: async ({ userId, reputationScore }: { userId: number, reputationScore: number }) => {
+      const res = await fetch(`/api/admin/users/${userId}/reputation`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ reputationScore })
+      });
+      if (!res.ok) throw new Error('Failed to update reputation');
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/users"] });
+      toast({ title: "Success", description: "User reputation updated" });
+    }
+  });
+
   if (loadingUsers || loadingCampaigns || loadingExecutions || loadingStats || loadingHealth) {
     return (
       <div className="flex h-screen items-center justify-center bg-background">
@@ -171,6 +203,8 @@ export default function AdminDashboard() {
                   users={filteredUsers}
                   onUpdateBlockStatus={(userId, isBlocked) => updateBlockStatusMutation.mutate({ userId, isBlocked })}
                   onUpdateRole={(userId, role) => updateRoleMutation.mutate({ userId, role })}
+                  onUpdateBalance={(userId, balance) => updateBalanceMutation.mutate({ userId, balance })}
+                  onUpdateReputation={(userId, reputationScore) => updateReputationMutation.mutate({ userId, reputationScore })}
                 />
               </CardContent>
             </Card>
