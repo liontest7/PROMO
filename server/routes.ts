@@ -46,10 +46,16 @@ export async function registerRoutes(
     if (walletAddress && typeof walletAddress === 'string') {
       const user = await storage.getUserByWallet(walletAddress);
       if (user?.status === 'blocked') {
-        return res.status(403).json({ message: "Your account is permanently blocked for security reasons." });
+        return res.status(403).json({ 
+          status: 'blocked',
+          message: "Your account is permanently blocked for security reasons." 
+        });
       }
       if (user?.status === 'suspended') {
-        return res.status(403).json({ message: "Your account is temporarily suspended for review. Please check back later." });
+        return res.status(403).json({ 
+          status: 'suspended',
+          message: "Your account is temporarily suspended for review. Please check back later." 
+        });
       }
     }
     next();

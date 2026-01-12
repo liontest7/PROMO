@@ -5,6 +5,8 @@ import { api } from "@shared/routes";
 import { Connection, PublicKey, LAMPORTS_PER_SOL, clusterApiUrl } from "@solana/web3.js";
 import { WalletSelector } from "@/components/WalletSelector";
 
+import { StatusAlert } from "@/components/StatusAlert";
+
 interface WalletContextType {
   isConnected: boolean;
   walletAddress: string | null;
@@ -18,6 +20,7 @@ interface WalletContextType {
   showSelector: boolean;
   setShowSelector: (show: boolean) => void;
   pendingRole: "user" | "advertiser" | null;
+  accountStatus: "active" | "suspended" | "blocked";
 }
 
 declare global {
@@ -37,6 +40,7 @@ export function WalletProvider({ children }: { children: ReactNode }) {
   const [walletBalance, setWalletBalance] = useState<number | null>(null);
   const [showSelector, setShowSelector] = useState(false);
   const [pendingRole, setPendingRole] = useState<"user" | "advertiser" | null>(null);
+  const [accountStatus, setAccountStatus] = useState<"active" | "suspended" | "blocked">("active");
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
@@ -63,10 +67,13 @@ export function WalletProvider({ children }: { children: ReactNode }) {
     const savedAddress = localStorage.getItem("wallet_address");
     const savedRole = localStorage.getItem("user_role") as "user" | "advertiser";
     const savedId = localStorage.getItem("user_id");
+    const savedStatus = localStorage.getItem("user_status") as "active" | "suspended" | "blocked";
+    
     if (savedAddress && savedRole) {
       setWalletAddress(savedAddress);
       setRole(savedRole);
       if (savedId) setUserId(parseInt(savedId));
+      if (savedStatus) setAccountStatus(savedStatus);
       fetchBalance(savedAddress);
     }
   }, []);
@@ -140,17 +147,28 @@ export function WalletProvider({ children }: { children: ReactNode }) {
         })
       });
       
-      if (!res.ok) throw new Error("Backend authentication failed");
+      if (!res.ok) {
+        const errorData = await res.json();
+        if (res.status === 403 && (errorData.status === 'blocked' || errorData.status === 'suspended')) {
+          setAccountStatus(errorData.status);
+          localStorage.setItem("user_status", errorData.status);
+          throw new Error(errorData.message);
+        }
+        throw new Error("Backend authentication failed");
+      }
+      
       const user = await res.json();
       
       setWalletAddress(user.walletAddress);
       setRole(user.role);
       setUserId(user.id);
+      setAccountStatus(user.status || "active");
       fetchBalance(user.walletAddress);
       
       localStorage.setItem("wallet_address", user.walletAddress);
       localStorage.setItem("user_role", user.role);
       localStorage.setItem("user_id", user.id.toString());
+      localStorage.setItem("user_status", user.status || "active");
 
       toast({
         title: "Wallet Connected",
@@ -167,11 +185,14 @@ export function WalletProvider({ children }: { children: ReactNode }) {
       }
     } catch (error: any) {
       console.error("Connection error detail:", error);
-      toast({
-        title: "Connection Failed",
-        description: error.message || "Could not connect to Solana wallet.",
-        variant: "destructive",
-      });
+      // Only show generic toast if it's not a status error which we handle via UI
+      if (!["blocked", "suspended"].includes(accountStatus)) {
+        toast({
+          title: "Connection Failed",
+          description: error.message || "Could not connect to Solana wallet.",
+          variant: "destructive",
+        });
+      }
     } finally {
       setIsLoading(false);
       setPendingRole(null);
@@ -194,9 +215,11 @@ export function WalletProvider({ children }: { children: ReactNode }) {
     setRole(null);
     setUserId(null);
     setSolBalance(null);
+    setAccountStatus("active");
     localStorage.removeItem("wallet_address");
     localStorage.removeItem("user_role");
     localStorage.removeItem("user_id");
+    localStorage.removeItem("user_status");
     queryClient.clear();
     
     toast({
@@ -218,9 +241,13 @@ export function WalletProvider({ children }: { children: ReactNode }) {
       walletBalance,
       showSelector,
       setShowSelector,
-      pendingRole
+      pendingRole,
+      accountStatus
     }}>
       {children}
+      {accountStatus !== "active" && (
+        <StatusAlert status={accountStatus as "suspended" | "blocked"} />
+      )}
       <WalletSelector 
         open={showSelector} 
         onOpenChange={setShowSelector} 
