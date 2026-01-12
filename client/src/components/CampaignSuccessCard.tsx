@@ -105,9 +105,9 @@ export function CampaignSuccessCard({ campaign, open, onClose }: CampaignSuccess
               <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-primary/20 to-transparent opacity-50" />
               <div className="absolute -top-20 -right-20 w-40 h-40 bg-primary/10 blur-[80px] rounded-full" />
               
-              <div className="relative z-10 p-8 flex flex-col items-center">
+              <div className="relative z-10 p-6 flex flex-col items-center">
                 {/* Header Section */}
-                <div className="w-36 h-36 mb-4 overflow-hidden flex items-center justify-center">
+                <div className="w-32 h-32 mb-3 overflow-hidden flex items-center justify-center">
                   <img 
                     src="https://i.ibb.co/xtwDPsFy/20260112-1450-Image-Generation-remix-01kes42kp5ft5r4tfh6znvs9c0-1.png" 
                     className="w-full h-full object-contain" 
@@ -115,44 +115,34 @@ export function CampaignSuccessCard({ campaign, open, onClose }: CampaignSuccess
                   />
                 </div>
                 
-                <h2 className="text-4xl font-black font-display text-white mb-1 uppercase tracking-tighter italic">
+                <h2 className="text-3xl font-black font-display text-white mb-1 uppercase tracking-tighter italic">
                   CAMPAIGN <span className="text-primary">LIVE!</span>
                 </h2>
-                <div className="flex items-center gap-2 mb-6">
-                  <div className="h-[1px] w-8 bg-white/40" />
-                  <span className="text-[11px] uppercase font-bold tracking-[0.2em] text-white">Broadcasted to Solana</span>
-                  <div className="h-[1px] w-8 bg-white/40" />
+                <div className="flex items-center gap-2 mb-4">
+                  <div className="h-[1px] w-6 bg-white/40" />
+                  <span className="text-[10px] uppercase font-bold tracking-[0.2em] text-white">Broadcasted to Solana</span>
+                  <div className="h-[1px] w-6 bg-white/40" />
                 </div>
 
                 {/* Project Identity Card */}
-                <div className="w-full bg-white/[0.05] border border-white/20 rounded-3xl p-6 mb-6 backdrop-blur-md">
-                  <div className="flex items-center gap-4 mb-6">
+                <div className="w-full bg-white/[0.05] border border-white/20 rounded-3xl p-5 mb-4 backdrop-blur-md">
+                  <div className="flex items-center gap-4 mb-4">
                     <div className="relative group">
                       <div className="absolute -inset-1 bg-gradient-to-r from-primary to-emerald-500 rounded-2xl blur opacity-40 group-hover:opacity-60 transition duration-1000" />
-                      <div className="relative w-20 h-20 rounded-xl bg-black border border-white/20 overflow-hidden shadow-2xl flex items-center justify-center z-[100]">
-                        {campaign.logoUrl ? (
-                          <img 
-                            key={campaign.logoUrl}
-                            crossOrigin="anonymous" 
-                            src={campaign.logoUrl} 
-                            className="w-full h-full object-cover relative z-[110]" 
-                            alt="Logo" 
-                            style={ { display: 'block', minWidth: '100%', minHeight: '100%', opacity: 1 } }
-                            onError={(e) => {
-                              (e.target as HTMLImageElement).src = `https://avatar.vercel.sh/${campaign.tokenName}.png?size=80`;
-                            }}
-                          />
-                        ) : (
-                          <div className="w-full h-full flex items-center justify-center bg-primary/10 relative z-[110]">
-                            <Coins className="w-10 h-10 text-primary" />
-                          </div>
-                        )}
+                      <div className="relative w-16 h-16 rounded-xl bg-black border border-white/20 overflow-hidden shadow-2xl flex items-center justify-center z-[100]">
+                        <img 
+                          key={campaign.logoUrl}
+                          src={campaign.logoUrl} 
+                          className="w-full h-full object-cover relative z-[110]" 
+                          alt="Logo" 
+                          style={ { display: 'block', minWidth: '100%', minHeight: '100%', opacity: 1 } }
+                        />
                       </div>
                     </div>
                     <div className="flex-1 min-w-0">
-                      <h3 className="font-black text-lg leading-tight text-white uppercase tracking-tight break-words">{campaign.title}</h3>
+                      <h3 className="font-black text-base leading-tight text-white uppercase tracking-tight break-words">{campaign.title}</h3>
                       <div className="mt-1">
-                        <Badge variant="outline" className="bg-primary/20 border-primary/40 text-primary text-[12px] font-black py-0.5 px-3 h-6">
+                        <Badge variant="outline" className="bg-primary/20 border-primary/40 text-primary text-[11px] font-black py-0 px-2.5 h-5">
                           ${campaign.tokenName}
                         </Badge>
                       </div>
@@ -160,47 +150,47 @@ export function CampaignSuccessCard({ campaign, open, onClose }: CampaignSuccess
                   </div>
 
                   {/* Campaign Stats Grid */}
-                  <div className="grid grid-cols-2 gap-3">
-                    <div className="bg-white/[0.05] border border-white/10 rounded-2xl p-4 flex flex-col gap-1">
-                      <div className="flex items-center gap-1.5 text-white/90">
-                        <Trophy className="w-4 h-4 text-primary" />
-                        <span className="text-[10px] uppercase font-black tracking-widest">Total Reward</span>
+                  <div className="grid grid-cols-2 gap-2.5">
+                    <div className="bg-white/[0.05] border border-white/10 rounded-2xl p-3.5 flex flex-col gap-0.5">
+                      <div className="flex items-center gap-1 text-white/90">
+                        <Trophy className="w-3.5 h-3.5 text-primary" />
+                        <span className="text-[9px] uppercase font-black tracking-widest">Total Reward</span>
                       </div>
-                      <p className="text-xl font-black text-white">
-                        {Number(campaign.totalBudget).toLocaleString()} <span className="text-primary text-sm tracking-normal">${campaign.tokenName}</span>
+                      <p className="text-lg font-black text-white">
+                        {Number(campaign.totalBudget).toLocaleString()} <span className="text-primary text-xs tracking-normal">${campaign.tokenName}</span>
                       </p>
                     </div>
-                    <div className="bg-white/[0.05] border border-white/10 rounded-2xl p-4 flex flex-col gap-1">
-                      <div className="flex items-center gap-1.5 text-white/90">
-                        <Users className="w-4 h-4 text-primary" />
-                        <span className="text-[10px] uppercase font-black tracking-widest">Participants</span>
+                    <div className="bg-white/[0.05] border border-white/10 rounded-2xl p-3.5 flex flex-col gap-0.5">
+                      <div className="flex items-center gap-1 text-white/90">
+                        <Users className="w-3.5 h-3.5 text-primary" />
+                        <span className="text-[9px] uppercase font-black tracking-widest">Participants</span>
                       </div>
-                      <p className="text-xl font-black text-white">
+                      <p className="text-lg font-black text-white">
                         {campaign.maxClaims || (campaign.actions?.reduce((acc: number, a: any) => acc + (a.maxExecutions || 0), 0)) || 0}
-                        <span className="text-white/60 text-xs ml-1 font-black uppercase">Slots</span>
+                        <span className="text-white/60 text-[10px] ml-1 font-black uppercase">Slots</span>
                       </p>
                     </div>
                   </div>
 
                   {/* Tasks Preview */}
                   {campaign.campaignType === 'holder_qualification' ? (
-                    <div className="mt-4 p-5 bg-primary/10 border border-primary/20 rounded-2xl">
-                      <div className="flex items-center gap-2 mb-2">
-                        <CheckCircle2 className="w-4 h-4 text-primary" />
-                        <span className="text-[10px] uppercase font-black tracking-widest text-primary">Requirement</span>
+                    <div className="mt-3.5 p-4 bg-primary/10 border border-primary/20 rounded-2xl">
+                      <div className="flex items-center gap-1.5 mb-1.5">
+                        <CheckCircle2 className="w-3.5 h-3.5 text-primary" />
+                        <span className="text-[9px] uppercase font-black tracking-widest text-primary">Requirement</span>
                       </div>
-                      <p className="text-[13px] text-white font-black leading-tight">
+                      <p className="text-[12px] text-white font-black leading-tight">
                         Hold {Number(campaign.minHoldingAmount).toLocaleString()} ${campaign.tokenName} for {campaign.minHoldingDuration} days to qualify.
                       </p>
                     </div>
                   ) : (
-                    <div className="mt-4 space-y-2">
+                    <div className="mt-3.5 space-y-1.5">
                        <div className="flex items-center gap-2">
-                        <span className="text-[10px] uppercase font-black tracking-widest text-white/60">Missions</span>
+                        <span className="text-[9px] uppercase font-black tracking-widest text-white/60">Missions</span>
                         <div className="h-[1px] flex-1 bg-white/20" />
                       </div>
                       {(campaign.actions || []).slice(0, 2).map((action: any, i: number) => (
-                        <div key={i} className="flex items-center justify-between text-[12px] font-black text-white bg-white/10 rounded-xl px-4 py-3 border border-white/5">
+                        <div key={i} className="flex items-center justify-between text-[11px] font-black text-white bg-white/10 rounded-xl px-3.5 py-2.5 border border-white/5">
                           <span>{action.title}</span>
                           <span className="text-primary">+{action.rewardAmount} ${campaign.tokenName}</span>
                         </div>
@@ -210,14 +200,14 @@ export function CampaignSuccessCard({ campaign, open, onClose }: CampaignSuccess
                 </div>
 
                 {/* Footer Message */}
-                <p className="text-[11px] text-white/70 font-bold mb-4 max-w-[300px] text-center">
-                  Join the movement. Earn rewards. Support <span className="text-white font-black">${campaign.tokenName}</span>.
+                <p className="text-[12px] text-white/80 font-black mb-3 text-center whitespace-nowrap">
+                  Join the movement. Earn rewards. Support <span className="text-white">${campaign.tokenName}</span>.
                 </p>
               </div>
 
               {/* Copyright Section */}
-              <div className="p-4 flex justify-center opacity-80 pointer-events-none border-t border-white/5 bg-white/[0.02]">
-                <p className="text-[9px] font-black tracking-[0.4em] uppercase text-primary">Dropy © 2026</p>
+              <div className="p-3 flex justify-center opacity-80 pointer-events-none border-t border-white/5 bg-white/[0.02]">
+                <p className="text-[8px] font-black tracking-[0.4em] uppercase text-primary">Dropy © 2026</p>
               </div>
             </div>
 
