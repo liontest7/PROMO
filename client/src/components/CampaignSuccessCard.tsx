@@ -28,13 +28,13 @@ export function CampaignSuccessCard({ campaign, open, onClose }: CampaignSuccess
     
     setIsExporting(true);
     try {
-      await new Promise(resolve => setTimeout(resolve, 800));
+      await new Promise(resolve => setTimeout(resolve, 1000));
       
       const canvas = await html2canvas(element, {
         backgroundColor: "#0a0a0a",
         scale: 3,
         useCORS: true,
-        allowTaint: false,
+        allowTaint: true, // Allow tainted images for easier capture of cross-origin assets
         logging: true,
         imageTimeout: 15000,
         onclone: (clonedDoc) => {
@@ -48,7 +48,16 @@ export function CampaignSuccessCard({ campaign, open, onClose }: CampaignSuccess
             // Fix ticker positioning in export
             const ticker = clonedElement.querySelector(".campaign-ticker-badge");
             if (ticker) {
-              (ticker as HTMLElement).style.marginTop = "4px";
+              (ticker as HTMLElement).style.display = "inline-flex";
+              (ticker as HTMLElement).style.marginTop = "2px";
+              (ticker as HTMLElement).style.verticalAlign = "middle";
+            }
+
+            // Force images to reload in clone
+            const images = clonedElement.getElementsByTagName('img');
+            for (let i = 0; i < images.length; i++) {
+              const src = images[i].src;
+              images[i].src = src + (src.includes('?') ? '&' : '?') + 't=' + new Date().getTime();
             }
           }
         }
