@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
-import { LogOut, ShieldAlert, HelpCircle } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { LogOut, ShieldAlert, Send } from "lucide-react";
 import { useWallet } from "@/hooks/use-wallet";
+import { CONFIG } from "@shared/config";
 
 interface StatusAlertProps {
   status: "suspended" | "blocked";
@@ -38,7 +38,7 @@ export function StatusAlert({ status }: StatusAlertProps) {
       <motion.div 
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        className="absolute inset-0 bg-background/90 backdrop-blur-md"
+        className="absolute inset-0 bg-background/95 backdrop-blur-xl"
       />
       
       <motion.div
@@ -46,67 +46,70 @@ export function StatusAlert({ status }: StatusAlertProps) {
         animate={{ opacity: 1, y: 0 }}
         className="relative w-full max-w-lg z-10"
       >
-        <div className={`relative bg-[#0a0a0a]/80 border ${content.borderColor} rounded-[32px] p-10 flex flex-col items-center text-center space-y-8 shadow-2xl`}>
+        <div className={`relative bg-card/40 border ${content.borderColor} rounded-[32px] p-12 flex flex-col items-center text-center space-y-10 shadow-2xl backdrop-blur-sm`}>
           
           {/* Header Image Section */}
           <div className="relative">
-            <div className="w-32 h-32 rounded-2xl overflow-hidden border border-white/10 bg-muted/20">
+            <div className="w-36 h-36 rounded-3xl overflow-hidden border border-white/10 bg-muted/20 shadow-2xl">
               <img 
                 src={content.image} 
                 alt={status}
                 className="w-full h-full object-cover"
               />
             </div>
-            <div className="absolute -bottom-3 left-1/2 -translate-x-1/2 px-4 py-1 bg-black rounded-full border border-white/10">
-               <p className="text-[10px] font-black tracking-widest text-yellow-500 uppercase">
+            <div className="absolute -bottom-3 left-1/2 -translate-x-1/2 px-5 py-1.5 bg-background border border-white/10 rounded-full shadow-xl">
+               <p className="text-[11px] font-black tracking-[0.2em] text-primary uppercase">
                  {content.statusText}
                </p>
             </div>
           </div>
 
-          <div className="space-y-2">
-            <h2 className={`text-2xl font-display font-black tracking-tight ${content.accent} leading-tight`}>
+          <div className="space-y-3">
+            <h2 className={`text-4xl font-display font-black tracking-tighter uppercase italic leading-none text-white`}>
               {content.title}
             </h2>
-            <p className="text-lg font-bold text-foreground">
+            <p className="text-2xl font-bold text-white/90 tracking-tight">
               {content.description}
             </p>
           </div>
 
-          <div className="space-y-6 max-w-xs">
-            <p className="text-sm text-muted-foreground/80 leading-relaxed font-medium">
+          <div className="space-y-6 max-w-sm">
+            <p className="text-lg text-white/70 leading-relaxed font-medium">
               {content.explanation}
             </p>
             
             <div className="flex justify-center">
-              <div className="px-4 py-2 rounded-xl bg-white/5 border border-white/10 flex items-center gap-2">
-                <ShieldAlert className="w-4 h-4 text-muted-foreground" />
-                <span className="text-[10px] font-mono font-bold tracking-tight text-muted-foreground uppercase">
+              <div className="px-6 py-2.5 rounded-2xl bg-primary/5 border border-primary/20 flex items-center gap-3">
+                <ShieldAlert className="w-5 h-5 text-primary" />
+                <span className="text-xs font-mono font-bold tracking-wider text-primary uppercase">
                   {content.timeframe}
                 </span>
               </div>
             </div>
           </div>
 
-          <div className="pt-4 flex items-center justify-center gap-8 w-full max-w-xs">
+          <div className="pt-6 flex items-center justify-center gap-12 w-full max-w-md">
             <button 
               onClick={() => disconnect()}
-              className="flex items-center gap-2 text-sm font-bold text-white/90 hover:text-white transition-colors"
+              className="flex items-center gap-3 text-base font-black text-white hover:text-primary transition-all group"
             >
-              <LogOut className="w-4 h-4" />
-              <span className="border-b border-white/20 pb-0.5">DISCONNECT</span>
+              <LogOut className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
+              <span className="tracking-tighter uppercase italic">Disconnect</span>
             </button>
-            <button 
-              className="flex items-center gap-2 text-sm font-bold text-muted-foreground hover:text-foreground transition-colors"
+            <a 
+              href={CONFIG.SOCIAL_LINKS.TELEGRAM}
+              target="_blank"
+              rel="noreferrer"
+              className="flex items-center gap-3 text-base font-black text-white/60 hover:text-white transition-all group"
             >
-              <HelpCircle className="w-4 h-4" />
-              <span className="pb-0.5">SUPPORT</span>
-            </button>
+              <Send className="w-5 h-5 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
+              <span className="tracking-tighter uppercase italic">Telegram Support</span>
+            </a>
           </div>
 
-          <div className="pt-2 opacity-20">
-             <p className="text-[9px] font-mono tracking-[0.2em] uppercase">
-               © MEMEDROP SECURE PROTOCOL ACTIVE
+          <div className="pt-4 opacity-30">
+             <p className="text-[10px] font-mono tracking-[0.4em] uppercase text-white/50">
+               MemeDrop Secure Protocol Active
              </p>
           </div>
         </div>
