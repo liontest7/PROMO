@@ -111,13 +111,35 @@ export function Navigation() {
               <Button 
                 variant="ghost" 
                 size="icon" 
-                className="w-10 h-10 rounded-full bg-yellow-500/10 border border-yellow-500/20 text-yellow-500 hover:bg-yellow-500/20 transition-all shadow-lg shadow-black/20"
+                className="w-10 h-10 rounded-full border border-white/10 text-white/70 hover:text-white hover:bg-white/5 transition-all"
                 asChild
                 title="Leaderboard"
               >
                 <Link href="/leaderboard">
                   <Trophy className="w-5 h-5" />
                 </Link>
+              </Button>
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                className="w-10 h-10 rounded-full border border-white/10 text-white/80 hover:text-blue-400 transition-colors shadow-lg shadow-black/20"
+                asChild
+                data-testid="nav-link-twitter"
+              >
+                <a href={PLATFORM_CONFIG.SOCIAL_LINKS.TWITTER} target="_blank" rel="noreferrer">
+                  <Twitter className="w-5 h-5" />
+                </a>
+              </Button>
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                className="w-10 h-10 rounded-full border border-white/10 hover:bg-white/10 text-white/80 hover:text-blue-500 transition-colors shadow-lg shadow-black/20"
+                asChild
+                data-testid="nav-link-telegram"
+              >
+                <a href={PLATFORM_CONFIG.SOCIAL_LINKS.TELEGRAM} target="_blank" rel="noreferrer">
+                  <Send className="w-5 h-5" />
+                </a>
               </Button>
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
@@ -165,31 +187,8 @@ export function Navigation() {
               </DropdownMenu>
             </div>
 
-            {/* Social Links */}
-            <div className="hidden lg:flex items-center gap-3 mr-2">
-              <Button 
-                variant="ghost" 
-                size="icon" 
-                className="w-10 h-10 rounded-full border border-white/10 hover:bg-white/10 text-white/80 hover:text-blue-400 transition-colors shadow-lg shadow-black/20"
-                asChild
-                data-testid="nav-link-twitter"
-              >
-                <a href={PLATFORM_CONFIG.SOCIAL_LINKS.TWITTER} target="_blank" rel="noreferrer">
-                  <Twitter className="w-5 h-5" />
-                </a>
-              </Button>
-              <Button 
-                variant="ghost" 
-                size="icon" 
-                className="w-10 h-10 rounded-full border border-white/10 hover:bg-white/10 text-white/80 hover:text-blue-500 transition-colors shadow-lg shadow-black/20"
-                asChild
-                data-testid="nav-link-telegram"
-              >
-                <a href={PLATFORM_CONFIG.SOCIAL_LINKS.TELEGRAM} target="_blank" rel="noreferrer">
-                  <Send className="w-5 h-5" />
-                </a>
-              </Button>
-            </div>
+            {/* Hidden Social Links section was here - removed to avoid duplication */}
+
 
             {isConnected ? (
               <div className="flex items-center gap-4">
