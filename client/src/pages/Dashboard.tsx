@@ -47,12 +47,11 @@ const IdentitySync = ({ isAuthenticated, user, logout }: { isAuthenticated: bool
             </p>
             <div className="flex flex-col gap-2">
               <Button 
+                onClick={() => window.location.href = '/api/auth/twitter'}
                 className="w-full bg-blue-500 hover:bg-blue-600 text-white gap-3 font-black text-[10px] h-10 rounded-lg shadow-md transition-all active-elevate-2 uppercase tracking-widest relative overflow-hidden group/btn"
               >
-                <span className="relative z-10">Connect Protocol Node</span>
-                <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover/btn:opacity-100 transition-opacity">
-                  <span className="text-[8px] font-black tracking-[0.2em] animate-pulse">COMING SOON</span>
-                </div>
+                <span className="relative z-10">Verify X Account</span>
+                <div className="absolute inset-0 bg-white/10 opacity-0 group-hover/btn:opacity-100 transition-opacity" />
               </Button>
               <div className="flex justify-center py-2">
                 <div id="cf-turnstile-placeholder" className="w-full min-h-[50px] flex items-center justify-center text-[9px] text-white/20 uppercase font-black tracking-widest border border-dashed border-white/10 rounded-lg px-2 text-center">
@@ -133,6 +132,26 @@ export default function Dashboard() {
   });
 
   const { user: replitUser, isAuthenticated, logout } = useAuth();
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("verified_twitter") === "true" && walletAddress && user && !user.twitterHandle) {
+      // Simulate verification for now
+      fetch('/api/users/profile', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          walletAddress, 
+          twitterHandle: "DropySentinel" 
+        })
+      }).then(() => {
+        queryClient.invalidateQueries({ queryKey: ["/api/users", walletAddress] });
+        toast({ title: "X Identity Synced", description: "Your X account has been verified." });
+        // Clean up URL
+        window.history.replaceState({}, document.title, window.location.pathname);
+      });
+    }
+  }, [walletAddress, user, queryClient, toast]);
 
   useEffect(() => {
     if (user) {

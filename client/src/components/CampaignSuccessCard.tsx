@@ -145,9 +145,10 @@ export function CampaignSuccessCard({ campaign, open, onClose }: CampaignSuccess
                   <img 
                     src="https://i.ibb.co/xtwDPsFy/20260112-1450-Image-Generation-remix-01kes42kp5ft5r4tfh6znvs9c0-1.png" 
                     crossOrigin="anonymous"
-                    className="w-full h-full object-contain" 
+                    className="w-full h-full object-contain no-fade-in" 
                     alt="Success Icon" 
                     loading="eager"
+                    decoding="async"
                   />
                 </div>
                 
@@ -170,13 +171,11 @@ export function CampaignSuccessCard({ campaign, open, onClose }: CampaignSuccess
                           key={campaign.logoUrl}
                           src={campaign.logoUrl} 
                           data-original-src={campaign.logoUrl}
-                          className="w-full h-full object-cover relative z-[110]" 
+                          className="w-full h-full object-cover relative z-[110] no-fade-in" 
                           alt="Logo" 
                           style={ { display: 'block', minWidth: '100%', minHeight: '100%', opacity: 1 } }
                           loading="eager"
-                          onLoad={(e) => {
-                            (e.target as HTMLImageElement).style.opacity = '1';
-                          }}
+                          decoding="async"
                           onError={(e) => {
                             const img = e.target as HTMLImageElement;
                             const currentSrc = img.src;
