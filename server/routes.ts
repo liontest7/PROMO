@@ -70,82 +70,8 @@ export async function registerRoutes(
     }
   });
 
-  // System Settings Routes
-  app.get("/api/admin/settings", async (req, res) => {
-    const settings = await storage.getSystemSettings();
-    res.json(settings);
-  });
-
-  app.patch("/api/admin/settings", async (req, res) => {
-    try {
-      const settings = await storage.updateSystemSettings(req.body);
-      res.json(settings);
-    } catch (err) {
-      res.status(500).json({ message: "Failed to update settings" });
-    }
-  });
-
-  // Twitter OAuth 2.0 Flow
-  app.get("/api/auth/twitter", async (req, res) => {
-    const clientId = process.env.X_CLIENT_ID;
-    const clientSecret = process.env.X_CLIENT_SECRET;
-    const protocol = req.protocol;
-    const host = req.get('host');
-    const redirectUri = `${protocol}://${host}/api/auth/twitter`;
-    const { code } = req.query;
-
-    if (code) {
-      if (!clientId || !clientSecret) {
-        return res.send(`<html><body><script>window.opener.postMessage({ type: 'twitter-auth-error', error: 'auth_failed' }, '*'); window.close();</script></body></html>`);
-      }
-      try {
-        const basicAuth = Buffer.from(`${clientId}:${clientSecret}`).toString('base64');
-        const tokenResponse = await fetch('https://api.twitter.com/2/oauth2/token', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-            'Authorization': `Basic ${basicAuth}`
-          },
-          body: new URLSearchParams({
-            code: code as string,
-            grant_type: 'authorization_code',
-            redirect_uri: redirectUri,
-            code_verifier: 'challenge'
-          })
-        });
-        const tokenData = await tokenResponse.json() as any;
-        if (tokenData.access_token) {
-          const userResponse = await fetch('https://api.twitter.com/2/users/me?user.fields=profile_image_url', {
-            headers: { 'Authorization': `Bearer ${tokenData.access_token}` }
-          });
-          const userData = await userResponse.json() as any;
-          if (userData.data && userData.data.username) {
-            const profileImageUrl = userData.data.profile_image_url || '';
-            return res.send(`<html><body><script>window.opener.postMessage({ type: 'twitter-auth-success', handle: '${userData.data.username}', profileImageUrl: '${profileImageUrl}' }, '*'); window.close();</script></body></html>`);
-          }
-        }
-        return res.send(`<html><body><script>window.opener.postMessage({ type: 'twitter-auth-error', error: 'token_failed' }, '*'); window.close();</script></body></html>`);
-      } catch (err) {
-        console.error("Twitter callback error:", err);
-        return res.send(`<html><body><script>window.opener.postMessage({ type: 'twitter-auth-error', error: 'server_error' }, '*'); window.close();</script></body></html>`);
-      }
-    }
-
-    if (!clientId) {
-      return res.status(400).json({ message: "Twitter API not configured" });
-    }
-
-    const scope = encodeURIComponent('tweet.read users.read follows.read');
-    const state = 'state';
-    const codeChallenge = 'challenge';
-    const authUrl = `https://twitter.com/i/oauth2/authorize?response_type=code&client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&scope=${scope}&state=${state}&code_challenge=${codeChallenge}&code_challenge_method=plain`;
-    
-    return res.redirect(authUrl);
-  });
-
-  app.get("/api/auth/logout", (req, res) => {
-    res.sendStatus(200);
-  });
+  // Remove the problematic /api/logout route that was conflicting with the platform's logout
+  // The platform handles logout automatically via its own internal routes
 
   app.use(async (req, res, next) => {
     const walletAddress = req.headers['x-wallet-address'] || req.body?.walletAddress;
@@ -266,14 +192,6 @@ export async function registerRoutes(
     } catch (err) {
       res.status(500).json({ message: "Failed to update profile" });
     }
-  });
-
-  // Re-enable /api/logout but ensure it's not being called by mistake
-  app.get("/api/logout", (req, res) => {
-    req.logout((err) => {
-      if (err) return res.status(500).json({ message: "Logout failed" });
-      res.redirect('/');
-    });
   });
 
   app.get(api.campaigns.list.path, async (req, res) => {
