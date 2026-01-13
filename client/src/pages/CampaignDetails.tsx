@@ -36,21 +36,6 @@ export default function CampaignDetails() {
   const queryClient = useQueryClient();
   const [, setLocation] = useLocation();
 
-  const [selectedAction, setSelectedAction] = useState<{ action: Action; campaign: Campaign } | null>(null);
-  const [celebrationData, setCelebrationData] = useState<{
-    isOpen: boolean;
-    campaignTitle: string;
-    rewardAmount: string;
-    tokenName: string;
-    actionTitle: string;
-  }>({
-    isOpen: false,
-    campaignTitle: "",
-    rewardAmount: "",
-    tokenName: "",
-    actionTitle: ""
-  });
-
   const { data: campaign, isLoading: campaignLoading } = useQuery<CampaignWithActions | undefined>({
     queryKey: symbol ? [`/api/campaigns/symbol/${symbol}`] : [`/api/campaigns/${id}`],
     enabled: !!(id || symbol),
@@ -285,9 +270,6 @@ export default function CampaignDetails() {
                     <span className="text-xs font-black text-primary uppercase tracking-widest">Rewards</span>
                     <span className="text-lg font-black text-primary">{campaign.rewardPerWallet || '0'} ${campaign.tokenName}</span>
                   </div>
-                  <p className="text-[8px] text-muted-foreground uppercase font-bold tracking-widest">
-                    Verified by Dropy Anti-Fraud System
-                  </p>
                 </div>
               </div>
 
