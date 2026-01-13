@@ -91,6 +91,12 @@ const IdentitySync = ({ isAuthenticated, user, logout }: { isAuthenticated: bool
                   })
                 });
                 if (res.ok) {
+                  // Force immediate local update before refetching
+                  queryClient.setQueryData(["/api/users", walletAddress], (old: any) => ({
+                    ...old,
+                    twitterHandle: "",
+                    profileImageUrl: ""
+                  }));
                   await queryClient.invalidateQueries({ queryKey: ["/api/users", walletAddress] });
                   toast({ title: "X Disconnected", description: "Your X account has been unlinked." });
                 }
