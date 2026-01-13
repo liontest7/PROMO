@@ -41,7 +41,20 @@ export default function CampaignDetails() {
     enabled: !!(id || symbol),
   });
 
-  const [currentMC, setCurrentMC] = useState<number | null>(null);
+  const [selectedAction, setSelectedAction] = useState<{ action: Action; campaign: Campaign } | null>(null);
+  const [celebrationData, setCelebrationData] = useState<{
+    isOpen: boolean;
+    campaignTitle: string;
+    rewardAmount: string;
+    tokenName: string;
+    actionTitle: string;
+  }>({
+    isOpen: false,
+    campaignTitle: "",
+    rewardAmount: "",
+    tokenName: "",
+    actionTitle: ""
+  });
 
   useEffect(() => {
     if (!campaign?.tokenAddress) return;
@@ -533,6 +546,46 @@ export default function CampaignDetails() {
                 </div>
               </CardContent>
             </Card>
+
+            <Card className="glass-card border-white/5 bg-white/5 rounded-2xl overflow-hidden shadow-xl">
+              <CardHeader className="bg-white/5 border-b border-white/5 py-4">
+                <CardTitle className="text-[10px] uppercase tracking-[0.2em] text-white/40 font-black flex items-center gap-2">
+                  <ShieldCheck className="w-3.5 h-3.5 text-primary" />
+                  Blockchain Proofs
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="p-5 space-y-4">
+                <div className="space-y-3">
+                  <div className="flex justify-between items-center group/item cursor-pointer">
+                    <span className="text-white/30 text-[10px] font-black uppercase tracking-wider">Airdrop Wallet</span>
+                    <a 
+                      href={`https://solscan.io/account/${campaign.tokenAddress}`} 
+                      target="_blank" 
+                      rel="noreferrer"
+                      className="font-mono text-[10px] text-primary hover:underline flex items-center gap-1.5"
+                    >
+                      {campaign.tokenAddress?.substring(0, 4)}...{campaign.tokenAddress?.substring(campaign.tokenAddress?.length - 4)}
+                      <ExternalLink className="w-2.5 h-2.5" />
+                    </a>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-white/30 text-[10px] font-black uppercase tracking-wider">Locked Rewards</span>
+                    <span className="font-black text-white text-[10px] uppercase">{Number(campaign.totalRewardPool).toLocaleString()} ${campaign.tokenName}</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-white/30 text-[10px] font-black uppercase tracking-wider">Contract Status</span>
+                    <Badge variant="outline" className="border-green-500/20 bg-green-500/10 text-green-400 text-[9px] font-black h-5 px-2">VERIFIED</Badge>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            <div className="bg-green-500/10 border border-green-500/20 rounded-xl p-3 flex items-center justify-center gap-2 shadow-lg shadow-green-500/5">
+              <ShieldCheck className="w-4 h-4 text-green-400" />
+              <span className="text-[10px] font-black text-green-400 uppercase tracking-widest">
+                Verified by Dropy Anti-Fraud System
+              </span>
+            </div>
           </div>
         </div>
       </div>
