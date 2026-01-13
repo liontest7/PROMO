@@ -136,6 +136,25 @@ export default function Dashboard() {
 
   const { user: replitUser, isAuthenticated, logout } = useAuth();
 
+  const mutation = useMutation({
+    mutationFn: async (data: { walletAddress: string, twitterHandle: string }) => {
+      const res = await fetch('/api/users/profile', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      });
+      if (!res.ok) throw new Error('Failed to update profile');
+      return res.json();
+    },
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ["/api/users", walletAddress] });
+      toast({ 
+        title: "X Identity Synced", 
+        description: `Your X account @${data.twitterHandle} has been verified.` 
+      });
+    }
+  });
+
   useEffect(() => {
     const handleMessage = (event: MessageEvent) => {
       if (event.data.type === 'twitter-auth-success' && walletAddress) {
@@ -173,25 +192,6 @@ export default function Dashboard() {
       window.history.replaceState({}, document.title, window.location.pathname);
     }
   }, [walletAddress, mutation]);
-
-  const mutation = useMutation({
-    mutationFn: async (data: { walletAddress: string, twitterHandle: string }) => {
-      const res = await fetch('/api/users/profile', {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data)
-      });
-      if (!res.ok) throw new Error('Failed to update profile');
-      return res.json();
-    },
-    onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: ["/api/users", walletAddress] });
-      toast({ 
-        title: "X Identity Synced", 
-        description: `Your X account @${data.twitterHandle} has been verified.` 
-      });
-    }
-  });
 
   useEffect(() => {
     if (user) {
