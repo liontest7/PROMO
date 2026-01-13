@@ -16,9 +16,12 @@ import {
   Send,
   Loader2,
   Share2,
-  ArrowRight
+  ArrowRight,
+  TrendingUp,
+  TrendingDown
 } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
+import { cn } from "@/lib/utils";
 import { CONFIG } from "@shared/config";
 import { SuccessCard } from "@/components/SuccessCard";
 import confetti from "canvas-confetti";
@@ -47,6 +50,37 @@ export default function CampaignDetails() {
     tokenName: "",
     actionTitle: ""
   });
+
+  const [currentMC, setCurrentMC] = useState<number | null>(null);
+
+  useEffect(() => {
+    if (!campaign?.tokenAddress) return;
+    const fetchCurrentMC = async () => {
+      try {
+        const res = await fetch(`https://api.dexscreener.com/latest/dex/tokens/${campaign.tokenAddress}`);
+        const data = await res.json();
+        if (data.pairs && data.pairs.length > 0) {
+          const bestPair = data.pairs.sort((a: any, b: any) => (b.liquidity?.usd || 0) - (a.liquidity?.usd || 0))[0];
+          const mc = bestPair.marketCap || bestPair.fdv;
+          if (mc) setCurrentMC(Number(mc));
+        }
+      } catch (e) {
+        console.error("Failed to fetch MC:", e);
+      }
+    };
+    fetchCurrentMC();
+    const interval = setInterval(fetchCurrentMC, 60000);
+    return () => clearInterval(interval);
+  }, [campaign?.tokenAddress]);
+
+  const initialMC = campaign?.initialMarketCap ? Number(campaign.initialMarketCap) : null;
+  const mcChange = (initialMC && currentMC) ? ((currentMC - initialMC) / initialMC) * 100 : null;
+
+  const formatMC = (val: number) => {
+    if (val >= 1000000) return `$${(val / 1000000).toFixed(1)}M`;
+    if (val >= 1000) return `$${(val / 1000).toFixed(0)}K`;
+    return `$${val.toFixed(0)}`;
+  };
 
   const { data: campaign, isLoading: campaignLoading } = useQuery<CampaignWithActions | undefined>({
     queryKey: symbol ? [`/api/campaigns/symbol/${symbol}`] : [`/api/campaigns/${id}`],
@@ -461,6 +495,30 @@ export default function CampaignDetails() {
                 </CardTitle>
               </CardHeader>
               <CardContent className="p-6 space-y-5">
+                {initialMC && currentMC && (
+                  <div className="p-4 rounded-2xl bg-white/[0.03] border border-white/5 space-y-3">
+                    <div className="flex justify-between items-center">
+                      <span className="text-[10px] font-black text-white/40 uppercase tracking-widest">Performance</span>
+                      <div className={cn(
+                        "flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-black",
+                        mcChange! >= 0 ? "text-primary bg-primary/10" : "text-red-400 bg-red-400/10"
+                      )}>
+                        {mcChange! >= 0 ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />}
+                        {mcChange! >= 0 ? "+" : ""}{mcChange?.toFixed(1)}%
+                      </div>
+                    </div>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <p className="text-[9px] font-black text-white/30 uppercase tracking-tighter mb-1">MC at Launch</p>
+                        <p className="text-sm font-black text-white">{formatMC(initialMC)}</p>
+                      </div>
+                      <div>
+                        <p className="text-[9px] font-black text-white/30 uppercase tracking-tighter mb-1">Current MC</p>
+                        <p className="text-sm font-black text-primary">{formatMC(currentMC)}</p>
+                      </div>
+                    </div>
+                  </div>
+                )}
                 <div className="space-y-4">
                   <div className="flex justify-between items-center">
                     <span className="text-white/40 text-xs font-black uppercase tracking-wider">Network</span>

@@ -4,13 +4,14 @@ import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@/componen
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { Coins, Twitter, MessageCircle, ExternalLink, ShieldCheck, Globe, Send, Share2, Copy, Check, ArrowRight, Zap } from "lucide-react";
+import { Coins, Twitter, MessageCircle, ExternalLink, ShieldCheck, Globe, Send, Share2, Copy, Check, ArrowRight, Zap, TrendingUp, TrendingDown } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { motion } from "framer-motion";
 import { useUserStats } from "@/hooks/use-user-stats";
 import { useWallet } from "@/hooks/use-wallet";
+import { cn } from "@/lib/utils";
 
 interface CampaignCardProps {
   campaign: Campaign & { actions: Action[] };
@@ -23,6 +24,37 @@ export function CampaignCard({ campaign, onActionClick, isOwner }: CampaignCardP
   const { toast } = useToast();
   const { walletAddress } = useWallet();
   const { data: stats } = useUserStats(walletAddress || "");
+  const [currentMC, setCurrentMC] = useState<number | null>(null);
+
+  useEffect(() => {
+    const fetchCurrentMC = async () => {
+      try {
+        const res = await fetch(`https://api.dexscreener.com/latest/dex/tokens/${campaign.tokenAddress}`);
+        const data = await res.json();
+        // DexScreener returns an array of pairs
+        if (data.pairs && data.pairs.length > 0) {
+          // Sort by liquidity to get the most reliable pair
+          const bestPair = data.pairs.sort((a: any, b: any) => (b.liquidity?.usd || 0) - (a.liquidity?.usd || 0))[0];
+          const mc = bestPair.marketCap || bestPair.fdv;
+          if (mc) setCurrentMC(Number(mc));
+        }
+      } catch (e) {
+        console.error("Failed to fetch MC:", e);
+      }
+    };
+    fetchCurrentMC();
+    const interval = setInterval(fetchCurrentMC, 60000);
+    return () => clearInterval(interval);
+  }, [campaign.tokenAddress]);
+
+  const initialMC = campaign.initialMarketCap ? Number(campaign.initialMarketCap) : null;
+  const mcChange = (initialMC && currentMC) ? ((currentMC - initialMC) / initialMC) * 100 : null;
+
+  const formatMC = (val: number) => {
+    if (val >= 1000000) return `$${(val / 1000000).toFixed(1)}M`;
+    if (val >= 1000) return `$${(val / 1000).toFixed(0)}K`;
+    return `$${val.toFixed(0)}`;
+  };
   
   const totalBudgetNum = Number(campaign.totalBudget);
   const remainingBudgetNum = Number(campaign.remainingBudget);
@@ -184,7 +216,22 @@ export function CampaignCard({ campaign, onActionClick, isOwner }: CampaignCardP
           </div>
         </CardContent>
 
-        <CardFooter className="pt-4 pb-6 border-t border-white/5 bg-white/[0.01] px-6">
+        <CardFooter className="pt-4 pb-6 border-t border-white/5 bg-white/[0.01] px-6 flex flex-col gap-2">
+          {initialMC && currentMC && (
+            <div className="flex items-center justify-between w-full mb-1">
+              <div className="flex items-center gap-1.5">
+                <div className="w-1.5 h-1.5 rounded-full bg-primary/40 animate-pulse" />
+                <span className="text-[10px] font-black text-white/40 uppercase tracking-widest">Growth since launch</span>
+              </div>
+              <div className={cn(
+                "flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-black",
+                mcChange! >= 0 ? "text-primary bg-primary/10" : "text-red-400 bg-red-400/10"
+              )}>
+                {mcChange! >= 0 ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />}
+                {mcChange! >= 0 ? "+" : ""}{mcChange?.toFixed(1)}%
+              </div>
+            </div>
+          )}
           <p className="text-[9px] font-black text-muted-foreground/40 w-full text-center uppercase tracking-[0.2em]">
             LAUNCHED {formatDistanceToNow(new Date(campaign.createdAt || Date.now()), { addSuffix: true })}
           </p>

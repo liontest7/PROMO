@@ -210,11 +210,15 @@ export function CreateCampaignDialog() {
         
         // Handle Market Cap from different sources
         let mcValue = "";
-        if (moralisData?.market_cap_usd) {
-          mcValue = moralisData.market_cap_usd.toString();
+        // Prioritize DexScreener FDV/MarketCap as it's free and often more accurate for new tokens
+        if (dexData?.pairs?.[0]?.marketCap) {
+          mcValue = dexData.pairs[0].marketCap.toString();
         } else if (dexData?.pairs?.[0]?.fdv) {
           mcValue = dexData.pairs[0].fdv.toString();
+        } else if (moralisData?.market_cap_usd) {
+          mcValue = moralisData.market_cap_usd.toString();
         }
+        
         if (mcValue) {
           form.setValue('initialMarketCap', mcValue);
         }
