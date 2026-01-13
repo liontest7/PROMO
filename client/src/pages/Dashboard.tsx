@@ -73,13 +73,12 @@ const IdentitySync = ({ isAuthenticated, user, logout }: { isAuthenticated: bool
             <p className="text-base font-black font-display tracking-tight text-white uppercase italic">{user?.firstName || 'Dropy Sentinel'}</p>
             <Badge className="bg-primary/20 text-primary border-none text-[8px] font-black mt-1 uppercase tracking-widest">Node Synced</Badge>
           </div>
-          <button 
-            type="button"
+          <div 
             className="h-8 w-8 rounded-lg text-white/30 hover:text-destructive hover:bg-destructive/10 relative z-10 transition-all flex items-center justify-center bg-transparent border-0 cursor-pointer p-0" 
             onClick={async (e) => {
               e.preventDefault();
               e.stopPropagation();
-              console.log("Disconnecting X...");
+              console.log("Unlinking X Identity...");
               try {
                 const res = await fetch('/api/users/profile', {
                   method: 'PATCH',
@@ -91,7 +90,7 @@ const IdentitySync = ({ isAuthenticated, user, logout }: { isAuthenticated: bool
                   })
                 });
                 if (res.ok) {
-                  // Force immediate local update before refetching
+                  // Manually clear local state to avoid race conditions with query invalidation
                   queryClient.setQueryData(["/api/users", walletAddress], (old: any) => {
                     if (!old) return old;
                     return {
@@ -101,16 +100,16 @@ const IdentitySync = ({ isAuthenticated, user, logout }: { isAuthenticated: bool
                     };
                   });
                   await queryClient.invalidateQueries({ queryKey: ["/api/users", walletAddress] });
-                  toast({ title: "X Disconnected", description: "Your X account has been unlinked." });
+                  toast({ title: "X Identity Removed", description: "Your X account has been successfully unlinked." });
                 }
               } catch (err) {
-                console.error("Disconnect error:", err);
-                toast({ title: "Error", description: "Failed to disconnect", variant: "destructive" });
+                console.error("Unlink error:", err);
+                toast({ title: "Error", description: "Failed to unlink account", variant: "destructive" });
               }
             }}
           >
             <LogOut className="w-4 h-4" />
-          </button>
+          </div>
           <div className="absolute bottom-0 right-0 p-2 opacity-5">
             <ShieldCheck className="w-10 h-10 text-primary" />
           </div>
