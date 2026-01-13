@@ -37,13 +37,15 @@ export function TermsModal() {
 
   const handleScroll = (event: React.UIEvent<HTMLDivElement>) => {
     const { scrollTop, scrollHeight, clientHeight } = event.currentTarget;
-    // Strict bottom detection: 
-    // scrollTop + clientHeight must be very close to scrollHeight
-    // AND scrollTop must be greater than 0 to ensure scrolling started
-    // AND we use a very small tolerance (1px)
-    const isAtBottom = Math.ceil(scrollTop + clientHeight) >= scrollHeight - 1;
     
-    if (isAtBottom && scrollTop > 100) { // Require at least 100px of scrolling
+    // Calculate how close to the bottom we are
+    // We use a 10px buffer to be user-friendly while ensuring they reached the end
+    const buffer = 10;
+    const isAtBottom = scrollTop + clientHeight >= scrollHeight - buffer;
+    
+    // Only set to true if they've actually scrolled (scrollTop > 0)
+    // and reached the bottom.
+    if (isAtBottom && scrollTop > 50) {
       setHasReadToBottom(true);
     }
   };
@@ -98,48 +100,53 @@ export function TermsModal() {
             onScrollCapture={handleScroll}
           >
             <div className="space-y-6 text-[14px] text-white/90 leading-relaxed pb-6">
-              <section className="bg-white/5 p-4 rounded-xl border border-white/5">
-                <h3 className="text-primary font-black text-xs uppercase tracking-[0.2em] mb-2">1. Acceptance & Decentralized Scope</h3>
-                <p>By connecting your Solana wallet, you agree to these Terms. Dropy is a decentralized technology interface. We do not hold user funds; all rewards are distributed via smart contracts or automated on-chain events. You are responsible for your own private keys and wallet security.</p>
+              <section className="bg-primary/5 p-4 rounded-xl border border-primary/10">
+                <h3 className="text-primary font-black text-xs uppercase tracking-[0.2em] mb-2">1. ACCEPTANCE & DECENTRALIZED PROTOCOL</h3>
+                <p>By accessing the Dropy Platform, you acknowledge that you are using a decentralized technology interface. Dropy does not act as a custodian of your assets. You maintain full control over your Solana wallet and private keys at all times. Your use of the platform constitutes a legally binding agreement to these Terms of Service.</p>
               </section>
               
               <section>
-                <h3 className="text-white font-black text-xs uppercase tracking-[0.2em] mb-2">2. X (Twitter) & Social Verification</h3>
-                <p>Verification of marketing tasks (Follow, Like, Retweet) is performed through the X API. By participating, you authorize the Platform to read your public social engagement status. We do not store your credentials or post content on your behalf. Failure of the X API or social platform outages may delay or invalidate reward claims.</p>
+                <h3 className="text-white font-black text-xs uppercase tracking-[0.2em] mb-2">2. X (TWITTER) & API VERIFICATION</h3>
+                <p>The platform utilizes the X API to verify marketing task completion (Follow, Like, Retweet). By participating, you grant the platform permission to verify your social engagement status. We do not store login credentials or post on your behalf. You acknowledge that third-party API failures may affect reward distribution.</p>
               </section>
 
               <section>
-                <h3 className="text-white font-black text-xs uppercase tracking-[0.2em] mb-2">3. Anti-Fraud & Sybil Protection</h3>
-                <p>To maintain a fair ecosystem, we implement strict anti-Sybil measures. This includes monitoring IP addresses, wallet associations, and social profile age/activity. Using multiple wallets to claim the same reward, using bots, or falsifying engagement will result in an immediate and permanent ban of your wallet address and forfeiture of all accumulated rewards.</p>
+                <h3 className="text-white font-black text-xs uppercase tracking-[0.2em] mb-2">3. ANTI-FRAUD & SYBIL PROTECTION</h3>
+                <p>To ensure ecosystem integrity, we implement rigorous anti-fraud measures. Prohibited activities include: use of multiple wallets by a single user (Sybil attacks), automated scripts/bots, and falsifying social engagement. Any detected violation will result in an immediate, permanent ban of your wallet and forfeiture of all rewards.</p>
               </section>
 
               <section>
-                <h3 className="text-white font-black text-xs uppercase tracking-[0.2em] mb-2">4. Reward Distribution & Volatility</h3>
-                <p>Project tokens earned through Dropy are subject to extreme market volatility. The Platform does not guarantee the future value of any reward. We reserve the right to pause or cancel campaign distributions if fraudulent activity is detected or if a project project fails to maintain its token liquidity.</p>
+                <h3 className="text-white font-black text-xs uppercase tracking-[0.2em] mb-2">4. RISK DISCLOSURE & VOLATILITY</h3>
+                <p>Digital assets and project tokens are subject to extreme market volatility. Dropy makes no guarantees regarding the financial value, liquidity, or future utility of any rewards earned. Participation is at your own risk. We are not responsible for losses due to market fluctuations or Solana network congestion.</p>
               </section>
 
               <section>
-                <h3 className="text-white font-black text-xs uppercase tracking-[0.2em] mb-2">5. Protocol Reputation (XP)</h3>
-                <p>Your "Reputation" and "XP" are internal platform metrics used to gate high-value rewards. These points have no monetary value and are non-transferable. Attempting to manipulate these scores via artificial activity is a violation of these terms.</p>
+                <h3 className="text-white font-black text-xs uppercase tracking-[0.2em] mb-2">5. INDEMNIFICATION</h3>
+                <p>You agree to indemnify and hold harmless Dropy, its contributors, and affiliates from any claims, damages, or losses arising from your use of the platform, violation of these terms, or infringement of third-party rights. This includes any legal fees incurred during dispute resolution.</p>
               </section>
 
               <section>
-                <h3 className="text-white font-black text-xs uppercase tracking-[0.2em] mb-2">6. Intellectual Property & Brand</h3>
-                <p>All logos, mascots, and platform code are the property of Dropy. Users may not scrape platform data, reverse engineer the engine, or use Dropy branding for unauthorized promotional activities.</p>
+                <h3 className="text-white font-black text-xs uppercase tracking-[0.2em] mb-2">6. TERMINATION OF ACCESS</h3>
+                <p>We reserve the right to suspend or terminate your access to the platform at our sole discretion, without prior notice, for any conduct that we believe violates these Terms or is harmful to other users or the platform's integrity.</p>
               </section>
 
               <section>
-                <h3 className="text-white font-black text-xs uppercase tracking-[0.2em] mb-2">7. Disclaimer of Warranties</h3>
-                <p>The platform is provided "AS IS" without warranties of any kind. We are not responsible for Solana network congestion, "failed" transactions, or lost assets due to user error.</p>
+                <h3 className="text-white font-black text-xs uppercase tracking-[0.2em] mb-2">7. INTELLECTUAL PROPERTY</h3>
+                <p>All platform content, including logos, mascots, code, and UI elements, is the exclusive property of Dropy. Unauthorized reproduction, modification, or distribution of platform assets is strictly prohibited.</p>
               </section>
 
               <section className="border-t border-white/10 pt-4">
-                <h3 className="text-white font-black text-xs uppercase tracking-[0.2em] mb-2">8. Governing Law & Jurisdiction</h3>
-                <p>Users are responsible for compliance with local regulations. Access is prohibited in jurisdictions where crypto-assets or decentralized marketing platforms are restricted by law.</p>
+                <h3 className="text-white font-black text-xs uppercase tracking-[0.2em] mb-2">8. GOVERNING LAW</h3>
+                <p>These Terms shall be governed by and construed in accordance with international digital asset regulations. You are responsible for ensuring compliance with the laws of your local jurisdiction.</p>
               </section>
 
-              <div className="pt-2 italic text-[11px] font-medium text-white/40 text-center">
-                Last Updated: January 13, 2026. Version 2.1 (Phase 2 Alpha)
+              <section>
+                <h3 className="text-white font-black text-xs uppercase tracking-[0.2em] mb-2">9. SEVERABILITY</h3>
+                <p>If any provision of these Terms is found to be unenforceable or invalid, that provision shall be limited or eliminated to the minimum extent necessary so that the remainder of the Terms shall otherwise remain in full force and effect.</p>
+              </section>
+
+              <div className="pt-4 border-t border-white/5 italic text-[11px] font-medium text-white/40 text-center">
+                Last Updated: January 13, 2026. Version 2.2 (Phase 2 Full Compliance)
               </div>
             </div>
           </ScrollArea>
