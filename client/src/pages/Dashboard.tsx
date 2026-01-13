@@ -74,33 +74,35 @@ const IdentitySync = ({ isAuthenticated, user, logout }: { isAuthenticated: bool
             <Badge className="bg-primary/20 text-primary border-none text-[8px] font-black mt-1 uppercase tracking-widest">Node Synced</Badge>
           </div>
           <div 
-            className="h-8 w-8 rounded-lg text-white/30 hover:text-destructive hover:bg-destructive/10 relative z-10 transition-all flex items-center justify-center bg-transparent border-0 cursor-pointer p-0" 
+            className="h-8 w-8 rounded-lg text-white/30 hover:text-destructive hover:bg-destructive/10 relative z-30 transition-all flex items-center justify-center bg-transparent border-0 cursor-pointer p-0" 
             onClick={async (e) => {
               e.preventDefault();
               e.stopPropagation();
               console.log("Unlinking X Identity...");
               try {
+                // Ensure the fetch is directed to the correct profile update endpoint
                 const res = await fetch('/api/users/profile', {
                   method: 'PATCH',
-                  headers: { 'Content-Type': 'application/json' },
+                  headers: { 
+                    'Content-Type': 'application/json',
+                    'x-wallet-address': walletAddress || ''
+                  },
                   body: JSON.stringify({
                     walletAddress: walletAddress,
                     twitterHandle: "",
                     profileImageUrl: ""
                   })
                 });
+                
                 if (res.ok) {
-                  // Manually clear local state to avoid race conditions with query invalidation
-                  queryClient.setQueryData(["/api/users", walletAddress], (old: any) => {
-                    if (!old) return old;
-                    return {
-                      ...old,
-                      twitterHandle: "",
-                      profileImageUrl: ""
-                    };
-                  });
+                  const updatedData = await res.json();
+                  // Update cache directly to ensure UI reflects changes immediately
+                  queryClient.setQueryData(["/api/users", walletAddress], updatedData);
                   await queryClient.invalidateQueries({ queryKey: ["/api/users", walletAddress] });
                   toast({ title: "X Identity Removed", description: "Your X account has been successfully unlinked." });
+                } else {
+                  const errorData = await res.json().catch(() => ({}));
+                  throw new Error(errorData.message || 'Failed to unlink');
                 }
               } catch (err) {
                 console.error("Unlink error:", err);

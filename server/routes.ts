@@ -123,6 +123,10 @@ export async function registerRoutes(
     return res.redirect(authUrl);
   });
 
+  app.get("/api/auth/logout", (req, res) => {
+    res.sendStatus(200);
+  });
+
   app.use(async (req, res, next) => {
     const walletAddress = req.headers['x-wallet-address'] || req.body?.walletAddress;
     if (walletAddress && typeof walletAddress === 'string') {
