@@ -19,6 +19,11 @@ export function LiveTerminal({ errorLogs, executions }: LiveTerminalProps) {
         <CardDescription>Real-time system events, RPC status, and security alerts.</CardDescription>
       </CardHeader>
       <CardContent className="p-4 h-[500px] overflow-y-auto space-y-2">
+        {(!errorLogs || errorLogs.length === 0) && (!executions || executions.length === 0) && (
+          <div className="text-[11px] text-muted-foreground opacity-50 italic">
+            Waiting for protocol events...
+          </div>
+        )}
         {errorLogs?.map((log: any, i: number) => (
           <div key={i} className="text-[11px] leading-relaxed flex gap-3">
             <span className="text-muted-foreground opacity-50">[{format(new Date(log.timestamp), 'HH:mm:ss')}]</span>

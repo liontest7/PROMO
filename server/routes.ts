@@ -461,6 +461,7 @@ export async function registerRoutes(
       // Execution trend (last 7 days)
       const last7Days = [...Array(7)].map((_, i) => {
         const d = new Date();
+        d.setHours(0, 0, 0, 0);
         d.setDate(d.getDate() - i);
         return d.toISOString().split('T')[0];
       }).reverse();
@@ -473,6 +474,12 @@ export async function registerRoutes(
         }
         return acc;
       }, {});
+
+      // Add a dummy data point for today if no executions exist to make the graph visible
+      const today = new Date().toISOString().split('T')[0];
+      if (!executionsByDate[today]) {
+        executionsByDate[today] = 0;
+      }
 
       const trend = last7Days.map(date => ({
         date,
