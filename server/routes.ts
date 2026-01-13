@@ -579,13 +579,21 @@ export async function registerRoutes(
       const campaigns = await storage.getAllCampaigns();
       const executions = await storage.getAllExecutions();
       const totalRewardsPaid = executions.filter(e => e.status === 'paid').reduce((sum, e) => sum + parseFloat(e.action?.rewardAmount || "0"), 0);
+      
+      // Simple logic to flag suspicious campaigns
+      const suspiciousCampaignsCount = campaigns.filter(c => 
+        parseFloat(c.remainingBudget) < 0 || 
+        c.status === 'paused'
+      ).length;
+
       res.json({
         totalUsers: users.length,
         activeCampaigns: campaigns.filter(c => c.status === 'active').length,
         totalExecutions: executions.length,
         totalRewardsPaid,
         blockedUsers: users.filter(u => u.status === 'blocked').length,
-        suspendedUsers: users.filter(u => u.status === 'suspended').length
+        suspendedUsers: users.filter(u => u.status === 'suspended').length,
+        suspiciousCampaigns: suspiciousCampaignsCount
       });
     } catch (err) {
       res.status(500).json({ message: "Failed to fetch admin stats" });

@@ -20,6 +20,7 @@ export interface IStorage {
 
   // Fraud Monitoring
   getSuspiciousUsers(): Promise<User[]>;
+  getSuspiciousCampaigns(): Promise<(Campaign & { actions: Action[] })[]>;
 
   // Campaign
   getCampaigns(creatorId?: number): Promise<(Campaign & { actions: Action[] })[]>;
@@ -112,11 +113,24 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getSuspiciousUsers(): Promise<User[]> {
-    // Flag users with high reputation (>200) or high balance (>50) for review
     return await db.select()
       .from(users)
-      .where(sql`${users.reputationScore} > 200 OR ${users.balance}::numeric > 50`)
+      .where(sql`${users.reputationScore} > 200 OR ${users.balance}::numeric > 50 OR ${users.status} = 'suspended'`)
       .orderBy(desc(users.reputationScore));
+  }
+
+  async getSuspiciousCampaigns(): Promise<(Campaign & { actions: Action[] })[]> {
+    const suspicious = await db.select()
+      .from(campaigns)
+      .where(sql`${campaigns.remainingBudget}::numeric < 0 OR ${campaigns.status} = 'paused'`)
+      .orderBy(desc(campaigns.createdAt));
+    
+    const results = [];
+    for (const campaign of suspicious) {
+      const campaignActions = await db.select().from(actions).where(eq(actions.campaignId, campaign.id));
+      results.push({ ...campaign, actions: campaignActions });
+    }
+    return results;
   }
 
   async getCampaigns(creatorId?: number): Promise<(Campaign & { actions: Action[] })[]> {
