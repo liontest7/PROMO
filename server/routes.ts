@@ -62,7 +62,7 @@ export async function registerRoutes(
       const originalSend = res.send;
       res.send = function(body) {
         if (typeof body === 'string') {
-          body = body.replace(/MemeDrop/g, 'Dropy');
+          body = body.replace(/Dropy/g, 'Dropy');
         }
         return originalSend.call(this, body);
       };
