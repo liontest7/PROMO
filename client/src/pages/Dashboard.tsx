@@ -26,41 +26,36 @@ import { cn } from "@/lib/utils";
 const IdentitySync = ({ isAuthenticated, user, logout }: { isAuthenticated: boolean; user: any; logout: () => void }) => (
   <Card className="glass-card border border-white/10 bg-white/[0.02] rounded-[2rem] overflow-hidden p-1 shadow-xl lg:max-w-md ml-auto">
     <CardHeader className="p-6 pb-4">
-      <CardTitle className="text-xl font-black font-display uppercase italic tracking-tighter leading-none text-white">Identity Sync</CardTitle>
+      <CardTitle className="text-2xl font-black font-display uppercase italic tracking-tighter leading-none text-white">Identity Sync</CardTitle>
       <div className="h-0.5 w-12 bg-white/20 mt-3 rounded-full" />
     </CardHeader>
     <CardContent className="p-6 pt-0 space-y-4">
       {!isAuthenticated ? (
-        <div className="p-4 rounded-xl bg-blue-500/5 border border-blue-500/10 relative overflow-hidden group shadow-lg">
+        <div className="p-5 rounded-xl bg-blue-500/5 border border-blue-500/10 relative overflow-hidden group shadow-lg">
           <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-all duration-700">
-            <Twitter className="w-12 h-12" />
+            <Twitter className="w-14 h-14" />
           </div>
-          <div className="relative z-10 text-left space-y-3">
+          <div className="relative z-10 text-left space-y-4">
             <div className="flex items-center gap-2 mb-1">
-              <div className="p-1.5 rounded-lg bg-blue-500/20 border border-blue-500/30">
-                <Twitter className="w-4 h-4 text-blue-400" />
+              <div className="p-2 rounded-lg bg-blue-500/20 border border-blue-500/30">
+                <Twitter className="w-5 h-5 text-blue-400" />
               </div>
-              <span className="text-[11px] font-black uppercase tracking-widest text-white italic">X Identity Sync</span>
+              <span className="text-[13px] font-black uppercase tracking-widest text-white italic">X Identity Sync</span>
             </div>
-            <p className="text-[10px] text-white/40 font-bold uppercase tracking-widest leading-relaxed">
+            <p className="text-[12px] text-white/50 font-bold uppercase tracking-widest leading-relaxed max-w-[90%]">
               Verify your X account to unlock high-yield engagement campaigns.
             </p>
-            <div className="flex flex-col gap-2">
+            <div className="flex flex-col gap-2 pt-2">
               <Button 
                 onClick={() => {
                   console.log("Redirecting to Twitter Auth...");
                   window.location.href = '/api/auth/twitter';
                 }}
-                className="w-full bg-blue-500 hover:bg-blue-600 text-white gap-3 font-black text-[10px] h-10 rounded-lg shadow-md transition-all active-elevate-2 uppercase tracking-widest relative overflow-hidden group/btn"
+                className="w-full bg-blue-500 hover:bg-blue-600 text-white gap-3 font-black text-[11px] h-11 rounded-lg shadow-md transition-all active-elevate-2 uppercase tracking-widest relative overflow-hidden group/btn"
               >
-                <span className="relative z-10">Verify X Account</span>
+                <span className="relative z-10">Connect Protocol Node</span>
                 <div className="absolute inset-0 bg-white/10 opacity-0 group-hover/btn:opacity-100 transition-opacity" />
               </Button>
-              <div className="flex justify-center py-2">
-                <div id="cf-turnstile-placeholder" className="w-full min-h-[50px] flex items-center justify-center text-[9px] text-white/20 uppercase font-black tracking-widest border border-dashed border-white/10 rounded-lg px-2 text-center">
-                  Bot Protection Active
-                </div>
-              </div>
             </div>
           </div>
         </div>
@@ -87,30 +82,25 @@ const IdentitySync = ({ isAuthenticated, user, logout }: { isAuthenticated: bool
         </div>
       )}
 
-      <div className="p-4 rounded-xl bg-blue-600/5 border border-blue-600/10 relative overflow-hidden group shadow-lg opacity-60 grayscale hover:grayscale-0 transition-all">
+      <div className="p-5 rounded-xl bg-blue-600/5 border border-blue-600/10 relative overflow-hidden group shadow-lg opacity-60 grayscale hover:grayscale-0 transition-all">
         <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-all duration-700">
-          <Send className="w-12 h-12" />
+          <Send className="w-14 h-14" />
         </div>
-        <div className="relative z-10 text-left space-y-3">
+        <div className="relative z-10 text-left space-y-4">
           <div className="flex items-center gap-2 mb-1">
-            <div className="p-1.5 rounded-lg bg-blue-600/20 border border-blue-600/30">
-              <Send className="w-4 h-4 text-blue-500" />
+            <div className="p-2 rounded-lg bg-blue-600/20 border border-blue-600/30">
+              <Send className="w-5 h-5 text-blue-500" />
             </div>
-            <span className="text-[11px] font-black uppercase tracking-widest text-white italic">TG Identity</span>
+            <span className="text-[13px] font-black uppercase tracking-widest text-white italic">TG Identity</span>
           </div>
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-2 pt-2">
             <Button 
               variant="outline"
               disabled
-              className="w-full border-white/10 hover:bg-white/5 text-white/40 gap-3 font-black text-[10px] h-10 rounded-lg transition-all uppercase tracking-widest cursor-not-allowed"
+              className="w-full border-white/10 hover:bg-white/5 text-white/40 gap-3 font-black text-[11px] h-11 rounded-lg transition-all uppercase tracking-widest cursor-not-allowed"
             >
               Initiate Secure Link
             </Button>
-            <div className="flex justify-center py-1">
-              <div className="w-full h-[30px] flex items-center justify-center text-[8px] text-white/10 uppercase font-black tracking-tighter border border-dashed border-white/5 rounded-md px-2 text-center">
-                Phase 2 Only
-              </div>
-            </div>
           </div>
         </div>
       </div>
