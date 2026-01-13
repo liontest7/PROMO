@@ -71,7 +71,11 @@ export default function Landing() {
     <div className="min-h-screen bg-background text-foreground relative">
       <header>
         <title>Dropy - The #1 Solana Marketing Platform</title>
-        <meta name="description" content={`Connect, complete tasks, and earn crypto rewards instantly on Solana. The premier engagement platform for real users and authentic growth.`} />
+        <meta name="description" content="Connect, complete tasks, and earn crypto rewards instantly on Solana. The premier engagement platform for real users and authentic growth." />
+        <meta property="og:title" content="Dropy - The #1 Solana Marketing Platform" />
+        <meta property="og:description" content="Connect, complete tasks, and earn crypto rewards instantly on Solana." />
+        <meta property="og:image" content={PLATFORM_CONFIG.ASSETS.LANDING_MASCOT} />
+        <meta name="twitter:card" content="summary_large_image" />
       </header>
       
       <div className="sticky top-0 z-50 w-full">

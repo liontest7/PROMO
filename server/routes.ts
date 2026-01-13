@@ -39,7 +39,16 @@ export async function registerRoutes(
     message: { message: "Too many requests from this IP, please try again after 15 minutes" }
   });
 
+  const authLimiter = rateLimit({
+    windowMs: 60 * 60 * 1000, // 1 hour
+    max: 10, // Limit each IP to 10 auth requests per hour
+    standardHeaders: true,
+    legacyHeaders: false,
+    message: { message: "Too many authentication attempts, please try again after an hour" }
+  });
+
   app.use("/api", apiLimiter);
+  app.use("/api/users/auth", authLimiter);
 
   app.use(async (req, res, next) => {
     const walletAddress = req.headers['x-wallet-address'] || req.body?.walletAddress;

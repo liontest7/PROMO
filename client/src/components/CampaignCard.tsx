@@ -101,6 +101,8 @@ export function CampaignCard({ campaign, onActionClick, isOwner }: CampaignCardP
             <img 
               src={campaign.bannerUrl} 
               alt={campaign.title} 
+              loading="lazy"
+              decoding="async"
               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
             />
           ) : (
@@ -149,7 +151,7 @@ export function CampaignCard({ campaign, onActionClick, isOwner }: CampaignCardP
             <Link href={`/c/${campaign.tokenName}`}>
               <div className="w-20 h-20 rounded-2xl border-4 border-background bg-card overflow-hidden shadow-2xl hover:scale-105 transition-transform cursor-pointer">
                 {campaign.logoUrl ? (
-                  <img src={campaign.logoUrl} alt="Logo" className="w-full h-full object-cover" />
+                  <img src={campaign.logoUrl} alt="Logo" loading="lazy" className="w-full h-full object-cover" />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center bg-primary/10">
                     <Coins className="w-8 h-8 text-primary" />
