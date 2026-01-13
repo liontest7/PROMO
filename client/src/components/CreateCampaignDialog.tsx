@@ -65,7 +65,20 @@ export function CreateCampaignDialog() {
   const { isConnected, userId, connect } = useWallet();
   const { toast } = useToast();
 
+  const { data: settings } = useQuery<any>({
+    queryKey: ["/api/admin/settings"],
+  });
+
   const handleOpenClick = (e: React.MouseEvent) => {
+    if (!settings?.campaignsEnabled) {
+      e.preventDefault();
+      toast({
+        title: "Maintenance",
+        description: "Campaign creation is temporarily disabled.",
+        variant: "destructive"
+      });
+      return;
+    }
     if (!isConnected) {
       e.preventDefault();
       toast({
@@ -346,7 +359,9 @@ export function CreateCampaignDialog() {
                             <FormControl><SelectTrigger><SelectValue placeholder="Select type" /></SelectTrigger></FormControl>
                             <SelectContent>
                               <SelectItem value="holder_qualification">Holder Qualification (Live)</SelectItem>
-                              <SelectItem value="engagement">Social Engagement (Coming Soon)</SelectItem>
+                              <SelectItem value="engagement" disabled={settings?.twitterApiStatus !== 'active'}>
+                                Social Engagement {settings?.twitterApiStatus === 'active' ? '(Live)' : '(Coming Soon)'}
+                              </SelectItem>
                             </SelectContent>
                           </Select>
                           <FormMessage />

@@ -50,6 +50,21 @@ export async function registerRoutes(
   app.use("/api", apiLimiter);
   app.use("/api/users/auth", authLimiter);
 
+  // System Settings Routes
+  app.get("/api/admin/settings", async (req, res) => {
+    const settings = await storage.getSystemSettings();
+    res.json(settings);
+  });
+
+  app.patch("/api/admin/settings", async (req, res) => {
+    try {
+      const settings = await storage.updateSystemSettings(req.body);
+      res.json(settings);
+    } catch (err) {
+      res.status(500).json({ message: "Failed to update settings" });
+    }
+  });
+
   app.use(async (req, res, next) => {
     const walletAddress = req.headers['x-wallet-address'] || req.body?.walletAddress;
     if (walletAddress && typeof walletAddress === 'string') {
@@ -190,6 +205,11 @@ export async function registerRoutes(
 
   app.post(api.campaigns.create.path, async (req, res) => {
     try {
+      const settings = await storage.getSystemSettings();
+      if (!settings.campaignsEnabled) {
+        return res.status(503).json({ message: "Campaign creation is temporarily disabled for maintenance." });
+      }
+
       console.log(`[Campaign] Creating new campaign request from ${req.body.walletAddress}`);
       const body = req.body;
       const { signature, walletAddress } = body;

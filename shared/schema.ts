@@ -5,6 +5,13 @@ import { relations } from "drizzle-orm";
 
 // === TABLE DEFINITIONS ===
 
+export const systemSettings = pgTable("system_settings", {
+  id: serial("id").primaryKey(),
+  campaignsEnabled: boolean("campaigns_enabled").default(true).notNull(),
+  twitterApiStatus: text("twitter_api_status", { enum: ["active", "coming_soon", "error"] }).default("coming_soon").notNull(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
 export const users = pgTable("users", {
   id: serial("id").primaryKey(),
   walletAddress: text("wallet_address").notNull().unique(),

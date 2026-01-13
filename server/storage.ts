@@ -1,7 +1,7 @@
 import { db } from "./db";
 import { eq, desc, sql } from "drizzle-orm";
 import {
-  users, campaigns, actions, executions, holderState,
+  users, campaigns, actions, executions, holderState, systemSettings,
   type User, type InsertUser,
   type Campaign, type InsertCampaign,
   type Action, type InsertAction,
@@ -51,6 +51,9 @@ export interface IStorage {
   getAllCampaigns(): Promise<(Campaign & { actions: Action[] })[]>;
   getAllExecutions(): Promise<(Execution & { user: User, campaign: Campaign, action: Action })[]>;
   getLeaderboard(): Promise<User[]>;
+  // System Settings
+  getSystemSettings(): Promise<typeof systemSettings.$inferSelect>;
+  updateSystemSettings(settings: Partial<typeof systemSettings.$inferSelect>): Promise<typeof systemSettings.$inferSelect>;
   // Anti-fraud
   getWalletsByIp(ip: string): Promise<string[]>;
   logIpWalletAssociation(ip: string, wallet: string): Promise<void>;
@@ -361,6 +364,34 @@ export class DatabaseStorage implements IStorage {
       .where(eq(users.role, "user"))
       .orderBy(desc(users.reputationScore), desc(users.createdAt))
       .limit(100);
+  }
+
+  async getSystemSettings(): Promise<typeof systemSettings.$inferSelect> {
+    let [settings] = await db.select().from(systemSettings);
+    if (!settings) {
+      const hasTwitterKeys = !!(process.env.X_CONSUMER_KEY && process.env.X_CONSUMER_SECRET && process.env.X_BEARER_TOKEN);
+      [settings] = await db.insert(systemSettings).values({
+        campaignsEnabled: true,
+        twitterApiStatus: hasTwitterKeys ? "active" : "coming_soon"
+      }).returning();
+    }
+    return settings;
+  }
+
+  async updateSystemSettings(update: Partial<typeof systemSettings.$inferSelect>): Promise<typeof systemSettings.$inferSelect> {
+    const [settings] = await db.select().from(systemSettings);
+    if (!settings) {
+      const [newSettings] = await db.insert(systemSettings).values({
+        campaignsEnabled: update.campaignsEnabled ?? true,
+        twitterApiStatus: update.twitterApiStatus ?? "coming_soon"
+      }).returning();
+      return newSettings;
+    }
+    const [updated] = await db.update(systemSettings)
+      .set({ ...update, updatedAt: new Date() })
+      .where(eq(systemSettings.id, settings.id))
+      .returning();
+    return updated;
   }
 }
 

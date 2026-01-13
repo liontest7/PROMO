@@ -16,12 +16,34 @@ import { FraudShield } from "@/components/admin/FraudShield";
 import { AuditDialog } from "@/components/admin/AuditDialog";
 import { LiveTerminal } from "@/components/admin/LiveTerminal";
 import { AdminAnalytics } from "@/components/admin/AdminAnalytics";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
 
 export default function AdminDashboard() {
   const { toast } = useToast();
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCampaign, setSelectedCampaign] = useState<any>(null);
   
+  const { data: settings, isLoading: loadingSettings } = useQuery<any>({
+    queryKey: ["/api/admin/settings"],
+  });
+
+  const updateSettingsMutation = useMutation({
+    mutationFn: async (newSettings: any) => {
+      const res = await fetch("/api/admin/settings", {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newSettings)
+      });
+      if (!res.ok) throw new Error('Failed to update settings');
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/settings"] });
+      toast({ title: "Success", description: "System settings updated" });
+    }
+  });
+
   const { data: users, isLoading: loadingUsers } = useQuery<any[]>({
     queryKey: ["/api/admin/users"],
   });
@@ -141,7 +163,7 @@ export default function AdminDashboard() {
     }
   });
 
-  if (loadingUsers || loadingCampaigns || loadingExecutions || loadingStats || loadingHealth) {
+  if (loadingUsers || loadingCampaigns || loadingExecutions || loadingStats || loadingHealth || loadingSettings) {
     return (
       <div className="flex h-screen items-center justify-center bg-background">
         <div className="flex flex-col items-center gap-4">
@@ -156,6 +178,44 @@ export default function AdminDashboard() {
     <div className="min-h-screen bg-background text-foreground pb-20">
       <Navigation />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
+        <Card className="glass-card border-white/10 bg-white/[0.01] rounded-2xl overflow-hidden">
+          <CardHeader className="border-b border-white/5 bg-white/[0.02]">
+            <CardTitle className="text-xl">System Controls</CardTitle>
+            <CardDescription>Global toggle for platform features and maintenance.</CardDescription>
+          </CardHeader>
+          <CardContent className="p-6">
+            <div className="flex flex-col md:flex-row gap-8">
+              <div className="flex items-center space-x-4">
+                <Switch 
+                  id="campaigns-enabled" 
+                  checked={settings?.campaignsEnabled} 
+                  onCheckedChange={(checked) => updateSettingsMutation.mutate({ campaignsEnabled: checked })}
+                />
+                <Label htmlFor="campaigns-enabled" className="flex flex-col">
+                  <span className="font-bold uppercase text-[10px] tracking-widest">Campaign Creation</span>
+                  <span className="text-xs text-muted-foreground">{settings?.campaignsEnabled ? 'Enabled' : 'Disabled for Maintenance'}</span>
+                </Label>
+              </div>
+
+              <div className="flex items-center space-x-4">
+                <div className={`h-3 w-3 rounded-full animate-pulse ${settings?.twitterApiStatus === 'active' ? 'bg-green-500' : 'bg-yellow-500'}`} />
+                <div className="flex flex-col">
+                  <span className="font-bold uppercase text-[10px] tracking-widest">Twitter API Status</span>
+                  <span className="text-xs text-muted-foreground uppercase tracking-tighter">
+                    {settings?.twitterApiStatus === 'active' ? 'Connected & Verified' : 'Awaiting Integration'}
+                  </span>
+                </div>
+              </div>
+
+              {settings?.twitterApiStatus !== 'active' && (
+                <div className="flex-1 text-right">
+                  <p className="text-[10px] text-muted-foreground italic">Add X_CONSUMER_KEY, X_CONSUMER_SECRET, and X_BEARER_TOKEN to Secrets to activate.</p>
+                </div>
+              )}
+            </div>
+          </CardContent>
+        </Card>
+
         <AdminStats 
           stats={adminStats || { totalUsers: 0, activeCampaigns: 0, totalExecutions: 0, totalRewardsPaid: 0, blockedUsers: 0 }} 
           campaignsCount={campaigns?.length || 0} 
