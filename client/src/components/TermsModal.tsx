@@ -37,8 +37,8 @@ export function TermsModal() {
 
   const handleScroll = (event: React.UIEvent<HTMLDivElement>) => {
     const { scrollTop, scrollHeight, clientHeight } = event.currentTarget;
-    // Using a more robust threshold and Math.ceil to handle subpixel issues
-    const isAtBottom = Math.ceil(scrollTop + clientHeight) >= scrollHeight - 5;
+    // Using a more strict threshold to ensure they are at the very bottom
+    const isAtBottom = Math.ceil(scrollTop + clientHeight) >= scrollHeight - 2;
     if (isAtBottom) {
       setHasReadToBottom(true);
     }
