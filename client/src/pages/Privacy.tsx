@@ -98,7 +98,7 @@ export default function PrivacyPolicy() {
                 </h2>
                 <div className="p-6 bg-primary/5 rounded-2xl border border-primary/10 italic text-sm text-white/90 leading-relaxed">
                   We implement industry-standard encryption. However, you remain the ultimate guardian of your assets. Dropy never requests, stores, or has access to your private keys or seed phrases. All on-chain transaction data is public and immutable by the nature of the Solana blockchain.
-                </p>
+                </div>
               </section>
 
               <section className="relative pl-12">

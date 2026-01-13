@@ -39,13 +39,12 @@ export function TermsModal() {
     const { scrollTop, scrollHeight, clientHeight } = event.currentTarget;
     
     // Calculate how close to the bottom we are
-    // We use a 10px buffer to be user-friendly while ensuring they reached the end
-    const buffer = 10;
-    const isAtBottom = scrollTop + clientHeight >= scrollHeight - buffer;
+    // We use a larger buffer (20px) to be more reliable across different browsers/resolutions
+    const buffer = 20;
+    const isAtBottom = (scrollTop + clientHeight) >= (scrollHeight - buffer);
     
-    // Only set to true if they've actually scrolled (scrollTop > 0)
-    // and reached the bottom.
-    if (isAtBottom && scrollTop > 50) {
+    // Set to true if they've scrolled enough and reached near the bottom
+    if (isAtBottom && scrollTop > 100) {
       setHasReadToBottom(true);
     }
   };
@@ -95,61 +94,54 @@ export function TermsModal() {
         </DialogHeader>
 
         <div className="flex-1 overflow-hidden p-0 relative bg-black/40">
-          <ScrollArea 
-            className="h-[450px] w-full px-10 py-4" 
-            onScrollCapture={handleScroll}
+          <div 
+            className="h-[450px] overflow-y-auto w-full px-10 py-6 custom-scrollbar" 
+            onScroll={handleScroll}
           >
-            <div className="space-y-6 text-[14px] text-white/90 leading-relaxed pb-6">
-              <section className="bg-primary/5 p-4 rounded-xl border border-primary/10">
-                <h3 className="text-primary font-black text-xs uppercase tracking-[0.2em] mb-2">1. ACCEPTANCE & DECENTRALIZED PROTOCOL</h3>
-                <p>By accessing the Dropy Platform, you acknowledge that you are using a decentralized technology interface. Dropy does not act as a custodian of your assets. You maintain full control over your Solana wallet and private keys at all times. Your use of the platform constitutes a legally binding agreement to these Terms of Service.</p>
+            <div className="space-y-8 text-[14px] text-white/90 leading-relaxed pb-12">
+              <section className="bg-primary/5 p-5 rounded-2xl border border-primary/20 shadow-[0_0_30px_rgba(34,197,94,0.05)]">
+                <h3 className="text-primary font-black text-xs uppercase tracking-[0.2em] mb-3 flex items-center gap-2">
+                  <ShieldCheck className="w-4 h-4" />
+                  1. DECENTRALIZED PROTOCOL & NON-CUSTODIAL SCOPE
+                </h3>
+                <p>By connecting your Solana wallet, you acknowledge that Dropy is a decentralized technology interface. We do not act as an intermediary, custodian, or broker. You maintain 100% control over your digital assets and private keys at all times. Dropy does not have the technical capability to reverse transactions or recover lost funds due to wallet mismanagement.</p>
               </section>
               
               <section>
-                <h3 className="text-white font-black text-xs uppercase tracking-[0.2em] mb-2">2. X (TWITTER) & API VERIFICATION</h3>
-                <p>The platform utilizes the X API to verify marketing task completion (Follow, Like, Retweet). By participating, you grant the platform permission to verify your social engagement status. We do not store login credentials or post on your behalf. You acknowledge that third-party API failures may affect reward distribution.</p>
+                <h3 className="text-white font-black text-xs uppercase tracking-[0.2em] mb-3">2. X (TWITTER) & THIRD-PARTY VERIFICATION</h3>
+                <p>Our verification engine utilizes the X API to confirm social marketing tasks. You grant the platform permission to verify your public social engagement status (follows, likes, retweets). Dropy is not responsible for X platform outages, API rate limits, or account restrictions that may prevent reward distribution. We never store your social credentials or post content on your behalf.</p>
               </section>
 
               <section>
-                <h3 className="text-white font-black text-xs uppercase tracking-[0.2em] mb-2">3. ANTI-FRAUD & SYBIL PROTECTION</h3>
-                <p>To ensure ecosystem integrity, we implement rigorous anti-fraud measures. Prohibited activities include: use of multiple wallets by a single user (Sybil attacks), automated scripts/bots, and falsifying social engagement. Any detected violation will result in an immediate, permanent ban of your wallet and forfeiture of all rewards.</p>
+                <h3 className="text-white font-black text-xs uppercase tracking-[0.2em] mb-3">3. ANTI-FRAUD, SYBIL PROTECTION & BLACKLISTING</h3>
+                <p>To ensure fairness, we implement strict anti-Sybil measures. This includes monitoring IP addresses, wallet-social identity mapping, and on-chain behavior. Prohibited activities include using multiple wallets, automated scripts (bots), or falsifying engagement. Dropy reserves the right to permanently blacklist any wallet and forfeit all accumulated rewards if fraudulent activity is detected.</p>
               </section>
 
               <section>
-                <h3 className="text-white font-black text-xs uppercase tracking-[0.2em] mb-2">4. RISK DISCLOSURE & VOLATILITY</h3>
-                <p>Digital assets and project tokens are subject to extreme market volatility. Dropy makes no guarantees regarding the financial value, liquidity, or future utility of any rewards earned. Participation is at your own risk. We are not responsible for losses due to market fluctuations or Solana network congestion.</p>
+                <h3 className="text-white font-black text-xs uppercase tracking-[0.2em] mb-3">4. REWARD VOLATILITY & MARKET RISK</h3>
+                <p>Project tokens earned through Dropy are high-risk digital assets subject to extreme price volatility. Dropy makes no guarantees regarding the future value, liquidity, or utility of any reward. You acknowledge that some project tokens may lose all value and that Dropy is not responsible for any financial losses incurred from holding or trading these assets.</p>
               </section>
 
               <section>
-                <h3 className="text-white font-black text-xs uppercase tracking-[0.2em] mb-2">5. INDEMNIFICATION</h3>
-                <p>You agree to indemnify and hold harmless Dropy, its contributors, and affiliates from any claims, damages, or losses arising from your use of the platform, violation of these terms, or infringement of third-party rights. This includes any legal fees incurred during dispute resolution.</p>
+                <h3 className="text-white font-black text-xs uppercase tracking-[0.2em] mb-3">5. INDEMNIFICATION & LEGAL PROTECTION</h3>
+                <p>You agree to indemnify, defend, and hold harmless Dropy and its contributors from any claims, losses, or legal fees arising from your use of the platform, violation of these terms, or infringement of any third-party rights. This platform is provided "AS IS" without warranties of any kind.</p>
               </section>
 
               <section>
-                <h3 className="text-white font-black text-xs uppercase tracking-[0.2em] mb-2">6. TERMINATION OF ACCESS</h3>
-                <p>We reserve the right to suspend or terminate your access to the platform at our sole discretion, without prior notice, for any conduct that we believe violates these Terms or is harmful to other users or the platform's integrity.</p>
+                <h3 className="text-white font-black text-xs uppercase tracking-[0.2em] mb-3">6. TERMINATION & PROTOCOL ACCESS</h3>
+                <p>We reserve the right to suspend or terminate your access to the platform interface at our sole discretion, without notice, for any conduct that violates these Terms or is deemed harmful to the protocol's integrity or the decentralized community.</p>
               </section>
 
-              <section>
-                <h3 className="text-white font-black text-xs uppercase tracking-[0.2em] mb-2">7. INTELLECTUAL PROPERTY</h3>
-                <p>All platform content, including logos, mascots, code, and UI elements, is the exclusive property of Dropy. Unauthorized reproduction, modification, or distribution of platform assets is strictly prohibited.</p>
+              <section className="border-t border-white/10 pt-6">
+                <h3 className="text-white font-black text-xs uppercase tracking-[0.2em] mb-3">7. GOVERNING LAW & SEVERABILITY</h3>
+                <p>These terms are governed by international digital asset standards. If any provision is found to be unenforceable, it shall be limited to the minimum extent necessary so that the remainder of the terms remain in full force. You are responsible for local regulatory compliance.</p>
               </section>
 
-              <section className="border-t border-white/10 pt-4">
-                <h3 className="text-white font-black text-xs uppercase tracking-[0.2em] mb-2">8. GOVERNING LAW</h3>
-                <p>These Terms shall be governed by and construed in accordance with international digital asset regulations. You are responsible for ensuring compliance with the laws of your local jurisdiction.</p>
-              </section>
-
-              <section>
-                <h3 className="text-white font-black text-xs uppercase tracking-[0.2em] mb-2">9. SEVERABILITY</h3>
-                <p>If any provision of these Terms is found to be unenforceable or invalid, that provision shall be limited or eliminated to the minimum extent necessary so that the remainder of the Terms shall otherwise remain in full force and effect.</p>
-              </section>
-
-              <div className="pt-4 border-t border-white/5 italic text-[11px] font-medium text-white/40 text-center">
-                Last Updated: January 13, 2026. Version 2.2 (Phase 2 Full Compliance)
+              <div className="pt-8 italic text-[11px] font-bold text-white/30 text-center uppercase tracking-widest">
+                Last Updated: January 13, 2026 • Version 2.3 (Legal Shield Plus)
               </div>
             </div>
-          </ScrollArea>
+          </div>
         </div>
 
         <DialogFooter className="p-6 border-t border-white/5 bg-black/60 flex-col gap-4">

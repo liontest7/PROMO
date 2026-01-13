@@ -43,15 +43,15 @@ export default function TermsOfService() {
             <div className="space-y-12">
               <section className="relative pl-12">
                 <div className="absolute left-0 top-1 text-primary/40 font-black text-2xl italic tracking-tighter">01</div>
-                <h2 className="text-white font-black text-xl mb-4 uppercase tracking-tight">1. DECENTRALIZED PROTOCOL & WALLET SECURITY</h2>
+                <h2 className="text-white font-black text-xl mb-4 uppercase tracking-tight">1. DECENTRALIZED PROTOCOL & NON-CUSTODIAL NATURE</h2>
                 <div className="space-y-4 text-white/90 leading-relaxed font-medium">
-                  <p>Dropy operates as a decentralized technology interface for the Solana blockchain. By using the platform, you acknowledge that we are non-custodial and do not have access to your private keys, seed phrases, or digital assets. You are solely responsible for:</p>
+                  <p>Dropy is a decentralized technology interface. By using the platform, you acknowledge that we are non-custodial and do not have access to your private keys or assets. You are solely responsible for your own digital security.</p>
                   <ul className="grid grid-cols-1 gap-2">
                     {[
-                      "Maintaining the confidentiality of your private keys",
-                      "Verifying all transaction details before on-chain execution",
-                      "Paying all required network fees (SOL gas)",
-                      "Securing your hardware and software from unauthorized access"
+                      "We do not hold or manage user funds",
+                      "You are responsible for all Solana network (gas) fees",
+                      "Lost private keys cannot be recovered by Dropy",
+                      "All on-chain transactions are final and irreversible"
                     ].map((item, idx) => (
                       <li key={idx} className="flex items-center gap-3 p-3 bg-white/5 rounded-xl border border-white/5 text-xs font-bold uppercase tracking-wide text-white">
                         <div className="w-1.5 h-1.5 rounded-full bg-primary" />
@@ -64,57 +64,33 @@ export default function TermsOfService() {
 
               <section className="relative pl-12">
                 <div className="absolute left-0 top-1 text-primary/40 font-black text-2xl italic tracking-tighter">02</div>
-                <h2 className="text-white font-black text-xl mb-4 uppercase tracking-tight">2. X (TWITTER) INTEGRATION & THIRD-PARTY APIs</h2>
+                <h2 className="text-white font-black text-xl mb-4 uppercase tracking-tight">2. X (TWITTER) VERIFICATION & API DISCLAIMER</h2>
                 <div className="space-y-4 text-white/90 leading-relaxed font-medium">
-                  <p>Our verification engine utilizes the X API to confirm task completion. You acknowledge that Dropy is not affiliated with X (formerly Twitter) and that platform outages, API changes, or account restrictions on X may interfere with your ability to claim rewards. We only access public engagement data as authorized by you during the connection process.</p>
+                  <p>Our verification system utilizes the X API. We are not responsible for social platform outages or API limitations that may delay rewards. We only access data you explicitly authorize and never store your social credentials.</p>
                 </div>
               </section>
 
               <section className="relative pl-12">
                 <div className="absolute left-0 top-1 text-primary/40 font-black text-2xl italic tracking-tighter">03</div>
-                <h2 className="text-white font-black text-xl mb-4 uppercase tracking-tight">3. ANTI-FRAUD & SYBIL PROTECTION POLICY</h2>
+                <h2 className="text-white font-black text-xl mb-4 uppercase tracking-tight">3. ANTI-FRAUD & SYBIL PROTECTION PROTOCOLS</h2>
                 <div className="space-y-4 text-white/90 leading-relaxed font-medium">
-                  <p>To ensure a fair distribution of rewards, Dropy implements advanced fraud detection, including but not limited to:</p>
-                  <ul className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                    {[
-                      "IP address monitoring and geo-fencing",
-                      "Wallet-to-Social identity mapping",
-                      "Reputation scoring based on on-chain history",
-                      "Bot behavior detection algorithms"
-                    ].map((item, idx) => (
-                      <li key={idx} className="flex items-center gap-3 p-3 bg-white/5 rounded-xl border border-white/5 text-xs font-bold uppercase tracking-wide text-white">
-                        <ShieldCheck className="w-4 h-4 text-primary" />
-                        {item}
-                      </li>
-                    ))}
-                  </ul>
-                  <p className="text-sm font-bold text-destructive uppercase tracking-widest pt-2">
-                    SUSPECTED FRAUD RESULTS IN PERMANENT BLACKLISTING AND TOTAL REWARD FORFEITURE.
-                  </p>
+                  <p>To ensure a fair ecosystem, we implement advanced fraud detection including IP monitoring, wallet associations, and bot behavior analysis. We reserve the right to blacklist any wallet involved in Sybil attacks or fraudulent engagement.</p>
                 </div>
               </section>
 
               <section className="relative pl-12">
                 <div className="absolute left-0 top-1 text-primary/40 font-black text-2xl italic tracking-tighter">04</div>
-                <h2 className="text-white font-black text-xl mb-4 uppercase tracking-tight">4. INDEMNIFICATION & LIABILITY</h2>
+                <h2 className="text-white font-black text-xl mb-4 uppercase tracking-tight">4. INDEMNIFICATION & LIMITATION OF LIABILITY</h2>
                 <div className="p-6 bg-primary/5 rounded-2xl border border-primary/10 italic text-sm text-white/90 leading-relaxed">
-                  You agree to indemnify, defend, and hold harmless Dropy, its developers, and affiliates from and against any and all claims, liabilities, damages, losses, or expenses, including legal fees, arising out of or in any way connected with your access to or use of the platform, your violation of these Terms, or your infringement of any intellectual property or other rights of any third party.
+                  You agree to indemnify and hold harmless Dropy from any claims, damages, or losses arising from your use of the platform. Dropy shall not be liable for any indirect, incidental, or consequential damages resulting from network errors or third-party service failures.
                 </div>
               </section>
 
               <section className="relative pl-12">
                 <div className="absolute left-0 top-1 text-primary/40 font-black text-2xl italic tracking-tighter">05</div>
-                <h2 className="text-white font-black text-xl mb-4 uppercase tracking-tight">5. DISCLAIMER OF WARRANTIES</h2>
+                <h2 className="text-white font-black text-xl mb-4 uppercase tracking-tight">5. TERMINATION & MODIFICATION</h2>
                 <p className="text-white/90 leading-relaxed font-medium">
-                  THE PLATFORM IS PROVIDED ON AN "AS IS" AND "AS AVAILABLE" BASIS. DROPY DISCLAIMS ALL WARRANTIES, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND NON-INFRINGEMENT. WE DO NOT WARRANT THAT THE PLATFORM WILL BE UNINTERRUPTED, SECURE, OR ERROR-FREE.
-                </p>
-              </section>
-
-              <section className="relative pl-12">
-                <div className="absolute left-0 top-1 text-primary/40 font-black text-2xl italic tracking-tighter">06</div>
-                <h2 className="text-white font-black text-xl mb-4 uppercase tracking-tight">6. MODIFICATIONS TO TERMS</h2>
-                <p className="text-white/90 leading-relaxed font-medium">
-                  We reserve the right to modify these Terms at any time. Updates will be reflected in the "Last Updated" date at the top of this page. Your continued use of the platform after any such changes constitutes your acceptance of the new Terms.
+                  We reserve the right to modify these Terms or suspend platform access at any time for any reason, including violation of these terms or conduct harmful to the protocol's integrity.
                 </p>
               </section>
             </div>
