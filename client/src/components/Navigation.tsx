@@ -78,7 +78,7 @@ export function Navigation() {
             </span>
           </Link>
 
-            <div className="hidden md:flex items-center gap-3">
+            <div className="hidden md:flex items-center gap-2 lg:gap-3">
               <NavLink href="/earn" icon={Coins}>Earn Rewards</NavLink>
               <NavLink href="/about" icon={ShieldCheck}>About Us</NavLink>
               
@@ -89,8 +89,8 @@ export function Navigation() {
               )}
             </div>
 
-          <div className="flex items-center gap-4">
-            <div className="hidden lg:flex items-center gap-3 mr-4 pr-4 border-r border-white/10">
+          <div className="flex items-center gap-2 lg:gap-4">
+            <div className="hidden lg:flex items-center gap-3 mr-2 lg:mr-4 pr-2 lg:pr-4 border-r border-white/10">
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button 

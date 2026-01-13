@@ -1,7 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useQuery } from "@tanstack/react-query";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar } from "recharts";
-import { Activity, Users, Megaphone, CheckCircle2, TrendingUp } from "lucide-react";
+import { Activity, Users, Megaphone, CheckCircle2, TrendingUp, Zap } from "lucide-react";
 
 export function AdminAnalytics() {
   const { data: analytics, isLoading } = useQuery<{
@@ -32,7 +32,7 @@ export function AdminAnalytics() {
 
   return (
     <div className="space-y-6">
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-5 gap-4">
         <Card className="glass-card border-white/10 bg-white/[0.01]">
           <CardHeader className="pb-2">
             <CardTitle className="text-[10px] font-black uppercase text-muted-foreground flex items-center gap-2">
@@ -78,6 +78,20 @@ export function AdminAnalytics() {
               {stats.conversionRate}x
             </div>
             <p className="text-[9px] text-muted-foreground mt-1 uppercase font-bold">Tasks per user</p>
+          </CardContent>
+        </Card>
+
+        <Card className="glass-card border-primary/20 bg-primary/5 hidden lg:block">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-[10px] font-black uppercase text-primary flex items-center gap-2">
+              <Zap className="w-3 h-3" /> Growth Score
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-black font-display text-primary">
+              {((stats.taskVerified / (stats.totalUsers || 1)) * 100).toFixed(0)}%
+            </div>
+            <p className="text-[9px] text-primary/70 mt-1 uppercase font-bold">Engagement Rate</p>
           </CardContent>
         </Card>
       </div>
