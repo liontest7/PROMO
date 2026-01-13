@@ -82,7 +82,21 @@ export async function registerRoutes(
     
     const authUrl = `https://twitter.com/i/oauth2/authorize?response_type=code&client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&scope=${scope}&state=${state}&code_challenge=${codeChallenge}&code_challenge_method=plain`;
     
-    res.redirect(authUrl);
+    res.send(`
+      <html>
+        <body>
+          <script>
+            const width = 600;
+            const height = 800;
+            const left = (window.screen.width / 2) - (width / 2);
+            const top = (window.screen.height / 2) - (height / 2);
+            window.open('${authUrl}', 'TwitterAuth', 'width=' + width + ',height=' + height + ',top=' + top + ',left=' + left);
+            window.location.href = '/dashboard';
+          </script>
+          <p>Redirecting to Twitter...</p>
+        </body>
+      </html>
+    `);
   });
 
   app.get("/api/auth/twitter/callback", async (req, res) => {
@@ -126,16 +140,43 @@ export async function registerRoutes(
         const userData = await userResponse.json() as any;
         
         if (userData.data && userData.data.username) {
-          // We don't have the wallet address here directly from the session
-          // In a real app, we'd use session middleware.
-          // For now, redirect back with the handle to let the frontend update
-          return res.redirect(`/dashboard?verified_twitter=true&handle=${userData.data.username}`);
+          return res.send(`
+            <html>
+              <body>
+                <script>
+                  window.opener.location.href = '/dashboard?verified_twitter=true&handle=${userData.data.username}';
+                  window.close();
+                </script>
+                <p>Verification successful! Closing window...</p>
+              </body>
+            </html>
+          `);
         }
       }
-      res.redirect("/dashboard?error=token_failed");
+      res.send(`
+        <html>
+          <body>
+            <script>
+              window.opener.location.href = '/dashboard?error=token_failed';
+              window.close();
+            </script>
+            <p>Verification failed. Closing window...</p>
+          </body>
+        </html>
+      `);
     } catch (err) {
       console.error("Twitter callback error:", err);
-      res.redirect("/dashboard?error=server_error");
+      res.send(`
+        <html>
+          <body>
+            <script>
+              window.opener.location.href = '/dashboard?error=server_error';
+              window.close();
+            </script>
+            <p>Server error. Closing window...</p>
+          </body>
+        </html>
+      `);
     }
   });
 
