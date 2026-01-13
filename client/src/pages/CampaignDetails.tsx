@@ -571,7 +571,7 @@ export default function CampaignDetails() {
                   </div>
                   <div className="flex justify-between items-center">
                     <span className="text-white/30 text-[10px] font-black uppercase tracking-wider">Locked Rewards</span>
-                    <span className="font-black text-white text-[10px] uppercase">{Number(campaign.budget).toLocaleString()} ${campaign.tokenName}</span>
+                    <span className="font-black text-white text-[10px] uppercase">{Number(campaign.totalBudget).toLocaleString()} ${campaign.tokenName}</span>
                   </div>
                   <div className="flex justify-between items-center">
                     <span className="text-white/30 text-[10px] font-black uppercase tracking-wider">Contract Status</span>
