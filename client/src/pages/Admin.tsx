@@ -240,6 +240,7 @@ export default function AdminDashboard() {
           <TabsContent value="fraud">
             <FraudShield 
               users={users || []} 
+              campaigns={campaigns || []}
               onUpdateStatus={(userId, status) => updateStatusMutation.mutate({ userId, status })}
             />
           </TabsContent>

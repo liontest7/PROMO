@@ -275,7 +275,26 @@ export async function registerRoutes(
               }
             }
 
-            // 2. Min Wallet Age check (Improved estimation)
+            // 2. Project Token Holding check
+            const minTokenRequired = campaign.requirements?.minProjectTokenHolding || 0;
+            const tokenMintAddr = campaign.requirements?.projectTokenAddress || campaign.tokenAddress;
+            if (minTokenRequired > 0 && tokenMintAddr) {
+              const tokenPublicKey = new PublicKey(tokenMintAddr);
+              const tokenAccounts = await connection.getParsedTokenAccountsByOwner(walletPublicKey, {
+                mint: tokenPublicKey
+              });
+              let currentBalance = 0;
+              if (tokenAccounts.value.length > 0) {
+                currentBalance = tokenAccounts.value[0].account.data.parsed.info.tokenAmount.uiAmount || 0;
+              }
+              if (currentBalance < minTokenRequired) {
+                return res.status(403).json({ 
+                  message: `Anti-Bot: Minimum ${minTokenRequired} tokens required. Your balance: ${currentBalance.toFixed(2)}` 
+                });
+              }
+            }
+
+            // 3. Min Wallet Age check (Improved estimation)
             const minAgeDays = campaign.requirements?.minWalletAgeDays || campaign.requirements?.walletAgeDays || 0;
             if (minAgeDays > 0) {
               const signatures = await connection.getSignaturesForAddress(walletPublicKey, { limit: 1 }, 'finalized');

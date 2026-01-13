@@ -298,9 +298,21 @@ export default function CampaignDetails() {
                           </div>
                           <div className="space-y-0.5">
                             <h3 className="text-base font-black uppercase tracking-tight text-white">Holder Verification</h3>
-                            <p className="text-[10px] font-bold text-white/40 uppercase tracking-widest leading-none">
-                              Hold {Number(campaign.minHoldingAmount).toLocaleString()} ${campaign.tokenName} for {campaign.minHoldingDuration} days
-                            </p>
+                            <div className="space-y-1">
+                              <p className="text-[10px] font-bold text-white/40 uppercase tracking-widest leading-none">
+                                Hold {Number(campaign.minHoldingAmount).toLocaleString()} ${campaign.tokenName} for {campaign.minHoldingDuration} days
+                              </p>
+                              {campaign.requirements?.minSolBalance && (
+                                <p className="text-[9px] font-bold text-primary/60 uppercase tracking-widest leading-none">
+                                  Min SOL: {campaign.requirements.minSolBalance}
+                                </p>
+                              )}
+                              {campaign.requirements?.minWalletAgeDays && (
+                                <p className="text-[9px] font-bold text-primary/60 uppercase tracking-widest leading-none">
+                                  Min Wallet Age: {campaign.requirements.minWalletAgeDays} Days
+                                </p>
+                              )}
+                            </div>
                           </div>
                         </div>
 
