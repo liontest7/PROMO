@@ -70,9 +70,9 @@ export async function registerRoutes(
     }
   });
 
-  // Safe internal status route
-  app.get("/api/status", (req, res) => {
-    res.json({ status: "ok" });
+  // Re-map /api/logout to prevent platform conflict
+  app.get("/api/auth/logout-proxy", (req, res) => {
+    res.json({ success: true });
   });
 
   // Remove the problematic /api/logout route that was conflicting with the platform's logout
