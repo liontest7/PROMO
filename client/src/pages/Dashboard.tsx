@@ -47,9 +47,12 @@ const IdentitySync = ({ isAuthenticated, user, logout }: { isAuthenticated: bool
             </p>
             <div className="flex flex-col gap-2">
               <Button 
-                className="w-full bg-blue-500 hover:bg-blue-600 text-white gap-3 font-black text-[10px] h-10 rounded-lg shadow-md transition-all active-elevate-2 uppercase tracking-widest"
+                className="w-full bg-blue-500 hover:bg-blue-600 text-white gap-3 font-black text-[10px] h-10 rounded-lg shadow-md transition-all active-elevate-2 uppercase tracking-widest relative overflow-hidden group/btn"
               >
-                Connect Protocol Node
+                <span className="relative z-10">Connect Protocol Node</span>
+                <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover/btn:opacity-100 transition-opacity">
+                  <span className="text-[8px] font-black tracking-[0.2em] animate-pulse">COMING SOON</span>
+                </div>
               </Button>
               <div className="flex justify-center py-2">
                 <div id="cf-turnstile-placeholder" className="w-full min-h-[50px] flex items-center justify-center text-[9px] text-white/20 uppercase font-black tracking-widest border border-dashed border-white/10 rounded-lg px-2 text-center">

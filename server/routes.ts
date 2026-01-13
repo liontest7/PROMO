@@ -447,6 +447,10 @@ export async function registerRoutes(
       }
     } catch (err) {
       console.error("Verification error:", err);
+      // Log suspicious activity for admin
+      if (err instanceof Error && err.message.includes("Fraud")) {
+        console.warn(`[FRAUD ALERT] Potential bot activity from IP ${req.ip}`);
+      }
       res.status(400).json({ message: "Invalid request" });
     }
   });

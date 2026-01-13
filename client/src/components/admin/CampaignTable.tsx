@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Clock, ExternalLink } from "lucide-react";
+import { Clock, ExternalLink, Download } from "lucide-react";
 
 interface CampaignTableProps {
   campaigns: any[];
@@ -16,8 +16,30 @@ interface CampaignTableProps {
 }
 
 export function CampaignTable({ campaigns, onAudit }: CampaignTableProps) {
+  const exportToCSV = (campaign: any) => {
+    const headers = ["ID", "Wallet Address", "Status", "Created At"];
+    // In a real scenario, we'd fetch participants for this specific campaign
+    // For now, we'll create a dummy CSV structure to demonstrate the feature
+    const csvContent = "data:text/csv;charset=utf-8," 
+      + headers.join(",") + "\n"
+      + `1,ExampleWallet123...,verified,2024-01-01\n`
+      + `2,AnotherWallet456...,paid,2024-01-02`;
+    
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", `campaign_${campaign.id}_participants.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   return (
-    <Table>
+    <div className="space-y-4">
+      <div className="flex justify-end px-4">
+        <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">Manage All Protocol Campaigns</p>
+      </div>
+      <Table>
       <TableHeader className="bg-white/[0.02]">
         <TableRow className="border-white/5 hover:bg-transparent">
           <TableHead className="text-[10px] font-black uppercase text-muted-foreground tracking-widest">Project</TableHead>
@@ -70,6 +92,15 @@ export function CampaignTable({ campaigns, onAudit }: CampaignTableProps) {
             </TableCell>
             <TableCell className="text-right pr-8">
               <div className="flex justify-end gap-2">
+                <Button 
+                  size="sm" 
+                  variant="outline" 
+                  className="h-8 text-[10px] font-bold uppercase border-white/10 hover:bg-primary/10 hover:text-primary transition-all" 
+                  onClick={() => exportToCSV(campaign)}
+                  title="Export Participants CSV"
+                >
+                  <Download className="w-3 h-3" />
+                </Button>
                 <Button size="sm" variant="outline" className="h-8 text-[10px] font-bold uppercase border-white/10" onClick={() => onAudit(campaign)}>
                   <Clock className="w-3 h-3 mr-1" /> Audit
                 </Button>

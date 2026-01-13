@@ -89,11 +89,25 @@ export class DatabaseStorage implements IStorage {
   }
 
   async updateUserSocials(id: number, socials: { twitterHandle?: string; telegramHandle?: string }): Promise<User> {
-    const [user] = await db.update(users)
+    const [user] = await db.select().from(users).where(eq(users.id, id));
+    const [updatedUser] = await db.update(users)
       .set(socials)
       .where(eq(users.id, id))
       .returning();
-    return user;
+    
+    // Award reputation for first-time social link
+    if (user && !user.twitterHandle && socials.twitterHandle) {
+      await db.update(users)
+        .set({ reputationScore: (user.reputationScore || 0) + 25 })
+        .where(eq(users.id, id));
+    }
+    if (user && !user.telegramHandle && socials.telegramHandle) {
+      await db.update(users)
+        .set({ reputationScore: (user.reputationScore || 0) + 25 })
+        .where(eq(users.id, id));
+    }
+
+    return updatedUser;
   }
 
   async updateUserRole(id: number, role: "user" | "advertiser" | "admin"): Promise<User> {
