@@ -304,7 +304,7 @@ export async function registerRoutes(
             }
 
             // 3. Min Wallet Age check (Improved estimation)
-            const minAgeDays = campaign.requirements?.minWalletAgeDays || campaign.requirements?.walletAgeDays || 0;
+            const minAgeDays = campaign.requirements?.minWalletAgeDays || 0;
             if (minAgeDays > 0) {
               const signatures = await connection.getSignaturesForAddress(walletPublicKey, { limit: 1 }, 'finalized');
               if (signatures.length === 0) {
