@@ -57,6 +57,39 @@ export function AuditDialog({ campaign, onClose }: AuditDialogProps) {
             </div>
           </div>
 
+          <div className="p-4 rounded-xl bg-red-500/10 border border-red-500/20 space-y-4">
+            <h3 className="text-[11px] font-black uppercase tracking-[0.2em] text-red-400 flex items-center gap-2">
+              <ShieldCheck className="w-4 h-4" /> Emergency Admin Controls
+            </h3>
+            <div className="grid grid-cols-2 gap-3">
+              <Button 
+                variant="destructive" 
+                className="h-10 text-[10px] font-black uppercase tracking-widest"
+                onClick={async () => {
+                  const { walletAddress } = (window as any).solana || {};
+                  await fetch(`/api/admin/campaigns/${campaign.id}/status`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ status: 'paused', walletAddress })
+                  });
+                  window.location.reload();
+                }}
+              >
+                Pause Campaign
+              </Button>
+              <Button 
+                variant="outline" 
+                className="h-10 text-[10px] font-black uppercase tracking-widest border-red-500/20 text-red-400 hover:bg-red-500/10"
+                onClick={async () => {
+                   // This is where you would handle fund recovery logic
+                   alert("Emergency fund recovery initiated. Wallet: " + campaign.tokenAddress);
+                }}
+              >
+                Recover Funds
+              </Button>
+            </div>
+          </div>
+
           <div className="space-y-4">
             <h3 className="text-[11px] font-black uppercase tracking-[0.2em] text-primary/80 flex items-center gap-2">
               <ShieldCheck className="w-4 h-4" /> Proof of Protocol Execution
