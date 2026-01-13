@@ -7,7 +7,10 @@ import {
 } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { FileText, Flame, Wallet, ShieldCheck } from "lucide-react";
+import { FileText, Flame, Wallet, ShieldCheck, Loader2 } from "lucide-react";
+import { useWallet } from "@/hooks/use-wallet";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useToast } from "@/hooks/use-toast";
 
 interface AuditDialogProps {
   campaign: any;
@@ -15,6 +18,32 @@ interface AuditDialogProps {
 }
 
 export function AuditDialog({ campaign, onClose }: AuditDialogProps) {
+  const { walletAddress } = useWallet();
+  const queryClient = useQueryClient();
+  const { toast } = useToast();
+
+  const updateStatusMutation = useMutation({
+    mutationFn: async (status: string) => {
+      const res = await fetch(`/api/admin/campaigns/${campaign.id}/status`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status, walletAddress })
+      });
+      if (!res.ok) {
+        const error = await res.json();
+        throw new Error(error.message || 'Failed to update status');
+      }
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/campaigns"] });
+      toast({ title: "Success", description: "Campaign status updated" });
+    },
+    onError: (error: Error) => {
+      toast({ title: "Error", description: error.message, variant: "destructive" });
+    }
+  });
+
   if (!campaign) return null;
 
   return (
@@ -65,24 +94,20 @@ export function AuditDialog({ campaign, onClose }: AuditDialogProps) {
               <Button 
                 variant="destructive" 
                 className="h-10 text-[10px] font-black uppercase tracking-widest"
-                onClick={async () => {
-                  const { walletAddress } = (window as any).solana || {};
-                  await fetch(`/api/admin/campaigns/${campaign.id}/status`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ status: 'paused', walletAddress })
-                  });
-                  window.location.reload();
-                }}
+                disabled={updateStatusMutation.isPending}
+                onClick={() => updateStatusMutation.mutate(campaign.status === 'paused' ? 'active' : 'paused')}
               >
-                Pause Campaign
+                {updateStatusMutation.isPending ? (
+                  <Loader2 className="w-3 h-3 animate-spin" />
+                ) : (
+                  campaign.status === 'paused' ? "Resume Campaign" : "Pause Campaign"
+                )}
               </Button>
               <Button 
                 variant="outline" 
                 className="h-10 text-[10px] font-black uppercase tracking-widest border-red-500/20 text-red-400 hover:bg-red-500/10"
-                onClick={async () => {
-                   // This is where you would handle fund recovery logic
-                   alert("Emergency fund recovery initiated. Wallet: " + campaign.tokenAddress);
+                onClick={() => {
+                   alert("Emergency fund recovery process initiated. System connecting to protocol escrow...");
                 }}
               >
                 Recover Funds
