@@ -57,7 +57,8 @@ export const campaigns = pgTable("campaigns", {
   requirements: jsonb("requirements").$type<{
     minSolBalance?: number;
     minWalletAgeDays?: number;
-    walletAgeDays?: number;
+    minProjectTokenHolding?: number;
+    projectTokenAddress?: string;
   }>(),
   celebrationTriggered: boolean("celebration_triggered").default(false).notNull(),
   initialMarketCap: numeric("initial_market_cap"),

@@ -57,6 +57,15 @@ export async function registerRoutes(
           message: "Your account is temporarily suspended for review. Please check back later." 
         });
       }
+
+      // Branding update: Ensure any system messages use Dropy
+      const originalSend = res.send;
+      res.send = function(body) {
+        if (typeof body === 'string') {
+          body = body.replace(/MemeDrop/g, 'Dropy');
+        }
+        return originalSend.call(this, body);
+      };
     }
     next();
   });
