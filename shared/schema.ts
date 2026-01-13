@@ -20,6 +20,7 @@ export const users = pgTable("users", {
   balance: numeric("balance").default("0").notNull(),
   twitterHandle: text("twitter_handle"),
   telegramHandle: text("telegram_handle"),
+  profileImageUrl: text("profile_image_url"),
   status: text("status", { enum: ["active", "suspended", "blocked"] }).default("active").notNull(),
   createdAt: timestamp("created_at").defaultNow(),
 });

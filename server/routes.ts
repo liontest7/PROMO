@@ -100,7 +100,7 @@ export async function registerRoutes(
           });
           const userData = await userResponse.json() as any;
           if (userData.data && userData.data.username) {
-            return res.send(`<html><body><script>window.opener.postMessage({ type: 'twitter-auth-success', handle: '${userData.data.username}' }, '*'); window.close();</script></body></html>`);
+            return res.send(`<html><body><script>window.opener.postMessage({ type: 'twitter-auth-success', handle: '${userData.data.username}', profileImageUrl: '${userData.data.profile_image_url || ''}' }, '*'); window.close();</script></body></html>`);
           }
         }
         return res.send(`<html><body><script>window.opener.postMessage({ type: 'twitter-auth-error', error: 'token_failed' }, '*'); window.close();</script></body></html>`);

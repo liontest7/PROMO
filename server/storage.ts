@@ -91,7 +91,7 @@ export class DatabaseStorage implements IStorage {
     return user;
   }
 
-  async updateUserSocials(id: number, socials: { twitterHandle?: string; telegramHandle?: string }): Promise<User> {
+  async updateUserSocials(id: number, socials: { twitterHandle?: string; telegramHandle?: string; profileImageUrl?: string }): Promise<User> {
     const [user] = await db.select().from(users).where(eq(users.id, id));
     const [updatedUser] = await db.update(users)
       .set(socials)

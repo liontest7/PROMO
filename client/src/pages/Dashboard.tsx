@@ -137,7 +137,7 @@ export default function Dashboard() {
   const { user: replitUser, isAuthenticated, logout } = useAuth();
 
   const mutation = useMutation({
-    mutationFn: async (data: { walletAddress: string, twitterHandle: string }) => {
+    mutationFn: async (data: { walletAddress: string, twitterHandle: string, profileImageUrl?: string }) => {
       const res = await fetch('/api/users/profile', {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
@@ -160,7 +160,8 @@ export default function Dashboard() {
       if (event.data.type === 'twitter-auth-success' && walletAddress) {
         mutation.mutate({
           walletAddress,
-          twitterHandle: event.data.handle
+          twitterHandle: event.data.handle,
+          profileImageUrl: event.data.profileImageUrl
         });
       } else if (event.data.type === 'twitter-auth-error') {
         toast({
@@ -577,7 +578,7 @@ export default function Dashboard() {
                 ) : (
                   <div className="p-4 rounded-xl bg-primary/10 border border-primary/20 flex items-center gap-4 relative overflow-hidden group shadow-lg">
                     <Avatar className="h-12 w-12 border-2 border-background shadow-[0_0_20px_rgba(34,197,94,0.2)] relative z-10">
-                      <AvatarImage src={replitUser?.profileImageUrl || ""} />
+                      <AvatarImage src={user?.profileImageUrl || ""} />
                       <AvatarFallback className="bg-primary/20"><UserIcon className="w-6 h-6 text-primary" /></AvatarFallback>
                     </Avatar>
                     <div className="flex-1 relative z-10">
@@ -585,7 +586,7 @@ export default function Dashboard() {
                         <Twitter className="w-3 h-3 text-blue-400" />
                         <span className="text-[9px] font-black uppercase tracking-widest text-white/40">Verified Identity</span>
                       </div>
-                      <p className="text-base font-black font-display tracking-tight text-white uppercase italic">{replitUser?.firstName || 'Dropy Sentinel'}</p>
+                      <p className="text-base font-black font-display tracking-tight text-white uppercase italic">@{user?.twitterHandle || 'Dropy Sentinel'}</p>
                       <Badge className="bg-primary/20 text-primary border-none text-[8px] font-black mt-1 uppercase tracking-widest">Node Synced</Badge>
                     </div>
                     <Button variant="ghost" size="icon" className="h-8 w-8 rounded-lg text-white/30 hover:text-destructive hover:bg-destructive/10 relative z-10 transition-all" onClick={() => logout()}>
