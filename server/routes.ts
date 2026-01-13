@@ -70,6 +70,11 @@ export async function registerRoutes(
     }
   });
 
+  // Proxy /api/logout to a safe local route to prevent platform-level 404/Logout conflicts
+  app.get("/api/logout", (req, res) => {
+    res.json({ success: true, message: "Use the platform logout for full session termination." });
+  });
+
   // Remove the problematic /api/logout route that was conflicting with the platform's logout
   // The platform handles logout automatically via its own internal routes
 
