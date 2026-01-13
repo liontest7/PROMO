@@ -86,12 +86,21 @@ export async function registerRoutes(
       <html>
         <body>
           <script>
-            const width = 600;
-            const height = 800;
-            const left = (window.screen.width / 2) - (width / 2);
-            const top = (window.screen.height / 2) - (height / 2);
-            window.open('${authUrl}', 'TwitterAuth', 'width=' + width + ',height=' + height + ',top=' + top + ',left=' + left);
-            window.location.href = '/dashboard';
+            try {
+              const authWidth = 600;
+              const authHeight = 800;
+              const authLeft = (window.screen.width / 2) - (authWidth / 2);
+              const authTop = (window.screen.height / 2) - (authHeight / 2);
+              const popup = window.open('${authUrl}', 'TwitterAuth', 'width=' + authWidth + ',height=' + authHeight + ',top=' + authTop + ',left=' + authLeft);
+              if (!popup || popup.closed || typeof popup.closed == 'undefined') {
+                // Popup blocked, fallback to redirect
+                window.location.href = '${authUrl}';
+              } else {
+                window.location.href = '/dashboard';
+              }
+            } catch (e) {
+              window.location.href = '${authUrl}';
+            }
           </script>
           <p>Redirecting to Twitter...</p>
         </body>
