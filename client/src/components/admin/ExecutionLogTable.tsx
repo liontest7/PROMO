@@ -26,6 +26,13 @@ export function ExecutionLogTable({ executions }: ExecutionLogTableProps) {
         </TableRow>
       </TableHeader>
       <TableBody>
+        {(!executions || executions.length === 0) && (
+          <TableRow>
+            <TableCell colSpan={4} className="text-center py-10 text-muted-foreground text-xs uppercase font-bold tracking-widest italic">
+              Waiting for protocol events...
+            </TableCell>
+          </TableRow>
+        )}
         {executions?.map((execution: any) => (
           <TableRow key={execution.id} className="border-white/5 hover:bg-white/[0.02] transition-colors">
             <TableCell className="font-mono text-[10px] py-4">
