@@ -1,13 +1,7 @@
 import { Link } from "wouter";
 import { PLATFORM_CONFIG } from "@shared/config";
 import { useWallet } from "@/hooks/use-wallet";
-import { 
-  Twitter, 
-  Send, 
-  Mail,
-  ArrowUpRight,
-  ChevronRight
-} from "lucide-react";
+import { Twitter, Send, Mail, ArrowUpRight, ChevronRight } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 
 export function Footer() {
@@ -21,43 +15,71 @@ export function Footer() {
       { label: "Dashboard", href: "/dashboard" },
     ],
     community: [
-      { label: "Twitter / X", href: PLATFORM_CONFIG.SOCIAL_LINKS.TWITTER, isExternal: true, icon: Twitter },
-      { label: "Telegram", href: PLATFORM_CONFIG.SOCIAL_LINKS.TELEGRAM, isExternal: true, icon: Send },
+      {
+        label: "Twitter / X",
+        href: PLATFORM_CONFIG.SOCIAL_LINKS.TWITTER,
+        isExternal: true,
+        icon: Twitter,
+      },
+      {
+        label: "Telegram",
+        href: PLATFORM_CONFIG.SOCIAL_LINKS.TELEGRAM,
+        isExternal: true,
+        icon: Send,
+      },
     ],
     resources: [
-      { label: "Jupiter Exchange", href: PLATFORM_CONFIG.TOKEN_DETAILS.BUY_LINKS.JUPITER, isExternal: true },
-      { label: "DexScreener", href: PLATFORM_CONFIG.TOKEN_DETAILS.BUY_LINKS.DEX_SCREENER, isExternal: true },
-      { label: "Pump.fun", href: PLATFORM_CONFIG.TOKEN_DETAILS.BUY_LINKS.PUMP_FUN, isExternal: true },
-    ]
+      {
+        label: "Jupiter Exchange",
+        href: PLATFORM_CONFIG.TOKEN_DETAILS.BUY_LINKS.JUPITER,
+        isExternal: true,
+      },
+      {
+        label: "DexScreener",
+        href: PLATFORM_CONFIG.TOKEN_DETAILS.BUY_LINKS.DEX_SCREENER,
+        isExternal: true,
+      },
+      {
+        label: "Pump.fun",
+        href: PLATFORM_CONFIG.TOKEN_DETAILS.BUY_LINKS.PUMP_FUN,
+        isExternal: true,
+      },
+    ],
   };
 
   return (
-    <footer className="relative bg-background pt-12 pb-6 overflow-hidden border-t border-white/5" data-testid="footer-main">
+    <footer
+      className="relative bg-background pt-12 pb-6 overflow-hidden border-t border-white/5"
+      data-testid="footer-main"
+    >
       {/* Decorative Background Elements */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-px bg-gradient-to-r from-transparent via-primary/50 to-transparent opacity-30" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 mb-10">
-          
           {/* Brand Column */}
           <div className="lg:col-span-4 flex flex-col items-center lg:items-start text-center lg:text-left gap-4">
-            <Link href="/" className="flex items-center gap-4 group cursor-pointer">
+            <Link
+              href="/"
+              className="flex items-center gap-4 group cursor-pointer"
+            >
               <div className="w-16 h-16 overflow-visible relative">
                 <div className="absolute inset-0 bg-primary/20 blur-xl rounded-full scale-125 group-hover:bg-primary/30 transition-colors" />
-                <img 
-                  src={PLATFORM_CONFIG.ASSETS.MAIN_LOGO} 
-                  alt="Logo" 
-                  className="w-full h-full object-contain scale-125 relative transition-transform duration-500 group-hover:scale-150" 
+                <img
+                  src={PLATFORM_CONFIG.ASSETS.MAIN_LOGO}
+                  alt="Logo"
+                  className="w-full h-full object-contain scale-125 relative transition-transform duration-500 group-hover:scale-150"
                 />
               </div>
               <span className="font-display font-black text-3xl tracking-tighter bg-gradient-to-r from-white via-white to-gray-400 bg-clip-text text-transparent group-hover:scale-110 transition-transform duration-500 origin-left uppercase italic pr-4">
                 {PLATFORM_CONFIG.TOKEN_SYMBOL}
               </span>
             </Link>
-            
+
             <p className="text-muted-foreground text-[14px] leading-relaxed max-w-sm font-medium">
-              The premier Pay-Per-Action engine for the Solana ecosystem. 
-              Bridging projects and users through decentralized engagement and verifiable rewards.
+              The premier Pay-Per-Action engine for the Solana ecosystem.
+              Bridging projects and users through decentralized engagement and
+              verifiable rewards.
             </p>
           </div>
 
@@ -71,7 +93,7 @@ export function Footer() {
               <ul className="space-y-3">
                 {footerLinks.platform.map((link) => (
                   <li key={link.label}>
-                    <Link 
+                    <Link
                       href={link.href}
                       className="group flex items-center text-muted-foreground hover:text-primary transition-colors text-sm font-bold"
                     >
@@ -80,17 +102,25 @@ export function Footer() {
                     </Link>
                   </li>
                 ))}
-                {isConnected && (role === "advertiser" || (role as any) === "admin" || (role as any) === "superadmin") && (
-                  <li>
-                    <Link 
-                      href={(role as any) === "admin" || (role as any) === "superadmin" ? "/admin" : "/advertiser"}
-                      className="group flex items-center text-muted-foreground hover:text-primary transition-colors text-sm font-bold"
-                    >
-                      <ChevronRight className="w-3 h-3 mr-1 opacity-0 -ml-4 group-hover:opacity-100 group-hover:ml-0 transition-all duration-300" />
-                      ADMIN PANEL
-                    </Link>
-                  </li>
-                )}
+                {isConnected &&
+                  (role === "advertiser" ||
+                    (role as any) === "admin" ||
+                    (role as any) === "superadmin") && (
+                    <li>
+                      <Link
+                        href={
+                          (role as any) === "admin" ||
+                          (role as any) === "superadmin"
+                            ? "/admin"
+                            : "/advertiser"
+                        }
+                        className="group flex items-center text-muted-foreground hover:text-primary transition-colors text-sm font-bold"
+                      >
+                        <ChevronRight className="w-3 h-3 mr-1 opacity-0 -ml-4 group-hover:opacity-100 group-hover:ml-0 transition-all duration-300" />
+                        Admin Panel
+                      </Link>
+                    </li>
+                  )}
               </ul>
             </div>
 
@@ -102,7 +132,7 @@ export function Footer() {
               <ul className="space-y-3">
                 {footerLinks.community.map((link) => (
                   <li key={link.label}>
-                    <a 
+                    <a
                       href={link.href}
                       target="_blank"
                       rel="noreferrer"
@@ -126,7 +156,7 @@ export function Footer() {
               <ul className="space-y-3">
                 {footerLinks.resources.map((link) => (
                   <li key={link.label}>
-                    <a 
+                    <a
                       href={link.href}
                       target="_blank"
                       rel="noreferrer"
@@ -159,12 +189,24 @@ export function Footer() {
           <div className="flex items-center gap-6">
             <div className="flex items-center gap-2 group cursor-default">
               <div className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse shadow-[0_0_2px_rgba(34,197,94,0.3)]" />
-              <span className="text-[10px] font-black text-primary transition-colors uppercase tracking-[0.15em] opacity-60 group-hover:opacity-100 transition-opacity">System Operational</span>
+              <span className="text-[10px] font-black text-primary transition-colors uppercase tracking-[0.15em] opacity-60 group-hover:opacity-100 transition-opacity">
+                System Operational
+              </span>
             </div>
             <div className="hidden sm:block w-px h-3 bg-white/10" />
             <div className="flex items-center gap-4">
-              <Link href="/privacy" className="text-[10px] text-white/70 hover:text-primary transition-colors uppercase tracking-[0.15em] font-black">Privacy</Link>
-              <Link href="/terms" className="text-[10px] text-white/70 hover:text-primary transition-colors uppercase tracking-[0.15em] font-black">Terms</Link>
+              <Link
+                href="/privacy"
+                className="text-[10px] text-white/70 hover:text-primary transition-colors uppercase tracking-[0.15em] font-black"
+              >
+                Privacy
+              </Link>
+              <Link
+                href="/terms"
+                className="text-[10px] text-white/70 hover:text-primary transition-colors uppercase tracking-[0.15em] font-black"
+              >
+                Terms
+              </Link>
             </div>
           </div>
         </div>
