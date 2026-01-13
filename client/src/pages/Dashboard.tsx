@@ -137,6 +137,26 @@ export default function Dashboard() {
   const { user: replitUser, isAuthenticated, logout } = useAuth();
 
   useEffect(() => {
+    const handleMessage = (event: MessageEvent) => {
+      if (event.data.type === 'twitter-auth-success' && walletAddress) {
+        mutation.mutate({
+          walletAddress,
+          twitterHandle: event.data.handle
+        });
+      } else if (event.data.type === 'twitter-auth-error') {
+        toast({
+          title: "Verification Failed",
+          description: event.data.error || "Could not verify X account",
+          variant: "destructive"
+        });
+      }
+    };
+
+    window.addEventListener('message', handleMessage);
+    return () => window.removeEventListener('message', handleMessage);
+  }, [walletAddress, mutation, toast]);
+
+  useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const verified = params.get("verified_twitter") === "true";
     const handle = params.get("handle");
@@ -152,7 +172,7 @@ export default function Dashboard() {
       // Clean up URL
       window.history.replaceState({}, document.title, window.location.pathname);
     }
-  }, [walletAddress, queryClient, toast]);
+  }, [walletAddress, mutation]);
 
   const mutation = useMutation({
     mutationFn: async (data: { walletAddress: string, twitterHandle: string }) => {
@@ -533,8 +553,11 @@ export default function Dashboard() {
                       <div className="flex flex-col gap-2">
                         <Button 
                           onClick={() => {
-                            console.log("Redirecting to Twitter Auth...");
-                            window.location.href = '/api/auth/twitter';
+                            const width = 600;
+                            const height = 800;
+                            const left = (window.screen.width / 2) - (width / 2);
+                            const top = (window.screen.height / 2) - (height / 2);
+                            window.open('/api/auth/twitter', 'TwitterAuth', `width=${width},height=${height},top=${top},left=${left}`);
                           }}
                           className="w-full bg-blue-500 hover:bg-blue-600 text-white gap-3 font-black text-[10px] h-10 rounded-lg shadow-md transition-all active-elevate-2 uppercase tracking-widest"
                         >

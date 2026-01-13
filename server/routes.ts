@@ -66,127 +66,60 @@ export async function registerRoutes(
   });
 
   // Twitter OAuth 2.0 Flow
-  app.get("/api/auth/twitter", (req, res) => {
-    const clientId = process.env.X_CLIENT_ID;
-    const protocol = req.protocol;
-    const host = req.get('host');
-    const redirectUri = `${protocol}://${host}/api/auth/twitter`;
-    
-    if (!clientId) {
-      return res.status(400).json({ message: "Twitter API not configured" });
-    }
-
-    const scope = encodeURIComponent('tweet.read users.read follows.read');
-    const state = 'state'; // In production, use a secure random string
-    const codeChallenge = 'challenge'; // In production, use proper PKCE
-    
-    const authUrl = `https://twitter.com/i/oauth2/authorize?response_type=code&client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&scope=${scope}&state=${state}&code_challenge=${codeChallenge}&code_challenge_method=plain`;
-    
-    res.send(`
-      <html>
-        <body>
-          <script>
-            try {
-              const authWidth = 600;
-              const authHeight = 800;
-              const authLeft = (window.screen.width / 2) - (authWidth / 2);
-              const authTop = (window.screen.height / 2) - (authHeight / 2);
-              const popup = window.open('${authUrl}', 'TwitterAuth', 'width=' + authWidth + ',height=' + authHeight + ',top=' + authTop + ',left=' + authLeft);
-              if (!popup || popup.closed || typeof popup.closed == 'undefined') {
-                // Popup blocked, fallback to redirect
-                window.location.href = '${authUrl}';
-              } else {
-                // Popup opened successfully, do nothing on the main window
-              }
-            } catch (e) {
-              window.location.href = '${authUrl}';
-            }
-          </script>
-          <p>Redirecting to Twitter...</p>
-        </body>
-      </html>
-    `);
-  });
-
-  app.get("/api/auth/twitter/callback", async (req, res) => {
-    const { code } = req.query;
+  app.get("/api/auth/twitter", async (req, res) => {
     const clientId = process.env.X_CLIENT_ID;
     const clientSecret = process.env.X_CLIENT_SECRET;
     const protocol = req.protocol;
     const host = req.get('host');
     const redirectUri = `${protocol}://${host}/api/auth/twitter`;
+    const { code } = req.query;
 
-    if (!code || !clientId || !clientSecret) {
-      return res.redirect("/dashboard?error=auth_failed");
-    }
-
-    try {
-      // Exchange code for token
-      const basicAuth = Buffer.from(`${clientId}:${clientSecret}`).toString('base64');
-      const tokenResponse = await fetch('https://api.twitter.com/2/oauth2/token', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-          'Authorization': `Basic ${basicAuth}`
-        },
-        body: new URLSearchParams({
-          code: code as string,
-          grant_type: 'authorization_code',
-          redirect_uri: redirectUri,
-          code_verifier: 'challenge'
-        })
-      });
-
-      const tokenData = await tokenResponse.json() as any;
-      
-      if (tokenData.access_token) {
-        // Get user info
-        const userResponse = await fetch('https://api.twitter.com/2/users/me', {
-          headers: {
-            'Authorization': `Bearer ${tokenData.access_token}`
-          }
-        });
-        const userData = await userResponse.json() as any;
-        
-        if (userData.data && userData.data.username) {
-          return res.send(`
-            <html>
-              <body>
-                <script>
-                  window.opener.location.href = '/dashboard?verified_twitter=true&handle=${userData.data.username}';
-                  window.close();
-                </script>
-                <p>Verification successful! Closing window...</p>
-              </body>
-            </html>
-          `);
-        }
+    if (code) {
+      if (!clientId || !clientSecret) {
+        return res.send(`<html><body><script>window.opener.postMessage({ type: 'twitter-auth-error', error: 'auth_failed' }, '*'); window.close();</script></body></html>`);
       }
-      res.send(`
-        <html>
-          <body>
-            <script>
-              window.opener.location.href = '/dashboard?error=token_failed';
-              window.close();
-            </script>
-            <p>Verification failed. Closing window...</p>
-          </body>
-        </html>
-      `);
-    } catch (err) {
-      console.error("Twitter callback error:", err);
-      res.send(`
-        <html>
-          <body>
-            <script>
-              window.opener.location.href = '/dashboard?error=server_error';
-              window.close();
-            </script>
-            <p>Server error. Closing window...</p>
-          </body>
-        </html>
-      `);
+      try {
+        const basicAuth = Buffer.from(`${clientId}:${clientSecret}`).toString('base64');
+        const tokenResponse = await fetch('https://api.twitter.com/2/oauth2/token', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'Authorization': `Basic ${basicAuth}`
+          },
+          body: new URLSearchParams({
+            code: code as string,
+            grant_type: 'authorization_code',
+            redirect_uri: redirectUri,
+            code_verifier: 'challenge'
+          })
+        });
+        const tokenData = await tokenResponse.json() as any;
+        if (tokenData.access_token) {
+          const userResponse = await fetch('https://api.twitter.com/2/users/me', {
+            headers: { 'Authorization': `Bearer ${tokenData.access_token}` }
+          });
+          const userData = await userResponse.json() as any;
+          if (userData.data && userData.data.username) {
+            return res.send(`<html><body><script>window.opener.postMessage({ type: 'twitter-auth-success', handle: '${userData.data.username}' }, '*'); window.close();</script></body></html>`);
+          }
+        }
+        return res.send(`<html><body><script>window.opener.postMessage({ type: 'twitter-auth-error', error: 'token_failed' }, '*'); window.close();</script></body></html>`);
+      } catch (err) {
+        console.error("Twitter callback error:", err);
+        return res.send(`<html><body><script>window.opener.postMessage({ type: 'twitter-auth-error', error: 'server_error' }, '*'); window.close();</script></body></html>`);
+      }
     }
+
+    if (!clientId) {
+      return res.status(400).json({ message: "Twitter API not configured" });
+    }
+
+    const scope = encodeURIComponent('tweet.read users.read follows.read');
+    const state = 'state';
+    const codeChallenge = 'challenge';
+    const authUrl = `https://twitter.com/i/oauth2/authorize?response_type=code&client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&scope=${scope}&state=${state}&code_challenge=${codeChallenge}&code_challenge_method=plain`;
+    
+    return res.redirect(authUrl);
   });
 
   app.use(async (req, res, next) => {
