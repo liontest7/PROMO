@@ -52,11 +52,11 @@ export default function PrivacyPolicy() {
                   <ul className="grid grid-cols-1 md:grid-cols-2 gap-3">
                     {[
                       "Public Solana wallet addresses",
-                      "Social media handles and Oauth profiles for verification",
-                      "Anti-bot verification data (Cloudflare Turnstile)",
-                      "IP-Wallet association tracking for fraud prevention",
-                      "Protocol Reputation and XP progress data",
-                      "Anonymous session analytics",
+                      "X (Twitter) profile data via API",
+                      "Telegram IDs for task verification",
+                      "Anti-bot verification data (Turnstile)",
+                      "IP-Wallet association for Sybil detection",
+                      "Protocol Reputation and XP progress",
                       "On-chain transaction history"
                     ].map((item, idx) => (
                       <li key={idx} className="flex items-center gap-3 p-3 bg-white/5 rounded-xl border border-white/5 text-xs font-bold uppercase tracking-wide text-white/100">

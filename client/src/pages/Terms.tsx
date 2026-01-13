@@ -70,9 +70,9 @@ export default function TermsOfService() {
 
               <section className="relative pl-12">
                 <div className="absolute left-0 top-1 text-primary/40 font-black text-2xl italic tracking-tighter">04</div>
-                <h2 className="text-white font-black text-xl mb-4 uppercase tracking-tight">4. Anti-Bot & Security Verification</h2>
+                <h2 className="text-white font-black text-xl mb-4 uppercase tracking-tight">4. X (Twitter) & API Integrations</h2>
                 <div className="space-y-4 text-white/90 leading-relaxed font-medium">
-                  <p>To ensure platform integrity, we implement Cloudflare Turnstile for bot detection. The following activities are strictly prohibited:</p>
+                  <p>Dropy utilizes the X (Twitter) API to verify engagement actions. By connecting your social accounts, you consent to the Platform verifying follows, likes, and retweets. The following activities are strictly prohibited:</p>
                   <ul className="grid grid-cols-1 md:grid-cols-2 gap-3">
                     {[
                       "Sybil attacks or multi-wallet abuse",
@@ -88,7 +88,7 @@ export default function TermsOfService() {
                     ))}
                   </ul>
                   <p className="text-sm font-bold text-primary uppercase tracking-widest pt-2">
-                    Violation results in immediate suspension, permanent blacklisting, and forfeiture of all pending rewards.
+                    Violation results in immediate suspension, permanent blacklisting, and forfeiture of all rewards.
                   </p>
                 </div>
               </section>

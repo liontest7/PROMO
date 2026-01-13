@@ -96,51 +96,36 @@ export function TermsModal() {
             <div className="space-y-6 text-[15px] text-white/90 leading-relaxed pb-6">
               <section>
                 <h3 className="text-white font-black text-xs uppercase tracking-[0.2em] mb-2">1. Acceptance of Terms</h3>
-                <p>By connecting your Solana wallet and accessing the Dropy Platform (“Platform”), you confirm that you have read, understood, and agree to be bound by these Terms of Service. The Platform provides a decentralized interface for Pay-Per-Action marketing, on-chain verification, and reward distribution.</p>
+                <p>By connecting your Solana wallet and accessing the Dropy Platform (“Platform”), you confirm that you have read, understood, and agree to be bound by these Terms of Service. The Platform provides a decentralized interface for Pay-Per-Action marketing, on-chain verification (including Twitter/X API integration), and reward distribution.</p>
               </section>
               
               <section>
-                <h3 className="text-white font-black text-xs uppercase tracking-[0.2em] mb-2">2. Eligibility, Risk & No Advice</h3>
-                <p>You must be of legal age in your jurisdiction to access or use the Platform. You acknowledge that participation in blockchain-based systems involves inherent risks, including but not limited to smart contract vulnerabilities, third-party failures, and extreme price volatility. The Platform is a technology interface only and does not provide financial, investment, legal, or tax advice.</p>
+                <h3 className="text-white font-black text-xs uppercase tracking-[0.2em] mb-2">2. Eligibility & Risk</h3>
+                <p>You must be of legal age in your jurisdiction to use the Platform. Participation involves inherent risks of blockchain technology, including smart contract vulnerabilities and price volatility. The Platform does not provide financial or legal advice.</p>
               </section>
 
               <section>
-                <h3 className="text-white font-black text-xs uppercase tracking-[0.2em] mb-2">3. No Guarantee of Rewards</h3>
-                <p>Rewards are not guaranteed. The Platform reserves the right to modify, delay, reduce, or cancel reward distributions at any time due to technical issues, abuse prevention, verification failure, liquidity limitations, or protocol updates.</p>
+                <h3 className="text-white font-black text-xs uppercase tracking-[0.2em] mb-2">3. X (Twitter) Integration & Data</h3>
+                <p>To verify tasks, the Platform uses the X API. By participating in X-based campaigns, you authorize the Platform to verify follows, likes, or retweets. We only access public profile data required for verification; we never post on your behalf without explicit action.</p>
               </section>
 
               <section>
-                <h3 className="text-white font-black text-xs uppercase tracking-[0.2em] mb-2">4. Prohibited Conduct & Enforcement</h3>
-                <p>The following activities are strictly prohibited: Sybil attacks or multi-wallet abuse; Use of bots, scripts, or automated tools; Spoofing identities or falsifying social actions; Exploiting bugs or attempting protocol manipulation. Any violation may result in immediate suspension, permanent blacklisting, and forfeiture of all pending or future rewards, without prior notice.</p>
+                <h3 className="text-white font-black text-xs uppercase tracking-[0.2em] mb-2">4. Prohibited Conduct & Sybil Protection</h3>
+                <p>The following are strictly prohibited: Multi-wallet abuse (Sybil attacks); Use of bots/automation; Falsifying social actions; Exploiting bugs. We implement advanced IP tracking and reputation scoring to detect fraud. Violations result in permanent blacklisting and reward forfeiture.</p>
               </section>
 
               <section>
-                <h3 className="text-white font-black text-xs uppercase tracking-[0.2em] mb-2">5. Verification & Third-Party Dependencies</h3>
-                <p>Action verification (e.g. Twitter, Telegram, on-chain events) relies on third-party APIs and external services. The Platform is not responsible for verification errors, data inaccuracies, service outages, delays, or Solana network congestion.</p>
+                <h3 className="text-white font-black text-xs uppercase tracking-[0.2em] mb-2">5. Verification & Third-Party APIs</h3>
+                <p>Verification relies on X (Twitter), Telegram, and Solana network APIs. The Platform is not responsible for outages or delays caused by these third-party services or network congestion.</p>
               </section>
 
               <section>
-                <h3 className="text-white font-black text-xs uppercase tracking-[0.2em] mb-2">6. Privacy & On-Chain Transparency</h3>
-                <p>The Platform only processes public wallet addresses and social identifiers required for action verification. Private keys, seed phrases, or sensitive credentials are never requested or stored. All blockchain interactions are publicly visible and immutable on the Solana network.</p>
-              </section>
-
-              <section>
-                <h3 className="text-white font-black text-xs uppercase tracking-[0.2em] mb-2">7. Jurisdiction & Legal Compliance</h3>
-                <p>You are solely responsible for ensuring that your use of the Platform complies with all applicable laws and regulations in your jurisdiction. Access to the Platform may be restricted or unavailable in certain regions.</p>
-              </section>
-
-              <section>
-                <h3 className="text-white font-black text-xs uppercase tracking-[0.2em] mb-2">8. Limitation of Liability</h3>
-                <p>To the maximum extent permitted by law, the Platform and its contributors shall not be liable for any loss of digital assets, data, rewards, or profits arising from the use of the Platform, smart contracts, or third-party services.</p>
-              </section>
-
-              <section>
-                <h3 className="text-white font-black text-xs uppercase tracking-[0.2em] mb-2">9. Platform Access</h3>
-                <p>Access to core Platform functionality requires connecting a compatible Solana wallet and accepting these Terms. Users who do not agree may not access the Platform engine.</p>
+                <h3 className="text-white font-black text-xs uppercase tracking-[0.2em] mb-2">6. Limitation of Liability</h3>
+                <p>To the maximum extent permitted by law, the Platform and its contributors are not liable for any loss of digital assets or rewards arising from the use of the Platform or third-party services.</p>
               </section>
 
               <div className="pt-2 border-t border-white/5 italic text-[11px] font-medium text-white/40 text-center">
-                By connecting your wallet, you acknowledge and accept these Terms of Service.
+                By connecting your wallet, you acknowledge and accept these updated Terms of Service.
               </div>
             </div>
           </ScrollArea>
