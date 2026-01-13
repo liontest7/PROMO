@@ -42,6 +42,13 @@ export function UserTable({
         </TableRow>
       </TableHeader>
       <TableBody>
+        {(!users || users.length === 0) && (
+          <TableRow>
+            <TableCell colSpan={6} className="text-center py-10 text-muted-foreground text-xs uppercase font-bold tracking-widest italic">
+              No protocol users found.
+            </TableCell>
+          </TableRow>
+        )}
         {users?.map((user: any) => (
           <TableRow key={user.id} className="border-white/5 hover:bg-white/[0.02] transition-colors">
             <TableCell className="font-mono text-[11px] font-bold py-4">
