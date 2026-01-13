@@ -93,39 +93,49 @@ export function TermsModal() {
             className="h-[450px] w-full px-10 py-4" 
             onScrollCapture={handleScroll}
           >
-            <div className="space-y-6 text-[15px] text-white/90 leading-relaxed pb-6">
-              <section>
-                <h3 className="text-white font-black text-xs uppercase tracking-[0.2em] mb-2">1. Acceptance of Terms</h3>
-                <p>By connecting your Solana wallet and accessing the Dropy Platform (“Platform”), you confirm that you have read, understood, and agree to be bound by these Terms of Service. The Platform provides a decentralized interface for Pay-Per-Action marketing, on-chain verification (including Twitter/X API integration), and reward distribution.</p>
+            <div className="space-y-6 text-[14px] text-white/90 leading-relaxed pb-6">
+              <section className="bg-white/5 p-4 rounded-xl border border-white/5">
+                <h3 className="text-primary font-black text-xs uppercase tracking-[0.2em] mb-2">1. Acceptance & Decentralized Scope</h3>
+                <p>By connecting your Solana wallet, you agree to these Terms. Dropy is a decentralized technology interface. We do not hold user funds; all rewards are distributed via smart contracts or automated on-chain events. You are responsible for your own private keys and wallet security.</p>
               </section>
               
               <section>
-                <h3 className="text-white font-black text-xs uppercase tracking-[0.2em] mb-2">2. Eligibility & Risk</h3>
-                <p>You must be of legal age in your jurisdiction to use the Platform. Participation involves inherent risks of blockchain technology, including smart contract vulnerabilities and price volatility. The Platform does not provide financial or legal advice.</p>
+                <h3 className="text-white font-black text-xs uppercase tracking-[0.2em] mb-2">2. X (Twitter) & Social Verification</h3>
+                <p>Verification of marketing tasks (Follow, Like, Retweet) is performed through the X API. By participating, you authorize the Platform to read your public social engagement status. We do not store your credentials or post content on your behalf. Failure of the X API or social platform outages may delay or invalidate reward claims.</p>
               </section>
 
               <section>
-                <h3 className="text-white font-black text-xs uppercase tracking-[0.2em] mb-2">3. X (Twitter) Integration & Data</h3>
-                <p>To verify tasks, the Platform uses the X API. By participating in X-based campaigns, you authorize the Platform to verify follows, likes, or retweets. We only access public profile data required for verification; we never post on your behalf without explicit action.</p>
+                <h3 className="text-white font-black text-xs uppercase tracking-[0.2em] mb-2">3. Anti-Fraud & Sybil Protection</h3>
+                <p>To maintain a fair ecosystem, we implement strict anti-Sybil measures. This includes monitoring IP addresses, wallet associations, and social profile age/activity. Using multiple wallets to claim the same reward, using bots, or falsifying engagement will result in an immediate and permanent ban of your wallet address and forfeiture of all accumulated rewards.</p>
               </section>
 
               <section>
-                <h3 className="text-white font-black text-xs uppercase tracking-[0.2em] mb-2">4. Prohibited Conduct & Sybil Protection</h3>
-                <p>The following are strictly prohibited: Multi-wallet abuse (Sybil attacks); Use of bots/automation; Falsifying social actions; Exploiting bugs. We implement advanced IP tracking and reputation scoring to detect fraud. Violations result in permanent blacklisting and reward forfeiture.</p>
+                <h3 className="text-white font-black text-xs uppercase tracking-[0.2em] mb-2">4. Reward Distribution & Volatility</h3>
+                <p>Project tokens earned through Dropy are subject to extreme market volatility. The Platform does not guarantee the future value of any reward. We reserve the right to pause or cancel campaign distributions if fraudulent activity is detected or if a project project fails to maintain its token liquidity.</p>
               </section>
 
               <section>
-                <h3 className="text-white font-black text-xs uppercase tracking-[0.2em] mb-2">5. Verification & Third-Party APIs</h3>
-                <p>Verification relies on X (Twitter), Telegram, and Solana network APIs. The Platform is not responsible for outages or delays caused by these third-party services or network congestion.</p>
+                <h3 className="text-white font-black text-xs uppercase tracking-[0.2em] mb-2">5. Protocol Reputation (XP)</h3>
+                <p>Your "Reputation" and "XP" are internal platform metrics used to gate high-value rewards. These points have no monetary value and are non-transferable. Attempting to manipulate these scores via artificial activity is a violation of these terms.</p>
               </section>
 
               <section>
-                <h3 className="text-white font-black text-xs uppercase tracking-[0.2em] mb-2">6. Limitation of Liability</h3>
-                <p>To the maximum extent permitted by law, the Platform and its contributors are not liable for any loss of digital assets or rewards arising from the use of the Platform or third-party services.</p>
+                <h3 className="text-white font-black text-xs uppercase tracking-[0.2em] mb-2">6. Intellectual Property & Brand</h3>
+                <p>All logos, mascots, and platform code are the property of Dropy. Users may not scrape platform data, reverse engineer the engine, or use Dropy branding for unauthorized promotional activities.</p>
               </section>
 
-              <div className="pt-2 border-t border-white/5 italic text-[11px] font-medium text-white/40 text-center">
-                By connecting your wallet, you acknowledge and accept these updated Terms of Service.
+              <section>
+                <h3 className="text-white font-black text-xs uppercase tracking-[0.2em] mb-2">7. Disclaimer of Warranties</h3>
+                <p>The platform is provided "AS IS" without warranties of any kind. We are not responsible for Solana network congestion, "failed" transactions, or lost assets due to user error.</p>
+              </section>
+
+              <section className="border-t border-white/10 pt-4">
+                <h3 className="text-white font-black text-xs uppercase tracking-[0.2em] mb-2">8. Governing Law & Jurisdiction</h3>
+                <p>Users are responsible for compliance with local regulations. Access is prohibited in jurisdictions where crypto-assets or decentralized marketing platforms are restricted by law.</p>
+              </section>
+
+              <div className="pt-2 italic text-[11px] font-medium text-white/40 text-center">
+                Last Updated: January 13, 2026. Version 2.1 (Phase 2 Alpha)
               </div>
             </div>
           </ScrollArea>

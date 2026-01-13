@@ -83,10 +83,10 @@ export default function PrivacyPolicy() {
                 <div className="absolute left-0 top-1 text-primary/40 font-black text-2xl italic tracking-tighter">03</div>
                 <h2 className="text-white font-black text-xl mb-4 uppercase tracking-tight flex items-center gap-3">
                   <Share2 className="w-5 h-5 text-primary/50" />
-                  Data Sharing & Transparency
+                  X (Twitter) API & Data Usage
                 </h2>
                 <p className="text-white/90 leading-relaxed font-medium">
-                  We do not sell your personal data. By using the Solana blockchain, all transaction data is inherently public and immutable. Verification data is shared only with the specific campaign advertisers to confirm task completion and authorize reward release.
+                  To verify task completion, we integrate with the X API. We only access public data you authorize (follows, likes, retweets). We do not store your social credentials, and we never post on your behalf without a direct, user-initiated action on the Platform. Social verification data is used solely to authorize reward distributions.
                 </p>
               </section>
 
