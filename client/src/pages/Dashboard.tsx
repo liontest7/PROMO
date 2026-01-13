@@ -73,14 +73,13 @@ const IdentitySync = ({ isAuthenticated, user, logout }: { isAuthenticated: bool
             <p className="text-base font-black font-display tracking-tight text-white uppercase italic">{user?.firstName || 'Dropy Sentinel'}</p>
             <Badge className="bg-primary/20 text-primary border-none text-[8px] font-black mt-1 uppercase tracking-widest">Node Synced</Badge>
           </div>
-          <Button 
-            variant="ghost" 
-            size="icon" 
+          <button 
             type="button"
-            className="h-8 w-8 rounded-lg text-white/30 hover:text-destructive hover:bg-destructive/10 relative z-10 transition-all" 
+            className="h-8 w-8 rounded-lg text-white/30 hover:text-destructive hover:bg-destructive/10 relative z-10 transition-all flex items-center justify-center bg-transparent border-0 cursor-pointer" 
             onClick={async (e) => {
               e.preventDefault();
               e.stopPropagation();
+              console.log("Disconnecting X...");
               try {
                 const res = await fetch('/api/users/profile', {
                   method: 'PATCH',
@@ -92,16 +91,17 @@ const IdentitySync = ({ isAuthenticated, user, logout }: { isAuthenticated: bool
                   })
                 });
                 if (res.ok) {
-                  queryClient.invalidateQueries({ queryKey: ["/api/users", walletAddress] });
+                  await queryClient.invalidateQueries({ queryKey: ["/api/users", walletAddress] });
                   toast({ title: "X Disconnected", description: "Your X account has been unlinked." });
                 }
               } catch (err) {
+                console.error("Disconnect error:", err);
                 toast({ title: "Error", description: "Failed to disconnect", variant: "destructive" });
               }
             }}
           >
             <LogOut className="w-4 h-4" />
-          </Button>
+          </button>
           <div className="absolute bottom-0 right-0 p-2 opacity-5">
             <ShieldCheck className="w-10 h-10 text-primary" />
           </div>
