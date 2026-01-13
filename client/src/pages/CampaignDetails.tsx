@@ -51,6 +51,11 @@ export default function CampaignDetails() {
     actionTitle: ""
   });
 
+  const { data: campaign, isLoading: campaignLoading } = useQuery<CampaignWithActions | undefined>({
+    queryKey: symbol ? [`/api/campaigns/symbol/${symbol}`] : [`/api/campaigns/${id}`],
+    enabled: !!(id || symbol),
+  });
+
   const [currentMC, setCurrentMC] = useState<number | null>(null);
 
   useEffect(() => {
@@ -81,11 +86,6 @@ export default function CampaignDetails() {
     if (val >= 1000) return `$${(val / 1000).toFixed(0)}K`;
     return `$${val.toFixed(0)}`;
   };
-
-  const { data: campaign, isLoading: campaignLoading } = useQuery<CampaignWithActions | undefined>({
-    queryKey: symbol ? [`/api/campaigns/symbol/${symbol}`] : [`/api/campaigns/${id}`],
-    enabled: !!(id || symbol),
-  });
 
   // Auto-refresh holding status
   useEffect(() => {

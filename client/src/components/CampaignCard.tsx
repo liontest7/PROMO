@@ -216,25 +216,32 @@ export function CampaignCard({ campaign, onActionClick, isOwner }: CampaignCardP
           </div>
         </CardContent>
 
-        <CardFooter className="pt-4 pb-6 border-t border-white/5 bg-white/[0.01] px-6 flex flex-col gap-2">
+        <CardFooter className="pt-4 pb-6 border-t border-white/5 bg-white/[0.01] px-6 flex flex-col gap-3">
           {initialMC && currentMC && (
-            <div className="flex items-center justify-between w-full mb-1">
-              <div className="flex items-center gap-1.5">
+            <div className="flex items-center justify-between w-full">
+              <div className="flex items-center gap-2">
                 <div className="w-1.5 h-1.5 rounded-full bg-primary/40 animate-pulse" />
-                <span className="text-[10px] font-black text-white/40 uppercase tracking-widest">Growth since launch</span>
+                <div className="flex flex-col">
+                  <span className="text-[9px] font-black text-white/30 uppercase tracking-widest leading-none">Growth</span>
+                  <span className="text-xs font-black text-white mt-0.5">{formatMC(currentMC)}</span>
+                </div>
               </div>
               <div className={cn(
-                "flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-black",
-                mcChange! >= 0 ? "text-primary bg-primary/10" : "text-red-400 bg-red-400/10"
+                "flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-black shadow-lg transition-all",
+                mcChange! >= 0 ? "text-primary bg-primary/10 border border-primary/20" : "text-red-400 bg-red-400/10 border border-red-400/20"
               )}>
-                {mcChange! >= 0 ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />}
+                {mcChange! >= 0 ? <TrendingUp className="w-3.5 h-3.5" /> : <TrendingDown className="w-3.5 h-3.5" />}
                 {mcChange! >= 0 ? "+" : ""}{mcChange?.toFixed(1)}%
               </div>
             </div>
           )}
-          <p className="text-[9px] font-black text-muted-foreground/40 w-full text-center uppercase tracking-[0.2em]">
-            LAUNCHED {formatDistanceToNow(new Date(campaign.createdAt || Date.now()), { addSuffix: true })}
-          </p>
+          <div className="flex items-center justify-center w-full gap-2 opacity-40">
+            <div className="h-[1px] flex-1 bg-gradient-to-r from-transparent to-white/20" />
+            <p className="text-[8px] font-black text-white uppercase tracking-[0.2em] whitespace-nowrap">
+              {formatDistanceToNow(new Date(campaign.createdAt || Date.now()), { addSuffix: true })}
+            </p>
+            <div className="h-[1px] flex-1 bg-gradient-to-l from-transparent to-white/20" />
+          </div>
         </CardFooter>
       </Card>
     </motion.div>
