@@ -73,9 +73,9 @@ const IdentitySync = ({ isAuthenticated, user, logout }: { isAuthenticated: bool
             <p className="text-base font-black font-display tracking-tight text-white uppercase italic">{user?.firstName || 'Dropy Sentinel'}</p>
             <Badge className="bg-primary/20 text-primary border-none text-[8px] font-black mt-1 uppercase tracking-widest">Node Synced</Badge>
           </div>
-          <div 
-            role="button"
-            className="h-8 w-8 rounded-lg text-white/30 hover:text-destructive hover:bg-destructive/10 relative z-10 transition-all flex items-center justify-center bg-transparent border-0 cursor-pointer" 
+          <button 
+            type="button"
+            className="h-8 w-8 rounded-lg text-white/30 hover:text-destructive hover:bg-destructive/10 relative z-10 transition-all flex items-center justify-center bg-transparent border-0 cursor-pointer p-0" 
             onClick={async (e) => {
               e.preventDefault();
               e.stopPropagation();
@@ -92,11 +92,14 @@ const IdentitySync = ({ isAuthenticated, user, logout }: { isAuthenticated: bool
                 });
                 if (res.ok) {
                   // Force immediate local update before refetching
-                  queryClient.setQueryData(["/api/users", walletAddress], (old: any) => ({
-                    ...old,
-                    twitterHandle: "",
-                    profileImageUrl: ""
-                  }));
+                  queryClient.setQueryData(["/api/users", walletAddress], (old: any) => {
+                    if (!old) return old;
+                    return {
+                      ...old,
+                      twitterHandle: "",
+                      profileImageUrl: ""
+                    };
+                  });
                   await queryClient.invalidateQueries({ queryKey: ["/api/users", walletAddress] });
                   toast({ title: "X Disconnected", description: "Your X account has been unlinked." });
                 }
@@ -107,7 +110,7 @@ const IdentitySync = ({ isAuthenticated, user, logout }: { isAuthenticated: bool
             }}
           >
             <LogOut className="w-4 h-4" />
-          </div>
+          </button>
           <div className="absolute bottom-0 right-0 p-2 opacity-5">
             <ShieldCheck className="w-10 h-10 text-primary" />
           </div>
