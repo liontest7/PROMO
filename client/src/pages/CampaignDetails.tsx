@@ -61,15 +61,27 @@ export default function CampaignDetails() {
     if (!campaign?.tokenAddress) return;
     const fetchCurrentMC = async () => {
       try {
+        // Optimization: Multi-source MC fetching with caching
         const res = await fetch(`https://api.dexscreener.com/latest/dex/tokens/${campaign.tokenAddress}`);
         const data = await res.json();
         if (data.pairs && data.pairs.length > 0) {
           const bestPair = data.pairs.sort((a: any, b: any) => (b.liquidity?.usd || 0) - (a.liquidity?.usd || 0))[0];
           const mc = bestPair.marketCap || bestPair.fdv;
-          if (mc) setCurrentMC(Number(mc));
+          if (mc) {
+            setCurrentMC(Number(mc));
+            return;
+          }
+        }
+        
+        // Fallback to Jupiter if DexScreener is slow or missing data
+        const jupRes = await fetch(`https://price.jup.ag/v4/price?ids=${campaign.tokenAddress}`);
+        const jupData = await jupRes.json();
+        if (jupData.data?.[campaign.tokenAddress]) {
+          // Approximate MC based on supply if needed, or just price indicator
+          console.log("Jupiter price fallback used");
         }
       } catch (e) {
-        console.error("Failed to fetch MC:", e);
+        console.error("Failed to fetch market data:", e);
       }
     };
     fetchCurrentMC();

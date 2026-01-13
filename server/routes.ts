@@ -573,7 +573,12 @@ export async function registerRoutes(
 
   app.post('/api/admin/campaigns/:id/status', async (req, res) => {
     try {
-      const { status } = req.body;
+      const { status, walletAddress } = req.body;
+      // Strict Admin Check
+      if (!ADMIN_CONFIG.superAdminWallets.includes(walletAddress)) {
+        return res.status(403).json({ message: "Unauthorized: Admin access only" });
+      }
+
       const [campaign] = await db.update(campaignsTable).set({ status }).where(eq(campaignsTable.id, parseInt(req.params.id))).returning();
       res.json(campaign);
     } catch (err) {
