@@ -233,9 +233,9 @@ export async function registerRoutes(
       if (!user) return res.status(404).json({ message: "User not found" });
 
       const updatedUser = await storage.updateUserSocials(user.id, {
-        twitterHandle: twitterHandle || user.twitterHandle,
-        telegramHandle: telegramHandle || user.telegramHandle,
-        profileImageUrl: profileImageUrl || user.profileImageUrl
+        twitterHandle: twitterHandle === null || twitterHandle === "" ? "" : (twitterHandle || user.twitterHandle),
+        telegramHandle: telegramHandle === null || telegramHandle === "" ? "" : (telegramHandle || user.telegramHandle),
+        profileImageUrl: profileImageUrl === null || profileImageUrl === "" ? "" : (profileImageUrl || user.profileImageUrl)
       });
 
       res.json(updatedUser);
