@@ -25,7 +25,7 @@ export default function PrivacyPolicy() {
                 </h1>
                 <div className="flex items-center gap-2 text-muted-foreground/60 font-black uppercase tracking-[0.2em] text-[10px]">
                   <Eye className="w-3 h-3" />
-                  Last Updated: January 12, 2026
+                  Last Updated: January 13, 2026
                 </div>
               </div>
               <div className="shrink-0 relative">
@@ -97,7 +97,7 @@ export default function PrivacyPolicy() {
                   Security Standards
                 </h2>
                 <div className="p-6 bg-primary/5 rounded-2xl border border-primary/10 italic text-sm text-white/100">
-                  We implement industry-standard encryption and security measures. However, you remain the ultimate guardian of your assets. MemeDrop never requests, stores, or has access to your private keys or seed phrases.
+                  We implement industry-standard encryption and security measures. However, you remain the ultimate guardian of your assets. Dropy never requests, stores, or has access to your private keys or seed phrases.
                 </div>
               </section>
 
@@ -108,7 +108,7 @@ export default function PrivacyPolicy() {
                   Policy Updates
                 </h2>
                 <p className="text-white/90 leading-relaxed font-medium">
-                  The MemeDrop Platform reserves the right to update this policy periodically to reflect changes in legal requirements or platform functionality. Continued use of the platform constitutes your agreement to the updated terms.
+                  The Dropy Platform reserves the right to update this policy periodically to reflect changes in legal requirements or platform functionality. Continued use of the platform constitutes your agreement to the updated terms.
                 </p>
               </section>
             </div>

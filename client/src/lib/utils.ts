@@ -6,9 +6,9 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export function getSEOConfig(pageTitle?: string) {
-  const baseTitle = "MemeDrop - Solana Crypto Marketing Platform";
-  const title = pageTitle ? `${pageTitle} | MemeDrop` : baseTitle;
-  const description = "MemeDrop is a pay-per-action marketing platform built for the Solana ecosystem. Earn tokens by completing engagement tasks.";
+  const baseTitle = "Dropy - Solana Crypto Marketing Platform";
+  const title = pageTitle ? `${pageTitle} | Dropy` : baseTitle;
+  const description = "Dropy is a pay-per-action marketing platform built for the Solana ecosystem. Earn tokens by completing engagement tasks.";
   
   return {
     title,
@@ -16,8 +16,8 @@ export function getSEOConfig(pageTitle?: string) {
     openGraph: {
       type: 'website',
       locale: 'en_US',
-      url: 'https://memedrop.io',
-      siteName: 'MemeDrop',
+      url: 'https://dropy.io',
+      siteName: 'Dropy',
       title,
       description,
     }

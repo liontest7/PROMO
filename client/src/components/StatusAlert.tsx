@@ -110,7 +110,7 @@ export function StatusAlert({ status }: StatusAlertProps) {
           <div className="pt-4 opacity-50 flex items-center gap-2">
              <div className="w-2 h-2 rounded-full animate-pulse bg-primary" />
              <p className="text-[10px] font-mono tracking-[0.4em] uppercase text-primary/80">
-               MemeDrop Secure Protocol Active
+               Dropy Secure Protocol Active
              </p>
           </div>
         </div>

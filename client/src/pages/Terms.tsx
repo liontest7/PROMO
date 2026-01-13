@@ -25,7 +25,7 @@ export default function TermsOfService() {
                 </h1>
                 <div className="flex items-center gap-2 text-muted-foreground/60 font-black uppercase tracking-[0.2em] text-[10px]">
                   <FileText className="w-3 h-3" />
-                  Last Updated: January 12, 2026
+                  Last Updated: January 13, 2026
                 </div>
               </div>
               <div className="shrink-0 relative">
@@ -45,7 +45,7 @@ export default function TermsOfService() {
                 <div className="absolute left-0 top-1 text-primary/40 font-black text-2xl italic tracking-tighter">01</div>
                 <h2 className="text-white font-black text-xl mb-4 uppercase tracking-tight">1. Acceptance of Terms</h2>
                 <p className="text-white/90 leading-relaxed font-medium">
-                  By connecting your Solana wallet and accessing the MemeDrop Platform (“Platform”), you confirm that you have read, understood, and agree to be bound by these Terms of Service. The Platform provides a decentralized interface for Pay-Per-Action marketing, on-chain verification, and reward distribution.
+                  By connecting your Solana wallet and accessing the Dropy Platform (“Platform”), you confirm that you have read, understood, and agree to be bound by these Terms of Service. The Platform provides a decentralized interface for Pay-Per-Action marketing, on-chain verification, and reward distribution.
                 </p>
               </section>
 
