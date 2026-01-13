@@ -141,27 +141,37 @@ export default function Dashboard() {
     const verified = params.get("verified_twitter") === "true";
     const handle = params.get("handle");
 
-    if (verified && walletAddress && user) {
+    if (verified && walletAddress) {
       const twitterHandle = handle || "DropySentinel";
       
-      fetch('/api/users/profile', {
+      mutation.mutate({
+        walletAddress,
+        twitterHandle
+      });
+      
+      // Clean up URL
+      window.history.replaceState({}, document.title, window.location.pathname);
+    }
+  }, [walletAddress, queryClient, toast]);
+
+  const mutation = useMutation({
+    mutationFn: async (data: { walletAddress: string, twitterHandle: string }) => {
+      const res = await fetch('/api/users/profile', {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
-          walletAddress, 
-          twitterHandle
-        })
-      }).then(() => {
-        queryClient.invalidateQueries({ queryKey: ["/api/users", walletAddress] });
-        toast({ 
-          title: "X Identity Synced", 
-          description: `Your X account @${twitterHandle} has been verified.` 
-        });
-        // Clean up URL
-        window.history.replaceState({}, document.title, window.location.pathname);
+        body: JSON.stringify(data)
+      });
+      if (!res.ok) throw new Error('Failed to update profile');
+      return res.json();
+    },
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ["/api/users", walletAddress] });
+      toast({ 
+        title: "X Identity Synced", 
+        description: `Your X account @${data.twitterHandle} has been verified.` 
       });
     }
-  }, [walletAddress, user, queryClient, toast]);
+  });
 
   useEffect(() => {
     if (user) {
@@ -505,7 +515,7 @@ export default function Dashboard() {
                 <div className="h-0.5 w-12 bg-white/20 mt-3 rounded-full" />
               </CardHeader>
               <CardContent className="p-6 pt-0 space-y-4">
-                {!isAuthenticated ? (
+                {!user?.twitterHandle ? (
                   <div className="p-4 rounded-xl bg-blue-500/5 border border-blue-500/10 relative overflow-hidden group shadow-lg">
                     <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-all duration-700">
                       <Twitter className="w-12 h-12" />

@@ -96,7 +96,7 @@ export async function registerRoutes(
                 // Popup blocked, fallback to redirect
                 window.location.href = '${authUrl}';
               } else {
-                window.location.href = '/dashboard';
+                // Popup opened successfully, do nothing on the main window
               }
             } catch (e) {
               window.location.href = '${authUrl}';
