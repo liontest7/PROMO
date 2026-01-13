@@ -522,6 +522,10 @@ export default function Dashboard() {
                       </p>
                       <div className="flex flex-col gap-2">
                         <Button 
+                          onClick={() => {
+                            console.log("Redirecting to Twitter Auth...");
+                            window.location.href = '/api/auth/twitter';
+                          }}
                           className="w-full bg-blue-500 hover:bg-blue-600 text-white gap-3 font-black text-[10px] h-10 rounded-lg shadow-md transition-all active-elevate-2 uppercase tracking-widest"
                         >
                           CONNECT PROTOCOL NODE
