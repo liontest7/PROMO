@@ -454,6 +454,8 @@ export async function registerRoutes(
         totalCampaigns: allCampaigns.length,
         totalExecutions: allExecutions.length,
         activeCampaigns: allCampaigns.filter(c => c.status === 'active').length,
+        taskVerified: allExecutions.filter(e => e.status === 'verified' || e.status === 'paid').length,
+        conversionRate: allUsers.length > 0 ? (allExecutions.length / allUsers.length).toFixed(1) : "0.0"
       };
 
       // Execution trend (last 7 days)

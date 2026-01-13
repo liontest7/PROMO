@@ -10,6 +10,8 @@ export function AdminAnalytics() {
       totalCampaigns: number;
       totalExecutions: number;
       activeCampaigns: number;
+      taskVerified: number;
+      conversionRate: string;
     };
     trend: { date: string; count: number }[];
   }>({
@@ -61,7 +63,7 @@ export function AdminAnalytics() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-black font-display">{stats.totalExecutions.toLocaleString()}</div>
+            <div className="text-2xl font-black font-display">{stats.taskVerified.toLocaleString()}</div>
           </CardContent>
         </Card>
 
@@ -73,7 +75,7 @@ export function AdminAnalytics() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-black font-display">
-              {stats.totalUsers > 0 ? ((stats.totalExecutions / stats.totalUsers).toFixed(1)) : 0}x
+              {stats.conversionRate}x
             </div>
             <p className="text-[9px] text-muted-foreground mt-1 uppercase font-bold">Tasks per user</p>
           </CardContent>
