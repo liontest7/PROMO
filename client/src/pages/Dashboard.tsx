@@ -76,6 +76,7 @@ const IdentitySync = ({ isAuthenticated, user, logout }: { isAuthenticated: bool
           <Button 
             variant="ghost" 
             size="icon" 
+            type="button"
             className="h-8 w-8 rounded-lg text-white/30 hover:text-destructive hover:bg-destructive/10 relative z-10 transition-all" 
             onClick={async (e) => {
               e.preventDefault();
