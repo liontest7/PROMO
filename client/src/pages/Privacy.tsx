@@ -45,19 +45,19 @@ export default function PrivacyPolicy() {
                 <div className="absolute left-0 top-1 text-primary/40 font-black text-2xl italic tracking-tighter">01</div>
                 <h2 className="text-white font-black text-xl mb-4 uppercase tracking-tight flex items-center gap-3">
                   <Database className="w-5 h-5 text-primary/50" />
-                  DATA COLLECTION PROTOCOLS
+                  Information We Collect
                 </h2>
                 <div className="space-y-4 text-white/90 leading-relaxed font-medium">
-                  <p>As a decentralized platform on the Solana blockchain, we prioritize user anonymity and minimize data collection. We only collect essential technical identifiers to facilitate core functionality:</p>
+                  <p>As a decentralized platform on the Solana blockchain, we prioritize user anonymity and minimize data collection. We only collect:</p>
                   <ul className="grid grid-cols-1 md:grid-cols-2 gap-3">
                     {[
                       "Public Solana wallet addresses",
-                      "X (Twitter) profile data via API authorization",
-                      "Telegram IDs for task verification",
-                      "Anti-bot verification data (Turnstile)",
-                      "IP-Wallet association for anti-Sybil detection",
-                      "Protocol Reputation and XP progress metrics",
-                      "Public on-chain transaction history"
+                      "Social media handles and Oauth profiles for verification",
+                      "Anti-bot verification data (Cloudflare Turnstile)",
+                      "IP-Wallet association tracking for fraud prevention",
+                      "Protocol Reputation and XP progress data",
+                      "Anonymous session analytics",
+                      "On-chain transaction history"
                     ].map((item, idx) => (
                       <li key={idx} className="flex items-center gap-3 p-3 bg-white/5 rounded-xl border border-white/5 text-xs font-bold uppercase tracking-wide text-white">
                         <div className="w-1.5 h-1.5 rounded-full bg-primary" />
@@ -72,10 +72,10 @@ export default function PrivacyPolicy() {
                 <div className="absolute left-0 top-1 text-primary/40 font-black text-2xl italic tracking-tighter">02</div>
                 <h2 className="text-white font-black text-xl mb-4 uppercase tracking-tight flex items-center gap-3">
                   <ShieldCheck className="w-5 h-5 text-primary/50" />
-                  PURPOSE OF DATA PROCESSING
+                  How We Use Data
                 </h2>
                 <p className="text-white/90 leading-relaxed font-medium">
-                  Your information is processed strictly to: (a) verify marketing task completion through third-party APIs; (b) distribute on-chain rewards via smart contracts; (c) prevent Sybil attacks and automated bot abuse; and (d) maintain ecosystem integrity through our proprietary reputation scoring.
+                  Your information is used strictly to facilitate the core functions of the Platform: verifying marketing task completion, distributing on-chain rewards, and maintaining the integrity of the ecosystem by preventing bot activity and fraud.
                 </p>
               </section>
 
@@ -83,10 +83,10 @@ export default function PrivacyPolicy() {
                 <div className="absolute left-0 top-1 text-primary/40 font-black text-2xl italic tracking-tighter">03</div>
                 <h2 className="text-white font-black text-xl mb-4 uppercase tracking-tight flex items-center gap-3">
                   <Share2 className="w-5 h-5 text-primary/50" />
-                  X (TWITTER) API INTEGRATION
+                  Data Sharing & Transparency
                 </h2>
                 <p className="text-white/90 leading-relaxed font-medium">
-                  To verify social tasks, we integrate with the X API. We only access public data you explicitly authorize (follows, likes, retweets). We do not store your social credentials, and we never post on your behalf without a direct, user-initiated action. Social verification data is stored temporarily and used solely to authorize reward distributions.
+                  We do not sell your personal data. By using the Solana blockchain, all transaction data is inherently public and immutable. Verification data is shared only with the specific campaign advertisers to confirm task completion and authorize reward release.
                 </p>
               </section>
 
@@ -94,21 +94,21 @@ export default function PrivacyPolicy() {
                 <div className="absolute left-0 top-1 text-primary/40 font-black text-2xl italic tracking-tighter">04</div>
                 <h2 className="text-white font-black text-xl mb-4 uppercase tracking-tight flex items-center gap-3">
                   <Lock className="w-5 h-5 text-primary/50" />
-                  SECURITY & ASSET PROTECTION
+                  Security Standards
                 </h2>
                 <div className="p-6 bg-primary/5 rounded-2xl border border-primary/10 italic text-sm text-white/90 leading-relaxed">
-                  We implement industry-standard encryption. However, you remain the ultimate guardian of your assets. Dropy never requests, stores, or has access to your private keys or seed phrases. All on-chain transaction data is public and immutable by the nature of the Solana blockchain.
+                  We implement industry-standard encryption and security measures. However, you remain the ultimate guardian of your assets. Dropy never requests, stores, or has access to your private keys or seed phrases.
                 </div>
               </section>
 
               <section className="relative pl-12">
                 <div className="absolute left-0 top-1 text-primary/40 font-black text-2xl italic tracking-tighter">05</div>
                 <h2 className="text-white font-black text-xl mb-4 uppercase tracking-tight flex items-center gap-3">
-                  <Database className="w-5 h-5 text-primary/50" />
-                  DATA RETENTION & RIGHTS
+                  <RefreshCw className="w-5 h-5 text-primary/50" />
+                  Policy Updates
                 </h2>
                 <p className="text-white/90 leading-relaxed font-medium">
-                  We retain minimal technical data required for fraud prevention. Since most protocol data is stored on-chain, it cannot be deleted or modified. You have the right to disconnect your social profiles from our interface at any time through the platform settings or your social media provider's authorized apps section.
+                  The Dropy Platform reserves the right to update this policy periodically to reflect changes in legal requirements or platform functionality. Continued use of the platform constitutes your agreement to the updated terms.
                 </p>
               </section>
             </div>

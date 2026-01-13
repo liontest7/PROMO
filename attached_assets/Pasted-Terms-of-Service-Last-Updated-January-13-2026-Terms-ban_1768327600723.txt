@@ -1,0 +1,47 @@
+Terms of Service
+Last Updated: January 13, 2026
+Terms banner
+01
+1. Acceptance of Terms
+By connecting your Solana wallet and accessing the Dropy Platform (“Platform”), you confirm that you have read, understood, and agree to be bound by these Terms of Service. Dropy provides a decentralized interface for Pay-Per-Action marketing, on-chain verification, and reward distribution.
+
+02
+2. Eligibility, Risk & No Advice
+You must be of legal age in your jurisdiction to access or use the Platform. You acknowledge that participation in blockchain-based systems involves inherent risks, including but not limited to smart contract vulnerabilities, third-party failures, and extreme price volatility.
+
+The Platform is a technology interface only and does not provide financial, investment, legal, or tax advice.
+
+03
+3. No Guarantee of Rewards & Reputation
+Rewards and Protocol Reputation points are not guaranteed. The Platform reserves the right to modify, delay, reduce, or cancel reward distributions and reputation scores at any time due to technical issues, abuse prevention, verification failure, liquidity limitations, or protocol updates.
+
+04
+4. Anti-Bot & Security Verification
+To ensure platform integrity, we implement Cloudflare Turnstile for bot detection. The following activities are strictly prohibited:
+
+Sybil attacks or multi-wallet abuse
+Multi-wallet association from single IP
+Use of bots, scripts, or automated tools
+Spoofing identities or social actions
+Exploiting bugs or protocol manipulation
+Violation results in immediate suspension, permanent blacklisting, and forfeiture of all pending rewards.
+
+05
+5. Verification & Third-Party Dependencies
+Action verification (e.g. Twitter, Telegram, on-chain events) relies on third-party APIs and external services. The Platform is not responsible for verification errors, data inaccuracies, service outages, delays, or Solana network congestion.
+
+06
+6. Privacy & On-Chain Transparency
+The Platform only processes public wallet addresses and social identifiers required for action verification. Private keys, seed phrases, or sensitive credentials are never requested or stored. All blockchain interactions are publicly visible and immutable on the Solana network.
+
+07
+7. Jurisdiction & Legal Compliance
+You are solely responsible for ensuring that your use of the Platform complies with all applicable laws and regulations in your jurisdiction. Access to the Platform may be restricted or unavailable in certain regions.
+
+08
+8. Limitation of Liability
+To the maximum extent permitted by law, the Platform and its contributors shall not be liable for any loss of digital assets, data, rewards, or profits arising from the use of the Platform, smart contracts, or third-party services.
+
+09
+9. Platform Access
+Access to core Platform functionality requires connecting a compatible Solana wallet and accepting these Terms. Users who do not agree may not access the Platform engine.

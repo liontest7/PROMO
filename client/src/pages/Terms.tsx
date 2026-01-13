@@ -43,54 +43,91 @@ export default function TermsOfService() {
             <div className="space-y-12">
               <section className="relative pl-12">
                 <div className="absolute left-0 top-1 text-primary/40 font-black text-2xl italic tracking-tighter">01</div>
-                <h2 className="text-white font-black text-xl mb-4 uppercase tracking-tight">1. DECENTRALIZED PROTOCOL & NON-CUSTODIAL NATURE</h2>
-                <div className="space-y-4 text-white/90 leading-relaxed font-medium">
-                  <p>Dropy is a decentralized technology interface. By using the platform, you acknowledge that we are non-custodial and do not have access to your private keys or assets. You are solely responsible for your own digital security.</p>
-                  <ul className="grid grid-cols-1 gap-2">
-                    {[
-                      "We do not hold or manage user funds",
-                      "You are responsible for all Solana network (gas) fees",
-                      "Lost private keys cannot be recovered by Dropy",
-                      "All on-chain transactions are final and irreversible"
-                    ].map((item, idx) => (
-                      <li key={idx} className="flex items-center gap-3 p-3 bg-white/5 rounded-xl border border-white/5 text-xs font-bold uppercase tracking-wide text-white">
-                        <div className="w-1.5 h-1.5 rounded-full bg-primary" />
-                        {item}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
+                <h2 className="text-white font-black text-xl mb-4 uppercase tracking-tight">1. Acceptance of Terms</h2>
+                <p className="text-white/90 leading-relaxed font-medium">
+                  By connecting your Solana wallet and accessing the Dropy Platform (“Platform”), you confirm that you have read, understood, and agree to be bound by these Terms of Service. Dropy provides a decentralized interface for Pay-Per-Action marketing, on-chain verification, and reward distribution.
+                </p>
               </section>
 
               <section className="relative pl-12">
                 <div className="absolute left-0 top-1 text-primary/40 font-black text-2xl italic tracking-tighter">02</div>
-                <h2 className="text-white font-black text-xl mb-4 uppercase tracking-tight">2. X (TWITTER) VERIFICATION & API DISCLAIMER</h2>
+                <h2 className="text-white font-black text-xl mb-4 uppercase tracking-tight">2. Eligibility, Risk & No Advice</h2>
                 <div className="space-y-4 text-white/90 leading-relaxed font-medium">
-                  <p>Our verification system utilizes the X API. We are not responsible for social platform outages or API limitations that may delay rewards. We only access data you explicitly authorize and never store your social credentials.</p>
+                  <p>You must be of legal age in your jurisdiction to access or use the Platform. You acknowledge that participation in blockchain-based systems involves inherent risks, including but not limited to smart contract vulnerabilities, third-party failures, and extreme price volatility.</p>
+                  <p>The Platform is a technology interface only and does not provide financial, investment, legal, or tax advice.</p>
                 </div>
               </section>
 
               <section className="relative pl-12">
                 <div className="absolute left-0 top-1 text-primary/40 font-black text-2xl italic tracking-tighter">03</div>
-                <h2 className="text-white font-black text-xl mb-4 uppercase tracking-tight">3. ANTI-FRAUD & SYBIL PROTECTION PROTOCOLS</h2>
-                <div className="space-y-4 text-white/90 leading-relaxed font-medium">
-                  <p>To ensure a fair ecosystem, we implement advanced fraud detection including IP monitoring, wallet associations, and bot behavior analysis. We reserve the right to blacklist any wallet involved in Sybil attacks or fraudulent engagement.</p>
-                </div>
+                <h2 className="text-white font-black text-xl mb-4 uppercase tracking-tight">3. No Guarantee of Rewards & Reputation</h2>
+                <p className="text-white/90 leading-relaxed font-medium">
+                  Rewards and Protocol Reputation points are not guaranteed. The Platform reserves the right to modify, delay, reduce, or cancel reward distributions and reputation scores at any time due to technical issues, abuse prevention, verification failure, liquidity limitations, or protocol updates.
+                </p>
               </section>
 
               <section className="relative pl-12">
                 <div className="absolute left-0 top-1 text-primary/40 font-black text-2xl italic tracking-tighter">04</div>
-                <h2 className="text-white font-black text-xl mb-4 uppercase tracking-tight">4. INDEMNIFICATION & LIMITATION OF LIABILITY</h2>
-                <div className="p-6 bg-primary/5 rounded-2xl border border-primary/10 italic text-sm text-white/90 leading-relaxed">
-                  You agree to indemnify and hold harmless Dropy from any claims, damages, or losses arising from your use of the platform. Dropy shall not be liable for any indirect, incidental, or consequential damages resulting from network errors or third-party service failures.
+                <h2 className="text-white font-black text-xl mb-4 uppercase tracking-tight">4. Anti-Bot & Security Verification</h2>
+                <div className="space-y-4 text-white/90 leading-relaxed font-medium">
+                  <p>To ensure platform integrity, we implement Cloudflare Turnstile for bot detection. The following activities are strictly prohibited:</p>
+                  <ul className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    {[
+                      "Sybil attacks or multi-wallet abuse",
+                      "Multi-wallet association from single IP",
+                      "Use of bots, scripts, or automated tools",
+                      "Spoofing identities or social actions",
+                      "Exploiting bugs or protocol manipulation"
+                    ].map((item, idx) => (
+                      <li key={idx} className="flex items-center gap-3 p-3 bg-white/5 rounded-xl border border-white/5 text-xs font-bold uppercase tracking-wide text-white">
+                        <AlertCircle className="w-4 h-4 text-destructive" />
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
+                  <p className="text-sm font-bold text-destructive uppercase tracking-widest pt-2">
+                    Violation results in immediate suspension, permanent blacklisting, and forfeiture of all pending rewards.
+                  </p>
                 </div>
               </section>
 
               <section className="relative pl-12">
                 <div className="absolute left-0 top-1 text-primary/40 font-black text-2xl italic tracking-tighter">05</div>
-                <h2 className="text-white font-black text-xl mb-4 uppercase tracking-tight">5. TERMINATION & MODIFICATION</h2>
+                <h2 className="text-white font-black text-xl mb-4 uppercase tracking-tight">5. Verification & Third-Party Dependencies</h2>
                 <p className="text-white/90 leading-relaxed font-medium">
-                  We reserve the right to modify these Terms or suspend platform access at any time for any reason, including violation of these terms or conduct harmful to the protocol's integrity.
+                  Action verification (e.g. Twitter, Telegram, on-chain events) relies on third-party APIs and external services. The Platform is not responsible for verification errors, data inaccuracies, service outages, delays, or Solana network congestion.
+                </p>
+              </section>
+
+              <section className="relative pl-12">
+                <div className="absolute left-0 top-1 text-primary/40 font-black text-2xl italic tracking-tighter">06</div>
+                <h2 className="text-white font-black text-xl mb-4 uppercase tracking-tight">6. Privacy & On-Chain Transparency</h2>
+                <p className="text-white/90 leading-relaxed font-medium">
+                  The Platform only processes public wallet addresses and social identifiers required for action verification. Private keys, seed phrases, or sensitive credentials are never requested or stored. All blockchain interactions are publicly visible and immutable on the Solana network.
+                </p>
+              </section>
+
+              <section className="relative pl-12">
+                <div className="absolute left-0 top-1 text-primary/40 font-black text-2xl italic tracking-tighter">07</div>
+                <h2 className="text-white font-black text-xl mb-4 uppercase tracking-tight">7. Jurisdiction & Legal Compliance</h2>
+                <p className="text-white/90 leading-relaxed font-medium">
+                  You are solely responsible for ensuring that your use of the Platform complies with all applicable laws and regulations in your jurisdiction. Access to the Platform may be restricted or unavailable in certain regions.
+                </p>
+              </section>
+
+              <section className="relative pl-12">
+                <div className="absolute left-0 top-1 text-primary/40 font-black text-2xl italic tracking-tighter">08</div>
+                <h2 className="text-white font-black text-xl mb-4 uppercase tracking-tight">8. Limitation of Liability</h2>
+                <p className="text-white/90 leading-relaxed font-medium">
+                  To the maximum extent permitted by law, the Platform and its contributors shall not be liable for any loss of digital assets, data, rewards, or profits arising from the use of the Platform, smart contracts, or third-party services.
+                </p>
+              </section>
+
+              <section className="relative pl-12 border-t border-white/5 pt-12">
+                <div className="absolute left-0 top-13 text-primary/40 font-black text-2xl italic tracking-tighter">09</div>
+                <h2 className="text-white font-black text-xl mb-4 uppercase tracking-tight">9. Platform Access</h2>
+                <p className="text-white/90 leading-relaxed font-medium">
+                  Access to core Platform functionality requires connecting a compatible Solana wallet and accepting these Terms. Users who do not agree may not access the Platform engine.
                 </p>
               </section>
             </div>

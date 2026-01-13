@@ -38,13 +38,11 @@ export function TermsModal() {
   const handleScroll = (event: React.UIEvent<HTMLDivElement>) => {
     const { scrollTop, scrollHeight, clientHeight } = event.currentTarget;
     
-    // Calculate how close to the bottom we are
-    // We use a larger buffer (20px) to be more reliable across different browsers/resolutions
-    const buffer = 20;
-    const isAtBottom = (scrollTop + clientHeight) >= (scrollHeight - buffer);
+    // For manual scroll divs, we check if we're within 30px of the bottom
+    // This is more robust for manual scroll implementation
+    const isAtBottom = (scrollTop + clientHeight) >= (scrollHeight - 30);
     
-    // Set to true if they've scrolled enough and reached near the bottom
-    if (isAtBottom && scrollTop > 100) {
+    if (isAtBottom && scrollTop > 50) {
       setHasReadToBottom(true);
     }
   };
