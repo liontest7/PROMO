@@ -47,7 +47,10 @@ const IdentitySync = ({ isAuthenticated, user, logout }: { isAuthenticated: bool
             </p>
             <div className="flex flex-col gap-2">
               <Button 
-                onClick={() => window.location.href = '/api/auth/twitter'}
+                onClick={() => {
+                  console.log("Redirecting to Twitter Auth...");
+                  window.location.href = '/api/auth/twitter';
+                }}
                 className="w-full bg-blue-500 hover:bg-blue-600 text-white gap-3 font-black text-[10px] h-10 rounded-lg shadow-md transition-all active-elevate-2 uppercase tracking-widest relative overflow-hidden group/btn"
               >
                 <span className="relative z-10">Verify X Account</span>
