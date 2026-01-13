@@ -67,13 +67,76 @@ export async function registerRoutes(
 
   // Twitter OAuth 2.0 Flow
   app.get("/api/auth/twitter", (req, res) => {
-    const consumerKey = process.env.X_CONSUMER_KEY;
-    if (!consumerKey) {
+    const clientId = process.env.X_CLIENT_ID;
+    const protocol = req.protocol;
+    const host = req.get('host');
+    const redirectUri = `${protocol}://${host}/api/auth/twitter/callback`;
+    
+    if (!clientId) {
       return res.status(400).json({ message: "Twitter API not configured" });
     }
-    // Simple redirect for now, in a real app you'd implement the full OAuth 2.0 flow
-    // or use a library. For this specific request, we'll simulate the linking.
-    res.redirect("/dashboard?verified_twitter=true");
+
+    const scope = encodeURIComponent('tweet.read users.read follows.read');
+    const state = 'state'; // In production, use a secure random string
+    const codeChallenge = 'challenge'; // In production, use proper PKCE
+    
+    const authUrl = `https://twitter.com/i/oauth2/authorize?response_type=code&client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&scope=${scope}&state=${state}&code_challenge=${codeChallenge}&code_challenge_method=plain`;
+    
+    res.redirect(authUrl);
+  });
+
+  app.get("/api/auth/twitter/callback", async (req, res) => {
+    const { code } = req.query;
+    const clientId = process.env.X_CLIENT_ID;
+    const clientSecret = process.env.X_CLIENT_SECRET;
+    const protocol = req.protocol;
+    const host = req.get('host');
+    const redirectUri = `${protocol}://${host}/api/auth/twitter/callback`;
+
+    if (!code || !clientId || !clientSecret) {
+      return res.redirect("/dashboard?error=auth_failed");
+    }
+
+    try {
+      // Exchange code for token
+      const basicAuth = Buffer.from(`${clientId}:${clientSecret}`).toString('base64');
+      const tokenResponse = await fetch('https://api.twitter.com/2/oauth2/token', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+          'Authorization': `Basic ${basicAuth}`
+        },
+        body: new URLSearchParams({
+          code: code as string,
+          grant_type: 'authorization_code',
+          redirect_uri: redirectUri,
+          code_verifier: 'challenge'
+        })
+      });
+
+      const tokenData = await tokenResponse.json() as any;
+      
+      if (tokenData.access_token) {
+        // Get user info
+        const userResponse = await fetch('https://api.twitter.com/2/users/me', {
+          headers: {
+            'Authorization': `Bearer ${tokenData.access_token}`
+          }
+        });
+        const userData = await userResponse.json() as any;
+        
+        if (userData.data && userData.data.username) {
+          // We don't have the wallet address here directly from the session
+          // In a real app, we'd use session middleware.
+          // For now, redirect back with the handle to let the frontend update
+          return res.redirect(`/dashboard?verified_twitter=true&handle=${userData.data.username}`);
+        }
+      }
+      res.redirect("/dashboard?error=token_failed");
+    } catch (err) {
+      console.error("Twitter callback error:", err);
+      res.redirect("/dashboard?error=server_error");
+    }
   });
 
   app.use(async (req, res, next) => {

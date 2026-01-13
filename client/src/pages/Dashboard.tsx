@@ -135,18 +135,25 @@ export default function Dashboard() {
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
-    if (params.get("verified_twitter") === "true" && walletAddress && user && !user.twitterHandle) {
-      // Simulate verification for now
+    const verified = params.get("verified_twitter") === "true";
+    const handle = params.get("handle");
+
+    if (verified && walletAddress && user) {
+      const twitterHandle = handle || "DropySentinel";
+      
       fetch('/api/users/profile', {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
           walletAddress, 
-          twitterHandle: "DropySentinel" 
+          twitterHandle
         })
       }).then(() => {
         queryClient.invalidateQueries({ queryKey: ["/api/users", walletAddress] });
-        toast({ title: "X Identity Synced", description: "Your X account has been verified." });
+        toast({ 
+          title: "X Identity Synced", 
+          description: `Your X account @${twitterHandle} has been verified.` 
+        });
         // Clean up URL
         window.history.replaceState({}, document.title, window.location.pathname);
       });
