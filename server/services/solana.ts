@@ -1,7 +1,8 @@
 import { Connection } from "@solana/web3.js";
 import { CONFIG } from "@shared/config";
+import memoize from "memoizee";
 
-export async function getSolanaConnection() {
+const getSolanaConnectionRaw = async () => {
   const endpoints = CONFIG.SOLANA_RPC_ENDPOINTS || ["https://api.mainnet-beta.solana.com"];
   for (const endpoint of endpoints) {
     try {
@@ -13,4 +14,9 @@ export async function getSolanaConnection() {
     }
   }
   throw new Error("All Solana RPC endpoints failed");
-}
+};
+
+export const getSolanaConnection = memoize(getSolanaConnectionRaw, { 
+  promise: true, 
+  maxAge: 60000 // Cache connection for 1 minute
+});
