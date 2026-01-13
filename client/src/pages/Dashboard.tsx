@@ -67,7 +67,7 @@ const IdentitySync = ({ isAuthenticated, user, logout }: { isAuthenticated: bool
       ) : (
         <div className="p-4 rounded-xl bg-primary/10 border border-primary/20 flex items-center gap-4 relative overflow-hidden group shadow-lg">
           <Avatar className="h-12 w-12 border-2 border-background shadow-[0_0_20px_rgba(34,197,94,0.2)] relative z-10">
-            <AvatarImage src={user?.profileImageUrl || ""} />
+            <AvatarImage src={user?.profileImageUrl || ""} className="object-cover" />
             <AvatarFallback className="bg-primary/20"><UserIcon className="w-6 h-6 text-primary" /></AvatarFallback>
           </Avatar>
           <div className="flex-1 relative z-10">

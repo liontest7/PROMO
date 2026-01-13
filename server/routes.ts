@@ -95,12 +95,13 @@ export async function registerRoutes(
         });
         const tokenData = await tokenResponse.json() as any;
         if (tokenData.access_token) {
-          const userResponse = await fetch('https://api.twitter.com/2/users/me', {
+          const userResponse = await fetch('https://api.twitter.com/2/users/me?user.fields=profile_image_url', {
             headers: { 'Authorization': `Bearer ${tokenData.access_token}` }
           });
           const userData = await userResponse.json() as any;
           if (userData.data && userData.data.username) {
-            return res.send(`<html><body><script>window.opener.postMessage({ type: 'twitter-auth-success', handle: '${userData.data.username}', profileImageUrl: '${userData.data.profile_image_url || ''}' }, '*'); window.close();</script></body></html>`);
+            const profileImageUrl = userData.data.profile_image_url || '';
+            return res.send(`<html><body><script>window.opener.postMessage({ type: 'twitter-auth-success', handle: '${userData.data.username}', profileImageUrl: '${profileImageUrl}' }, '*'); window.close();</script></body></html>`);
           }
         }
         return res.send(`<html><body><script>window.opener.postMessage({ type: 'twitter-auth-error', error: 'token_failed' }, '*'); window.close();</script></body></html>`);
@@ -227,13 +228,14 @@ export async function registerRoutes(
 
   app.patch('/api/users/profile', async (req, res) => {
     try {
-      const { walletAddress, twitterHandle, telegramHandle } = req.body;
+      const { walletAddress, twitterHandle, telegramHandle, profileImageUrl } = req.body;
       const user = await storage.getUserByWallet(walletAddress);
       if (!user) return res.status(404).json({ message: "User not found" });
 
       const updatedUser = await storage.updateUserSocials(user.id, {
         twitterHandle: twitterHandle || user.twitterHandle,
-        telegramHandle: telegramHandle || user.telegramHandle
+        telegramHandle: telegramHandle || user.telegramHandle,
+        profileImageUrl: profileImageUrl || user.profileImageUrl
       });
 
       res.json(updatedUser);
