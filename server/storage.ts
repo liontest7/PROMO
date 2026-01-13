@@ -321,17 +321,24 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getAllExecutions(): Promise<(Execution & { user: User; campaign: Campaign; action: Action })[]> {
-    const allExecutions = await db.select().from(executions).orderBy(desc(executions.createdAt));
-    const results = [];
-    for (const execution of allExecutions) {
-      const [user] = await db.select().from(users).where(eq(users.id, execution.userId));
-      const [campaign] = await db.select().from(campaigns).where(eq(campaigns.id, execution.campaignId));
-      const [action] = await db.select().from(actions).where(eq(actions.id, execution.actionId));
-      if (user && campaign && action) {
-        results.push({ ...execution, user, campaign, action });
-      }
-    }
-    return results;
+    const results = await db.select({
+      execution: executions,
+      user: users,
+      campaign: campaigns,
+      action: actions
+    })
+    .from(executions)
+    .innerJoin(users, eq(executions.userId, users.id))
+    .innerJoin(campaigns, eq(executions.campaignId, campaigns.id))
+    .innerJoin(actions, eq(executions.actionId, actions.id))
+    .orderBy(desc(executions.createdAt));
+
+    return results.map(r => ({
+      ...r.execution,
+      user: r.user,
+      campaign: r.campaign,
+      action: r.action
+    }));
   }
 
   async getLeaderboard(): Promise<User[]> {
