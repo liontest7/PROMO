@@ -73,7 +73,30 @@ const IdentitySync = ({ isAuthenticated, user, logout }: { isAuthenticated: bool
             <p className="text-base font-black font-display tracking-tight text-white uppercase italic">{user?.firstName || 'Dropy Sentinel'}</p>
             <Badge className="bg-primary/20 text-primary border-none text-[8px] font-black mt-1 uppercase tracking-widest">Node Synced</Badge>
           </div>
-          <Button variant="ghost" size="icon" className="h-8 w-8 rounded-lg text-white/30 hover:text-destructive hover:bg-destructive/10 relative z-10 transition-all" onClick={() => logout()}>
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            className="h-8 w-8 rounded-lg text-white/30 hover:text-destructive hover:bg-destructive/10 relative z-10 transition-all" 
+            onClick={async () => {
+              try {
+                const res = await fetch('/api/users/profile', {
+                  method: 'PATCH',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({
+                    walletAddress: walletAddress,
+                    twitterHandle: null,
+                    profileImageUrl: null
+                  })
+                });
+                if (res.ok) {
+                  queryClient.invalidateQueries({ queryKey: ["/api/users", walletAddress] });
+                  toast({ title: "X Disconnected", description: "Your X account has been unlinked." });
+                }
+              } catch (err) {
+                toast({ title: "Error", description: "Failed to disconnect", variant: "destructive" });
+              }
+            }}
+          >
             <LogOut className="w-4 h-4" />
           </Button>
           <div className="absolute bottom-0 right-0 p-2 opacity-5">
