@@ -108,7 +108,7 @@ const IdentitySync = ({ isAuthenticated, user, logout }: { isAuthenticated: bool
               }
             }}
           >
-            <LogOut className="w-4 h-4" />
+            <LogOut className="w-4 h-4 pointer-events-none" />
           </div>
           <div className="absolute bottom-0 right-0 p-2 opacity-5">
             <ShieldCheck className="w-10 h-10 text-primary" />
