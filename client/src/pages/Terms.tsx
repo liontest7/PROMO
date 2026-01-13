@@ -9,7 +9,7 @@ export default function TermsOfService() {
   return (
     <div className="min-h-screen bg-background flex flex-col">
       <Header />
-      <main className="flex-1 pt-32 pb-24 px-4 relative overflow-hidden">
+      <main className="flex-1 pt-12 pb-24 px-4 relative overflow-hidden">
         {/* Decorative background */}
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full pointer-events-none overflow-hidden">
           <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-primary/5 blur-[120px] rounded-full" />
