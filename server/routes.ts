@@ -70,7 +70,7 @@ export async function registerRoutes(
     const clientId = process.env.X_CLIENT_ID;
     const protocol = req.protocol;
     const host = req.get('host');
-    const redirectUri = `${protocol}://${host}/api/auth/twitter/callback`;
+    const redirectUri = `${protocol}://${host}/api/auth/twitter`;
     
     if (!clientId) {
       return res.status(400).json({ message: "Twitter API not configured" });
@@ -105,7 +105,7 @@ export async function registerRoutes(
     const clientSecret = process.env.X_CLIENT_SECRET;
     const protocol = req.protocol;
     const host = req.get('host');
-    const redirectUri = `${protocol}://${host}/api/auth/twitter/callback`;
+    const redirectUri = `${protocol}://${host}/api/auth/twitter`;
 
     if (!code || !clientId || !clientSecret) {
       return res.redirect("/dashboard?error=auth_failed");
