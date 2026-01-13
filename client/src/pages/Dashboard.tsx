@@ -80,12 +80,10 @@ const IdentitySync = ({ isAuthenticated, user, logout }: { isAuthenticated: bool
               e.stopPropagation();
               console.log("Unlinking X Identity...");
               try {
-                // Ensure the fetch is directed to the correct profile update endpoint
                 const res = await fetch('/api/users/profile', {
                   method: 'PATCH',
                   headers: { 
-                    'Content-Type': 'application/json',
-                    'x-wallet-address': walletAddress || ''
+                    'Content-Type': 'application/json'
                   },
                   body: JSON.stringify({
                     walletAddress: walletAddress,
@@ -96,7 +94,6 @@ const IdentitySync = ({ isAuthenticated, user, logout }: { isAuthenticated: bool
                 
                 if (res.ok) {
                   const updatedData = await res.json();
-                  // Update cache directly to ensure UI reflects changes immediately
                   queryClient.setQueryData(["/api/users", walletAddress], updatedData);
                   await queryClient.invalidateQueries({ queryKey: ["/api/users", walletAddress] });
                   toast({ title: "X Identity Removed", description: "Your X account has been successfully unlinked." });
@@ -110,7 +107,9 @@ const IdentitySync = ({ isAuthenticated, user, logout }: { isAuthenticated: bool
               }
             }}
           >
-            <LogOut className="w-4 h-4 pointer-events-none" />
+            <div className="pointer-events-none">
+              <LogOut className="w-4 h-4" />
+            </div>
           </div>
           <div className="absolute bottom-0 right-0 p-2 opacity-5">
             <ShieldCheck className="w-10 h-10 text-primary" />

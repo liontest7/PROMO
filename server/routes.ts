@@ -50,6 +50,26 @@ export async function registerRoutes(
   app.use("/api", apiLimiter);
   app.use("/api/users/auth", authLimiter);
 
+  // Identity Unlink Bypass - must be BEFORE generic catch-all routes
+  app.patch('/api/users/profile', async (req, res) => {
+    try {
+      const { walletAddress, twitterHandle, telegramHandle, profileImageUrl } = req.body;
+      const user = await storage.getUserByWallet(walletAddress);
+      if (!user) return res.status(404).json({ message: "User not found" });
+
+      const updatedUser = await storage.updateUserSocials(user.id, {
+        twitterHandle: twitterHandle === null || twitterHandle === "" ? "" : (twitterHandle || user.twitterHandle),
+        telegramHandle: telegramHandle === null || telegramHandle === "" ? "" : (telegramHandle || user.telegramHandle),
+        profileImageUrl: profileImageUrl === null || profileImageUrl === "" ? "" : (profileImageUrl || user.profileImageUrl)
+      });
+
+      res.json(updatedUser);
+    } catch (err) {
+      console.error("Unlink profile error:", err);
+      res.status(500).json({ message: "Failed to update profile" });
+    }
+  });
+
   // System Settings Routes
   app.get("/api/admin/settings", async (req, res) => {
     const settings = await storage.getSystemSettings();
@@ -246,6 +266,14 @@ export async function registerRoutes(
     } catch (err) {
       res.status(500).json({ message: "Failed to update profile" });
     }
+  });
+
+  // Re-enable /api/logout but ensure it's not being called by mistake
+  app.get("/api/logout", (req, res) => {
+    req.logout((err) => {
+      if (err) return res.status(500).json({ message: "Logout failed" });
+      res.redirect('/');
+    });
   });
 
   app.get(api.campaigns.list.path, async (req, res) => {
