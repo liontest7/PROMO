@@ -77,7 +77,9 @@ const IdentitySync = ({ isAuthenticated, user, logout }: { isAuthenticated: bool
             variant="ghost" 
             size="icon" 
             className="h-8 w-8 rounded-lg text-white/30 hover:text-destructive hover:bg-destructive/10 relative z-10 transition-all" 
-            onClick={async () => {
+            onClick={async (e) => {
+              e.preventDefault();
+              e.stopPropagation();
               try {
                 const res = await fetch('/api/users/profile', {
                   method: 'PATCH',
