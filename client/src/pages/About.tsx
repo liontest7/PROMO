@@ -41,14 +41,13 @@ export default function About() {
             animate={{ opacity: 1, y: 0 }}
             className="text-5xl md:text-7xl font-display font-extrabold mb-6 bg-gradient-to-br from-white via-white to-gray-500 bg-clip-text text-transparent italic uppercase tracking-tighter"
           >
-            Dropy <br />
+            MemeDrop <br />
             <span className="text-primary">The Future of Growth</span>
           </motion.h1>
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-            {PLATFORM_CONFIG.TOKEN_SYMBOL} has officially launched Phase 1: Holder Qualification & Identity Sync. This model focuses on building genuine, long-term value by rewarding users who commit to projects through verified on-chain holdings and authentic social engagement. 
-            No more high-cost engagement APIs – just pure on-chain verification, bot protection, and real community support. 
+            MemeDrop is the premier marketing platform built specifically for the Solana ecosystem. We bridge the gap between innovative crypto projects and an engaged community of supporters through a unique, action-based reward system.
             <br/><br/>
-            Our mission is to create a deflationary ecosystem where every campaign burns ${PLATFORM_CONFIG.TOKEN_SYMBOL}, rewarding the entire community while maintaining protocol-level security.
+            Our mission is to democratize token distribution while providing advertisers with high-quality, verified engagement. We believe that marketing in the Web3 space should be transparent, efficient, and rewarding for everyone involved.
           </p>
         </div>
 
@@ -170,8 +169,8 @@ export default function About() {
         <section className="py-20 border-t border-white/5">
           <div className="flex flex-col md:flex-row items-center justify-center gap-6 mb-16">
             <div className="text-center md:text-left">
-              <h2 className="text-4xl font-display font-bold mb-4 italic uppercase tracking-tighter">The <span className="text-primary">Dropy</span> Ecosystem</h2>
-              <p className="text-muted-foreground">Powering the Dropy economy with real utility.</p>
+              <h2 className="text-4xl font-display font-bold mb-4 italic uppercase tracking-tighter">The <span className="text-primary">MemeDrop</span> Ecosystem</h2>
+              <p className="text-muted-foreground">Powering the MemeDrop economy with real utility.</p>
             </div>
             <div className="w-32 h-32 shrink-0">
               <img 

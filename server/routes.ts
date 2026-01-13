@@ -266,14 +266,23 @@ export async function registerRoutes(
               }
             }
 
-            // 2. Min Wallet Age check (Simple estimation via first transaction)
+            // 2. Min Wallet Age check (Improved estimation)
             const minAgeDays = campaign.requirements?.minWalletAgeDays || campaign.requirements?.walletAgeDays || 0;
             if (minAgeDays > 0) {
               const signatures = await connection.getSignaturesForAddress(walletPublicKey, { limit: 1 }, 'finalized');
               if (signatures.length === 0) {
                 return res.status(403).json({ message: "Anti-Bot: Wallet is too new (no transactions found)." });
               }
-              // This is an estimation. For professional level, we'd check the timestamp of the oldest signature.
+              
+              const oldestSig = signatures[signatures.length - 1];
+              if (oldestSig.blockTime) {
+                const ageDays = (Date.now() / 1000 - oldestSig.blockTime) / (60 * 60 * 24);
+                if (ageDays < minAgeDays) {
+                  return res.status(403).json({ 
+                    message: `Anti-Bot: Wallet age is ${ageDays.toFixed(1)} days. Minimum ${minAgeDays} days required.` 
+                  });
+                }
+              }
             }
           } catch (err) {
             console.error("Anti-Bot verification failed:", err);

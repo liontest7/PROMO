@@ -70,7 +70,7 @@ export default function Landing() {
   return (
     <div className="min-h-screen bg-background text-foreground relative">
       <header>
-        <title>Dropy - The #1 Solana Marketing Platform</title>
+        <title>MemeDrop - The #1 Solana Marketing Platform</title>
         <meta name="description" content={`Connect, complete tasks, and earn crypto rewards instantly on Solana. The premier engagement platform for real users and authentic growth.`} />
       </header>
       
@@ -101,7 +101,7 @@ export default function Landing() {
                 <span className="text-primary neon-text italic">Drive Real Growth</span>
               </h1>
               <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto mb-12 leading-relaxed font-medium">
-                {PLATFORM_CONFIG.TOKEN_SYMBOL} is Solana's premier Pay-Per-Action platform. Connect with high-conviction users through verified on-chain holder qualification, social identity sync, and advanced engagement tasks. 
+                MemeDrop is Solana's premier Pay-Per-Action platform. Connect with high-conviction users through verified on-chain holder qualification, social identity sync, and advanced engagement tasks. 
                 Built for projects that demand authentic community growth and bot-free engagement.
               </p>
 
