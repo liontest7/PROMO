@@ -69,6 +69,11 @@ export function VerifyActionDialog({ action, campaign, open, onOpenChange, onSuc
 
   const isHolderCampaign = campaign?.campaignType === 'holder_qualification';
 
+  const { data: user } = useQuery({
+    queryKey: [`/api/users/${walletAddress}`],
+    enabled: !!walletAddress,
+  });
+
   const handleVerify = async (isAutoFetch: boolean = false) => {
     if (!walletAddress || !campaign) return;
     
@@ -126,6 +131,16 @@ export function VerifyActionDialog({ action, campaign, open, onOpenChange, onSuc
       }
 
       if (!action) return;
+
+      // Twitter check
+      if ((action.type === 'twitter' || action.type.startsWith('twitter_')) && !user?.twitterHandle) {
+        toast({
+          title: "X Account Not Linked",
+          description: "Please link your X (Twitter) account in your profile settings first.",
+          variant: "destructive",
+        });
+        return;
+      }
       
       // Twitter API Verification
       if (action.type === 'twitter') {
