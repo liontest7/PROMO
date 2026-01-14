@@ -247,7 +247,11 @@ export async function registerRoutes(
 
         const accessToken = (req.session as any).twitterAccessToken;
         if (!accessToken) {
-          return res.status(401).json({ message: "X (Twitter) session expired. Please re-link your account." });
+          // Fallback for manual verification or if session is missing but handle exists
+          // In a production app, we'd strictly require the token, but for UX we might allow 
+          // a "pending" state if the token is missing.
+          // For now, let's keep it strict but informative.
+          return res.status(401).json({ message: "X (Twitter) session expired. Please re-link your account from the dashboard." });
         }
 
         try {
@@ -255,26 +259,23 @@ export async function registerRoutes(
           let verified = false;
 
           if (action.type === 'twitter_follow') {
-            // Extract target username from URL
-            const targetUsername = action.url.split('/').pop() || "";
+            const targetUsername = action.url.split('/').pop()?.split('?')[0] || "";
             verified = await verifyTwitterFollow(accessToken, targetUsername);
           } else if (action.type === 'twitter_retweet') {
-            // Extract tweet ID from URL
-            const tweetId = action.url.split('/').pop() || "";
+            const tweetId = action.url.split('/').pop()?.split('?')[0] || "";
             verified = await verifyTwitterRetweet(accessToken, tweetId);
           } else {
-            // For general twitter type, we might just assume it's verified if linked for now
             verified = true;
           }
 
           if (!verified) {
             return res.status(403).json({ 
-              message: "X (Twitter) verification failed: Requirement not met. Please make sure you have performed the action." 
+              message: "X (Twitter) verification failed: Requirement not met. Please make sure you have performed the action (Follow/Like/Retweet) and wait a few seconds before trying again." 
             });
           }
         } catch (error) {
           console.error("Twitter verification route error:", error);
-          return res.status(500).json({ message: "Twitter verification service unavailable." });
+          return res.status(500).json({ message: "Twitter verification service unavailable. Please try again later." });
         }
       }
 

@@ -1,14 +1,14 @@
+import { Buffer } from "buffer";
+import process from "process";
 import { createRoot } from "react-dom/client";
 import App from "./App";
 import "./index.css";
 
-// Check if Buffer is available globally from script tag or fallback
+// Polyfill Buffer and process for Solana web3.js
 if (typeof window !== "undefined") {
   window.global = window;
-  // @ts-ignore
-  if (!window.Buffer && (window as any).buffer) {
-    (window as any).Buffer = (window as any).buffer.Buffer;
-  }
+  window.Buffer = Buffer;
+  window.process = process;
 }
 
 const rootElement = document.getElementById("root");

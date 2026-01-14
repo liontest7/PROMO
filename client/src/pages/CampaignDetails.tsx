@@ -419,12 +419,13 @@ export default function CampaignDetails() {
                                 <Button 
                                   size="sm"
                                   variant={isCompleted ? "outline" : "default"}
-                                  disabled={isCompleted}
+                                  disabled={isCompleted && !isWithdrawn}
                                   className={cn(
                                     "font-black px-5 h-9 rounded-lg text-xs uppercase tracking-widest transition-all",
-                                    isCompleted && "border-primary/50 text-primary bg-primary/5 cursor-default opacity-100 no-default-hover-elevate"
+                                    isCompleted && "border-primary/50 text-primary bg-primary/5 no-default-hover-elevate",
+                                    isWithdrawn && "bg-muted text-muted-foreground border-muted cursor-default opacity-70"
                                   )}
-                                  onClick={() => handleActionClick(action)}
+                                  onClick={() => !isCompleted && handleActionClick(action)}
                                 >
                                   {isWithdrawn ? "CLAIMED" : isCompleted ? `+${action.rewardAmount}` : "COMPLETE"}
                                 </Button>
