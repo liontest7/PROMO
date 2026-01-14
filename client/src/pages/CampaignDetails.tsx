@@ -575,33 +575,49 @@ export default function CampaignDetails() {
 
             <Card className="glass-card border-white/5 bg-white/5 rounded-2xl overflow-hidden shadow-xl">
               <CardHeader className="bg-white/5 border-b border-white/5 py-4">
-                <CardTitle className="text-[10px] uppercase tracking-[0.2em] text-white/40 font-black flex items-center gap-2">
-                  <ShieldCheck className="w-3.5 h-3.5 text-primary" />
-                  Blockchain Proofs
+                <CardTitle className="text-xs uppercase tracking-[0.2em] text-primary font-black flex items-center justify-between">
+                  <span>Blockchain Proofs</span>
+                  <ShieldCheck className="w-4 h-4 text-primary" />
                 </CardTitle>
               </CardHeader>
               <CardContent className="p-5 space-y-4">
-                <div className="space-y-3">
-                  <div className="flex justify-between items-center group/item cursor-pointer">
-                    <span className="text-white/30 text-[10px] font-black uppercase tracking-wider">Airdrop Wallet</span>
+                <div className="space-y-4">
+                  <div className="flex justify-between items-center py-2 border-b border-white/5">
+                    <span className="text-[10px] font-black text-white/30 uppercase tracking-wider">Escrow Wallet</span>
                     <a 
-                      href={`https://solscan.io/account/${campaign.tokenAddress}`} 
+                      href={`https://solscan.io/account/${campaign.escrowWallet || campaign.tokenAddress}`} 
                       target="_blank" 
                       rel="noreferrer"
                       className="font-mono text-[10px] text-primary hover:underline flex items-center gap-1.5"
                     >
-                      {campaign.tokenAddress?.substring(0, 4)}...{campaign.tokenAddress?.substring(campaign.tokenAddress?.length - 4)}
+                      {campaign.escrowWallet ? `${campaign.escrowWallet.substring(0, 4)}...${campaign.escrowWallet.substring(campaign.escrowWallet.length - 4)}` : "Generating..."}
                       <ExternalLink className="w-2.5 h-2.5" />
                     </a>
                   </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-white/30 text-[10px] font-black uppercase tracking-wider">Locked Rewards</span>
+                  <div className="flex justify-between items-center py-2 border-b border-white/5">
+                    <span className="text-[10px] font-black text-white/30 uppercase tracking-wider">Locked Rewards</span>
                     <span className="font-black text-white text-[10px] uppercase">{Number(campaign.totalBudget).toLocaleString()} ${campaign.tokenName}</span>
                   </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-white/30 text-[10px] font-black uppercase tracking-wider">Contract Status</span>
-                    <Badge variant="outline" className="border-green-500/20 bg-green-500/10 text-green-400 text-[9px] font-black h-5 px-2">VERIFIED</Badge>
+                  <div className="flex justify-between items-center py-2 border-b border-white/5">
+                    <span className="text-[10px] font-black text-white/30 uppercase tracking-wider">Gas Reserve</span>
+                    <span className="font-black text-primary text-[10px] uppercase">{campaign.gasBudgetSol || "0.00"} SOL</span>
                   </div>
+                  <div className="flex justify-between items-center py-2">
+                    <span className="text-[10px] font-black text-white/30 uppercase tracking-wider">Contract Status</span>
+                    <Badge variant="outline" className={cn(
+                      "text-[9px] font-black h-5 px-2 uppercase tracking-widest",
+                      campaign.creationFeePaid ? "border-green-500/20 bg-green-500/10 text-green-400" : "border-yellow-500/20 bg-yellow-500/10 text-yellow-500"
+                    )}>
+                      {campaign.creationFeePaid ? "VERIFIED" : "PENDING FUNDING"}
+                    </Badge>
+                  </div>
+                  {campaign.fundingTxSignature && (
+                    <Button variant="ghost" className="w-full h-8 text-[9px] font-black text-primary hover:bg-primary/5 gap-1.5 uppercase tracking-widest" asChild>
+                      <a href={`https://solscan.io/tx/${campaign.fundingTxSignature}`} target="_blank" rel="noreferrer">
+                        View Funding Transaction <ExternalLink className="w-3 h-3" />
+                      </a>
+                    </Button>
+                  )}
                 </div>
               </CardContent>
             </Card>
