@@ -121,7 +121,7 @@ export default function Landing() {
                   </Button>
                 </Link>
                 {isConnected ? (
-                  <Link href="/dashboard?create=true">
+                  <Link href="/earn?create=true">
                     <Button 
                       size="lg" 
                       variant="outline" 

@@ -3,6 +3,7 @@ import type { Server } from "http";
 import { setupTwitterRoutes } from "./routes/twitter";
 import { setupUserRoutes } from "./routes/users";
 import { setupCampaignRoutes } from "./routes/campaigns";
+import { setupAdminRoutes } from "./routes/admin";
 import { authMiddleware } from "./middleware/auth";
 import { storage } from "./storage";
 import { api } from "@shared/routes";
@@ -21,6 +22,7 @@ export async function registerRoutes(
   await setupTwitterRoutes(app);
   setupUserRoutes(app);
   setupCampaignRoutes(app);
+  setupAdminRoutes(app);
 
   app.get("/api/stats/global", async (req, res) => {
     try {

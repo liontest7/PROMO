@@ -1,5 +1,5 @@
 import { CreateCampaignDialog } from "@/components/CreateCampaignDialog";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Navigation } from "@/components/Navigation";
 import { useCampaigns } from "@/hooks/use-campaigns";
 import { CampaignCard } from "@/components/CampaignCard";
@@ -22,7 +22,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { useWallet } from "@/hooks/use-wallet";
 import { useToast } from "@/hooks/use-toast";
-import { Link } from "wouter";
+import { Link, useLocation } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 
 export default function Earn() {
@@ -30,7 +30,17 @@ export default function Earn() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedAction, setSelectedAction] = useState<{ action: Action; campaign: Campaign } | null>(null);
   const [activeFilters, setActiveFilters] = useState<string[]>([]);
+  const [isCreateOpen, setIsCreateOpen] = useState(false);
+  const [location] = useLocation();
   const { toast } = useToast();
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('create') === 'true') {
+      setIsCreateOpen(true);
+      window.history.replaceState({}, '', window.location.pathname);
+    }
+  }, []);
 
   const { data: user } = useQuery<any>({
     queryKey: ["/api/users", walletAddress],
@@ -134,7 +144,7 @@ export default function Earn() {
           </div>
           
           <div className="flex flex-col sm:flex-row w-full md:w-auto gap-3">
-            <CreateCampaignDialog />
+            <CreateCampaignDialog open={isCreateOpen} onOpenChange={setIsCreateOpen} />
 
             <div className="flex gap-2 w-full sm:w-auto">
               <div className="relative flex-1 md:w-64">

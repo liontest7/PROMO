@@ -97,12 +97,6 @@ export default function Dashboard() {
           rankChange={rankChange as "up" | "stable"}
         />
 
-        <div className="flex justify-end">
-          <Button onClick={() => setIsCreateOpen(true)} className="bg-primary text-primary-foreground font-black uppercase tracking-widest">
-            <Plus className="mr-2 h-4 w-4" /> Launch Campaign
-          </Button>
-        </div>
-
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2 space-y-8">
             <TokenPortfolios tokenBalances={stats?.tokenBalances || []} />
@@ -119,7 +113,6 @@ export default function Dashboard() {
           </div>
         </div>
       </main>
-      <CreateCampaignDialog open={isCreateOpen} onOpenChange={setIsCreateOpen} />
     </div>
   );
 }
