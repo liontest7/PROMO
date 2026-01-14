@@ -5,17 +5,34 @@ import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { Gift, Loader2, Send } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useState } from "react";
+import { SuccessCard } from "@/components/SuccessCard";
+import confetti from "canvas-confetti";
 
 interface PendingReward {
   campaignId: number;
   amount: string;
   tokenName: string;
   tokenAddress: string;
+  campaignTitle?: string;
 }
 
-export function ClaimRewards({ walletAddress, campaignId }: { walletAddress: string, campaignId?: number }) {
+export function ClaimRewards({ walletAddress, campaignId, campaignTitle }: { walletAddress: string, campaignId?: number, campaignTitle?: string }) {
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const [celebrationData, setCelebrationData] = useState<{
+    isOpen: boolean;
+    campaignTitle: string;
+    rewardAmount: string;
+    tokenName: string;
+    actionTitle: string;
+  }>({
+    isOpen: false,
+    campaignTitle: "",
+    rewardAmount: "",
+    tokenName: "",
+    actionTitle: ""
+  });
 
   const { data: pendingRewards, isLoading } = useQuery<PendingReward[]>({
     queryKey: ["/api/rewards/pending", walletAddress, campaignId],
@@ -37,21 +54,48 @@ export function ClaimRewards({ walletAddress, campaignId }: { walletAddress: str
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ wallet: walletAddress, campaignIds }),
       });
-      if (!res.ok) throw new Error("Failed to claim rewards");
+      if (!res.ok) {
+        const errData = await res.json();
+        throw new Error(errData.message || "Failed to claim rewards");
+      }
       return res.json();
     },
-    onSuccess: () => {
+    onSuccess: (data, campaignIds) => {
       queryClient.invalidateQueries({ queryKey: ["/api/rewards/pending", walletAddress] });
       queryClient.invalidateQueries({ queryKey: ["/api/users", walletAddress] });
+      
+      // Trigger celebration if it was a single or multiple claim
+      const rewardsToCelebrate = pendingRewards?.filter(r => campaignIds.includes(r.campaignId)) || [];
+      if (rewardsToCelebrate.length > 0) {
+        confetti({
+          particleCount: 150,
+          spread: 70,
+          origin: { y: 0.6 },
+          colors: ['#22c55e', '#ffffff', '#10b981']
+        });
+
+        // Use the first one for the display or a summary
+        const first = rewardsToCelebrate[0];
+        const totalAmount = rewardsToCelebrate.reduce((acc, r) => acc + parseFloat(r.amount), 0).toFixed(2);
+        
+        setCelebrationData({
+          isOpen: true,
+          campaignTitle: rewardsToCelebrate.length === 1 ? (campaignTitle || first.tokenName + " Campaign") : `${rewardsToCelebrate.length} Campaigns`,
+          rewardAmount: totalAmount,
+          tokenName: first.tokenName,
+          actionTitle: "Batch Claim Rewards"
+        });
+      }
+
       toast({
         title: "Success!",
         description: "Your rewards have been claimed successfully.",
       });
     },
-    onError: () => {
+    onError: (error: Error) => {
       toast({
         title: "Claim Failed",
-        description: "There was an error claiming your rewards. Please try again.",
+        description: error.message || "There was an error claiming your rewards. Please try again.",
         variant: "destructive",
       });
     },
@@ -117,6 +161,14 @@ export function ClaimRewards({ walletAddress, campaignId }: { walletAddress: str
           Tip: Claiming multiple rewards at once saves on network transaction fees.
         </p>
       </CardContent>
+      <SuccessCard 
+        isOpen={celebrationData.isOpen}
+        onClose={() => setCelebrationData(prev => ({ ...prev, isOpen: false }))}
+        campaignTitle={celebrationData.campaignTitle}
+        rewardAmount={celebrationData.rewardAmount}
+        tokenName={celebrationData.tokenName}
+        actionTitle={celebrationData.actionTitle}
+      />
     </Card>
   );
 }

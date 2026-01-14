@@ -301,7 +301,11 @@ export default function CampaignDetails() {
                 </div>
               </div>
 
-              <ClaimRewards walletAddress={walletAddress!} campaignId={campaign.id} />
+              <ClaimRewards 
+                walletAddress={walletAddress!} 
+                campaignId={campaign.id} 
+                campaignTitle={campaign.title}
+              />
 
               <div className="grid gap-4">
                 {campaign.campaignType === 'holder_qualification' ? (

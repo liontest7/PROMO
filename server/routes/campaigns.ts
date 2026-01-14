@@ -49,13 +49,24 @@ export function setupCampaignRoutes(app: Express) {
       const campaignData = insertCampaignSchema.parse(req.body);
       
       // Calculate real gas budget based on actions and max claims
-      const totalPotentialExecutions = body.actions.reduce((acc: number, action: any) => acc + (action.maxExecutions || 100), 0);
-      const gasBudgetSol = (totalPotentialExecutions * 0.000005).toFixed(6); // 5000 lamports per tx as base
+      // 0.000005 SOL per interaction is a very safe estimate for transaction fees
+      const totalPotentialExecutions = (req.body.actions || []).reduce((acc: number, action: any) => acc + (action.maxExecutions || 100), 0);
+      const gasBudgetSol = (totalPotentialExecutions * 0.000005).toFixed(6); 
 
       const campaign = await storage.createCampaign({
         ...campaignData,
         gasBudgetSol
       } as any);
+
+      // Create actions
+      if (req.body.actions && Array.isArray(req.body.actions)) {
+        for (const action of req.body.actions) {
+          await storage.createAction({
+            ...action,
+            campaignId: campaign.id
+          });
+        }
+      }
 
       // Process deflationary fee (10,000 $Dropy)
       const DROPY_TOKEN_ADDRESS = process.env.VITE_DROPY_TOKEN_ADDRESS;
