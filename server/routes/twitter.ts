@@ -24,10 +24,17 @@ export async function setupTwitterRoutes(app: Express) {
   });
 
   const getTwitterClient = (req: any) => {
-    const host = req.get('host') || process.env.REPLIT_DEV_DOMAIN;
+    // Priority: 1. Secret 2. Request Host 3. Replit Domain fallback
+    const host = process.env.TWITTER_REDIRECT_URI 
+      ? new URL(process.env.TWITTER_REDIRECT_URI).host 
+      : (req.get('host') || process.env.REPLIT_DEV_DOMAIN);
+    
+    const redirectUri = `https://${host}/api/auth/twitter`;
+    console.log(`[Twitter OAuth] Using Redirect URI: ${redirectUri}`);
+
     return new twitterIssuer.Client({
       client_id: process.env.TWITTER_CLIENT_ID!,
-      redirect_uris: [`https://${host}/api/auth/twitter`],
+      redirect_uris: [redirectUri],
       response_types: ["code"],
       token_endpoint_auth_method: "none",
     });
