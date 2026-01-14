@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { AlertCircle, Info } from "lucide-react";
 import { motion } from "framer-motion";
+import { PLATFORM_CONFIG } from "@shared/config";
 import {
   Tooltip,
   TooltipContent,

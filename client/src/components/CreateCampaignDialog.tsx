@@ -57,8 +57,10 @@ const formSchema = insertCampaignSchema.extend({
 
 type FormValues = z.infer<typeof formSchema>;
 
-export function CreateCampaignDialog() {
-  const [open, setOpen] = useState(false);
+export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: controlledOnOpenChange }: { open?: boolean; onOpenChange?: (open: boolean) => void }) {
+  const [internalOpen, setInternalOpen] = useState(false);
+  const open = controlledOpen !== undefined ? controlledOpen : internalOpen;
+  const setOpen = controlledOnOpenChange !== undefined ? controlledOnOpenChange : setInternalOpen;
   const [step, setStep] = useState<"edit" | "preview">("edit");
   const [createdCampaign, setCreatedCampaign] = useState<any>(null);
   const [showSuccessCard, setShowSuccessCard] = useState(false);

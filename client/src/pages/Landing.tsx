@@ -55,7 +55,7 @@ function EarnContentOnly() {
 }
 
 export default function Landing() {
-  const { connect } = useWallet();
+  const { connect, isConnected } = useWallet();
   const { data: campaigns } = useCampaigns();
   const { data: stats } = useQuery({
     queryKey: ["/api/stats/global"],
