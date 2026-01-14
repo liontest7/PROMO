@@ -404,6 +404,8 @@ export class DatabaseStorage implements IStorage {
       const hasTwitterKeys = !!(process.env.X_CONSUMER_KEY && process.env.X_CONSUMER_SECRET && process.env.X_BEARER_TOKEN);
       [settings] = await db.insert(systemSettings).values({
         campaignsEnabled: true,
+        holderQualificationEnabled: true,
+        socialEngagementEnabled: true,
         twitterApiStatus: hasTwitterKeys ? "active" : "coming_soon",
         burnPercent: 50,
         rewardsPercent: 40,

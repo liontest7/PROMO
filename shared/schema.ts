@@ -8,6 +8,8 @@ import { relations } from "drizzle-orm";
 export const systemSettings = pgTable("system_settings", {
   id: serial("id").primaryKey(),
   campaignsEnabled: boolean("campaigns_enabled").default(true).notNull(),
+  holderQualificationEnabled: boolean("holder_qualification_enabled").default(true).notNull(),
+  socialEngagementEnabled: boolean("social_engagement_enabled").default(true).notNull(),
   twitterApiStatus: text("twitter_api_status", { enum: ["active", "coming_soon", "error"] }).default("coming_soon").notNull(),
   burnPercent: integer("burn_percent").default(50).notNull(),
   rewardsPercent: integer("rewards_percent").default(40).notNull(),
