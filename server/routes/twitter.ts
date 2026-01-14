@@ -87,7 +87,7 @@ export async function setupTwitterRoutes(app: Express) {
         return res.send(`
           <script>
             if (window.opener) {
-              window.opener.location.reload();
+              window.opener.location.href = "/dashboard";
               window.close();
             } else {
               window.location.href = "/dashboard";

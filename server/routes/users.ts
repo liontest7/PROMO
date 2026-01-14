@@ -75,4 +75,28 @@ export function setupUserRoutes(app: Express) {
       balance: user.balance
     });
   });
+
+  app.post("/api/user/unlink-x", async (req, res) => {
+    try {
+      const { walletAddress } = req.body;
+      if (!walletAddress) {
+        return res.status(400).json({ message: "Wallet address required" });
+      }
+
+      const user = await storage.getUserByWallet(walletAddress);
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      await storage.updateUserSocials(user.id, {
+        twitterHandle: null,
+        profileImageUrl: null,
+      });
+
+      res.json({ success: true, message: "Account unlinked successfully" });
+    } catch (err) {
+      console.error("Unlink error:", err);
+      res.status(500).json({ message: "Internal Server Error" });
+    }
+  });
 }
