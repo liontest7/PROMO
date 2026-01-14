@@ -48,7 +48,10 @@ export async function setupTwitterRoutes(app: Express) {
         const tokenSet = await twitterClient.callback(
           TWITTER_REDIRECT_URI,
           { code: code as string, state: state as string },
-          { code_verifier: session.code_verifier },
+          { 
+            code_verifier: session.code_verifier,
+            state: session.state 
+          },
         );
 
         console.log("[Twitter OAuth2] Token set received");
