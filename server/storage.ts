@@ -381,9 +381,54 @@ export class DatabaseStorage implements IStorage {
   }
 
   async claimRewards(userId: number, campaignIds: number[]): Promise<void> {
+    const rewards = await db.select({
+      id: executions.id,
+      campaignId: executions.campaignId,
+      rewardAmount: actions.rewardAmount,
+    })
+    .from(executions)
+    .innerJoin(actions, eq(executions.actionId, actions.id))
+    .where(sql`${executions.userId} = ${userId} AND ${executions.status} = 'verified' AND ${executions.campaignId} IN (${sql.raw(campaignIds.join(','))})`);
+
+    if (rewards.length === 0) return;
+
+    // Batch update execution status
     await db.update(executions)
-      .set({ status: 'paid' })
-      .where(sql`${executions.userId} = ${userId} AND ${executions.status} = 'verified' AND ${executions.campaignId} IN (${sql.raw(campaignIds.join(','))})`);
+      .set({ 
+        status: 'paid',
+        paidAt: new Date()
+      })
+      .where(sql`${executions.id} IN (${sql.raw(rewards.map(r => r.id).join(','))})`);
+
+    // Aggregate rewards per campaign to update budgets
+    const campaignRewards = rewards.reduce((acc, curr) => {
+      acc[curr.campaignId] = (acc[curr.campaignId] || 0) + parseFloat(curr.rewardAmount);
+      return acc;
+    }, {} as Record<number, number>);
+
+    // Update user balance once
+    const totalReward = rewards.reduce((sum, r) => sum + parseFloat(r.rewardAmount), 0);
+    const [user] = await db.select().from(users).where(eq(users.id, userId));
+    if (user) {
+      const newBalance = (parseFloat(user.balance) + totalReward).toFixed(6);
+      await db.update(users)
+        .set({ 
+          balance: newBalance,
+          reputationScore: (user.reputationScore || 0) + (rewards.length * 10)
+        })
+        .where(eq(users.id, userId));
+    }
+
+    // Update individual campaign budgets
+    for (const [campaignId, amount] of Object.entries(campaignRewards)) {
+      const [campaign] = await db.select().from(campaigns).where(eq(campaigns.id, parseInt(campaignId)));
+      if (campaign) {
+        const newRemaining = Math.max(0, parseFloat(campaign.remainingBudget) - amount).toFixed(6);
+        await db.update(campaigns)
+          .set({ remainingBudget: newRemaining })
+          .where(eq(campaigns.id, parseInt(campaignId)));
+      }
+    }
   }
 
   async getHolderState(userId: number, campaignId: number): Promise<HolderState | undefined> {

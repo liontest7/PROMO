@@ -339,14 +339,19 @@ export default function CampaignDetails() {
                         <div className="flex-1 flex items-center justify-between md:px-6 gap-6 w-full border-y md:border-y-0 md:border-x border-white/10 py-4 md:py-0">
                           {isConnected ? (
                             <>
-                              <div className="space-y-2.5 flex-1 min-w-0">
+                          <div className="space-y-2.5 flex-1 min-w-0">
                                 <div className="flex flex-col items-center gap-1.5">
                                   <div className="flex justify-between w-full items-center text-[11px] font-black uppercase tracking-widest text-white/90">
                                     <span>Progress</span>
-                                    <span className="text-primary">0%</span>
+                                    <span className="text-primary">
+                                      {campaign?.minHoldingDuration === 0 ? "100%" : "0%"}
+                                    </span>
                                   </div>
                                   <div className="relative h-2.5 w-full bg-white/10 rounded-full overflow-hidden border border-white/5">
-                                    <div className="absolute inset-y-0 left-0 bg-primary w-[5%] transition-all duration-1000 shadow-[0_0_10px_rgba(var(--primary),0.8)]" />
+                                    <div 
+                                      className="absolute inset-y-0 left-0 bg-primary transition-all duration-1000 shadow-[0_0_10px_rgba(var(--primary),0.8)]" 
+                                      style={{ width: campaign?.minHoldingDuration === 0 ? "100%" : "5%" }}
+                                    />
                                   </div>
                                 </div>
                               </div>
