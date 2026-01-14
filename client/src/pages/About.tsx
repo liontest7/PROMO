@@ -14,7 +14,8 @@ export default function About() {
     totalVerifiedProjects: number;
   }>({
     queryKey: ["/api/stats/global"],
-    refetchInterval: 30000,
+    refetchInterval: 5000,
+    staleTime: 0,
   });
 
   const statsItems = [

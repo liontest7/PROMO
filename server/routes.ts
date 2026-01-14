@@ -29,7 +29,7 @@ export async function registerRoutes(
       const allExecutions = await storage.getAllExecutions();
       
       const activeCampaigns = allCampaigns.filter(c => c.status === 'active').length;
-      const totalUsers = allUsers.filter(u => u.acceptedTerms).length;
+      const totalUsers = allUsers.filter(u => u.status === 'active').length;
       const totalVerifiedProjects = Array.from(new Set(allCampaigns.map(c => c.creatorId))).length;
       
       // Calculate total paid rewards
