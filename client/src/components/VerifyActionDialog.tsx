@@ -122,7 +122,7 @@ export function VerifyActionDialog({ action, campaign, open, onOpenChange, onSuc
                   title: "Eligibility Verified!",
                   description: "You are eligible to claim your reward.",
                 });
-                if (onSuccess) onSuccess(0);
+                if (onSuccess) onSuccess(0); // Trigger celebration for holder verification
                 setTimeout(() => onOpenChange(false), 2000);
               }
             }
