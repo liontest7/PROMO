@@ -15,8 +15,6 @@ import { EcosystemContribution } from "@/components/dashboard/EcosystemContribut
 
 export default function Dashboard() {
   const { walletAddress } = useWallet();
-  const { toast } = useToast();
-  const queryClient = useQueryClient();
   const { data: stats, isLoading: statsLoading } = useUserStats(walletAddress);
   
   const { data: user, isLoading: userLoading } = useQuery<UserType>({
@@ -25,44 +23,6 @@ export default function Dashboard() {
     retry: false,
     staleTime: 30000,
   });
-
-  const mutation = useMutation({
-    mutationFn: async (data: { walletAddress: string, twitterHandle: string, profileImageUrl?: string }) => {
-      const res = await fetch('/api/users/profile', {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data)
-      });
-      if (!res.ok) throw new Error('Failed to update profile');
-      return res.json();
-    },
-    onSuccess: (data) => {
-      queryClient.setQueryData(["/api/users", walletAddress], data);
-      queryClient.invalidateQueries({ queryKey: ["/api/users", walletAddress] });
-      toast({ 
-        title: "X Identity Synced", 
-        description: `Your X account @${data.twitterHandle} has been verified.` 
-      });
-    }
-  });
-
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const verified = params.get("verified_twitter") === "true";
-    const handle = params.get("handle");
-    const profileImage = params.get("profile_image");
-
-    if (verified && walletAddress) {
-      mutation.mutate({
-        walletAddress,
-        twitterHandle: handle || "DropySentinel",
-        profileImageUrl: profileImage || ""
-      });
-      
-      // Clean up URL
-      window.history.replaceState({}, document.title, window.location.pathname);
-    }
-  }, [walletAddress, mutation]);
 
   const { data: executions } = useQuery({
     queryKey: [api.users.executions.path, walletAddress],

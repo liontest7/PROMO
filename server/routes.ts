@@ -271,24 +271,6 @@ export async function registerRoutes(
     });
   });
 
-  app.patch('/api/users/profile', async (req, res) => {
-    try {
-      const { walletAddress, twitterHandle, telegramHandle, profileImageUrl } = req.body;
-      const user = await storage.getUserByWallet(walletAddress);
-      if (!user) return res.status(404).json({ message: "User not found" });
-
-      const updatedUser = await storage.updateUserSocials(user.id, {
-        twitterHandle: twitterHandle === null || twitterHandle === "" ? "" : (twitterHandle || user.twitterHandle),
-        telegramHandle: telegramHandle === null || telegramHandle === "" ? "" : (telegramHandle || user.telegramHandle),
-        profileImageUrl: profileImageUrl === null || profileImageUrl === "" ? "" : (profileImageUrl || user.profileImageUrl)
-      });
-
-      res.json(updatedUser);
-    } catch (err) {
-      res.status(500).json({ message: "Failed to update profile" });
-    }
-  });
-
   app.get(api.campaigns.list.path, async (req, res) => {
     const campaigns = await storage.getCampaigns();
     res.json(campaigns);

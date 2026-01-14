@@ -4,7 +4,8 @@ import { Twitter, Send, LogOut, ShieldCheck, User as UserIcon } from "lucide-rea
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
-import { useQueryClient } from "@tanstack/react-query";
+import { useQueryClient, useMutation } from "@tanstack/react-query";
+import { useEffect } from "react";
 
 interface IdentitySyncProps {
   user: any;
@@ -15,9 +16,67 @@ export const IdentitySync = ({ user, walletAddress }: IdentitySyncProps) => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
+  const syncMutation = useMutation({
+    mutationFn: async (data: { walletAddress: string, twitterHandle: string, profileImageUrl?: string }) => {
+      const res = await fetch('/api/users/profile', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      });
+      if (!res.ok) throw new Error('Failed to update profile');
+      return res.json();
+    },
+    onSuccess: (data) => {
+      queryClient.setQueryData(["/api/users", walletAddress], data);
+      queryClient.invalidateQueries({ queryKey: ["/api/users", walletAddress] });
+      toast({ 
+        title: "X Identity Synced", 
+        description: `Your X account @${data.twitterHandle} has been verified.` 
+      });
+    }
+  });
+
+  const unlinkMutation = useMutation({
+    mutationFn: async () => {
+      const res = await fetch('/api/user/unlink-x', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ walletAddress })
+      });
+      if (!res.ok) throw new Error('Failed to unlink');
+      return res.json();
+    },
+    onSuccess: (data) => {
+      queryClient.setQueryData(["/api/users", walletAddress], data);
+      queryClient.invalidateQueries({ queryKey: ["/api/users", walletAddress] });
+      toast({ title: "X Identity Removed", description: "Your X account has been successfully unlinked." });
+    },
+    onError: () => {
+      toast({ title: "Error", description: "Failed to unlink account", variant: "destructive" });
+    }
+  });
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const verified = params.get("verified_twitter") === "true";
+    const handle = params.get("handle");
+    const profileImage = params.get("profile_image");
+
+    if (verified && walletAddress && !user?.twitterHandle) {
+      syncMutation.mutate({
+        walletAddress,
+        twitterHandle: handle || "DropySentinel",
+        profileImageUrl: profileImage || ""
+      });
+      
+      // Clean up URL
+      window.history.replaceState({}, document.title, window.location.pathname);
+    }
+  }, [walletAddress, syncMutation, user?.twitterHandle]);
+
   const handleConnect = () => {
     const width = 600;
-    const height = 600;
+    const height = 650;
     const left = window.screen.width / 2 - width / 2;
     const top = window.screen.height / 2 - height / 2;
     
@@ -28,25 +87,8 @@ export const IdentitySync = ({ user, walletAddress }: IdentitySyncProps) => {
     );
   };
 
-  const handleUnlink = async () => {
-    try {
-      const res = await fetch('/api/user/unlink-x', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ walletAddress })
-      });
-      
-      if (res.ok) {
-        const updatedData = await res.json();
-        queryClient.setQueryData(["/api/users", walletAddress], updatedData);
-        await queryClient.invalidateQueries({ queryKey: ["/api/users", walletAddress] });
-        toast({ title: "X Identity Removed", description: "Your X account has been successfully unlinked." });
-      } else {
-        throw new Error('Failed to unlink');
-      }
-    } catch (err) {
-      toast({ title: "Error", description: "Failed to unlink account", variant: "destructive" });
-    }
+  const handleUnlink = () => {
+    unlinkMutation.mutate();
   };
 
   return (
@@ -74,9 +116,10 @@ export const IdentitySync = ({ user, walletAddress }: IdentitySyncProps) => {
               <div className="flex flex-col gap-2 pt-2">
                 <Button 
                   onClick={handleConnect}
+                  disabled={syncMutation.isPending}
                   className="w-full bg-blue-500 hover:bg-blue-600 text-white gap-3 font-black text-[11px] h-11 rounded-lg shadow-md transition-all active-elevate-2 uppercase tracking-widest relative overflow-hidden group/btn"
                 >
-                  <span className="relative z-10">Connect Protocol Node</span>
+                  <span className="relative z-10">{syncMutation.isPending ? 'Syncing...' : 'Connect Protocol Node'}</span>
                   <div className="absolute inset-0 bg-white/10 opacity-0 group-hover/btn:opacity-100 transition-opacity" />
                 </Button>
               </div>
@@ -99,10 +142,11 @@ export const IdentitySync = ({ user, walletAddress }: IdentitySyncProps) => {
             <Button
               size="icon"
               variant="ghost"
+              disabled={unlinkMutation.isPending}
               className="h-8 w-8 rounded-lg text-white/30 hover:text-destructive hover:bg-destructive/10 relative z-[100] transition-all"
               onClick={handleUnlink}
             >
-              <LogOut className="w-4 h-4" />
+              <LogOut className={`w-4 h-4 ${unlinkMutation.isPending ? 'animate-spin' : ''}`} />
             </Button>
             <div className="absolute bottom-0 right-0 p-2 opacity-5">
               <ShieldCheck className="w-10 h-10 text-primary" />
