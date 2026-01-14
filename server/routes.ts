@@ -40,6 +40,7 @@ export async function registerRoutes(
         `https://${host}/api/auth/twitter`
       ],
       response_types: ["code"],
+      id_token_signed_response_alg: "RS256",
     });
   };
 
@@ -117,6 +118,7 @@ export async function registerRoutes(
       state: newState,
       code_challenge,
       code_challenge_method: "S256",
+      prompt: "consent"
     });
 
     res.redirect(authUrl);
