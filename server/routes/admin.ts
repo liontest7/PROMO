@@ -118,4 +118,45 @@ export function setupAdminRoutes(app: Express) {
       res.status(500).json({ message: "Error fetching system health" });
     }
   });
+
+  // Admin Analytics
+  app.get("/api/admin/analytics", async (req, res) => {
+    try {
+      const allUsers = await storage.getAllUsers();
+      const allCampaigns = await storage.getAllCampaigns();
+      const allExecutions = await storage.getAllExecutions();
+
+      const stats = {
+        totalUsers: allUsers.length,
+        totalCampaigns: allCampaigns.length,
+        totalExecutions: allExecutions.length,
+        activeCampaigns: allCampaigns.filter(c => c.status === 'active').length,
+        taskVerified: allExecutions.filter(e => e.status === 'verified' || e.status === 'paid').length,
+        conversionRate: allUsers.length > 0 
+          ? (allExecutions.length / allUsers.length).toFixed(1)
+          : "0.0"
+      };
+
+      // Generate last 7 days trend
+      const trend = [];
+      for (let i = 6; i >= 0; i--) {
+        const date = new Date();
+        date.setDate(date.getDate() - i);
+        const dateStr = date.toISOString().split('T')[0];
+        
+        const count = allExecutions.filter(e => {
+          if (!e.createdAt) return false;
+          const eDate = new Date(e.createdAt).toISOString().split('T')[0];
+          return eDate === dateStr;
+        }).length;
+
+        trend.push({ date: dateStr, count });
+      }
+
+      res.json({ stats, trend });
+    } catch (err) {
+      console.error("Analytics error:", err);
+      res.status(500).json({ message: "Error fetching analytics" });
+    }
+  });
 }
