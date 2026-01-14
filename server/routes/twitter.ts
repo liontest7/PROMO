@@ -86,6 +86,8 @@ export async function setupTwitterRoutes(app: Express) {
             twitterHandle: twitterUser.username,
             profileImageUrl: twitterUser.profile_image_url,
           });
+          // Store token securely in session or encrypted in DB for verification
+          (req.session as any).twitterAccessToken = accessToken;
         }
 
         delete (req.session as any).twitterAuth;
