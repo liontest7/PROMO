@@ -57,6 +57,23 @@ export const IdentitySync = ({ user, walletAddress }: IdentitySyncProps) => {
   });
 
   useEffect(() => {
+    const handleMessage = (event: MessageEvent) => {
+      if (event.origin !== window.location.origin) return;
+      if (event.data?.type === 'TWITTER_AUTH_SUCCESS') {
+        queryClient.invalidateQueries({ queryKey: ["/api/auth/user"] });
+        queryClient.invalidateQueries({ queryKey: ["/api/users", walletAddress] });
+        toast({
+          title: "X Connected",
+          description: "Your X account has been successfully linked.",
+        });
+      }
+    };
+
+    window.addEventListener('message', handleMessage);
+    return () => window.removeEventListener('message', handleMessage);
+  }, [queryClient, walletAddress, toast]);
+
+  useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const verified = params.get("verified_twitter") === "true";
     const handle = params.get("handle");

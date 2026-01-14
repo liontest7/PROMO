@@ -87,7 +87,7 @@ export async function setupTwitterRoutes(app: Express) {
         return res.send(`
           <script>
             if (window.opener) {
-              window.opener.location.href = "/dashboard";
+              window.opener.postMessage({ type: 'TWITTER_AUTH_SUCCESS' }, window.location.origin);
               window.close();
             } else {
               window.location.href = "/dashboard";
