@@ -45,17 +45,21 @@ export async function setupTwitterRoutes(app: Express) {
     const client = getTwitterClient(req);
 
     // Phase 2: Callback Handling
-    if (code && state) {
+    if (code) {
       const session = (req.session as any).twitterAuth;
-      if (!session || session.state !== state) {
-        return res.status(400).send("Invalid OAuth state");
+      if (!session) {
+        console.error("[Twitter OAuth] Session missing during callback");
+        return res.status(400).send("Authentication session expired. Please try again.");
       }
 
       try {
         const tokenSet = await client.callback(
           client.metadata.redirect_uris![0],
-          { code: code as string, state: state as string },
-          { code_verifier: session.code_verifier }
+          { code: code as string, state: (state as string) || session.state },
+          { 
+            code_verifier: session.code_verifier,
+            state: session.state
+          }
         ).catch(err => {
           console.error("[Twitter OAuth] Callback Error Details:", err.response?.body || err.message);
           throw err;
