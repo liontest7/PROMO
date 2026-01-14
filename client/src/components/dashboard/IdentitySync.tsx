@@ -1,0 +1,138 @@
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Twitter, Send, LogOut, ShieldCheck, User as UserIcon } from "lucide-react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
+import { useToast } from "@/hooks/use-toast";
+import { useQueryClient } from "@tanstack/react-query";
+
+interface IdentitySyncProps {
+  user: any;
+  walletAddress: string;
+}
+
+export const IdentitySync = ({ user, walletAddress }: IdentitySyncProps) => {
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
+
+  const handleConnect = () => {
+    const width = 600;
+    const height = 600;
+    const left = window.screen.width / 2 - width / 2;
+    const top = window.screen.height / 2 - height / 2;
+    
+    window.open(
+      '/api/auth/twitter',
+      'Twitter Auth',
+      `width=${width},height=${height},left=${left},top=${top},status=no,location=no,toolbar=no,menubar=no`
+    );
+  };
+
+  const handleUnlink = async () => {
+    try {
+      const res = await fetch('/api/user/unlink-x', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ walletAddress })
+      });
+      
+      if (res.ok) {
+        const updatedData = await res.json();
+        queryClient.setQueryData(["/api/users", walletAddress], updatedData);
+        await queryClient.invalidateQueries({ queryKey: ["/api/users", walletAddress] });
+        toast({ title: "X Identity Removed", description: "Your X account has been successfully unlinked." });
+      } else {
+        throw new Error('Failed to unlink');
+      }
+    } catch (err) {
+      toast({ title: "Error", description: "Failed to unlink account", variant: "destructive" });
+    }
+  };
+
+  return (
+    <Card className="glass-card border border-white/10 bg-white/[0.02] rounded-[2rem] overflow-hidden p-1 shadow-xl lg:max-w-md ml-auto">
+      <CardHeader className="p-6 pb-4">
+        <CardTitle className="text-2xl font-black font-display uppercase italic tracking-tighter leading-none text-white">Identity Sync</CardTitle>
+        <div className="h-0.5 w-12 bg-white/20 mt-3 rounded-full" />
+      </CardHeader>
+      <CardContent className="p-6 pt-0 space-y-4">
+        {!user?.twitterHandle ? (
+          <div className="p-5 rounded-xl bg-blue-500/5 border border-blue-500/10 relative overflow-hidden group shadow-lg">
+            <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-all duration-700">
+              <Twitter className="w-14 h-14" />
+            </div>
+            <div className="relative z-10 text-left space-y-4">
+              <div className="flex items-center gap-2 mb-1">
+                <div className="p-2 rounded-lg bg-blue-500/20 border border-blue-500/30">
+                  <Twitter className="w-5 h-5 text-blue-400" />
+                </div>
+                <span className="text-[13px] font-black uppercase tracking-widest text-white italic">X Identity Sync</span>
+              </div>
+              <p className="text-[12px] text-white/50 font-bold uppercase tracking-widest leading-relaxed max-w-[90%]">
+                Verify your X account to unlock high-yield engagement campaigns.
+              </p>
+              <div className="flex flex-col gap-2 pt-2">
+                <Button 
+                  onClick={handleConnect}
+                  className="w-full bg-blue-500 hover:bg-blue-600 text-white gap-3 font-black text-[11px] h-11 rounded-lg shadow-md transition-all active-elevate-2 uppercase tracking-widest relative overflow-hidden group/btn"
+                >
+                  <span className="relative z-10">Connect Protocol Node</span>
+                  <div className="absolute inset-0 bg-white/10 opacity-0 group-hover/btn:opacity-100 transition-opacity" />
+                </Button>
+              </div>
+            </div>
+          </div>
+        ) : (
+          <div className="p-4 rounded-xl bg-primary/10 border border-primary/20 flex items-center gap-4 relative overflow-hidden group shadow-lg">
+            <Avatar className="h-12 w-12 border-2 border-background shadow-[0_0_20px_rgba(34,197,94,0.2)] relative z-10">
+              <AvatarImage src={user?.profileImageUrl || ""} className="object-cover" />
+              <AvatarFallback className="bg-primary/20"><UserIcon className="w-6 h-6 text-primary" /></AvatarFallback>
+            </Avatar>
+            <div className="flex-1 relative z-10">
+              <div className="flex items-center gap-2">
+                <Twitter className="w-3 h-3 text-blue-400" />
+                <span className="text-[9px] font-black uppercase tracking-widest text-white/40">Verified Identity</span>
+              </div>
+              <p className="text-base font-black font-display tracking-tight text-white uppercase italic">@{user.twitterHandle}</p>
+              <Badge className="bg-primary/20 text-primary border-none text-[8px] font-black mt-1 uppercase tracking-widest">Node Synced</Badge>
+            </div>
+            <Button
+              size="icon"
+              variant="ghost"
+              className="h-8 w-8 rounded-lg text-white/30 hover:text-destructive hover:bg-destructive/10 relative z-[100] transition-all"
+              onClick={handleUnlink}
+            >
+              <LogOut className="w-4 h-4" />
+            </Button>
+            <div className="absolute bottom-0 right-0 p-2 opacity-5">
+              <ShieldCheck className="w-10 h-10 text-primary" />
+            </div>
+          </div>
+        )}
+
+        <div className="p-5 rounded-xl bg-blue-600/5 border border-blue-600/10 relative overflow-hidden group shadow-lg opacity-60 grayscale hover:grayscale-0 transition-all">
+          <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-all duration-700">
+            <Send className="w-14 h-14" />
+          </div>
+          <div className="relative z-10 text-left space-y-4">
+            <div className="flex items-center gap-2 mb-1">
+              <div className="p-2 rounded-lg bg-blue-600/20 border border-blue-600/30">
+                <Send className="w-5 h-5 text-blue-500" />
+              </div>
+              <span className="text-[13px] font-black uppercase tracking-widest text-white italic">TG Identity</span>
+            </div>
+            <div className="flex flex-col gap-2 pt-2">
+              <Button 
+                variant="outline"
+                disabled
+                className="w-full border-white/10 hover:bg-white/5 text-white/40 gap-3 font-black text-[11px] h-11 rounded-lg transition-all uppercase tracking-widest cursor-not-allowed"
+              >
+                Initiate Secure Link
+              </Button>
+            </div>
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+  );
+};

@@ -79,7 +79,7 @@ export async function registerRoutes(
   app.all("/api/logout", (req, res, next) => {
     // If it's an AJAX request, return JSON. Otherwise, just redirect to dashboard safely.
     if (req.xhr || req.headers.accept?.includes('json')) {
-      return res.json({ success: true, message: "Ignored" });
+      return res.json({ success: true, message: "Handled" });
     }
     res.redirect('/dashboard');
   });
@@ -90,12 +90,16 @@ export async function registerRoutes(
       const { walletAddress } = req.body;
       if (!walletAddress) return res.status(400).json({ message: "Wallet required" });
       
-      const user = await storage.updateUser(walletAddress, {
+      const user = await storage.getUserByWallet(walletAddress);
+      if (!user) return res.status(404).json({ message: "User not found" });
+
+      const updatedUser = await storage.updateUserSocials(user.id, {
         twitterHandle: "",
         profileImageUrl: ""
       });
-      res.json(user);
+      res.json(updatedUser);
     } catch (error) {
+      console.error("Unlink error:", error);
       res.status(500).json({ message: "Internal error" });
     }
   });
