@@ -1,54 +1,70 @@
 import { Express } from "express";
 import { Issuer, generators } from "openid-client";
+import fetch from "node-fetch";
 import { storage } from "../storage";
 
+const TWITTER_REDIRECT_URI = process.env.TWITTER_REDIRECT_URI!;
+// לדוגמה:
+// https://yourdomain.com/api/auth/twitter
+
 export async function setupTwitterRoutes(app: Express) {
-  const twitterIssuer = await Issuer.discover("https://twitter.com/.well-known/openid-configuration").catch(() => null) || 
-    new Issuer({
-      issuer: "https://twitter.com",
-      authorization_endpoint: "https://twitter.com/i/oauth2/authorize",
-      token_endpoint: "https://api.twitter.com/2/oauth2/token",
-      userinfo_endpoint: "https://api.twitter.com/2/users/me"
-    });
 
-  const getTwitterClient = (req: any) => {
-    const host = req.get('host') || process.env.REPLIT_DEV_DOMAIN;
-    return new twitterIssuer.Client({
-      client_id: process.env.TWITTER_CLIENT_ID!,
-      client_secret: process.env.TWITTER_CLIENT_SECRET!,
-      redirect_uris: [`https://${host}/api/auth/twitter`],
-      response_types: ["code"],
-    });
-  };
+  const twitterIssuer = new Issuer({
+    issuer: "https://twitter.com",
+    authorization_endpoint: "https://twitter.com/i/oauth2/authorize",
+    token_endpoint: "https://api.twitter.com/2/oauth2/token",
+  });
 
-  app.get('/api/auth/twitter', async (req, res) => {
-    const { state, code, walletAddress } = req.query;
-    const client = getTwitterClient(req);
+  const twitterClient = new twitterIssuer.Client({
+    client_id: process.env.TWITTER_CLIENT_ID!,
+    redirect_uris: [TWITTER_REDIRECT_URI],
+    response_types: ["code"],
+    token_endpoint_auth_method: "none", // 🔴 חובה עם PKCE
+  });
 
+  app.get("/api/auth/twitter", async (req, res) => {
+    const { code, state, walletAddress } = req.query;
+
+    /* ===================== CALLBACK ===================== */
     if (code && state) {
-      const sessionData = (req.session as any).twitterAuth;
-      if (!sessionData || sessionData.state !== state) {
-        return res.status(400).send("Invalid session state");
+      const session = (req.session as any).twitterAuth;
+
+      if (!session || session.state !== state) {
+        return res.status(400).send("Invalid OAuth state");
       }
 
       try {
-        const tokenSet = await client.callback(
-          client.metadata.redirect_uris![0],
+        const tokenSet = await twitterClient.callback(
+          TWITTER_REDIRECT_URI,
           { code: code as string, state: state as string },
-          { code_verifier: sessionData.code_verifier, state: state as string }
+          { code_verifier: session.code_verifier }
         );
 
-        const userinfo: any = await client.userinfo(tokenSet);
-        const user = await storage.getUserByWallet(sessionData.walletAddress);
-        
+        const accessToken = tokenSet.access_token;
+        if (!accessToken) throw new Error("No access token");
+
+        const userRes = await fetch("https://api.twitter.com/2/users/me?user.fields=profile_image_url,username", {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        });
+
+        const userJson: any = await userRes.json();
+        const twitterUser = userJson.data;
+
+        if (!twitterUser) throw new Error("Failed to fetch X user");
+
+        const user = await storage.getUserByWallet(session.walletAddress);
+
         if (user) {
           await storage.updateUserSocials(user.id, {
-            twitterHandle: userinfo.data.username,
-            profileImageUrl: userinfo.data.profile_image_url
+            twitterHandle: twitterUser.username,
+            profileImageUrl: twitterUser.profile_image_url,
           });
         }
 
         delete (req.session as any).twitterAuth;
+
         return res.send(`
           <script>
             if (window.opener) {
@@ -59,31 +75,30 @@ export async function setupTwitterRoutes(app: Express) {
             }
           </script>
         `);
-      } catch (err: any) {
-        console.error("Twitter Auth Error:", err);
-        return res.status(500).send("Authentication failed");
+
+      } catch (err) {
+        console.error("Twitter OAuth Error:", err);
+        return res.status(500).send("Twitter authentication failed");
       }
     }
 
-    if (!walletAddress) return res.status(400).send("Wallet address required");
+    /* ===================== START LOGIN ===================== */
+    if (!walletAddress) {
+      return res.status(400).send("Wallet address required");
+    }
 
-    const newState = generators.state();
-    const code_verifier = generators.codeVerifier();
-    const code_challenge = generators.codeChallenge(code_verifier);
+    const stateValue = generators.state();
+    const codeVerifier = generators.codeVerifier();
+    const codeChallenge = generators.codeChallenge(codeVerifier);
 
     (req.session as any).twitterAuth = {
-      state: newState,
-      code_verifier,
-      walletAddress: walletAddress as string
+      state: stateValue,
+      code_verifier: codeVerifier,
+      walletAddress,
     };
 
-    const authUrl = client.authorizationUrl({
-      scope: "tweet.read users.read follows.read offline.access",
-      state: newState,
-      code_challenge,
-      code_challenge_method: "S256",
-    });
-
-    res.redirect(authUrl);
-  });
-}
+    const authUrl = twitterClient.authorizationUrl({
+      scope: "tweet.read users.read",
+      state: stateValue,
+      code_challenge: codeChallenge,
+      code_challenge_method: "S256
