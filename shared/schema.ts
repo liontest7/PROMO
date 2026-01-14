@@ -116,6 +116,7 @@ export const executions = pgTable("executions", {
   campaignId: integer("campaign_id").references(() => campaigns.id).notNull(),
   userId: integer("user_id").references(() => users.id).notNull(),
   status: text("status", { enum: ["pending", "verified", "paid", "rejected", "waiting", "failed"] }).default("pending").notNull(),
+  withdrawn: boolean("withdrawn").default(false).notNull(),
   transactionSignature: text("transaction_signature"),
   errorMessage: text("error_message"),
   paidAt: timestamp("paid_at"),

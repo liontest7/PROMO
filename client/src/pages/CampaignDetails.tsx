@@ -384,35 +384,52 @@ export default function CampaignDetails() {
                     </CardContent>
                   </Card>
                 ) : (
-                  campaign.actions?.map((action: any) => (
-                    <Card key={action.id} className="glass-card border-white/5 bg-white/5 overflow-hidden group hover:border-primary/30 transition-all rounded-2xl">
-                      <CardContent className="p-0">
-                        <Button 
-                          className="w-full h-20 justify-between px-8 bg-transparent hover:bg-primary/5 transition-all border-0 rounded-none"
-                          onClick={() => handleActionClick(action)}
-                        >
-                          <div className="flex items-center gap-5">
-                            <div className="w-10 h-10 rounded-lg bg-white/5 flex items-center justify-center text-white/50 group-hover:bg-primary group-hover:text-white transition-all border border-white/5">
-                              {action.type === 'twitter' ? <Twitter className="w-5 h-5" /> : action.type === 'telegram' ? <Send className="w-5 h-5" /> : <ExternalLink className="w-5 h-5" />}
+                  <div className="space-y-4">
+                    {campaign.actions?.map((action: any) => {
+                      const execution = executions?.find(e => e.actionId === action.id);
+                      const isCompleted = execution?.status === 'verified' || execution?.status === 'paid';
+                      const isWithdrawn = execution?.withdrawn || execution?.status === 'paid';
+
+                      return (
+                        <Card key={action.id} className="glass-card border-white/5 bg-white/5 overflow-hidden group hover:border-primary/30 transition-all rounded-2xl">
+                          <CardContent className="p-0">
+                            <div className="flex items-center justify-between px-8 py-5 h-20">
+                              <div className="flex items-center gap-5">
+                                <div className={cn(
+                                  "w-10 h-10 rounded-lg flex items-center justify-center transition-all border",
+                                  isCompleted ? "bg-primary text-white border-primary" : "bg-white/5 text-white/50 border-white/5 group-hover:bg-primary group-hover:text-white"
+                                )}>
+                                  {action.type === 'twitter' || action.type.startsWith('twitter_') ? <Twitter className="w-5 h-5" /> : action.type === 'telegram' ? <Send className="w-5 h-5" /> : <ExternalLink className="w-5 h-5" />}
+                                </div>
+                                <div className="text-left">
+                                  <p className="font-black text-base text-white uppercase tracking-tight">{action.title}</p>
+                                  <p className="text-xs text-white/40 uppercase font-bold tracking-widest">{action.type.replace('_', ' ')}</p>
+                                </div>
+                              </div>
+                              <div className="flex items-center gap-6">
+                                <div className="text-right hidden sm:block">
+                                  <p className="text-[10px] font-black text-white/30 uppercase tracking-widest">Reward</p>
+                                  <p className="text-sm font-black text-primary">+{action.rewardAmount}</p>
+                                </div>
+                                <Button 
+                                  size="sm"
+                                  variant={isCompleted ? "outline" : "default"}
+                                  disabled={isCompleted}
+                                  className={cn(
+                                    "font-black px-5 h-9 rounded-lg text-xs uppercase tracking-widest transition-all",
+                                    isCompleted && "border-primary/50 text-primary bg-primary/5 cursor-default opacity-100 no-default-hover-elevate"
+                                  )}
+                                  onClick={() => handleActionClick(action)}
+                                >
+                                  {isWithdrawn ? "CLAIMED" : isCompleted ? `+${action.rewardAmount}` : "COMPLETE"}
+                                </Button>
+                              </div>
                             </div>
-                            <div className="text-left">
-                              <p className="font-black text-base text-white uppercase tracking-tight">{action.title}</p>
-                              <p className="text-xs text-white/40 uppercase font-bold tracking-widest">{action.type}</p>
-                            </div>
-                          </div>
-                          <div className="flex items-center gap-6">
-                            <div className="text-right hidden sm:block">
-                              <p className="text-[10px] font-black text-white/30 uppercase tracking-widest">Reward</p>
-                              <p className="text-sm font-black text-primary">+{action.rewardAmount}</p>
-                            </div>
-                            <div className="bg-white/5 text-white font-black px-5 py-2.5 rounded-lg text-xs group-hover:bg-primary group-hover:text-white transition-all border border-white/10">
-                              COMPLETE
-                            </div>
-                          </div>
-                        </Button>
-                      </CardContent>
-                    </Card>
-                  ))
+                          </CardContent>
+                        </Card>
+                      );
+                    })}
+                  </div>
                 )}
               </div>
             </section>

@@ -360,7 +360,7 @@ export class DatabaseStorage implements IStorage {
     .from(executions)
     .innerJoin(actions, eq(executions.actionId, actions.id))
     .innerJoin(campaigns, eq(executions.campaignId, campaigns.id))
-    .where(sql`${executions.userId} = ${userId} AND ${executions.status} = 'verified'`);
+    .where(sql`${executions.userId} = ${userId} AND ${executions.status} = 'verified' AND ${executions.withdrawn} = false`);
 
     // Group by campaign
     const grouped = pending.reduce((acc, curr) => {
@@ -388,7 +388,7 @@ export class DatabaseStorage implements IStorage {
     })
     .from(executions)
     .innerJoin(actions, eq(executions.actionId, actions.id))
-    .where(sql`${executions.userId} = ${userId} AND ${executions.status} = 'verified' AND ${executions.campaignId} IN (${sql.raw(campaignIds.join(','))})`);
+    .where(sql`${executions.userId} = ${userId} AND ${executions.status} = 'verified' AND ${executions.withdrawn} = false AND ${executions.campaignId} IN (${sql.raw(campaignIds.join(','))})`);
 
     if (rewards.length === 0) return;
 
@@ -396,6 +396,7 @@ export class DatabaseStorage implements IStorage {
     await db.update(executions)
       .set({ 
         status: 'paid',
+        withdrawn: true,
         paidAt: new Date()
       })
       .where(sql`${executions.id} IN (${sql.raw(rewards.map(r => r.id).join(','))})`);
