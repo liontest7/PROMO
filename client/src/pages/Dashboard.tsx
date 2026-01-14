@@ -30,7 +30,7 @@ const IdentitySync = ({ isAuthenticated, user, logout }: { isAuthenticated: bool
       <div className="h-0.5 w-12 bg-white/20 mt-3 rounded-full" />
     </CardHeader>
     <CardContent className="p-6 pt-0 space-y-4">
-      {!isAuthenticated ? (
+      {!user?.twitterHandle ? (
         <div className="p-5 rounded-xl bg-blue-500/5 border border-blue-500/10 relative overflow-hidden group shadow-lg">
           <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-all duration-700">
             <Twitter className="w-14 h-14" />
@@ -171,6 +171,7 @@ export default function Dashboard() {
       return res.json();
     },
     onSuccess: (data) => {
+      queryClient.setQueryData(["/api/users", walletAddress], data);
       queryClient.invalidateQueries({ queryKey: ["/api/users", walletAddress] });
       toast({ 
         title: "X Identity Synced", 
@@ -180,37 +181,16 @@ export default function Dashboard() {
   });
 
   useEffect(() => {
-    const handleMessage = (event: MessageEvent) => {
-      if (event.data.type === 'twitter-auth-success' && walletAddress) {
-        mutation.mutate({
-          walletAddress,
-          twitterHandle: event.data.handle,
-          profileImageUrl: event.data.profileImageUrl
-        });
-      } else if (event.data.type === 'twitter-auth-error') {
-        toast({
-          title: "Verification Failed",
-          description: event.data.error || "Could not verify X account",
-          variant: "destructive"
-        });
-      }
-    };
-
-    window.addEventListener('message', handleMessage);
-    return () => window.removeEventListener('message', handleMessage);
-  }, [walletAddress, mutation, toast]);
-
-  useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const verified = params.get("verified_twitter") === "true";
     const handle = params.get("handle");
+    const profileImage = params.get("profile_image");
 
     if (verified && walletAddress) {
-      const twitterHandle = handle || "DropySentinel";
-      
       mutation.mutate({
         walletAddress,
-        twitterHandle
+        twitterHandle: handle || "DropySentinel",
+        profileImageUrl: profileImage || ""
       });
       
       // Clean up URL

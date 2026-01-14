@@ -70,9 +70,18 @@ export async function registerRoutes(
     }
   });
 
-  // Re-map /api/logout to prevent platform conflict
-  app.get("/api/auth/logout-proxy", (req, res) => {
-    res.json({ success: true });
+  // Twitter OAuth bypass for Identity Sync
+  app.get('/api/auth/twitter', (req, res) => {
+    // In a real app, this would redirect to Twitter. 
+    // For Dropy, we simulate success for the demo flow.
+    const mockHandle = "DropySentinel";
+    const mockProfileImage = "https://abs.twimg.com/sticky/default_profile_images/default_profile_normal.png";
+    res.redirect(`/dashboard?verified_twitter=true&handle=${mockHandle}&profile_image=${encodeURIComponent(mockProfileImage)}`);
+  });
+
+  // Safe internal status route
+  app.get("/api/status", (req, res) => {
+    res.json({ status: "ok" });
   });
 
   // Remove the problematic /api/logout route that was conflicting with the platform's logout
