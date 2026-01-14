@@ -316,19 +316,19 @@ export default function CampaignDetails() {
                           <div className="w-12 h-12 rounded-xl bg-primary/20 flex items-center justify-center shrink-0 border border-primary/10">
                             <ShieldCheck className="w-6 h-6 text-primary" />
                           </div>
-                          <div className="space-y-0.5">
-                            <h3 className="text-base font-black uppercase tracking-tight text-white">Holder Verification</h3>
-                            <div className="space-y-1">
-                              <p className="text-[10px] font-bold text-white/40 uppercase tracking-widest leading-none">
-                                Hold {Number(campaign.minHoldingAmount).toLocaleString()} ${campaign.tokenName} for {campaign.minHoldingDuration} days
-                              </p>
+                          <div className="space-y-1">
+                            <h3 className="text-base font-black uppercase tracking-tight text-white leading-none">Holder Verification</h3>
+                            <p className="text-[11px] font-bold text-white/50 uppercase tracking-widest leading-normal">
+                              Hold {Number(campaign.minHoldingAmount).toLocaleString()} ${campaign.tokenName} for {campaign.minHoldingDuration} days
+                            </p>
+                            <div className="flex flex-wrap gap-x-3 gap-y-1">
                               {campaign.requirements?.minSolBalance && (
-                                <p className="text-[9px] font-bold text-primary/60 uppercase tracking-widest leading-none">
+                                <p className="text-[10px] font-bold text-primary/70 uppercase tracking-widest leading-none">
                                   Min SOL: {campaign.requirements.minSolBalance}
                                 </p>
                               )}
                               {campaign.requirements?.minWalletAgeDays && (
-                                <p className="text-[9px] font-bold text-primary/60 uppercase tracking-widest leading-none">
+                                <p className="text-[10px] font-bold text-primary/70 uppercase tracking-widest leading-none">
                                   Min Wallet Age: {campaign.requirements.minWalletAgeDays} Days
                                 </p>
                               )}
@@ -557,7 +557,7 @@ export default function CampaignDetails() {
                     </div>
                     <div className="grid grid-cols-2 gap-6">
                       <div>
-                        <p className="text-[11px] font-black text-white/30 uppercase tracking-tight mb-1.5">MC at Launch</p>
+                        <p className="text-[11px] font-black text-white/30 uppercase tracking-tight mb-1.5">MC Air-drop Launch</p>
                         <p className="text-base font-black text-white">{formatMC(initialMC)}</p>
                       </div>
                       <div>
