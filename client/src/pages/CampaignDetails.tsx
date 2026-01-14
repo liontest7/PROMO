@@ -319,7 +319,7 @@ export default function CampaignDetails() {
                           <div className="space-y-1">
                             <h3 className="text-base font-black uppercase tracking-tight text-white leading-none">Holder Verification</h3>
                             <p className="text-[11px] font-bold text-white/50 uppercase tracking-widest leading-normal">
-                              Hold {Number(campaign.minHoldingAmount).toLocaleString()} ${campaign.tokenName} for {campaign.minHoldingDuration} days
+                              Hold {Number(campaign.minHoldingAmount).toLocaleString()} ${campaign.tokenName} for {campaign.minHoldingDuration} {campaign.minHoldingDuration === 1 ? 'day' : 'days'}
                             </p>
                             <div className="flex flex-wrap gap-x-3 gap-y-1">
                               {campaign.requirements?.minSolBalance && (
