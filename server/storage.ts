@@ -103,10 +103,21 @@ export class DatabaseStorage implements IStorage {
       await db.update(users)
         .set({ reputationScore: (user.reputationScore || 0) + 25 })
         .where(eq(users.id, id));
+    } else if (user && user.twitterHandle && socials.twitterHandle === null) {
+      // Deduct reputation when unlinking Twitter
+      await db.update(users)
+        .set({ reputationScore: Math.max(0, (user.reputationScore || 0) - 25) })
+        .where(eq(users.id, id));
     }
+
     if (user && !user.telegramHandle && socials.telegramHandle) {
       await db.update(users)
         .set({ reputationScore: (user.reputationScore || 0) + 25 })
+        .where(eq(users.id, id));
+    } else if (user && user.telegramHandle && socials.telegramHandle === null) {
+      // Deduct reputation when unlinking Telegram
+      await db.update(users)
+        .set({ reputationScore: Math.max(0, (user.reputationScore || 0) - 25) })
         .where(eq(users.id, id));
     }
 
