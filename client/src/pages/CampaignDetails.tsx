@@ -481,9 +481,9 @@ export default function CampaignDetails() {
 
               <div className="grid gap-4 bg-white/5 p-8 rounded-2xl border border-white/5">
                 <div className="flex items-center justify-between py-2 border-b border-white/5">
-                  <span className="text-sm font-black text-white/40 uppercase tracking-widest">Escrow Wallet</span>
+                  <span className="text-white/40 text-xs font-black uppercase tracking-wider">Escrow Wallet</span>
                   <div className="flex items-center gap-2">
-                    <span className="text-base font-black text-green-400 font-mono">
+                    <span className="font-black text-green-400 text-sm font-mono">
                       {campaign.escrowWallet ? `${campaign.escrowWallet.slice(0, 6)}...${campaign.escrowWallet.slice(-6)}` : "Generating..."}
                     </span>
                     {campaign.escrowWallet && (
@@ -495,23 +495,23 @@ export default function CampaignDetails() {
                 </div>
 
                 <div className="flex items-center justify-between py-2 border-b border-white/5">
-                  <span className="text-sm font-black text-white/40 uppercase tracking-widest">Locked Rewards</span>
-                  <span className="text-base font-black text-white">
+                  <span className="text-white/40 text-xs font-black uppercase tracking-wider">Locked Rewards</span>
+                  <span className="font-black text-white text-sm">
                     {Number(campaign.totalBudget).toLocaleString()} ${campaign.tokenName}
                   </span>
                 </div>
 
                 <div className="flex items-center justify-between py-2 border-b border-white/5">
-                  <span className="text-sm font-black text-white/40 uppercase tracking-widest">Gas Reserve</span>
-                  <span className="text-base font-black text-green-400">
+                  <span className="text-white/40 text-xs font-black uppercase tracking-wider">Gas Reserve</span>
+                  <span className="font-black text-green-400 text-sm">
                     {campaign.gasBudgetSol || "0"} SOL
                   </span>
                 </div>
 
                 <div className="flex items-center justify-between py-2">
-                  <span className="text-sm font-black text-white/40 uppercase tracking-widest">Contract Status</span>
+                  <span className="text-white/40 text-xs font-black uppercase tracking-wider">Contract Status</span>
                   <Badge variant="outline" className={cn(
-                    "text-xs font-black uppercase tracking-widest px-4 py-1",
+                    "text-[10px] font-black uppercase tracking-widest px-4 py-1",
                     campaign.fundingTxSignature ? "text-green-400 border-green-500/30 bg-green-500/10" : "text-yellow-400 border-yellow-500/30 bg-yellow-500/10"
                   )}>
                     {campaign.fundingTxSignature ? "FULLY FUNDED" : "PENDING FUNDING"}
