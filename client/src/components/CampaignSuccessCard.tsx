@@ -251,7 +251,7 @@ export function CampaignSuccessCard({ campaign, open, onClose }: CampaignSuccess
                         <span className="text-[9px] uppercase font-black tracking-widest text-white/60">Missions</span>
                         <div className="h-[1px] flex-1 bg-white/20" />
                       </div>
-                      {(campaign.actions || []).slice(0, 2).map((action: any, i: number) => (
+                      {(campaign.actions || []).map((action: any, i: number) => (
                         <div key={i} className="flex items-center justify-between text-[11px] font-black text-white bg-white/10 rounded-xl px-3.5 py-2.5 border border-white/5">
                           <span>{action.title}</span>
                           <span className="text-primary">+{action.rewardAmount} ${campaign.tokenName}</span>

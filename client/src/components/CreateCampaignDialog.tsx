@@ -169,6 +169,12 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
     return acc + (reward * executions);
   }, 0);
 
+  const platformFee = PLATFORM_CONFIG.TOKENOMICS.CREATION_FEE;
+  const gasFeeSol = PLATFORM_CONFIG.FEE_SOL;
+  const totalProjectTokenCost = (watchedType === "holder_qualification" 
+    ? (Number(form.watch("rewardPerWallet")) * Number(form.watch("maxClaims")) || 0)
+    : totalCalculatedCost) + platformFee;
+
   useEffect(() => {
     if (watchedType === "holder_qualification") {
       const reward = Number(form.watch("rewardPerWallet")) || 0;
@@ -689,23 +695,41 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
                         </div>
                       )}
 
-                      <div className="p-4 rounded-xl bg-primary/5 border border-primary/20">
-                        <div className="flex justify-between items-center mb-4">
-                          <span className="text-sm font-medium text-primary">Budget Estimation</span>
-                          <Badge variant="outline" className="text-[10px] uppercase">Auto-calculated</Badge>
+                      <div className="p-4 rounded-xl bg-primary/5 border border-primary/20 space-y-4">
+                        <div className="flex justify-between items-center">
+                          <span className="text-sm font-bold text-primary uppercase tracking-wider">Payment Breakdown</span>
+                          <Badge variant="outline" className="text-[10px] uppercase border-primary/20 text-primary">Live Summary</Badge>
                         </div>
-                        <div className="grid grid-cols-2 gap-8">
-                          <div>
-                            <p className="text-[10px] text-muted-foreground uppercase tracking-wider mb-1">Total Budget</p>
-                            <p className="text-xl font-bold text-primary">
-                              {watchedType === "holder_qualification" 
-                                ? (Number(form.watch("rewardPerWallet")) * Number(form.watch("maxClaims")) || 0).toLocaleString(undefined, { maximumFractionDigits: 6 })
-                                : totalCalculatedCost.toLocaleString(undefined, { maximumFractionDigits: 6 })
-                              } <span className="text-sm">{form.watch("tokenName") || "Tokens"}</span>
-                            </p>
+                        
+                        <div className="space-y-2 border-b border-primary/10 pb-4">
+                          <div className="flex justify-between text-sm">
+                            <span className="text-muted-foreground italic">Airdrop Budget</span>
+                            <span className="font-bold">{watchedType === "holder_qualification" 
+                                ? (Number(form.watch("rewardPerWallet")) * Number(form.watch("maxClaims")) || 0).toLocaleString()
+                                : totalCalculatedCost.toLocaleString()
+                              } {form.watch("tokenName") || "Tokens"}</span>
                           </div>
+                          <div className="flex justify-between text-sm">
+                            <span className="text-muted-foreground italic">Platform Fee (Burn/Rewards/System)</span>
+                            <span className="font-bold">{platformFee.toLocaleString()} {form.watch("tokenName") || "Tokens"}</span>
+                          </div>
+                          <div className="flex justify-between text-sm">
+                            <span className="text-muted-foreground italic">Network Gas (SOL)</span>
+                            <span className="font-bold text-emerald-500">{gasFeeSol} SOL</span>
+                          </div>
+                        </div>
+
+                        <div className="flex justify-between items-end pt-2">
                           <div>
-                            <p className="text-[10px] text-muted-foreground uppercase tracking-wider mb-1">Participants</p>
+                            <p className="text-[10px] text-muted-foreground uppercase tracking-widest mb-1">Total to Pay</p>
+                            <p className="text-2xl font-black text-primary leading-none">
+                              {totalProjectTokenCost.toLocaleString(undefined, { maximumFractionDigits: 6 })} 
+                              <span className="text-xs ml-1 font-bold text-primary/70">{form.watch("tokenName") || "Tokens"}</span>
+                            </p>
+                            <p className="text-[10px] text-emerald-500 font-bold mt-1">+ {gasFeeSol} SOL GAS FEE</p>
+                          </div>
+                          <div className="text-right">
+                            <p className="text-[10px] text-muted-foreground uppercase tracking-widest mb-1">Total Slots</p>
                             <p className="text-xl font-bold">
                               {form.watch("campaignType") === "holder_qualification" 
                                 ? form.watch("maxClaims") || 0 
@@ -714,20 +738,21 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
                             </p>
                           </div>
                         </div>
+                        
+                        <div className="bg-primary/10 p-3 rounded-lg flex items-start gap-3 border border-primary/20">
+                           <Shield className="w-4 h-4 text-primary mt-0.5 shrink-0" />
+                           <p className="text-[11px] text-primary/80 leading-relaxed font-medium">
+                             You will sign <strong>one single transaction</strong> to authorize both the token budget and platform fees.
+                           </p>
+                        </div>
                       </div>
 
-      <div className="flex gap-3 pt-6 border-t border-white/5">
+                      <div className="flex gap-3 pt-2">
                         <Button 
                           type="button" 
-                          variant="outline" 
-                          className="flex-1" 
+                          className="flex-1 font-black text-sm h-12 shadow-[0_10px_20px_rgba(34,197,94,0.2)] hover:shadow-[0_15px_30px_rgba(34,197,94,0.3)] transition-all" 
                           onClick={async () => {
-                            console.log("Current form values:", form.getValues());
                             const isValid = await form.trigger();
-                            console.log("Form is valid:", isValid);
-                            if (!isValid) {
-                              console.log("Form errors:", form.formState.errors);
-                            }
                             if (isValid) {
                               setStep("preview");
                             } else {
@@ -739,15 +764,7 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
                             }
                           }}
                         >
-                          <Eye className="mr-2 h-4 w-4" /> Preview
-                        </Button>
-                        <Button 
-                          type="submit" 
-                          className="flex-1 font-bold" 
-                          disabled={isPending}
-                        >
-                          {isPending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Rocket className="mr-2 h-4 w-4" />}
-                          Launch
+                          <Eye className="mr-2 h-4 w-4" /> PREVIEW BEFORE LAUNCH
                         </Button>
                       </div>
                     </div>
