@@ -39,6 +39,7 @@ export default function CampaignDetails() {
   const { data: campaign, isLoading: campaignLoading } = useQuery<CampaignWithActions | undefined>({
     queryKey: symbol ? [`/api/campaigns/symbol/${symbol}`] : [`/api/campaigns/${id}`],
     enabled: !!(id || symbol),
+    retry: 1,
   });
 
   const [selectedAction, setSelectedAction] = useState<{ action: Action; campaign: Campaign } | null>(null);
