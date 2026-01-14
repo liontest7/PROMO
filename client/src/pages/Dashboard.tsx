@@ -25,12 +25,6 @@ export default function Dashboard() {
     refetchInterval: 5000,
   });
 
-  useEffect(() => {
-    if (user && !user.acceptedTerms) {
-      window.location.href = "/terms";
-    }
-  }, [user]);
-
   const { data: executions } = useQuery({
     queryKey: [api.users.executions.path, walletAddress],
     enabled: !!walletAddress,
