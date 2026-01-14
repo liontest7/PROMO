@@ -388,7 +388,7 @@ export default function CampaignDetails() {
                     {campaign.actions?.map((action: any) => {
                       const execution = executions?.find(e => e.actionId === action.id);
                       const isCompleted = execution?.status === 'verified' || execution?.status === 'paid';
-                      const isWithdrawn = execution?.withdrawn || execution?.status === 'paid';
+                      const isWithdrawn = execution?.withdrawn === true || execution?.status === 'paid';
 
                       return (
                         <Card key={action.id} className="glass-card border-white/5 bg-white/5 overflow-hidden group hover:border-primary/30 transition-all rounded-2xl">

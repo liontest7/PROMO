@@ -63,6 +63,7 @@ export function ClaimRewards({ walletAddress, campaignId, campaignTitle }: { wal
     onSuccess: (data, campaignIds) => {
       queryClient.invalidateQueries({ queryKey: ["/api/rewards/pending", walletAddress] });
       queryClient.invalidateQueries({ queryKey: ["/api/users", walletAddress] });
+      queryClient.invalidateQueries({ queryKey: ["/api/executions", walletAddress] }); // Invalidate executions for campaign page
       
       // Trigger celebration if it was a single or multiple claim
       const rewardsToCelebrate = pendingRewards?.filter(r => campaignIds.includes(r.campaignId)) || [];
