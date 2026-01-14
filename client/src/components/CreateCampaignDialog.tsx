@@ -52,7 +52,7 @@ const formSchema = insertCampaignSchema.extend({
     url: z.string().url("Invalid action URL"),
     rewardAmount: z.coerce.number().min(0.00001, "Reward must be greater than 0"),
     maxExecutions: z.coerce.number().min(1, "Executions must be at least 1")
-  })).min(1, "Social campaigns must have at least one task").optional(),
+  })).optional(),
   creatorId: z.number().optional(),
   bannerUrl: z.string().url("Invalid banner URL").optional().or(z.literal("")),
   logoUrl: z.string().url("Invalid logo URL").min(1, "Logo image is required"),
