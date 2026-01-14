@@ -15,9 +15,9 @@ export async function setupTwitterRoutes(app: Express) {
 
   const twitterClient = new twitterIssuer.Client({
     client_id: process.env.TWITTER_CLIENT_ID!,
+    client_secret: process.env.TWITTER_CLIENT_SECRET!,
     redirect_uris: [TWITTER_REDIRECT_URI],
     response_types: ["code"],
-    token_endpoint_auth_method: "none", // 🔴 חובה עם PKCE
   });
 
   app.get("/api/auth/twitter", async (req, res) => {
@@ -25,8 +25,16 @@ export async function setupTwitterRoutes(app: Express) {
 
     /* ================= CALLBACK ================= */
     if (code) {
+      console.log("[Twitter OAuth2] Callback received with code and state:", { state });
       const session = (req.session as any).twitterAuth;
+      console.log("[Twitter OAuth2] Session data:", session);
+
       if (!session || session.state !== state) {
+        console.error("[Twitter OAuth2] Session mismatch or missing:", { 
+          hasSession: !!session, 
+          sessionState: session?.state, 
+          queryState: state 
+        });
         return res.status(400).send("Invalid or expired session");
       }
 
@@ -37,6 +45,7 @@ export async function setupTwitterRoutes(app: Express) {
           { code_verifier: session.code_verifier },
         );
 
+        console.log("[Twitter OAuth2] Token set received");
         const accessToken = tokenSet.access_token;
         if (!accessToken) throw new Error("No access token returned");
 
@@ -104,6 +113,7 @@ export async function setupTwitterRoutes(app: Express) {
       code_challenge_method: "S256",
     });
 
+    console.log("[Twitter OAuth2] Redirecting to:", authUrl);
     return res.redirect(authUrl);
   });
 }
