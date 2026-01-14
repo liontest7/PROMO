@@ -25,6 +25,8 @@ export function setupUserRoutes(app: Express) {
         if (ADMIN_CONFIG.superAdminWallets.includes(user.walletAddress) && user.role !== "admin") {
           user = await storage.updateUserRole(user.id, "admin");
         }
+        
+        // If they haven't accepted terms, they're not fully "onboarded" for stats
         res.json(user);
       }
     } catch (err) {
@@ -43,38 +45,61 @@ export function setupUserRoutes(app: Express) {
   });
 
   app.get(api.users.stats.path, async (req, res) => {
-    const user = await storage.getUserByWallet(req.params.walletAddress);
-    if (!user) return res.status(404).json({ message: "User not found" });
+    try {
+      const allUsers = await storage.getAllUsers();
+      const user = await storage.getUserByWallet(req.params.walletAddress);
+      if (!user) return res.status(404).json({ message: "User not found" });
 
-    const rawExecutions = await storage.getExecutionsByUser(user.id);
-    const completed = rawExecutions.filter(e => e.status === 'paid' || e.status === 'verified').length;
-    
-    const tokenBalances: Record<string, any> = {};
-    for (const execution of rawExecutions) {
-      const { action, campaign, status } = execution;
-      if (!action || !campaign) continue;
-      const symbol = campaign.tokenName;
-      if (!tokenBalances[symbol]) {
-        tokenBalances[symbol] = { symbol, balance: "0", earned: "0", pending: "0" };
+      const rawExecutions = await storage.getExecutionsByUser(user.id);
+      const completed = rawExecutions.filter((e: any) => e.status === 'paid' || e.status === 'verified').length;
+      
+      const tokenBalances: Record<string, any> = {};
+      for (const execution of rawExecutions) {
+        const { action, campaign, status } = execution as any;
+        if (!action || !campaign) continue;
+        const symbol = campaign.tokenName;
+        if (!tokenBalances[symbol]) {
+          tokenBalances[symbol] = { symbol, balance: "0", earned: "0", pending: "0" };
+        }
+        const amount = Number(action.rewardAmount);
+        if (status === 'paid') {
+          tokenBalances[symbol].earned = (Number(tokenBalances[symbol].earned) + amount).toFixed(6);
+          tokenBalances[symbol].balance = (Number(tokenBalances[symbol].balance) + amount).toFixed(6);
+        } else if (status === 'verified') {
+          tokenBalances[symbol].pending = (Number(tokenBalances[symbol].pending) + amount).toFixed(6);
+        }
       }
-      const amount = Number(action.rewardAmount);
-      if (status === 'paid') {
-        tokenBalances[symbol].earned = (Number(tokenBalances[symbol].earned) + amount).toFixed(6);
-        tokenBalances[symbol].balance = (Number(tokenBalances[symbol].balance) + amount).toFixed(6);
-      } else if (status === 'verified') {
-        tokenBalances[symbol].pending = (Number(tokenBalances[symbol].pending) + amount).toFixed(6);
-      }
+
+      res.json({
+        totalEarned: "0",
+        pendingRewards: "0",
+        tokenBalances: Object.values(tokenBalances),
+        tasksCompleted: completed,
+        reputation: user.reputationScore,
+        balance: user.balance,
+        totalUsers: allUsers.filter(u => u.acceptedTerms).length
+      });
+    } catch (err) {
+      console.error("Stats error:", err);
+      res.status(500).json({ message: "Internal Server Error" });
     }
+  });
 
-    res.json({
-      totalEarned: "0",
-      pendingRewards: "0",
-      tokenBalances: Object.values(tokenBalances),
-      tasksCompleted: completed,
-      reputation: user.reputationScore,
-      balance: user.balance,
-      totalUsers: (await storage.getAllUsers()).length
-    });
+  app.post("/api/user/accept-terms", async (req, res) => {
+    try {
+      const { walletAddress } = req.body;
+      const user = await storage.getUserByWallet(walletAddress);
+      if (!user) return res.status(404).json({ message: "User not found" });
+
+      const [updatedUser] = await db.update(users)
+        .set({ acceptedTerms: true })
+        .where(eq(users.id, user.id))
+        .returning();
+      
+      res.json(updatedUser);
+    } catch (err) {
+      res.status(500).json({ message: "Internal Server Error" });
+    }
   });
 
   app.post("/api/user/unlink-x", async (req, res) => {

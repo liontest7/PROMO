@@ -1,11 +1,36 @@
-import { Link } from "wouter";
+import { Link, useLocation } from "wouter";
 import { Navigation as Header } from "@/components/Navigation";
 import { Footer } from "@/components/Footer";
 import { PLATFORM_CONFIG } from "@shared/config";
 import { ShieldCheck, Scale, AlertCircle, Lock, Globe, FileText } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useWallet } from "@/hooks/use-wallet";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 export default function TermsOfService() {
+  const { walletAddress } = useWallet();
+  const queryClient = useQueryClient();
+  const [, setLocation] = useLocation();
+
+  const acceptMutation = useMutation({
+    mutationFn: async () => {
+      const res = await fetch("/api/user/accept-terms", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ walletAddress }),
+      });
+      if (!res.ok) throw new Error("Failed to accept terms");
+      return res.json();
+    },
+    onSuccess: () => {
+      // Update local storage status so UI reflects active state
+      localStorage.setItem("user_status", "active");
+      queryClient.invalidateQueries({ queryKey: ["/api/users", walletAddress] });
+      queryClient.invalidateQueries({ queryKey: ["/api/stats/global"] });
+      setLocation("/dashboard");
+    }
+  });
+
   return (
     <div className="min-h-screen bg-background flex flex-col">
       <Header />
@@ -130,6 +155,20 @@ export default function TermsOfService() {
                   Access to core Platform functionality requires connecting a compatible Solana wallet and accepting these Terms. Users who do not agree may not access the Platform engine.
                 </p>
               </section>
+            </div>
+
+            <div className="mt-12 pt-8 border-t border-white/10 flex flex-col items-center gap-6">
+              <p className="text-center text-sm text-muted-foreground italic">By clicking below, you confirm that you have read and agree to all terms above.</p>
+              <Button 
+                size="lg" 
+                className="h-16 px-12 bg-primary text-primary-foreground font-black text-xl rounded-2xl shadow-2xl hover:bg-primary/90 transition-all hover:scale-105 group"
+                onClick={() => acceptMutation.mutate()}
+                disabled={acceptMutation.isPending || !walletAddress}
+              >
+                {acceptMutation.isPending ? "ACCEPTING..." : "I AGREE & ACCEPT TERMS"}
+                <ShieldCheck className="ml-2 w-6 h-6 group-hover:rotate-12 transition-transform" />
+              </Button>
+              {!walletAddress && <p className="text-destructive font-bold">Please connect your wallet first</p>}
             </div>
 
             <div className="mt-20 pt-10 border-t border-white/5 flex flex-col md:flex-row items-center justify-between gap-6">

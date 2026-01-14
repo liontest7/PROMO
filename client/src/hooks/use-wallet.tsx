@@ -159,6 +159,11 @@ export function WalletProvider({ children }: { children: ReactNode }) {
       
       const user = await res.json();
       
+      if (!user.acceptedTerms && !window.location.pathname.includes('/terms')) {
+        // We allow the login but user state will reflect they need to accept terms
+        // The UI should handle redirecting or showing the terms modal
+      }
+      
       setWalletAddress(user.walletAddress);
       setRole(user.role);
       setUserId(user.id);

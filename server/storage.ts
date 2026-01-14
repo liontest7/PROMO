@@ -392,7 +392,7 @@ export class DatabaseStorage implements IStorage {
   async getLeaderboard(): Promise<User[]> {
     return await db.select()
       .from(users)
-      .where(eq(users.role, "user"))
+      .where(sql`${users.role} = 'user' AND ${users.acceptedTerms} = true`)
       .orderBy(desc(users.reputationScore), desc(users.createdAt))
       .limit(100);
   }
