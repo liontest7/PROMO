@@ -74,6 +74,12 @@ export async function setupTwitterRoutes(app: Express) {
           throw new Error("Failed to fetch Twitter user");
         }
 
+        // Check if this Twitter account is already linked to another wallet
+        const existingUser = await storage.getUserByTwitterHandle(twitterUser.username);
+        if (existingUser && existingUser.walletAddress !== session.walletAddress) {
+          return res.status(400).send(`This Twitter account (@${twitterUser.username}) is already linked to another wallet.`);
+        }
+
         const user = await storage.getUserByWallet(session.walletAddress);
         if (user) {
           await storage.updateUserSocials(user.id, {

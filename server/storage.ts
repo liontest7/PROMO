@@ -12,6 +12,7 @@ import {
 export interface IStorage {
   // User
   getUserByWallet(walletAddress: string): Promise<User | undefined>;
+  getUserByTwitterHandle(handle: string): Promise<User | undefined>;
   createUser(user: InsertUser): Promise<User>;
   updateUserReputation(id: number, score: number): Promise<User>;
   updateUserSocials(id: number, socials: { twitterHandle?: string; telegramHandle?: string }): Promise<User>;
@@ -75,6 +76,11 @@ export class DatabaseStorage implements IStorage {
 
   async getUserByWallet(walletAddress: string): Promise<User | undefined> {
     const [user] = await db.select().from(users).where(eq(users.walletAddress, walletAddress));
+    return user;
+  }
+
+  async getUserByTwitterHandle(handle: string): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.twitterHandle, handle));
     return user;
   }
 
