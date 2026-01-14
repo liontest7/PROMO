@@ -38,7 +38,7 @@ export interface IStorage {
   createExecution(execution: InsertExecution): Promise<Execution>;
   getExecution(id: number): Promise<Execution | undefined>;
   getExecutionsByUser(userId: number): Promise<Execution[]>;
-  updateExecutionStatus(id: number, status: "pending" | "verified" | "paid" | "rejected", txSignature?: string): Promise<Execution>;
+  updateExecutionStatus(id: number, status: "pending" | "verified" | "paid" | "rejected" | "failed", txSignature?: string, errorMessage?: string): Promise<Execution>;
   updateCampaignRemainingBudget(id: number, remainingBudget: string): Promise<Campaign>;
   getPendingRewards(userId: number): Promise<{ campaignId: number; amount: string; tokenName: string; tokenAddress: string }[]>;
   claimRewards(userId: number, campaignIds: number[]): Promise<void>;
@@ -288,9 +288,14 @@ export class DatabaseStorage implements IStorage {
     return results;
   }
 
-  async updateExecutionStatus(id: number, status: "pending" | "verified" | "paid" | "rejected", txSignature?: string): Promise<Execution> {
+  async updateExecutionStatus(id: number, status: "pending" | "verified" | "paid" | "rejected" | "failed", txSignature?: string, errorMessage?: string): Promise<Execution> {
     const [execution] = await db.update(executions)
-      .set({ status, transactionSignature: txSignature })
+      .set({ 
+        status, 
+        transactionSignature: txSignature,
+        errorMessage: errorMessage || null,
+        paidAt: status === "paid" ? new Date() : null
+      })
       .where(eq(executions.id, id))
       .returning();
 
