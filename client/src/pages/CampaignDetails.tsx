@@ -342,23 +342,23 @@ export default function CampaignDetails() {
                           <div className="space-y-2.5 flex-1 min-w-0">
                                 <div className="flex flex-col items-center gap-1.5">
                                   <div className="flex justify-between w-full items-center text-[11px] font-black uppercase tracking-widest text-white/90">
-                                    <span>Progress</span>
+                                    <span>Task Progress</span>
                                     <span className="text-primary">
-                                      {(campaign?.minHoldingAmount === "0" && campaign?.minHoldingDuration === 0) ? "100%" : "0%"}
+                                      {executions?.filter(e => e.status === 'verified' || e.status === 'paid').length || 0} / {campaign.actions?.length || 0} Complete
                                     </span>
                                   </div>
                                   <div className="relative h-2.5 w-full bg-white/10 rounded-full overflow-hidden border border-white/5">
                                     <div 
                                       className="absolute inset-y-0 left-0 bg-primary transition-all duration-1000 shadow-[0_0_10px_rgba(var(--primary),0.8)]" 
-                                      style={{ width: (campaign?.minHoldingAmount === "0" && campaign?.minHoldingDuration === 0) ? "100%" : "5%" }}
+                                      style={{ width: `${((executions?.filter(e => e.status === 'verified' || e.status === 'paid').length || 0) / (campaign.actions?.length || 1)) * 100}%` }}
                                     />
                                   </div>
                                 </div>
                               </div>
                               <div className="shrink-0 flex flex-col items-center gap-1 min-w-[100px]">
-                                <p className="text-[11px] font-black text-white/90 uppercase tracking-widest leading-none">Your Balance</p>
+                                <p className="text-[11px] font-black text-white/90 uppercase tracking-widest leading-none">Earned Rewards</p>
                                 <p className="text-lg font-black text-white font-mono leading-none mt-1">
-                                  0 <span className="text-[10px] text-primary font-bold uppercase ml-0.5 tracking-tighter">${campaign.tokenName}</span>
+                                  {executions?.filter(e => e.status === 'verified' || e.status === 'paid').reduce((acc, e) => acc + parseFloat(e.action?.rewardAmount || "0"), 0).toFixed(2)} <span className="text-[10px] text-primary font-bold uppercase ml-0.5 tracking-tighter">${campaign.tokenName}</span>
                                 </p>
                               </div>
                             </>

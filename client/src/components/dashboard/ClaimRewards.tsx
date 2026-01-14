@@ -115,7 +115,7 @@ export function ClaimRewards({ walletAddress, campaignId, campaignTitle }: { wal
             Pending Rewards
           </div>
           <Badge className="bg-primary text-primary-foreground font-black px-3 py-0.5 h-6 text-[10px]">
-            {totalTokens} CAMPAIGNS
+            {pendingRewards.reduce((acc, r) => acc + parseFloat(r.amount), 0).toFixed(2)} ${pendingRewards[0]?.tokenName} AVAILABLE
           </Badge>
         </CardTitle>
       </CardHeader>
@@ -151,7 +151,7 @@ export function ClaimRewards({ walletAddress, campaignId, campaignTitle }: { wal
                 <Loader2 className="w-4 h-4 animate-spin" />
               ) : (
                 <>
-                  Claim All Rewards <Send className="w-4 h-4" />
+                  Withdraw {pendingRewards.reduce((acc, r) => acc + parseFloat(r.amount), 0).toFixed(2)} ${pendingRewards[0]?.tokenName} <Send className="w-4 h-4" />
                 </>
               )}
             </Button>
