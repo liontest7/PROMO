@@ -55,7 +55,7 @@ const formSchema = insertCampaignSchema.extend({
   })).min(1, "Social campaigns must have at least one task").optional(),
   creatorId: z.number().optional(),
   bannerUrl: z.string().url("Invalid banner URL").optional().or(z.literal("")),
-  logoUrl: z.string().url("Invalid logo URL").optional().or(z.literal("")),
+  logoUrl: z.string().url("Invalid logo URL").min(1, "Logo image is required"),
   websiteUrl: z.string().url("Invalid website URL").optional().or(z.literal("")),
   twitterUrl: z.string().url("Invalid Twitter URL").optional().or(z.literal("")),
   telegramUrl: z.string().url("Invalid Telegram URL").optional().or(z.literal("")),
@@ -411,28 +411,6 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
 
                   {watchedType && (
                     <div className="space-y-6 animate-in fade-in slide-in-from-top-4 duration-300">
-                      <div className="p-4 rounded-xl bg-secondary/10 border border-secondary/20">
-                        <h3 className="font-bold text-secondary flex items-center gap-2 mb-2 uppercase tracking-widest text-xs">
-                          <Coins className="w-4 h-4" /> Platform Fee & Costs
-                        </h3>
-                        <div className="space-y-3 text-sm text-muted-foreground leading-relaxed">
-                          <p>
-                            Creating a campaign requires a one-time fee of <strong>{CONFIG.TOKENOMICS.CREATION_FEE.toLocaleString()} ${PLATFORM_CONFIG.TOKEN_SYMBOL}</strong>.
-                          </p>
-                          <p>
-                            Fee Breakdown:
-                            <ul className="list-disc ml-4 mt-1 space-y-1">
-                              <li>{CONFIG.TOKENOMICS.BURN_PERCENT}% Burned (Deflationary)</li>
-                              <li>{CONFIG.TOKENOMICS.REWARDS_PERCENT}% to Weekly Rewards Pool</li>
-                              <li>{CONFIG.TOKENOMICS.SYSTEM_PERCENT}% to System Maintenance</li>
-                            </ul>
-                          </p>
-                          <p className="text-[10px] border-t border-white/5 pt-2 italic">
-                            Rewards are secured in a multi-sig escrow and distributed only upon task verification. Users will cover their own gas fees for claiming rewards.
-                          </p>
-                        </div>
-                      </div>
-
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <FormField
                           control={form.control}
@@ -472,7 +450,106 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
                             )} />
                           </div>
                         </div>
-                      ) : null}
+                      ) : (
+                        <div className="space-y-4 p-4 rounded-xl bg-primary/5 border border-primary/20">
+                          <div className="flex justify-between items-center mb-4">
+                            <h3 className="font-semibold text-primary flex items-center gap-2">
+                              <Twitter className="w-4 h-4" /> Social Missions
+                            </h3>
+                            <Button
+                              type="button"
+                              variant="outline"
+                              size="sm"
+                              onClick={() => append({ type: "website", title: "Visit Website", url: "", rewardAmount: 0.01, maxExecutions: 10 })}
+                              className="h-8 text-xs border-primary/20 hover:bg-primary/10"
+                            >
+                              <Plus className="w-3 h-3 mr-1" /> Add Task
+                            </Button>
+                          </div>
+
+                          <div className="space-y-4">
+                            {fields.map((field, index) => (
+                              <div key={field.id} className="p-4 rounded-lg bg-background/50 border border-white/5 space-y-4 relative group">
+                                <Button
+                                  type="button"
+                                  variant="ghost"
+                                  size="icon"
+                                  className="absolute top-2 right-2 h-6 w-6 text-muted-foreground hover:text-destructive opacity-0 group-hover:opacity-100 transition-opacity"
+                                  onClick={() => remove(index)}
+                                >
+                                  <Trash2 className="h-3 w-3" />
+                                </Button>
+
+                                <div className="grid grid-cols-2 gap-4">
+                                  <FormField
+                                    control={form.control}
+                                    name={`actions.${index}.type`}
+                                    render={({ field }) => (
+                                      <FormItem>
+                                        <FormLabel className="text-[10px] uppercase">Type</FormLabel>
+                                        <Select onValueChange={(val) => { field.onChange(val); form.setValue(`actions.${index}.title`, getActionDefaultTitle(val)); }} defaultValue={field.value}>
+                                          <FormControl><SelectTrigger className="h-8"><SelectValue /></SelectTrigger></FormControl>
+                                          <SelectContent>
+                                            <SelectItem value="website">Website</SelectItem>
+                                            <SelectItem value="twitter_follow">X Follow</SelectItem>
+                                            <SelectItem value="twitter_retweet">X Retweet</SelectItem>
+                                            <SelectItem value="telegram_join">Telegram</SelectItem>
+                                          </SelectContent>
+                                        </Select>
+                                      </FormItem>
+                                    )}
+                                  />
+                                  <FormField
+                                    control={form.control}
+                                    name={`actions.${index}.title`}
+                                    render={({ field }) => (
+                                      <FormItem>
+                                        <FormLabel className="text-[10px] uppercase">Task Label</FormLabel>
+                                        <FormControl><Input className="h-8" {...field} /></FormControl>
+                                      </FormItem>
+                                    )}
+                                  />
+                                </div>
+
+                                <FormField
+                                  control={form.control}
+                                  name={`actions.${index}.url`}
+                                  render={({ field }) => (
+                                    <FormItem>
+                                      <FormLabel className="text-[10px] uppercase">Target URL</FormLabel>
+                                      <FormControl><Input className="h-8" placeholder="https://..." {...field} /></FormControl>
+                                      <FormMessage />
+                                    </FormItem>
+                                  )}
+                                />
+
+                                <div className="grid grid-cols-2 gap-4">
+                                  <FormField
+                                    control={form.control}
+                                    name={`actions.${index}.rewardAmount`}
+                                    render={({ field }) => (
+                                      <FormItem>
+                                        <FormLabel className="text-[10px] uppercase">Reward</FormLabel>
+                                        <FormControl><Input type="number" step="any" className="h-8" {...field} /></FormControl>
+                                      </FormItem>
+                                    )}
+                                  />
+                                  <FormField
+                                    control={form.control}
+                                    name={`actions.${index}.maxExecutions`}
+                                    render={({ field }) => (
+                                      <FormItem>
+                                        <FormLabel className="text-[10px] uppercase">Slots</FormLabel>
+                                        <FormControl><Input type="number" className="h-8" {...field} /></FormControl>
+                                      </FormItem>
+                                    )}
+                                  />
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
 
                       <div className="p-4 rounded-xl bg-primary/5 border border-primary/20">
                         <div className="flex justify-between items-center mb-4">
