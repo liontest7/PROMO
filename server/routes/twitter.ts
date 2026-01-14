@@ -98,7 +98,7 @@ export async function setupTwitterRoutes(app: Express) {
     };
 
     const authUrl = twitterClient.authorizationUrl({
-      scope: "tweet.read users.read",
+      scope: "tweet.read users.read offline.access",
       state: stateValue,
       code_challenge: codeChallenge,
       code_challenge_method: "S256",
