@@ -86,12 +86,14 @@ export default function Earn() {
     const minRewardValue = parseFloat(minReward || "0");
     const matchesReward = isNaN(minRewardValue) || rewardValue >= minRewardValue;
 
-    if (activeFilters.length === 0) return matchesSearch && matchesReward;
+    if (!matchesSearch || !matchesReward) return false;
     
-    const matchesFilter = activeFilters.length === 0 || 
+    if (activeFilters.length === 0) return true;
+    
+    const matchesFilter = 
       (c.campaignType === 'holder_qualification' && activeFilters.includes('holder')) ||
-      c.actions.some(a => activeFilters.includes(a.type));
-    return matchesSearch && matchesFilter && matchesReward;
+      (c.actions && c.actions.some(a => activeFilters.includes(a.type)));
+    return matchesFilter;
   }).sort((a, b) => {
     if (sortBy === "reward_high") return parseFloat(b.totalBudget || "0") - parseFloat(a.totalBudget || "0");
     if (sortBy === "reward_low") return parseFloat(a.totalBudget || "0") - parseFloat(b.totalBudget || "0");
