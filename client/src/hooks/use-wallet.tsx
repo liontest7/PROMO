@@ -4,12 +4,6 @@ import { useQueryClient, useQuery } from "@tanstack/react-query";
 import { api } from "@shared/routes";
 import { Connection, PublicKey, LAMPORTS_PER_SOL, clusterApiUrl } from "@solana/web3.js";
 import { WalletSelector } from "@/components/WalletSelector";
-import { Buffer } from 'buffer';
-
-// Polyfill Buffer for Solana web3.js in browser
-if (typeof window !== 'undefined' && !window.Buffer) {
-  window.Buffer = Buffer;
-}
 
 import { StatusAlert } from "@/components/StatusAlert";
 
