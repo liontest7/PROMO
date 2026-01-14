@@ -15,15 +15,15 @@ import { ADMIN_CONFIG, CONFIG } from "@shared/config";
 import { getSolanaConnection } from "./services/solana";
 import { verifyTurnstile, checkIpFraud } from "./services/security";
 import fetch from "node-fetch";
-import * as openid from "openid-client";
+import { Issuer, generators } from "openid-client";
 
 export async function registerRoutes(
   httpServer: Server,
   app: Express
 ): Promise<Server> {
   // Twitter OAuth 2.0 Configuration
-  const twitterIssuer = await openid.Issuer.discover("https://twitter.com/.well-known/openid-configuration").catch(() => null) || 
-    new openid.Issuer({
+  const twitterIssuer = await Issuer.discover("https://twitter.com/.well-known/openid-configuration").catch(() => null) || 
+    new Issuer({
       issuer: "https://twitter.com",
       authorization_endpoint: "https://twitter.com/i/oauth2/authorize",
       token_endpoint: "https://api.twitter.com/2/oauth2/token",
@@ -46,9 +46,9 @@ export async function registerRoutes(
     const walletAddress = req.query.walletAddress as string;
     if (!walletAddress) return res.status(400).send("Wallet address required");
 
-    const state = openid.generators.state();
-    const code_verifier = openid.generators.codeVerifier();
-    const code_challenge = openid.generators.codeChallenge(code_verifier);
+    const state = generators.state();
+    const code_verifier = generators.codeVerifier();
+    const code_challenge = generators.codeChallenge(code_verifier);
 
     authStates.set(state, { code_verifier, walletAddress });
 
