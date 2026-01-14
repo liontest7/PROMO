@@ -4,6 +4,25 @@ import { PLATFORM_CONFIG } from "@shared/config";
 import os from "os";
 
 export function setupAdminRoutes(app: Express) {
+  // Fraud Monitoring
+  app.get("/api/admin/fraud/suspicious-users", async (req, res) => {
+    try {
+      const suspicious = await storage.getSuspiciousUsers();
+      res.json(suspicious);
+    } catch (err) {
+      res.status(500).json({ message: "Error fetching suspicious users" });
+    }
+  });
+
+  app.get("/api/admin/fraud/suspicious-campaigns", async (req, res) => {
+    try {
+      const suspicious = await storage.getSuspiciousCampaigns();
+      res.json(suspicious);
+    } catch (err) {
+      res.status(500).json({ message: "Error fetching suspicious campaigns" });
+    }
+  });
+
   // Admin stats
   app.get("/api/admin/stats", async (req, res) => {
     try {
