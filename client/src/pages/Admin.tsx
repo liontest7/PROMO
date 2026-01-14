@@ -24,6 +24,8 @@ export default function AdminDashboard() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCampaign, setSelectedCampaign] = useState<any>(null);
   
+  const [settingsUpdate, setSettingsUpdate] = useState<any>({});
+  
   const { data: settings, isLoading: loadingSettings } = useQuery<any>({
     queryKey: ["/api/admin/settings"],
   });
@@ -181,37 +183,89 @@ export default function AdminDashboard() {
         <Card className="glass-card border-white/10 bg-white/[0.01] rounded-2xl overflow-hidden">
           <CardHeader className="border-b border-white/5 bg-white/[0.02]">
             <CardTitle className="text-xl">System Controls</CardTitle>
-            <CardDescription>Global toggle for platform features and maintenance.</CardDescription>
+            <CardDescription>Global protocol parameters and feature toggles.</CardDescription>
           </CardHeader>
           <CardContent className="p-6">
-            <div className="flex flex-col md:flex-row gap-8">
-              <div className="flex items-center space-x-4">
-                <Switch 
-                  id="campaigns-enabled" 
-                  checked={settings?.campaignsEnabled} 
-                  onCheckedChange={(checked) => updateSettingsMutation.mutate({ campaignsEnabled: checked })}
-                />
-                <Label htmlFor="campaigns-enabled" className="flex flex-col">
-                  <span className="font-bold uppercase text-[10px] tracking-widest">Campaign Creation</span>
-                  <span className="text-xs text-muted-foreground">{settings?.campaignsEnabled ? 'Enabled' : 'Disabled for Maintenance'}</span>
-                </Label>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+              <div className="space-y-6">
+                <div className="flex items-center justify-between p-4 rounded-xl bg-white/5 border border-white/10">
+                  <div className="flex items-center space-x-4">
+                    <Switch 
+                      id="campaigns-enabled" 
+                      checked={settings?.campaignsEnabled} 
+                      onCheckedChange={(checked) => updateSettingsMutation.mutate({ campaignsEnabled: checked })}
+                    />
+                    <Label htmlFor="campaigns-enabled" className="flex flex-col">
+                      <span className="font-bold uppercase text-[10px] tracking-widest">Campaign Creation</span>
+                      <span className="text-xs text-muted-foreground">{settings?.campaignsEnabled ? 'Enabled' : 'Disabled for Maintenance'}</span>
+                    </Label>
+                  </div>
+
+                  <div className="flex items-center space-x-4 border-l border-white/10 pl-6">
+                    <div className={`h-3 w-3 rounded-full animate-pulse ${settings?.twitterApiStatus === 'active' ? 'bg-green-500' : 'bg-yellow-500'}`} />
+                    <div className="flex flex-col">
+                      <span className="font-bold uppercase text-[10px] tracking-widest">Twitter API Status</span>
+                      <span className="text-xs text-muted-foreground uppercase tracking-tighter">
+                        {settings?.twitterApiStatus === 'active' ? 'Connected' : 'Awaiting Integration'}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                {settings?.twitterApiStatus !== 'active' && (
+                  <p className="text-[10px] text-muted-foreground italic px-2">Add X_CONSUMER_KEY, X_CONSUMER_SECRET, and X_BEARER_TOKEN to Secrets to activate social verification.</p>
+                )}
               </div>
 
-              <div className="flex items-center space-x-4">
-                <div className={`h-3 w-3 rounded-full animate-pulse ${settings?.twitterApiStatus === 'active' ? 'bg-green-500' : 'bg-yellow-500'}`} />
-                <div className="flex flex-col">
-                  <span className="font-bold uppercase text-[10px] tracking-widest">Twitter API Status</span>
-                  <span className="text-xs text-muted-foreground uppercase tracking-tighter">
-                    {settings?.twitterApiStatus === 'active' ? 'Connected & Verified' : 'Awaiting Integration'}
-                  </span>
+              <div className="space-y-4 p-4 rounded-xl bg-white/5 border border-white/10">
+                <h3 className="font-bold uppercase text-[10px] tracking-widest text-primary mb-2">Protocol Parameters</h3>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-1.5">
+                    <Label className="text-[10px] uppercase tracking-wider opacity-70">Creation Fee ($MEME)</Label>
+                    <Input 
+                      type="number" 
+                      className="h-8 bg-black/20 border-white/10 text-xs"
+                      defaultValue={settings?.creationFee} 
+                      onChange={(e) => setSettingsUpdate((prev: any) => ({ ...prev, creationFee: parseInt(e.target.value) }))}
+                    />
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label className="text-[10px] uppercase tracking-wider opacity-70">Burn Percent (%)</Label>
+                    <Input 
+                      type="number" 
+                      className="h-8 bg-black/20 border-white/10 text-xs"
+                      defaultValue={settings?.burnPercent} 
+                      onChange={(e) => setSettingsUpdate((prev: any) => ({ ...prev, burnPercent: parseInt(e.target.value) }))}
+                    />
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label className="text-[10px] uppercase tracking-wider opacity-70">Rewards Percent (%)</Label>
+                    <Input 
+                      type="number" 
+                      className="h-8 bg-black/20 border-white/10 text-xs"
+                      defaultValue={settings?.rewardsPercent} 
+                      onChange={(e) => setSettingsUpdate((prev: any) => ({ ...prev, rewardsPercent: parseInt(e.target.value) }))}
+                    />
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label className="text-[10px] uppercase tracking-wider opacity-70">System Percent (%)</Label>
+                    <Input 
+                      type="number" 
+                      className="h-8 bg-black/20 border-white/10 text-xs"
+                      defaultValue={settings?.systemPercent} 
+                      onChange={(e) => setSettingsUpdate((prev: any) => ({ ...prev, systemPercent: parseInt(e.target.value) }))}
+                    />
+                  </div>
                 </div>
+                <Button 
+                  size="sm"
+                  className="w-full h-8 font-black uppercase text-[10px] tracking-widest mt-2" 
+                  onClick={() => updateSettingsMutation.mutate(settingsUpdate)}
+                  disabled={updateSettingsMutation.isPending || Object.keys(settingsUpdate).length === 0}
+                >
+                  {updateSettingsMutation.isPending ? "Syncing..." : "Update Protocol"}
+                </Button>
               </div>
-
-              {settings?.twitterApiStatus !== 'active' && (
-                <div className="flex-1 text-right">
-                  <p className="text-[10px] text-muted-foreground italic">Add X_CONSUMER_KEY, X_CONSUMER_SECRET, and X_BEARER_TOKEN to Secrets to activate.</p>
-                </div>
-              )}
             </div>
           </CardContent>
         </Card>

@@ -26,6 +26,12 @@ export default function About() {
     { label: "Tokens Burned", value: stats?.totalBurned || "0", icon: Zap, isBurn: true },
   ];
 
+  const { data: settings } = useQuery<any>({
+    queryKey: ["/api/admin/settings"],
+  });
+
+  const burnAmount = settings?.creationFee || PLATFORM_CONFIG.BURN_AMOUNT;
+
   return (
     <div className="min-h-screen bg-background text-foreground">
       <header>
@@ -187,7 +193,7 @@ export default function About() {
             <Card className="glass-card border-primary/20 bg-primary/5">
               <CardContent className="p-8">
                 <h3 className="text-xl font-bold mb-4">Deflationary Burn</h3>
-                <p className="text-muted-foreground">Every campaign creation removes {PLATFORM_CONFIG.BURN_AMOUNT.toLocaleString()} ${PLATFORM_CONFIG.TOKEN_SYMBOL} from circulation forever, reducing supply.</p>
+                <p className="text-muted-foreground">Every campaign creation removes {burnAmount.toLocaleString()} ${PLATFORM_CONFIG.TOKEN_SYMBOL} from circulation forever, reducing supply.</p>
               </CardContent>
             </Card>
             <Card className="glass-card border-white/5 bg-white/[0.02]">

@@ -119,6 +119,15 @@ export function setupAdminRoutes(app: Express) {
     }
   });
 
+  app.post("/api/admin/settings", async (req, res) => {
+    try {
+      const settings = await storage.updateSystemSettings(req.body);
+      res.json(settings);
+    } catch (err) {
+      res.status(500).json({ message: "Error updating settings" });
+    }
+  });
+
   // Admin Analytics
   app.get("/api/admin/analytics", async (req, res) => {
     try {

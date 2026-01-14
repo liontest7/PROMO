@@ -68,6 +68,20 @@ export default function Landing() {
     staleTime: 0, // Always consider data stale to ensure fresh fetches
   });
 
+  const { data: settings } = useQuery({
+    queryKey: ["/api/admin/settings"],
+    queryFn: async () => {
+      const res = await fetch("/api/admin/settings");
+      if (!res.ok) return null;
+      return res.json();
+    },
+  });
+
+  const creationFee = settings?.creationFee || PLATFORM_CONFIG.TOKENOMICS.CREATION_FEE;
+  const burnPercent = settings?.burnPercent || PLATFORM_CONFIG.TOKENOMICS.BURN_PERCENT;
+  const rewardsPercent = settings?.rewardsPercent || PLATFORM_CONFIG.TOKENOMICS.REWARDS_PERCENT;
+  const systemPercent = settings?.systemPercent || PLATFORM_CONFIG.TOKENOMICS.SYSTEM_PERCENT;
+
   return (
     <div className="min-h-screen bg-background text-foreground relative">
       <header>
@@ -204,19 +218,19 @@ export default function Landing() {
                 <div>
                   <h2 className="text-5xl font-display font-black mb-8 tracking-tighter italic uppercase underline decoration-primary decoration-4 underline-offset-8">Deflationary by Design</h2>
                   <p className="text-xl text-muted-foreground mb-10 leading-relaxed font-medium">
-                    We don't just grow communities; we strengthen the entire ecosystem. Every campaign created requires a <strong>{PLATFORM_CONFIG.TOKENOMICS.CREATION_FEE.toLocaleString()} ${PLATFORM_CONFIG.TOKEN_SYMBOL}</strong> fee, which is automatically distributed:
+                    We don't just grow communities; we strengthen the entire ecosystem. Every campaign created requires a <strong>{creationFee.toLocaleString()} ${PLATFORM_CONFIG.TOKEN_SYMBOL}</strong> fee, which is automatically distributed:
                   </p>
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
                     <div className="p-6 bg-black/40 rounded-[2rem] border border-orange-500/20 backdrop-blur-md group hover:border-orange-500/50 transition-all text-center">
-                      <p className="text-3xl font-black text-orange-500 mb-2">{PLATFORM_CONFIG.TOKENOMICS.BURN_PERCENT}%</p>
+                      <p className="text-3xl font-black text-orange-500 mb-2">{burnPercent}%</p>
                       <p className="text-[10px] text-muted-foreground uppercase font-black tracking-widest">Permanent Burn</p>
                     </div>
                     <div className="p-6 bg-black/40 rounded-[2rem] border border-primary/20 backdrop-blur-md group hover:border-primary/50 transition-all text-center">
-                      <p className="text-3xl font-black text-primary mb-2">{PLATFORM_CONFIG.TOKENOMICS.REWARDS_PERCENT}%</p>
+                      <p className="text-3xl font-black text-primary mb-2">{rewardsPercent}%</p>
                       <p className="text-[10px] text-muted-foreground uppercase font-black tracking-widest">Weekly Rewards</p>
                     </div>
                     <div className="p-6 bg-black/40 rounded-[2rem] border border-secondary/20 backdrop-blur-md group hover:border-secondary/50 transition-all text-center">
-                      <p className="text-3xl font-black text-secondary mb-2">{PLATFORM_CONFIG.TOKENOMICS.SYSTEM_PERCENT}%</p>
+                      <p className="text-3xl font-black text-secondary mb-2">{systemPercent}%</p>
                       <p className="text-[10px] text-muted-foreground uppercase font-black tracking-widest">System Fees</p>
                     </div>
                   </div>

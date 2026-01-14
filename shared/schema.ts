@@ -9,6 +9,10 @@ export const systemSettings = pgTable("system_settings", {
   id: serial("id").primaryKey(),
   campaignsEnabled: boolean("campaigns_enabled").default(true).notNull(),
   twitterApiStatus: text("twitter_api_status", { enum: ["active", "coming_soon", "error"] }).default("coming_soon").notNull(),
+  burnPercent: integer("burn_percent").default(50).notNull(),
+  rewardsPercent: integer("rewards_percent").default(40).notNull(),
+  systemPercent: integer("system_percent").default(10).notNull(),
+  creationFee: integer("creation_fee").default(10000).notNull(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
