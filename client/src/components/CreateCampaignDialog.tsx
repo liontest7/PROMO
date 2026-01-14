@@ -28,7 +28,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
-import { Plus, Trash2, Rocket, Eye, CheckCircle2, Globe, Twitter, Send, Loader2, Coins } from "lucide-react";
+import { Plus, Trash2, Rocket, Eye, CheckCircle2, Globe, Twitter, Send, Loader2, Coins, Shield } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { CampaignSuccessCard } from "./CampaignSuccessCard";
 
@@ -61,6 +61,8 @@ const formSchema = insertCampaignSchema.extend({
   telegramUrl: z.string().url("Invalid Telegram URL").optional().or(z.literal("")),
   minSolBalance: z.coerce.number().min(0).default(0),
   minWalletAgeDays: z.coerce.number().min(0).default(0),
+  multiDaySolAmount: z.coerce.number().min(0).default(0),
+  multiDaySolDays: z.coerce.number().min(0).default(0),
   initialMarketCap: z.string().optional().or(z.literal("")),
 }).refine((data) => {
   if (data.campaignType === "engagement") {
@@ -134,6 +136,8 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
       telegramUrl: "",
       minSolBalance: 0,
       minWalletAgeDays: 0,
+      multiDaySolAmount: 0,
+      multiDaySolDays: 0,
       campaignType: undefined,
       actions: [],
       creatorId: userId || undefined
@@ -301,6 +305,14 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
         : (values.totalBudget || 0).toString(),
       minHoldingAmount: values.minHoldingAmount?.toString() || null,
       rewardPerWallet: values.rewardPerWallet?.toString() || null,
+      requirements: {
+        minSolBalance: values.minSolBalance,
+        minWalletAgeDays: values.minWalletAgeDays,
+        multiDaySolHolding: values.multiDaySolAmount > 0 && values.multiDaySolDays > 0 ? {
+          amount: values.multiDaySolAmount,
+          days: values.multiDaySolDays
+        } : undefined
+      },
       actions: (values.campaignType === 'holder_qualification' || !values.actions) ? [] : values.actions.map(a => ({
         ...a,
         rewardAmount: a.rewardAmount.toString(),
@@ -411,6 +423,69 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
 
                   {watchedType && (
                     <div className="space-y-6 animate-in fade-in slide-in-from-top-4 duration-300">
+                      {/* Advanced Protection Section */}
+                      <div className="space-y-4 p-4 rounded-xl bg-orange-500/5 border border-orange-500/20">
+                        <h3 className="text-sm font-semibold text-orange-500 flex items-center gap-2">
+                          <Shield className="w-4 h-4" /> Advanced Anti-Bot Protection
+                        </h3>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <FormField
+                            control={form.control}
+                            name="minSolBalance"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>Min SOL Balance</FormLabel>
+                                <FormControl>
+                                  <Input type="number" step="0.01" placeholder="e.g. 0.1" {...field} />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                          <FormField
+                            control={form.control}
+                            name="minWalletAgeDays"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>Min Wallet Age (Days)</FormLabel>
+                                <FormControl>
+                                  <Input type="number" placeholder="e.g. 30" {...field} />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                        </div>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <FormField
+                            control={form.control}
+                            name="multiDaySolAmount"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>Must Hold (SOL)</FormLabel>
+                                <FormControl>
+                                  <Input type="number" step="0.1" placeholder="e.g. 1.0" {...field} />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                          <FormField
+                            control={form.control}
+                            name="multiDaySolDays"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>For (Consecutive Days)</FormLabel>
+                                <FormControl>
+                                  <Input type="number" placeholder="e.g. 3" {...field} />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                        </div>
+                      </div>
+
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <FormField
                           control={form.control}

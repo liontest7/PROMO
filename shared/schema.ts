@@ -76,6 +76,10 @@ export const campaigns = pgTable("campaigns", {
     minWalletAgeDays?: number;
     minProjectTokenHolding?: number;
     projectTokenAddress?: string;
+    multiDaySolHolding?: {
+      amount: number;
+      days: number;
+    };
   }>(),
   celebrationTriggered: boolean("celebration_triggered").default(false).notNull(),
   initialMarketCap: numeric("initial_market_cap"),
