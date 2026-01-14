@@ -34,16 +34,25 @@ import { CampaignSuccessCard } from "./CampaignSuccessCard";
 
 // Form Schema
 const formSchema = insertCampaignSchema.extend({
-  campaignType: z.enum(["engagement", "holder_qualification"]).default("engagement"),
-  totalBudget: z.coerce.number().min(0.00001).optional(),
+  title: z.string().min(3, "Campaign title must be at least 3 characters").max(50, "Title too long"),
+  description: z.string().min(10, "Description must be at least 10 characters").max(500, "Description too long"),
+  tokenName: z.string().min(1, "Token symbol is required").max(10, "Symbol too long"),
+  tokenAddress: z.string().min(32, "Invalid Solana address").max(44, "Invalid Solana address"),
+  campaignType: z.enum(["engagement", "holder_qualification"], {
+    required_error: "Please select a campaign category",
+  }),
+  totalBudget: z.coerce.number().min(0.00001, "Total budget must be greater than 0"),
   minHoldingAmount: z.coerce.number().min(0).optional(),
   minHoldingDuration: z.coerce.number().min(0).optional(),
   rewardPerWallet: z.coerce.number().min(0).optional(),
-  maxClaims: z.coerce.number().min(1).optional(),
+  maxClaims: z.coerce.number().min(1, "At least 1 participant required").optional(),
   actions: z.array(insertActionSchema.omit({ campaignId: true }).extend({
-    rewardAmount: z.coerce.number().min(0.00001),
-    maxExecutions: z.coerce.number().min(1)
-  })).optional(),
+    type: z.string().min(1, "Action type required"),
+    title: z.string().min(3, "Action title required"),
+    url: z.string().url("Invalid action URL"),
+    rewardAmount: z.coerce.number().min(0.00001, "Reward must be greater than 0"),
+    maxExecutions: z.coerce.number().min(1, "Executions must be at least 1")
+  })).min(1, "Social campaigns must have at least one task").optional(),
   creatorId: z.number().optional(),
   bannerUrl: z.string().url("Invalid banner URL").optional().or(z.literal("")),
   logoUrl: z.string().url("Invalid logo URL").optional().or(z.literal("")),
@@ -53,6 +62,22 @@ const formSchema = insertCampaignSchema.extend({
   minSolBalance: z.coerce.number().min(0).default(0),
   minWalletAgeDays: z.coerce.number().min(0).default(0),
   initialMarketCap: z.string().optional().or(z.literal("")),
+}).refine((data) => {
+  if (data.campaignType === "engagement") {
+    return data.actions && data.actions.length > 0;
+  }
+  return true;
+}, {
+  message: "Engagement campaigns require at least one action",
+  path: ["actions"],
+}).refine((data) => {
+  if (data.campaignType === "holder_qualification") {
+    return (data.rewardPerWallet || 0) > 0 && (data.maxClaims || 0) > 0;
+  }
+  return true;
+}, {
+  message: "Reward and participants are required for holder campaigns",
+  path: ["rewardPerWallet"],
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -109,7 +134,7 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
       telegramUrl: "",
       minSolBalance: 0,
       minWalletAgeDays: 0,
-      campaignType: undefined as any,
+      campaignType: undefined,
       actions: [],
       creatorId: userId || undefined
     },
@@ -503,20 +528,31 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
                         </div>
                       </div>
 
-                      <div className="flex gap-3 pt-6 border-t border-white/5">
+      <div className="flex gap-3 pt-6 border-t border-white/5">
                         <Button 
                           type="button" 
                           variant="outline" 
                           className="flex-1" 
                           onClick={async () => {
                             const isValid = await form.trigger();
-                            if (isValid) setStep("preview");
+                            if (isValid) {
+                              setStep("preview");
+                            } else {
+                              toast({
+                                title: "Incomplete Form",
+                                description: "Please fill in all required fields marked with errors.",
+                                variant: "destructive"
+                              });
+                            }
                           }}
-                          disabled={!form.formState.isValid}
                         >
                           <Eye className="mr-2 h-4 w-4" /> Preview
                         </Button>
-                        <Button type="submit" className="flex-1 font-bold" disabled={isPending || !form.formState.isValid}>
+                        <Button 
+                          type="submit" 
+                          className="flex-1 font-bold" 
+                          disabled={isPending}
+                        >
                           {isPending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Rocket className="mr-2 h-4 w-4" />}
                           Launch
                         </Button>
