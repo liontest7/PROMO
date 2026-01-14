@@ -13,6 +13,7 @@ import { TokenPortfolios } from "@/components/dashboard/TokenPortfolios";
 import { VerificationLogs } from "@/components/dashboard/VerificationLogs";
 import { EcosystemContribution } from "@/components/dashboard/EcosystemContribution";
 import { CreateCampaignDialog } from "@/components/CreateCampaignDialog";
+import { ClaimRewards } from "@/components/dashboard/ClaimRewards";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 
@@ -99,6 +100,7 @@ export default function Dashboard() {
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2 space-y-8">
+            <ClaimRewards walletAddress={walletAddress} />
             <TokenPortfolios tokenBalances={stats?.tokenBalances || []} />
             <VerificationLogs executions={executions || []} />
           </div>
