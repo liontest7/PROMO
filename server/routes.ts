@@ -103,9 +103,23 @@ export async function registerRoutes(
     try {
       const user = await storage.getUserByWallet(req.body.wallet);
       if (!user) return res.status(404).json({ message: "User not found" });
-      await storage.claimRewards(user.id, req.body.campaignIds);
-      res.json({ success: true });
+      
+      const pending = await storage.getPendingRewards(user.id);
+      const campaignIds = req.body.campaignIds;
+      const filteredPending = pending.filter(r => campaignIds.includes(r.campaignId));
+      
+      if (filteredPending.length === 0) {
+        return res.status(400).json({ message: "No pending rewards to claim for selected campaigns" });
+      }
+
+      // In a real implementation, we would call the Solana service to transfer tokens here.
+      // For now, we update the status in the DB to 'paid' as part of the ecosystem flow.
+      console.log(`[Claim] Processing claim for user ${user.walletAddress} across ${campaignIds.length} campaigns`);
+      
+      await storage.claimRewards(user.id, campaignIds);
+      res.json({ success: true, message: "Rewards claimed successfully (Mock Transfer)" });
     } catch (err) {
+      console.error("Claim error:", err);
       res.status(500).json({ message: "Error claiming rewards" });
     }
   });
