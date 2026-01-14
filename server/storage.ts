@@ -79,7 +79,9 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getCampaignBySymbol(symbol: string): Promise<(Campaign & { actions: Action[] }) | undefined> {
-    const [campaign] = await db.select().from(campaigns).where(sql`LOWER(${campaigns.tokenName}) = LOWER(${symbol}) OR LOWER(${campaigns.tokenAddress}) = LOWER(${symbol})`);
+    const [campaign] = await db.select().from(campaigns).where(
+      sql`LOWER(${campaigns.tokenName}) = LOWER(${symbol}) OR LOWER(${campaigns.tokenAddress}) = LOWER(${symbol}) OR CAST(${campaigns.id} AS TEXT) = ${symbol}`
+    ).orderBy(desc(campaigns.createdAt)).limit(1);
     if (!campaign) return undefined;
     
     const campaignActions = await db.select().from(actions).where(eq(actions.campaignId, campaign.id));

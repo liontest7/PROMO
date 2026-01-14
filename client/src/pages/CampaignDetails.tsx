@@ -38,7 +38,7 @@ export default function CampaignDetails() {
   const [, setLocation] = useLocation();
 
   const { data: campaign, isLoading: campaignLoading } = useQuery<CampaignWithActions | undefined>({
-    queryKey: symbol ? [`/api/campaigns/symbol/${symbol}`] : [`/api/campaigns/${id}`],
+    queryKey: id ? [`/api/campaigns/${id}`] : [`/api/campaigns/symbol/${symbol}`],
     enabled: !!(id || symbol),
     retry: 1,
   });
