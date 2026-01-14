@@ -112,6 +112,9 @@ function Router() {
         <Route path="/campaign/:id">
           <PageWrapper><CampaignDetails /></PageWrapper>
         </Route>
+        <Route path="/api/campaigns/:id">
+          <PageWrapper><CampaignDetails /></PageWrapper>
+        </Route>
         <Route path="/c/:symbol">
           <PageWrapper><CampaignDetails /></PageWrapper>
         </Route>
