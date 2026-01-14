@@ -22,7 +22,7 @@ export default function About() {
     { label: "Active Campaigns", value: stats?.activeCampaigns || "0", icon: Search },
     { label: "Community Members", value: stats?.totalUsers || "0", icon: Users },
     { label: "Verified Projects", value: stats?.totalVerifiedProjects || "0", icon: ShieldCheck },
-    { label: "Rewards Paid", value: stats ? `${stats.totalPaid} TOKENS` : "0 TOKENS", icon: Coins },
+    { label: "Rewards Paid", value: stats?.totalPaid || "0", icon: Coins },
     { label: "Tokens Burned", value: stats?.totalBurned || "0", icon: Zap, isBurn: true },
   ];
 

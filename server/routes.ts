@@ -7,6 +7,7 @@ import { setupAdminRoutes } from "./routes/admin";
 import { authMiddleware } from "./middleware/auth";
 import { storage } from "./storage";
 import { api } from "@shared/routes";
+import { PLATFORM_CONFIG } from "@shared/config";
 import { PublicKey } from "@solana/web3.js";
 import { getSolanaConnection } from "./services/solana";
 import { checkIpFraud, verifyTurnstile } from "./services/security";
@@ -42,13 +43,19 @@ export async function registerRoutes(
         }
       });
 
+      // Calculate burned amount
+      // Formula: (Total Campaigns * Creation Fee) * Burn Percent
+      const creationFee = PLATFORM_CONFIG.TOKENOMICS.CREATION_FEE;
+      const burnPercent = PLATFORM_CONFIG.TOKENOMICS.BURN_PERCENT / 100;
+      const calculatedBurned = allCampaigns.length * creationFee * burnPercent;
+
       res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
       res.json({
         activeCampaigns,
         totalUsers,
         totalVerifiedProjects,
         totalPaid: totalPaid.toLocaleString(),
-        totalBurned: "50,000" // Hardcoded for now based on config or fetch from actual burn logic
+        totalBurned: calculatedBurned.toLocaleString()
       });
     } catch (err) {
       console.error("Global stats error:", err);
