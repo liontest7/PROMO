@@ -80,7 +80,7 @@ export class DatabaseStorage implements IStorage {
 
   async getCampaignBySymbol(symbol: string): Promise<(Campaign & { actions: Action[] }) | undefined> {
     const [campaign] = await db.select().from(campaigns).where(
-      sql`LOWER(${campaigns.tokenName}) = LOWER(${symbol}) OR LOWER(${campaigns.tokenAddress}) = LOWER(${symbol}) OR CAST(${campaigns.id} AS TEXT) = ${symbol}`
+      sql`LOWER(${campaigns.slug}) = LOWER(${symbol}) OR LOWER(${campaigns.tokenName}) = LOWER(${symbol}) OR LOWER(${campaigns.tokenAddress}) = LOWER(${symbol}) OR CAST(${campaigns.id} AS TEXT) = ${symbol}`
     ).orderBy(desc(campaigns.createdAt)).limit(1);
     if (!campaign) return undefined;
     
@@ -226,8 +226,24 @@ export class DatabaseStorage implements IStorage {
       ? (parseFloat(insertCampaign.rewardPerWallet || "0") * (insertCampaign.maxClaims || 0)).toString()
       : insertCampaign.totalBudget;
 
+    // Generate unique slug (ticker, ticker-v2, ticker-v3...)
+    const baseSlug = insertCampaign.tokenName.toLowerCase();
+    let slug = baseSlug;
+    let counter = 1;
+    
+    while (true) {
+      const currentSlug = counter === 1 ? slug : `${slug}-v${counter}`;
+      const [existing] = await db.select().from(campaigns).where(eq(campaigns.slug, currentSlug)).limit(1);
+      if (!existing) {
+        slug = currentSlug;
+        break;
+      }
+      counter++;
+    }
+
     const [campaign] = await db.insert(campaigns).values({
       ...insertCampaign,
+      slug,
       totalBudget,
       remainingBudget: totalBudget,
       status: "active",

@@ -108,7 +108,7 @@ export function CampaignCard({ campaign, onActionClick, isOwner }: CampaignCardP
           ) : (
             <div className="w-full h-full bg-gradient-to-br from-primary/20 to-secondary/20" />
           )}
-    <Link href={`/api/campaigns/${campaign.id}`} className="absolute inset-0 cursor-pointer">
+    <Link href={`/c/${campaign.slug || campaign.tokenName.toLowerCase()}`} className="absolute inset-0 cursor-pointer">
       <div className="w-full h-full bg-gradient-to-t from-background/90 via-background/40 to-transparent" />
     </Link>
 
@@ -148,7 +148,7 @@ export function CampaignCard({ campaign, onActionClick, isOwner }: CampaignCardP
 
         <CardHeader className="pb-1 relative pt-10 px-6">
           <div className="absolute -top-10 left-6 w-20 h-24 flex flex-col gap-2">
-            <Link href={`/api/campaigns/${campaign.id}`}>
+            <Link href={`/c/${campaign.slug || campaign.tokenName.toLowerCase()}`}>
               <div className="w-20 h-20 rounded-2xl border-4 border-background bg-card overflow-hidden shadow-2xl hover:scale-105 transition-transform cursor-pointer">
                 {campaign.logoUrl ? (
                   <img src={campaign.logoUrl} alt="Logo" loading="lazy" className="w-full h-full object-cover" />
@@ -163,7 +163,7 @@ export function CampaignCard({ campaign, onActionClick, isOwner }: CampaignCardP
 
           <div className="flex justify-between items-start pt-1">
             <div className="space-y-0.5 w-full">
-              <Link href={`/api/campaigns/${campaign.id}`} className="block">
+              <Link href={`/c/${campaign.slug || campaign.tokenName.toLowerCase()}`} className="block">
                 <CardTitle className="text-xl font-display font-black leading-tight hover:text-primary transition-colors cursor-pointer line-clamp-1">
                   {campaign.title}
                 </CardTitle>
@@ -209,7 +209,7 @@ export function CampaignCard({ campaign, onActionClick, isOwner }: CampaignCardP
           </div>
 
           <div className="flex flex-col gap-2 pt-2">
-            <Link href={`/api/campaigns/${campaign.id}`} className="w-full">
+            <Link href={`/c/${campaign.slug || campaign.tokenName.toLowerCase()}`} className="w-full">
               <Button className="w-full bg-primary/10 text-primary hover:bg-primary hover:text-white font-black h-11 rounded-2xl border border-primary/20 group/btn transition-all">
                 VIEW DETAILS
                 <ArrowRight className="ml-2 w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />

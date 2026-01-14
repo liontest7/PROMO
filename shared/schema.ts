@@ -54,6 +54,7 @@ export const auditLogsRelations = relations(auditLogs, ({ one }) => ({
 
 export const campaigns = pgTable("campaigns", {
   id: serial("id").primaryKey(),
+  slug: text("slug").unique(),
   title: text("title").notNull(),
   description: text("description").notNull(),
   tokenName: text("token_name").notNull(),
