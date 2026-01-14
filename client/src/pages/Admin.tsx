@@ -18,6 +18,7 @@ import { LiveTerminal } from "@/components/admin/LiveTerminal";
 import { AdminAnalytics } from "@/components/admin/AdminAnalytics";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
 
 export default function AdminDashboard() {
   const { toast } = useToast();
