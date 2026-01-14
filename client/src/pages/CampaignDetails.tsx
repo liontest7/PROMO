@@ -463,111 +463,71 @@ export default function CampaignDetails() {
               </div>
             </section>
 
-            <section className="space-y-6 pt-4 border-t border-white/5">
+            <section className="space-y-6 pt-8 border-t border-white/5">
               <div className="flex items-center justify-between">
                 <div className="space-y-1">
-                  <h2 className="text-xl font-display font-black text-white tracking-tight uppercase">Blockchain Proofs</h2>
-                  <p className="text-sm text-white/40 font-bold uppercase tracking-widest">Live verification from Solana</p>
+                  <h2 className="text-xl font-display font-black text-white tracking-tight uppercase flex items-center gap-2">
+                    Payment Proofs
+                    <ShieldCheck className="w-5 h-5 text-primary" />
+                  </h2>
+                  <p className="text-sm text-white/40 font-bold uppercase tracking-widest">Live reward distribution from Solana</p>
                 </div>
                 <div className="flex gap-2">
-                  <Badge variant="outline" className="bg-primary/5 border-primary/20 text-primary font-black px-4 py-1.5 rounded-lg text-sm">
-                    ESCROW: {campaign.totalBudget} ${campaign.tokenName}
-                  </Badge>
-                  <Badge variant="secondary" className="gap-2 px-4 py-1.5 bg-white/5 text-white border-white/10 rounded-lg text-sm font-black">
-                    <CheckCircle className="w-4 h-4 text-primary" /> {participants?.filter(p => p.status === 'paid').length || 0} PAID
+                  <Badge variant="secondary" className="gap-2 px-4 py-1.5 bg-primary/10 text-primary border-primary/20 rounded-lg text-sm font-black">
+                    <CheckCircle className="w-4 h-4" /> {participants?.filter(p => p.status === 'paid').length || 0} REWARDS SENT
                   </Badge>
                 </div>
               </div>
 
-              <div className="grid gap-4 bg-white/5 p-8 rounded-2xl border border-white/5">
-                <div className="flex items-center justify-between py-2 border-b border-white/5">
-                  <span className="text-white/40 text-xs font-black uppercase tracking-wider">Escrow Wallet</span>
-                  <div className="flex items-center gap-2">
-                    <span className="font-black text-green-400 text-sm font-mono">
-                      {campaign.escrowWallet ? `${campaign.escrowWallet.slice(0, 6)}...${campaign.escrowWallet.slice(-6)}` : "Generating..."}
-                    </span>
-                    {campaign.escrowWallet && (
-                      <a href={`https://solscan.io/account/${campaign.escrowWallet}`} target="_blank" rel="noreferrer" className="text-white/40 hover:text-white">
-                        <ExternalLink className="w-4 h-4" />
-                      </a>
-                    )}
-                  </div>
-                </div>
-
-                <div className="flex items-center justify-between py-2 border-b border-white/5">
-                  <span className="text-white/40 text-xs font-black uppercase tracking-wider">Locked Rewards</span>
-                  <span className="font-black text-white text-sm">
-                    {Number(campaign.totalBudget).toLocaleString()} ${campaign.tokenName}
-                  </span>
-                </div>
-
-                <div className="flex items-center justify-between py-2 border-b border-white/5">
-                  <span className="text-white/40 text-xs font-black uppercase tracking-wider">Gas Reserve</span>
-                  <span className="font-black text-green-400 text-sm">
-                    {campaign.gasBudgetSol || "0"} SOL
-                  </span>
-                </div>
-
-                <div className="flex items-center justify-between py-2">
-                  <span className="text-white/40 text-xs font-black uppercase tracking-wider">Contract Status</span>
-                  <Badge variant="outline" className={cn(
-                    "text-[10px] font-black uppercase tracking-widest px-4 py-1",
-                    campaign.fundingTxSignature ? "text-green-400 border-green-500/30 bg-green-500/10" : "text-yellow-400 border-yellow-500/30 bg-yellow-500/10"
-                  )}>
-                    {campaign.fundingTxSignature ? "FULLY FUNDED" : "PENDING FUNDING"}
-                  </Badge>
-                </div>
-              </div>
-              
-              <div className="grid sm:grid-cols-2 gap-4">
+              <div className="grid gap-3">
                 {participantsLoading ? (
-                  <div className="col-span-full py-10 flex justify-center">
+                  <div className="col-span-full py-20 flex flex-col items-center justify-center gap-4 bg-white/[0.02] rounded-3xl border border-dashed border-white/10">
                     <Loader2 className="w-8 h-8 animate-spin text-primary" />
+                    <p className="text-xs font-black text-white/20 uppercase tracking-[0.2em]">Verifying Blockchain Data...</p>
                   </div>
                 ) : participants && participants.length > 0 ? (
-                  participants.slice(0, 6).map((p, i) => (
-                    <div key={i} className="flex items-center justify-between p-4 bg-white/5 rounded-xl border border-white/5 hover:border-primary/20 transition-all group">
+                  participants.slice(0, 10).map((p, i) => (
+                    <div key={i} className="flex flex-col sm:flex-row sm:items-center justify-between p-5 bg-white/[0.03] rounded-2xl border border-white/5 hover:border-primary/30 transition-all group gap-4">
                       <div className="flex items-center gap-4">
-                        <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center font-mono text-xs text-primary border border-primary/10">
-                          {p.user.walletAddress.substring(0, 2)}
+                        <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center border border-primary/20 shrink-0 shadow-lg shadow-primary/5">
+                          <span className="text-primary font-black font-mono text-sm">{p.user.walletAddress.substring(0, 2).toUpperCase()}</span>
                         </div>
-                        <div>
-                          <p className="text-sm font-black text-white font-mono">
-                            {p.user.walletAddress.substring(0, 4)}...{p.user.walletAddress.substring(p.user.walletAddress.length - 4)}
+                        <div className="min-w-0">
+                          <p className="text-sm font-black text-white font-mono truncate">
+                            {p.user.walletAddress.substring(0, 6)}...{p.user.walletAddress.substring(p.user.walletAddress.length - 6)}
                           </p>
-                          <p className="text-[10px] text-white/40 uppercase font-black">
+                          <p className="text-[10px] text-white/40 uppercase font-black tracking-widest flex items-center gap-2">
                             {formatDistanceToNow(new Date(p.createdAt || Date.now()), { addSuffix: true })}
+                            <span className="w-1 h-1 rounded-full bg-white/10" />
+                            SOLANA MAINNET
                           </p>
                         </div>
                       </div>
-                      <div className="flex items-center gap-3">
-                        {p.status === 'paid' ? (
-                          <>
-                            <Badge variant="outline" className="bg-green-500/10 border-green-500/20 text-green-400 font-black text-[10px] px-2 py-0.5">
-                              PAID
-                            </Badge>
-                            {p.transactionSignature && (
-                              <a 
-                                href={`https://solscan.io/tx/${p.transactionSignature}`} 
-                                target="_blank" 
-                                rel="noreferrer"
-                                className="text-white/20 hover:text-primary transition-colors"
-                              >
-                                <ExternalLink className="w-3.5 h-3.5" />
-                              </a>
-                            )}
-                          </>
-                        ) : (
-                          <Badge className="font-black px-2.5 py-1 bg-yellow-500/10 text-yellow-500 border border-yellow-500/20 uppercase tracking-widest text-[9px] rounded">
-                            VERIFIED
-                          </Badge>
-                        )}
+                      
+                      <div className="flex items-center justify-between sm:justify-end gap-6 sm:gap-8 border-t sm:border-t-0 border-white/5 pt-4 sm:pt-0">
+                        <div className="text-left sm:text-right">
+                          <div className="flex items-center gap-2 sm:justify-end mb-0.5">
+                            <span className="text-base font-black text-primary">+{campaign.rewardPerWallet} ${campaign.tokenName}</span>
+                            <Badge className="bg-green-500/20 text-green-400 text-[9px] px-1.5 py-0 font-black border-0">PAID</Badge>
+                          </div>
+                          {p.transactionSignature && (
+                            <a 
+                              href={`https://solscan.io/tx/${p.transactionSignature}`} 
+                              target="_blank" 
+                              rel="noreferrer"
+                              className="text-[10px] font-black text-white/20 hover:text-primary transition-colors uppercase flex items-center gap-1.5 sm:justify-end tracking-wider"
+                            >
+                              Verify Transaction <ExternalLink className="w-2.5 h-2.5" />
+                            </a>
+                          )}
+                        </div>
                       </div>
                     </div>
                   ))
                 ) : (
-                  <div className="col-span-full text-center text-white/20 py-10 bg-white/5 rounded-2xl border border-dashed border-white/10 italic text-sm">
-                    No winners yet. Be the first!
+                  <div className="col-span-full text-center text-white/20 py-16 bg-white/[0.02] rounded-3xl border border-dashed border-white/10 italic text-sm flex flex-col items-center gap-3">
+                    <ShieldCheck className="w-8 h-8 opacity-10" />
+                    No rewards distributed yet. Be the first to claim!
                   </div>
                 )}
               </div>
@@ -650,38 +610,38 @@ export default function CampaignDetails() {
               <CardContent className="p-5 space-y-4">
                 <div className="space-y-4">
                   <div className="flex justify-between items-center py-2 border-b border-white/5">
-                    <span className="text-[10px] font-black text-white/30 uppercase tracking-wider">Escrow Wallet</span>
+                    <span className="text-white/40 text-xs font-black uppercase tracking-wider">Escrow Wallet</span>
                     <a 
                       href={`https://solscan.io/account/${campaign.escrowWallet || campaign.tokenAddress}`} 
                       target="_blank" 
                       rel="noreferrer"
-                      className="font-mono text-[10px] text-primary hover:underline flex items-center gap-1.5"
+                      className="font-mono text-sm font-black text-primary hover:underline flex items-center gap-1.5"
                     >
                       {campaign.escrowWallet ? `${campaign.escrowWallet.substring(0, 4)}...${campaign.escrowWallet.substring(campaign.escrowWallet.length - 4)}` : "Generating..."}
                       <ExternalLink className="w-2.5 h-2.5" />
                     </a>
                   </div>
                   <div className="flex justify-between items-center py-2 border-b border-white/5">
-                    <span className="text-[10px] font-black text-white/30 uppercase tracking-wider">Locked Rewards</span>
-                    <span className="font-black text-white text-[10px] uppercase">{Number(campaign.totalBudget).toLocaleString()} ${campaign.tokenName}</span>
+                    <span className="text-white/40 text-xs font-black uppercase tracking-wider">Locked Rewards</span>
+                    <span className="font-black text-white text-sm uppercase">{Number(campaign.totalBudget).toLocaleString()} ${campaign.tokenName}</span>
                   </div>
                   <div className="flex justify-between items-center py-2 border-b border-white/5">
-                    <span className="text-[10px] font-black text-white/30 uppercase tracking-wider">Gas Reserve</span>
-                    <span className="font-black text-primary text-[10px] uppercase">{campaign.gasBudgetSol || "0.00"} SOL</span>
+                    <span className="text-white/40 text-xs font-black uppercase tracking-wider">Gas Reserve</span>
+                    <span className="font-black text-primary text-sm uppercase">{campaign.gasBudgetSol || "0.00"} SOL</span>
                   </div>
                   <div className="flex justify-between items-center py-2">
-                    <span className="text-[10px] font-black text-white/30 uppercase tracking-wider">Contract Status</span>
+                    <span className="text-white/40 text-xs font-black uppercase tracking-wider">Contract Status</span>
                     <Badge variant="outline" className={cn(
-                      "text-[9px] font-black h-5 px-2 uppercase tracking-widest",
+                      "text-[10px] font-black h-6 px-3 uppercase tracking-widest",
                       campaign.creationFeePaid ? "border-green-500/20 bg-green-500/10 text-green-400" : "border-yellow-500/20 bg-yellow-500/10 text-yellow-500"
                     )}>
                       {campaign.creationFeePaid ? "VERIFIED" : "PENDING FUNDING"}
                     </Badge>
                   </div>
                   {campaign.fundingTxSignature && (
-                    <Button variant="ghost" className="w-full h-8 text-[9px] font-black text-primary hover:bg-primary/5 gap-1.5 uppercase tracking-widest" asChild>
+                    <Button variant="ghost" className="w-full h-10 text-[10px] font-black text-primary hover:bg-primary/5 gap-2 uppercase tracking-widest" asChild>
                       <a href={`https://solscan.io/tx/${campaign.fundingTxSignature}`} target="_blank" rel="noreferrer">
-                        View Funding Transaction <ExternalLink className="w-3 h-3" />
+                        View Funding Transaction <ExternalLink className="w-3.5 h-3.5" />
                       </a>
                     </Button>
                   )}
