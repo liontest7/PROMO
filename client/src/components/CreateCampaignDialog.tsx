@@ -428,6 +428,33 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
                         )} />
                       </div>
 
+                      <FormField control={form.control} name="description" render={({ field }) => (
+                        <FormItem><FormLabel>Project Description</FormLabel><FormControl><Textarea placeholder="Describe your project and campaign goals..." className="min-h-[100px]" {...field} /></FormControl><FormMessage /></FormItem>
+                      )} />
+
+                      <div className="space-y-4">
+                        <h3 className="text-sm font-semibold text-primary">Assets & Links</h3>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <FormField control={form.control} name="bannerUrl" render={({ field }) => (
+                            <FormItem><FormLabel>Banner Image URL</FormLabel><FormControl><Input placeholder="https://..." {...field} /></FormControl><FormMessage /></FormItem>
+                          )} />
+                          <FormField control={form.control} name="logoUrl" render={({ field }) => (
+                            <FormItem><FormLabel>Logo Image URL</FormLabel><FormControl><Input placeholder="https://..." {...field} /></FormControl><FormMessage /></FormItem>
+                          )} />
+                        </div>
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                          <FormField control={form.control} name="websiteUrl" render={({ field }) => (
+                            <FormItem><FormLabel>Website</FormLabel><FormControl><Input placeholder="https://..." {...field} /></FormControl><FormMessage /></FormItem>
+                          )} />
+                          <FormField control={form.control} name="twitterUrl" render={({ field }) => (
+                            <FormItem><FormLabel>Twitter</FormLabel><FormControl><Input placeholder="https://x.com/..." {...field} /></FormControl><FormMessage /></FormItem>
+                          )} />
+                          <FormField control={form.control} name="telegramUrl" render={({ field }) => (
+                            <FormItem><FormLabel>Telegram</FormLabel><FormControl><Input placeholder="https://t.me/..." {...field} /></FormControl><FormMessage /></FormItem>
+                          )} />
+                        </div>
+                      </div>
+
                       {watchedType === "holder_qualification" ? (
                         <div className="space-y-4 p-4 rounded-xl bg-primary/5 border border-primary/20">
                           <h3 className="font-semibold text-primary flex items-center gap-2">
@@ -575,33 +602,6 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
                               }
                             </p>
                           </div>
-                        </div>
-                      </div>
-
-                      <FormField control={form.control} name="description" render={({ field }) => (
-                        <FormItem><FormLabel>Project Description</FormLabel><FormControl><Textarea placeholder="Describe your project and campaign goals..." className="min-h-[100px]" {...field} /></FormControl><FormMessage /></FormItem>
-                      )} />
-
-                      <div className="space-y-4">
-                        <h3 className="text-sm font-semibold text-primary">Assets & Links</h3>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                          <FormField control={form.control} name="bannerUrl" render={({ field }) => (
-                            <FormItem><FormLabel>Banner Image URL</FormLabel><FormControl><Input placeholder="https://..." {...field} /></FormControl><FormMessage /></FormItem>
-                          )} />
-                          <FormField control={form.control} name="logoUrl" render={({ field }) => (
-                            <FormItem><FormLabel>Logo Image URL</FormLabel><FormControl><Input placeholder="https://..." {...field} /></FormControl><FormMessage /></FormItem>
-                          )} />
-                        </div>
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                          <FormField control={form.control} name="websiteUrl" render={({ field }) => (
-                            <FormItem><FormLabel>Website</FormLabel><FormControl><Input placeholder="https://..." {...field} /></FormControl><FormMessage /></FormItem>
-                          )} />
-                          <FormField control={form.control} name="twitterUrl" render={({ field }) => (
-                            <FormItem><FormLabel>Twitter</FormLabel><FormControl><Input placeholder="https://x.com/..." {...field} /></FormControl><FormMessage /></FormItem>
-                          )} />
-                          <FormField control={form.control} name="telegramUrl" render={({ field }) => (
-                            <FormItem><FormLabel>Telegram</FormLabel><FormControl><Input placeholder="https://t.me/..." {...field} /></FormControl><FormMessage /></FormItem>
-                          )} />
                         </div>
                       </div>
 
