@@ -120,15 +120,28 @@ export default function Landing() {
                     START EARNING <Coins className="ml-2 w-5 h-5" />
                   </Button>
                 </Link>
-                <Button 
-                  size="lg" 
-                  variant="outline" 
-                  className="h-14 px-8 text-lg border-white/10 hover:bg-white/5 font-black uppercase"
-                  onClick={() => connect('advertiser')}
-                  data-testid="button-launch-project"
-                >
-                  Launch Project <Rocket className="ml-2 w-5 h-5" />
-                </Button>
+                {isConnected ? (
+                  <Link href="/dashboard?create=true">
+                    <Button 
+                      size="lg" 
+                      variant="outline" 
+                      className="h-14 px-8 text-lg border-white/10 hover:bg-white/5 font-black uppercase"
+                      data-testid="button-launch-project"
+                    >
+                      Launch Project <Rocket className="ml-2 w-5 h-5" />
+                    </Button>
+                  </Link>
+                ) : (
+                  <Button 
+                    size="lg" 
+                    variant="outline" 
+                    className="h-14 px-8 text-lg border-white/10 hover:bg-white/5 font-black uppercase"
+                    onClick={() => connect('advertiser')}
+                    data-testid="button-launch-project"
+                  >
+                    Launch Project <Rocket className="ml-2 w-5 h-5" />
+                  </Button>
+                )}
               </div>
 
               {/* Global Stats - Restored */}

@@ -31,7 +31,7 @@ export default function AdminDashboard() {
   const updateSettingsMutation = useMutation({
     mutationFn: async (newSettings: any) => {
       const res = await fetch("/api/admin/settings", {
-        method: 'PATCH',
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(newSettings)
       });

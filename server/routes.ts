@@ -55,6 +55,24 @@ export async function registerRoutes(
   });
 
   // Remaining specialized routes (Verification/Admin)
+  app.get("/api/admin/settings", async (req, res) => {
+    try {
+      const settings = await storage.getSystemSettings();
+      res.json(settings);
+    } catch (err) {
+      res.status(500).json({ message: "Error fetching settings" });
+    }
+  });
+
+  app.post("/api/admin/settings", async (req, res) => {
+    try {
+      const settings = await storage.updateSystemSettings(req.body);
+      res.json(settings);
+    } catch (err) {
+      res.status(500).json({ message: "Error updating settings" });
+    }
+  });
+
   app.post(api.executions.verify.path, async (req, res) => {
     // Keep verification logic here for now or move to separate service
     try {

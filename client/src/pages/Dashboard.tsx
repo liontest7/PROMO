@@ -4,7 +4,7 @@ import { Navigation } from "@/components/Navigation";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { api } from "@shared/routes";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { type User as UserType } from "@shared/schema";
 import { IdentitySync } from "@/components/dashboard/IdentitySync";
@@ -12,10 +12,22 @@ import { ProfileHeader } from "@/components/dashboard/ProfileHeader";
 import { TokenPortfolios } from "@/components/dashboard/TokenPortfolios";
 import { VerificationLogs } from "@/components/dashboard/VerificationLogs";
 import { EcosystemContribution } from "@/components/dashboard/EcosystemContribution";
+import { CreateCampaignDialog } from "@/components/CreateCampaignDialog";
+import { Button } from "@/components/ui/button";
+import { Plus } from "lucide-react";
 
 export default function Dashboard() {
   const { walletAddress } = useWallet();
   const { data: stats, isLoading: statsLoading } = useUserStats(walletAddress);
+  const [isCreateOpen, setIsCreateOpen] = useState(false);
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('create') === 'true') {
+      setIsCreateOpen(true);
+      window.history.replaceState({}, '', window.location.pathname);
+    }
+  }, []);
   
   const { data: user, isLoading: userLoading } = useQuery<UserType>({
     queryKey: ["/api/users", walletAddress],
@@ -85,6 +97,12 @@ export default function Dashboard() {
           rankChange={rankChange as "up" | "stable"}
         />
 
+        <div className="flex justify-end">
+          <Button onClick={() => setIsCreateOpen(true)} className="bg-primary text-primary-foreground font-black uppercase tracking-widest">
+            <Plus className="mr-2 h-4 w-4" /> Launch Campaign
+          </Button>
+        </div>
+
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2 space-y-8">
             <TokenPortfolios tokenBalances={stats?.tokenBalances || []} />
@@ -101,6 +119,7 @@ export default function Dashboard() {
           </div>
         </div>
       </main>
+      <CreateCampaignDialog open={isCreateOpen} onOpenChange={setIsCreateOpen} />
     </div>
   );
 }
