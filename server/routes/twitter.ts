@@ -2,82 +2,59 @@ import { Express } from "express";
 import { Issuer, generators } from "openid-client";
 import fetch from "node-fetch";
 import { storage } from "../storage";
-import OAuth from "oauth";
 
-// Twitter OAuth 1.0a for Task Verification (Read/Write)
-const twitterOAuth1 = new OAuth.OAuth(
-  "https://api.twitter.com/oauth/request_token",
-  "https://api.twitter.com/oauth/access_token",
-  process.env.TWITTER_CLIENT_ID!, // Using Client ID as Consumer Key for OAuth 1.0a
-  process.env.TWITTER_CLIENT_SECRET!, // Using Client Secret as Consumer Secret
-  "1.0A",
-  null,
-  "HMAC-SHA1"
-);
+const TWITTER_REDIRECT_URI = process.env.TWITTER_REDIRECT_URI!;
+// חייב להיות זהה 100% למה שמוגדר ב-X Developer Portal
 
 export async function setupTwitterRoutes(app: Express) {
-    // OAuth 2.0 Issuer for Identity (Web App)
-    const twitterIssuer = new Issuer({
-      issuer: "https://twitter.com",
-      authorization_endpoint: "https://twitter.com/i/oauth2/authorize",
-      token_endpoint: "https://api.twitter.com/2/oauth2/token",
-    });
+  const twitterIssuer = new Issuer({
+    issuer: "https://twitter.com",
+    authorization_endpoint: "https://twitter.com/i/oauth2/authorize",
+    token_endpoint: "https://api.twitter.com/2/oauth2/token",
+  });
 
-    const getTwitterClient = (req: any) => {
-      // Priority: 1. Secret 2. Request Host 3. Replit Domain fallback
-      const host = process.env.TWITTER_REDIRECT_URI 
-        ? new URL(process.env.TWITTER_REDIRECT_URI).host 
-        : (req.get('host') || process.env.REPLIT_DEV_DOMAIN);
-      
-      const redirectUri = `https://${host}/api/auth/twitter`;
-      console.log(`[Twitter OAuth] Using Redirect URI: ${redirectUri}`);
-
-      return new twitterIssuer.Client({
-        client_id: process.env.TWITTER_CLIENT_ID!,
-        client_secret: process.env.TWITTER_CLIENT_SECRET!,
-        redirect_uris: [redirectUri],
-        response_types: ["code"],
-        id_token_signed_response_alg: "HS256",
-      });
-    };
+  const twitterClient = new twitterIssuer.Client({
+    client_id: process.env.TWITTER_CLIENT_ID!,
+    redirect_uris: [TWITTER_REDIRECT_URI],
+    response_types: ["code"],
+    token_endpoint_auth_method: "none", // 🔴 חובה עם PKCE
+  });
 
   app.get("/api/auth/twitter", async (req, res) => {
     const { code, state, walletAddress } = req.query;
-    const client = getTwitterClient(req);
 
-    // Phase 2: Callback Handling
+    /* ================= CALLBACK ================= */
     if (code) {
       const session = (req.session as any).twitterAuth;
-      if (!session) {
-        console.error("[Twitter OAuth] Session missing during callback");
-        return res.status(400).send("Authentication session expired. Please try again.");
+      if (!session || session.state !== state) {
+        return res.status(400).send("Invalid or expired session");
       }
 
       try {
-        const tokenSet = await client.callback(
-          client.metadata.redirect_uris![0],
-          { code: code as string, state: (state as string) || session.state },
-          { 
-            code_verifier: session.code_verifier,
-            state: session.state,
-            response_type: 'code'
-          }
-        ).catch(err => {
-          console.error("[Twitter OAuth] Callback Error Details:", err.response?.body || err.message);
-          throw err;
-        });
+        const tokenSet = await twitterClient.callback(
+          TWITTER_REDIRECT_URI,
+          { code: code as string, state: state as string },
+          { code_verifier: session.code_verifier },
+        );
 
         const accessToken = tokenSet.access_token;
-        if (!accessToken) throw new Error("No access token");
+        if (!accessToken) throw new Error("No access token returned");
 
-        const userRes = await fetch("https://api.twitter.com/2/users/me?user.fields=profile_image_url,username", {
-          headers: { Authorization: `Bearer ${accessToken}` },
-        });
+        const userRes = await fetch(
+          "https://api.twitter.com/2/users/me?user.fields=profile_image_url,username",
+          {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          },
+        );
 
         const userJson: any = await userRes.json();
         const twitterUser = userJson.data;
 
-        if (!twitterUser) throw new Error("Failed to fetch X user");
+        if (!twitterUser) {
+          throw new Error("Failed to fetch Twitter user");
+        }
 
         const user = await storage.getUserByWallet(session.walletAddress);
         if (user) {
@@ -88,21 +65,27 @@ export async function setupTwitterRoutes(app: Express) {
         }
 
         delete (req.session as any).twitterAuth;
+
         return res.send(`
           <script>
-            if (window.opener) { window.opener.location.reload(); window.close(); }
-            else { window.location.href = "/dashboard"; }
+            if (window.opener) {
+              window.opener.location.reload();
+              window.close();
+            } else {
+              window.location.href = "/dashboard";
+            }
           </script>
         `);
-
       } catch (err) {
-        console.error("Twitter OAuth Error:", err);
+        console.error("[Twitter OAuth2 Error]", err);
         return res.status(500).send("Twitter authentication failed");
       }
     }
 
-    // Phase 1: Initiation
-    if (!walletAddress) return res.status(400).send("Wallet address required");
+    /* ================= START LOGIN ================= */
+    if (!walletAddress) {
+      return res.status(400).send("Wallet address required");
+    }
 
     const stateValue = generators.state();
     const codeVerifier = generators.codeVerifier();
@@ -114,13 +97,13 @@ export async function setupTwitterRoutes(app: Express) {
       walletAddress,
     };
 
-    const authUrl = client.authorizationUrl({
-      scope: "tweet.read users.read offline.access",
+    const authUrl = twitterClient.authorizationUrl({
+      scope: "tweet.read users.read",
       state: stateValue,
       code_challenge: codeChallenge,
       code_challenge_method: "S256",
     });
 
-    res.redirect(authUrl);
+    return res.redirect(authUrl);
   });
 }
