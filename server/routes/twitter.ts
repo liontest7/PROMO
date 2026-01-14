@@ -34,9 +34,10 @@ export async function setupTwitterRoutes(app: Express) {
 
     return new twitterIssuer.Client({
       client_id: process.env.TWITTER_CLIENT_ID!,
+      client_secret: process.env.TWITTER_CLIENT_SECRET!,
       redirect_uris: [redirectUri],
       response_types: ["code"],
-      token_endpoint_auth_method: "none",
+      token_endpoint_auth_method: "client_secret_post",
     });
   };
 
