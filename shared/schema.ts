@@ -15,6 +15,7 @@ export const systemSettings = pgTable("system_settings", {
   rewardsPercent: integer("rewards_percent").default(40).notNull(),
   systemPercent: integer("system_percent").default(10).notNull(),
   creationFee: integer("creation_fee").default(10000).notNull(),
+  weeklyRewardsPool: numeric("weekly_rewards_pool").default("0").notNull(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
