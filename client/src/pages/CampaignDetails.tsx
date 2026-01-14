@@ -461,11 +461,38 @@ export default function CampaignDetails() {
 
             <section className="space-y-6 pt-4 border-t border-white/5">
               <div className="flex items-center justify-between">
-                <h2 className="text-xl font-display font-black text-white tracking-tight uppercase">Recent Rewards</h2>
-                <Badge variant="secondary" className="gap-2 px-4 py-1.5 bg-white/5 text-white border-white/10 rounded-lg text-xs font-black">
-                  <CheckCircle className="w-4 h-4 text-primary" /> {participants?.filter(p => p.status === 'paid').length || 0} PAID
-                </Badge>
+                <div className="space-y-1">
+                  <h2 className="text-xl font-display font-black text-white tracking-tight uppercase">Blockchain Proofs</h2>
+                  <p className="text-xs text-white/40 font-bold uppercase tracking-widest">Live verification from Solana</p>
+                </div>
+                <div className="flex gap-2">
+                  <Badge variant="outline" className="bg-primary/5 border-primary/20 text-primary font-black px-4 py-1.5 rounded-lg text-xs">
+                    ESCROW: {campaign.totalBudget} ${campaign.tokenName}
+                  </Badge>
+                  <Badge variant="secondary" className="gap-2 px-4 py-1.5 bg-white/5 text-white border-white/10 rounded-lg text-xs font-black">
+                    <CheckCircle className="w-4 h-4 text-primary" /> {participants?.filter(p => p.status === 'paid').length || 0} PAID
+                  </Badge>
+                </div>
               </div>
+
+              {campaign.fundingTxSignature && (
+                <div className="bg-primary/5 border border-primary/10 p-4 rounded-2xl flex items-center justify-between group hover:bg-primary/10 transition-all">
+                  <div className="flex items-center gap-4">
+                    <div className="w-10 h-10 rounded-xl bg-primary/20 flex items-center justify-center border border-primary/20">
+                      <ShieldCheck className="w-5 h-5 text-primary" />
+                    </div>
+                    <div>
+                      <p className="text-sm font-black text-white uppercase tracking-tight">Project Funded</p>
+                      <p className="text-[10px] text-white/40 font-bold uppercase tracking-widest">The reward tokens are secured in Dropy's Escrow</p>
+                    </div>
+                  </div>
+                  <Button variant="ghost" size="sm" className="gap-2 text-primary hover:text-primary hover:bg-primary/10 font-black text-[10px] tracking-widest uppercase" asChild>
+                    <a href={`https://solscan.io/tx/${campaign.fundingTxSignature}`} target="_blank" rel="noreferrer">
+                      VERIFY ON SOLSCAN <ExternalLink className="w-3 h-3" />
+                    </a>
+                  </Button>
+                </div>
+              )}
               
               <div className="grid sm:grid-cols-2 gap-4">
                 {participantsLoading ? (
@@ -488,17 +515,29 @@ export default function CampaignDetails() {
                           </p>
                         </div>
                       </div>
-                      {p.status === 'paid' ? (
-                        <Button variant="ghost" size="icon" className="h-10 w-10 rounded-lg bg-primary/10 text-primary border border-primary/20" asChild>
-                          <a href={`https://solscan.io/tx/${p.transactionSignature || '#'}`} target="_blank" rel="noreferrer">
-                            <ExternalLink className="w-4 h-4" />
-                          </a>
-                        </Button>
-                      ) : (
-                        <Badge className="font-black px-2.5 py-1 bg-yellow-500/10 text-yellow-500 border border-yellow-500/20 uppercase tracking-widest text-[9px] rounded">
-                          VERIFIED
-                        </Badge>
-                      )}
+                      <div className="flex items-center gap-3">
+                        {p.status === 'paid' ? (
+                          <>
+                            <Badge variant="outline" className="bg-green-500/10 border-green-500/20 text-green-400 font-black text-[10px] px-2 py-0.5">
+                              PAID
+                            </Badge>
+                            {p.transactionSignature && (
+                              <a 
+                                href={`https://solscan.io/tx/${p.transactionSignature}`} 
+                                target="_blank" 
+                                rel="noreferrer"
+                                className="text-white/20 hover:text-primary transition-colors"
+                              >
+                                <ExternalLink className="w-3.5 h-3.5" />
+                              </a>
+                            )}
+                          </>
+                        ) : (
+                          <Badge className="font-black px-2.5 py-1 bg-yellow-500/10 text-yellow-500 border border-yellow-500/20 uppercase tracking-widest text-[9px] rounded">
+                            VERIFIED
+                          </Badge>
+                        )}
+                      </div>
                     </div>
                   ))
                 ) : (
