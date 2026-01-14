@@ -18,7 +18,7 @@ export async function setupTwitterRoutes(app: Express) {
     client_secret: process.env.TWITTER_CLIENT_SECRET!,
     redirect_uris: [TWITTER_REDIRECT_URI],
     response_types: ["code"],
-    token_endpoint_auth_method: "client_secret_post",
+    token_endpoint_auth_method: "client_secret_basic",
   });
 
   app.get("/api/auth/twitter", async (req, res) => {
