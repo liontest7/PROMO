@@ -101,4 +101,9 @@ export async function setupTwitterRoutes(app: Express) {
       scope: "tweet.read users.read",
       state: stateValue,
       code_challenge: codeChallenge,
-      code_challenge_method: "S256
+      code_challenge_method: "S256",
+    });
+
+    res.redirect(authUrl);
+  });
+}
