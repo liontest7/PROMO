@@ -16,29 +16,29 @@ const twitterOAuth1 = new OAuth.OAuth(
 );
 
 export async function setupTwitterRoutes(app: Express) {
-  // OAuth 2.0 Issuer for Identity (Native App - Read Only)
-  const twitterIssuer = new Issuer({
-    issuer: "https://twitter.com",
-    authorization_endpoint: "https://twitter.com/i/oauth2/authorize",
-    token_endpoint: "https://api.twitter.com/2/oauth2/token",
-  });
-
-  const getTwitterClient = (req: any) => {
-    // Priority: 1. Secret 2. Request Host 3. Replit Domain fallback
-    const host = process.env.TWITTER_REDIRECT_URI 
-      ? new URL(process.env.TWITTER_REDIRECT_URI).host 
-      : (req.get('host') || process.env.REPLIT_DEV_DOMAIN);
-    
-    const redirectUri = `https://${host}/api/auth/twitter`;
-    console.log(`[Twitter OAuth] Using Redirect URI: ${redirectUri}`);
-
-    return new twitterIssuer.Client({
-      client_id: process.env.TWITTER_CLIENT_ID!,
-      client_secret: process.env.TWITTER_CLIENT_SECRET!,
-      redirect_uris: [redirectUri],
-      response_types: ["code"],
+    // OAuth 2.0 Issuer for Identity (Web App)
+    const twitterIssuer = new Issuer({
+      issuer: "https://twitter.com",
+      authorization_endpoint: "https://twitter.com/i/oauth2/authorize",
+      token_endpoint: "https://api.twitter.com/2/oauth2/token",
     });
-  };
+
+    const getTwitterClient = (req: any) => {
+      // Priority: 1. Secret 2. Request Host 3. Replit Domain fallback
+      const host = process.env.TWITTER_REDIRECT_URI 
+        ? new URL(process.env.TWITTER_REDIRECT_URI).host 
+        : (req.get('host') || process.env.REPLIT_DEV_DOMAIN);
+      
+      const redirectUri = `https://${host}/api/auth/twitter`;
+      console.log(`[Twitter OAuth] Using Redirect URI: ${redirectUri}`);
+
+      return new twitterIssuer.Client({
+        client_id: process.env.TWITTER_CLIENT_ID!,
+        client_secret: process.env.TWITTER_CLIENT_SECRET!,
+        redirect_uris: [redirectUri],
+        response_types: ["code"],
+      });
+    };
 
   app.get("/api/auth/twitter", async (req, res) => {
     const { code, state, walletAddress } = req.query;
@@ -58,7 +58,8 @@ export async function setupTwitterRoutes(app: Express) {
           { code: code as string, state: (state as string) || session.state },
           { 
             code_verifier: session.code_verifier,
-            state: session.state
+            state: session.state,
+            response_type: 'code'
           }
         ).catch(err => {
           console.error("[Twitter OAuth] Callback Error Details:", err.response?.body || err.message);
