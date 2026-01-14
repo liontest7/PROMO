@@ -1,5 +1,6 @@
-import { Connection } from "@solana/web3.js";
+import { Connection, Keypair, PublicKey, Transaction, SystemProgram, sendAndConfirmTransaction } from "@solana/web3.js";
 import { CONFIG } from "@shared/config";
+import { getOrCreateAssociatedTokenAccount, createTransferInstruction, TOKEN_PROGRAM_ID } from "@solana/spl-token";
 import memoize from "memoizee";
 
 const getSolanaConnectionRaw = async () => {
@@ -20,3 +21,54 @@ export const getSolanaConnection = memoize(getSolanaConnectionRaw, {
   promise: true, 
   maxAge: 60000 // Cache connection for 1 minute
 });
+
+export async function transferTokens(
+  toWallet: string,
+  amount: number,
+  tokenAddress: string,
+  fromKeypair: Keypair
+): Promise<string> {
+  const connection = await getSolanaConnection();
+  const toPublicKey = new PublicKey(toWallet);
+  const mintPublicKey = new PublicKey(tokenAddress);
+
+  if (tokenAddress === "So11111111111111111111111111111111111111112") {
+    // Native SOL transfer
+    const transaction = new Transaction().add(
+      SystemProgram.transfer({
+        fromPubkey: fromKeypair.publicKey,
+        toPubkey: toPublicKey,
+        lamports: amount * 1e9,
+      })
+    );
+    return await sendAndConfirmTransaction(connection, transaction, [fromKeypair]);
+  } else {
+    // SPL Token transfer
+    const fromTokenAccount = await getOrCreateAssociatedTokenAccount(
+      connection,
+      fromKeypair,
+      mintPublicKey,
+      fromKeypair.publicKey
+    );
+
+    const toTokenAccount = await getOrCreateAssociatedTokenAccount(
+      connection,
+      fromKeypair,
+      mintPublicKey,
+      toPublicKey
+    );
+
+    const transaction = new Transaction().add(
+      createTransferInstruction(
+        fromTokenAccount.address,
+        toTokenAccount.address,
+        fromKeypair.publicKey,
+        amount * Math.pow(10, 6), // Assuming 6 decimals for common SPL tokens, should be dynamic in prod
+        [],
+        TOKEN_PROGRAM_ID
+      )
+    );
+
+    return await sendAndConfirmTransaction(connection, transaction, [fromKeypair]);
+  }
+}
