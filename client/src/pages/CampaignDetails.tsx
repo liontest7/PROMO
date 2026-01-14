@@ -544,48 +544,48 @@ export default function CampaignDetails() {
               </CardHeader>
               <CardContent className="p-6 space-y-5">
                 {initialMC && currentMC && (
-                  <div className="p-4 rounded-2xl bg-white/[0.03] border border-white/5 space-y-3">
+                  <div className="p-5 rounded-2xl bg-white/[0.03] border border-white/5 space-y-4">
                     <div className="flex justify-between items-center">
-                      <span className="text-[10px] font-black text-white/40 uppercase tracking-widest">Performance</span>
+                      <span className="text-xs font-black text-white/40 uppercase tracking-widest">Performance</span>
                       <div className={cn(
-                        "flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-black",
+                        "flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-black",
                         mcChange! >= 0 ? "text-primary bg-primary/10" : "text-red-400 bg-red-400/10"
                       )}>
-                        {mcChange! >= 0 ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />}
+                        {mcChange! >= 0 ? <TrendingUp className="w-3.5 h-3.5" /> : <TrendingDown className="w-3.5 h-3.5" />}
                         {mcChange! >= 0 ? "+" : ""}{mcChange?.toFixed(1)}%
                       </div>
                     </div>
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-2 gap-6">
                       <div>
-                        <p className="text-[9px] font-black text-white/30 uppercase tracking-tighter mb-1">MC at Launch</p>
-                        <p className="text-sm font-black text-white">{formatMC(initialMC)}</p>
+                        <p className="text-[11px] font-black text-white/30 uppercase tracking-tight mb-1.5">MC at Launch</p>
+                        <p className="text-base font-black text-white">{formatMC(initialMC)}</p>
                       </div>
                       <div>
-                        <p className="text-[9px] font-black text-white/30 uppercase tracking-tighter mb-1">Current MC</p>
-                        <p className="text-sm font-black text-primary">{formatMC(currentMC)}</p>
+                        <p className="text-[11px] font-black text-white/30 uppercase tracking-tight mb-1.5">Current Real MC</p>
+                        <p className="text-base font-black text-primary">{formatMC(currentMC)}</p>
                       </div>
                     </div>
                   </div>
                 )}
-                <div className="space-y-4">
+                <div className="space-y-5">
                   <div className="flex justify-between items-center">
-                    <span className="text-white/40 text-xs font-black uppercase tracking-wider">Network</span>
-                    <span className="font-black text-white text-sm flex items-center gap-2">
+                    <span className="text-white/40 text-sm font-black uppercase tracking-wider">Network</span>
+                    <span className="font-black text-white text-base flex items-center gap-2">
                       <img src="https://raw.githubusercontent.com/solana-labs/token-list/main/assets/mainnet/So11111111111111111111111111111111111111112/logo.png" alt="Solana" className="w-4 h-4" />
                       SOLANA
                     </span>
                   </div>
                   <div className="flex justify-between items-center">
-                    <span className="text-white/40 text-xs font-black uppercase tracking-wider">Participants</span>
-                    <span className="font-black text-white text-base">{participants?.length || 0}</span>
+                    <span className="text-white/40 text-sm font-black uppercase tracking-wider">Participants</span>
+                    <span className="font-black text-white text-lg">{participants?.length || 0}</span>
                   </div>
                   <div className="flex justify-between items-center">
-                    <span className="text-white/40 text-xs font-black uppercase tracking-wider">Created</span>
-                    <span className="font-black text-white text-xs">{formatDistanceToNow(new Date(campaign.createdAt || Date.now()), { addSuffix: true })}</span>
+                    <span className="text-white/40 text-sm font-black uppercase tracking-wider">Created</span>
+                    <span className="font-black text-white text-sm">{formatDistanceToNow(new Date(campaign.createdAt || Date.now()), { addSuffix: true })}</span>
                   </div>
                 </div>
 
-                <div className="pt-5 border-t border-white/5 space-y-3">
+                <div className="pt-6 border-t border-white/5 space-y-3">
                   <Button variant="outline" className="w-full gap-2 border-white/10 bg-white/5 hover:bg-white/10 text-white font-black h-12 rounded-xl text-xs uppercase transition-all" asChild>
                     <a href={campaign.websiteUrl || "#"} target="_blank" rel="noreferrer">
                       Website <Globe className="w-4 h-4" />
@@ -607,41 +607,41 @@ export default function CampaignDetails() {
                   <ShieldCheck className="w-4 h-4 text-primary" />
                 </CardTitle>
               </CardHeader>
-              <CardContent className="p-5 space-y-4">
-                <div className="space-y-4">
-                  <div className="flex justify-between items-center py-2 border-b border-white/5">
-                    <span className="text-white/40 text-xs font-black uppercase tracking-wider">Escrow Wallet</span>
+              <CardContent className="p-5 space-y-5">
+                <div className="space-y-5">
+                  <div className="flex justify-between items-center py-2.5 border-b border-white/5">
+                    <span className="text-white/40 text-sm font-black uppercase tracking-wider">Escrow Wallet</span>
                     <a 
                       href={`https://solscan.io/account/${campaign.escrowWallet || campaign.tokenAddress}`} 
                       target="_blank" 
                       rel="noreferrer"
-                      className="font-mono text-sm font-black text-primary hover:underline flex items-center gap-1.5"
+                      className="font-mono text-base font-black text-primary hover:underline flex items-center gap-2"
                     >
                       {campaign.escrowWallet ? `${campaign.escrowWallet.substring(0, 4)}...${campaign.escrowWallet.substring(campaign.escrowWallet.length - 4)}` : "Generating..."}
-                      <ExternalLink className="w-2.5 h-2.5" />
+                      <ExternalLink className="w-3.5 h-3.5" />
                     </a>
                   </div>
-                  <div className="flex justify-between items-center py-2 border-b border-white/5">
-                    <span className="text-white/40 text-xs font-black uppercase tracking-wider">Locked Rewards</span>
-                    <span className="font-black text-white text-sm uppercase">{Number(campaign.totalBudget).toLocaleString()} ${campaign.tokenName}</span>
+                  <div className="flex justify-between items-center py-2.5 border-b border-white/5">
+                    <span className="text-white/40 text-sm font-black uppercase tracking-wider">Locked Rewards</span>
+                    <span className="font-black text-white text-base uppercase">{Number(campaign.totalBudget).toLocaleString()} ${campaign.tokenName}</span>
                   </div>
-                  <div className="flex justify-between items-center py-2 border-b border-white/5">
-                    <span className="text-white/40 text-xs font-black uppercase tracking-wider">Gas Reserve</span>
-                    <span className="font-black text-primary text-sm uppercase">{campaign.gasBudgetSol || "0.00"} SOL</span>
+                  <div className="flex justify-between items-center py-2.5 border-b border-white/5">
+                    <span className="text-white/40 text-sm font-black uppercase tracking-wider">Gas Reserve</span>
+                    <span className="font-black text-primary text-base uppercase">{campaign.gasBudgetSol || "0.00"} SOL</span>
                   </div>
-                  <div className="flex justify-between items-center py-2">
-                    <span className="text-white/40 text-xs font-black uppercase tracking-wider">Contract Status</span>
+                  <div className="flex justify-between items-center py-2.5">
+                    <span className="text-white/40 text-sm font-black uppercase tracking-wider">Contract Status</span>
                     <Badge variant="outline" className={cn(
-                      "text-[10px] font-black h-6 px-3 uppercase tracking-widest",
+                      "text-xs font-black h-7 px-4 uppercase tracking-widest",
                       campaign.creationFeePaid ? "border-green-500/20 bg-green-500/10 text-green-400" : "border-yellow-500/20 bg-yellow-500/10 text-yellow-500"
                     )}>
                       {campaign.creationFeePaid ? "VERIFIED" : "PENDING FUNDING"}
                     </Badge>
                   </div>
                   {campaign.fundingTxSignature && (
-                    <Button variant="ghost" className="w-full h-10 text-[10px] font-black text-primary hover:bg-primary/5 gap-2 uppercase tracking-widest" asChild>
+                    <Button variant="ghost" className="w-full h-12 text-xs font-black text-primary hover:bg-primary/5 gap-2.5 uppercase tracking-widest" asChild>
                       <a href={`https://solscan.io/tx/${campaign.fundingTxSignature}`} target="_blank" rel="noreferrer">
-                        View Funding Transaction <ExternalLink className="w-3.5 h-3.5" />
+                        View Funding Transaction <ExternalLink className="w-4 h-4" />
                       </a>
                     </Button>
                   )}
