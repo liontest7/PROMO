@@ -13,6 +13,7 @@ import { Label } from "@/components/ui/label";
 import { useWallet } from "@/hooks/use-wallet";
 import { PLATFORM_CONFIG } from "@shared/config";
 import { ShieldCheck, X } from "lucide-react";
+import { queryClient } from "@/lib/queryClient";
 
 export function TermsModal() {
   const { isConnected, walletAddress, disconnect } = useWallet();
@@ -47,11 +48,24 @@ export function TermsModal() {
     }
   };
 
-  const handleAccept = () => {
+  const handleAccept = async () => {
     if (hasReadToBottom && hasAccepted && walletAddress) {
-      const storageKey = `dropy_terms_accepted_${walletAddress}`;
-      localStorage.setItem(storageKey, "true");
-      setIsOpen(false);
+      try {
+        const res = await fetch("/api/user/accept-terms", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ walletAddress }),
+        });
+        if (res.ok) {
+          const storageKey = `dropy_terms_accepted_${walletAddress}`;
+          localStorage.setItem(storageKey, "true");
+          setIsOpen(false);
+          // Invalidate global stats to update Community Members count immediately
+          queryClient.invalidateQueries({ queryKey: ["/api/stats/global"] });
+        }
+      } catch (err) {
+        console.error("Error accepting terms:", err);
+      }
     }
   };
 

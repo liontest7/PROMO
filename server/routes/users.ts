@@ -3,6 +3,9 @@ import { storage } from "../storage";
 import { api } from "@shared/routes";
 import { ADMIN_CONFIG } from "@shared/config";
 import { z } from "zod";
+import { db } from "../db";
+import { users } from "@shared/schema";
+import { eq } from "drizzle-orm";
 
 export function setupUserRoutes(app: Express) {
   app.post('/api/users/auth', async (req, res) => {
