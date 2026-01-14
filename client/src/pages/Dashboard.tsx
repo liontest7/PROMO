@@ -21,7 +21,8 @@ export default function Dashboard() {
     queryKey: ["/api/users", walletAddress],
     enabled: !!walletAddress,
     retry: false,
-    staleTime: 30000,
+    staleTime: 0,
+    refetchInterval: 5000,
   });
 
   const { data: executions } = useQuery({

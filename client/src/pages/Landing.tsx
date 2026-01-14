@@ -64,7 +64,8 @@ export default function Landing() {
       if (!res.ok) return null;
       return res.json();
     },
-    refetchInterval: 30000, // Refresh every 30 seconds
+    refetchInterval: 5000, // Refresh every 5 seconds for near real-time updates
+    staleTime: 0, // Always consider data stale to ensure fresh fetches
   });
 
   return (

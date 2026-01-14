@@ -40,6 +40,7 @@ export async function registerRoutes(
         }
       });
 
+      res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
       res.json({
         activeCampaigns,
         totalUsers,
