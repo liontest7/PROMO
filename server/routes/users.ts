@@ -72,7 +72,8 @@ export function setupUserRoutes(app: Express) {
       tokenBalances: Object.values(tokenBalances),
       tasksCompleted: completed,
       reputation: user.reputationScore,
-      balance: user.balance
+      balance: user.balance,
+      totalUsers: (await storage.getAllUsers()).length
     });
   });
 
@@ -89,8 +90,8 @@ export function setupUserRoutes(app: Express) {
       }
 
       await storage.updateUserSocials(user.id, {
-        twitterHandle: null,
-        profileImageUrl: null,
+        twitterHandle: "",
+        profileImageUrl: "",
       });
 
       res.json({ success: true, message: "Account unlinked successfully" });

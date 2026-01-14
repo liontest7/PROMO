@@ -22,6 +22,37 @@ export async function registerRoutes(
   setupUserRoutes(app);
   setupCampaignRoutes(app);
 
+  app.get("/api/stats/global", async (req, res) => {
+    try {
+      const allUsers = await storage.getAllUsers();
+      const allCampaigns = await storage.getAllCampaigns();
+      const allExecutions = await storage.getAllExecutions();
+      
+      const activeCampaigns = allCampaigns.filter(c => c.status === 'active').length;
+      const totalUsers = allUsers.length;
+      const totalVerifiedProjects = Array.from(new Set(allCampaigns.map(c => c.creatorId))).length;
+      
+      // Calculate total paid rewards
+      let totalPaid = 0;
+      allExecutions.forEach(e => {
+        if (e.status === 'paid' && e.action) {
+          totalPaid += parseFloat(e.action.rewardAmount) || 0;
+        }
+      });
+
+      res.json({
+        activeCampaigns,
+        totalUsers,
+        totalVerifiedProjects,
+        totalPaid: totalPaid.toLocaleString(),
+        totalBurned: "50,000" // Hardcoded for now based on config or fetch from actual burn logic
+      });
+    } catch (err) {
+      console.error("Global stats error:", err);
+      res.status(500).json({ message: "Error fetching global stats" });
+    }
+  });
+
   // Remaining specialized routes (Verification/Admin)
   app.post(api.executions.verify.path, async (req, res) => {
     // Keep verification logic here for now or move to separate service
