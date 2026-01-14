@@ -40,6 +40,8 @@ export interface IStorage {
   getExecutionsByUser(userId: number): Promise<Execution[]>;
   updateExecutionStatus(id: number, status: "pending" | "verified" | "paid" | "rejected", txSignature?: string): Promise<Execution>;
   updateCampaignRemainingBudget(id: number, remainingBudget: string): Promise<Campaign>;
+  getPendingRewards(userId: number): Promise<{ campaignId: number; amount: string; tokenName: string; tokenAddress: string }[]>;
+  claimRewards(userId: number, campaignIds: number[]): Promise<void>;
 
   // Holder State
   getHolderState(userId: number, campaignId: number): Promise<HolderState | undefined>;
@@ -341,6 +343,42 @@ export class DatabaseStorage implements IStorage {
       .where(eq(campaigns.id, id))
       .returning();
     return campaign;
+  }
+
+  async getPendingRewards(userId: number): Promise<{ campaignId: number; amount: string; tokenName: string; tokenAddress: string }[]> {
+    const pending = await db.select({
+      campaignId: executions.campaignId,
+      rewardAmount: actions.rewardAmount,
+      tokenName: campaigns.tokenName,
+      tokenAddress: campaigns.tokenAddress,
+    })
+    .from(executions)
+    .innerJoin(actions, eq(executions.actionId, actions.id))
+    .innerJoin(campaigns, eq(executions.campaignId, campaigns.id))
+    .where(sql`${executions.userId} = ${userId} AND ${executions.status} = 'verified'`);
+
+    // Group by campaign
+    const grouped = pending.reduce((acc, curr) => {
+      const key = curr.campaignId;
+      if (!acc[key]) {
+        acc[key] = { 
+          campaignId: curr.campaignId, 
+          amount: "0", 
+          tokenName: curr.tokenName, 
+          tokenAddress: curr.tokenAddress 
+        };
+      }
+      acc[key].amount = (parseFloat(acc[key].amount) + parseFloat(curr.rewardAmount)).toString();
+      return acc;
+    }, {} as Record<number, any>);
+
+    return Object.values(grouped);
+  }
+
+  async claimRewards(userId: number, campaignIds: number[]): Promise<void> {
+    await db.update(executions)
+      .set({ status: 'paid' })
+      .where(sql`${executions.userId} = ${userId} AND ${executions.status} = 'verified' AND ${executions.campaignId} IN (${sql.raw(campaignIds.join(','))})`);
   }
 
   async getHolderState(userId: number, campaignId: number): Promise<HolderState | undefined> {

@@ -82,6 +82,28 @@ export async function registerRoutes(
     }
   });
 
+  app.get("/api/rewards/pending", async (req, res) => {
+    try {
+      const user = await storage.getUserByWallet(req.query.wallet as string);
+      if (!user) return res.status(404).json({ message: "User not found" });
+      const pending = await storage.getPendingRewards(user.id);
+      res.json(pending);
+    } catch (err) {
+      res.status(500).json({ message: "Error fetching pending rewards" });
+    }
+  });
+
+  app.post("/api/rewards/claim", async (req, res) => {
+    try {
+      const user = await storage.getUserByWallet(req.body.wallet);
+      if (!user) return res.status(404).json({ message: "User not found" });
+      await storage.claimRewards(user.id, req.body.campaignIds);
+      res.json({ success: true });
+    } catch (err) {
+      res.status(500).json({ message: "Error claiming rewards" });
+    }
+  });
+
   app.post(api.executions.verify.path, async (req, res) => {
     // Keep verification logic here for now or move to separate service
     try {
