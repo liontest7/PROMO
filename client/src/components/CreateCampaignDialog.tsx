@@ -436,7 +436,44 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
                         )} />
                       </div>
 
-                      {/* Advanced Protection Section wrapped in Collapsible */}
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <FormField
+                          control={form.control}
+                          name="title"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Campaign Title</FormLabel>
+                              <FormControl><Input placeholder="e.g. Community Growth" {...field} /></FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        <FormField
+                          control={form.control}
+                          name="tokenName"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Token Symbol</FormLabel>
+                              <FormControl><Input placeholder="e.g. SOL" {...field} /></FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
+
+                      <FormField
+                        control={form.control}
+                        name="description"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Project Description</FormLabel>
+                            <FormControl><Textarea placeholder="Tell users about your project..." className="min-h-[100px]" {...field} /></FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+
+                      {/* Advanced Protection Section moved down */}
                       <Accordion type="single" collapsible className="w-full">
                         <AccordionItem value="advanced-protection" className="border-orange-500/20 px-4 rounded-xl bg-orange-500/5">
                           <AccordionTrigger className="hover:no-underline py-4">
@@ -493,9 +530,9 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
                                 name="multiDaySolDays"
                                 render={({ field }) => (
                                   <FormItem>
-                                    <FormLabel>For (Consecutive Days)</FormLabel>
+                                    <FormLabel>For X Consecutive Days</FormLabel>
                                     <FormControl>
-                                      <Input type="number" placeholder="e.g. 3" {...field} />
+                                      <Input type="number" placeholder="e.g. 7" {...field} />
                                     </FormControl>
                                     <FormMessage />
                                   </FormItem>
@@ -505,27 +542,6 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
                           </AccordionContent>
                         </AccordionItem>
                       </Accordion>
-
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <FormField
-                          control={form.control}
-                          name="title"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Campaign Title</FormLabel>
-                              <FormControl><Input placeholder="e.g. SolPunks Airdrop" {...field} /></FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                        <FormField control={form.control} name="tokenName" render={({ field }) => (
-                          <FormItem><FormLabel>Token Symbol</FormLabel><FormControl><Input placeholder="SOL" {...field} /></FormControl><FormMessage /></FormItem>
-                        )} />
-                      </div>
-
-                      <FormField control={form.control} name="description" render={({ field }) => (
-                        <FormItem><FormLabel>Project Description</FormLabel><FormControl><Textarea placeholder="Describe your project and campaign goals..." className="min-h-[100px]" {...field} /></FormControl><FormMessage /></FormItem>
-                      )} />
 
                       <div className="space-y-4">
                         <h3 className="text-sm font-semibold text-primary">Assets & Links</h3>
