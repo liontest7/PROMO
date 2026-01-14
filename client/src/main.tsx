@@ -2,11 +2,13 @@ import { createRoot } from "react-dom/client";
 import App from "./App";
 import "./index.css";
 
-// Final Buffer injection attempt from multiple potential sources
+// Check if Buffer is available globally from script tag or fallback
 if (typeof window !== "undefined") {
   window.global = window;
   // @ts-ignore
-  window.Buffer = window.Buffer || (window as any).buffer?.Buffer;
+  if (!window.Buffer && (window as any).buffer) {
+    (window as any).Buffer = (window as any).buffer.Buffer;
+  }
 }
 
 const rootElement = document.getElementById("root");

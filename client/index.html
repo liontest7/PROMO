@@ -5,16 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
     <title>Solana Airdrop & Rewards Platform</title>
     <script>
-      // Mock Buffer if cdn fails or before it loads
       window.global = window;
-      if (!window.Buffer) {
-        window.Buffer = { isBuffer: () => false };
-      }
     </script>
-    <script src="https://bundle.run/buffer@6.0.3"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/buffer/6.0.3/buffer.min.js"></script>
     <script>
-      if (typeof window !== 'undefined' && window.buffer) {
-        window.Buffer = window.buffer.Buffer;
+      if (typeof window !== 'undefined') {
+        window.Buffer = window.Buffer || (window.buffer && window.buffer.Buffer);
       }
     </script>
     <meta name="description" content="The premier platform for Solana airdrops and social rewards. Earn tokens by supporting your favorite projects." />

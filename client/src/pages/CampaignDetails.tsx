@@ -467,25 +467,58 @@ export default function CampaignDetails() {
               <div className="flex items-center justify-between">
                 <div className="space-y-1">
                   <h2 className="text-xl font-display font-black text-white tracking-tight uppercase">Blockchain Proofs</h2>
-                  <p className="text-xs text-white/40 font-bold uppercase tracking-widest">Live verification from Solana</p>
+                  <p className="text-sm text-white/40 font-bold uppercase tracking-widest">Live verification from Solana</p>
                 </div>
                 <div className="flex gap-2">
-                  <Badge variant="outline" className="bg-primary/5 border-primary/20 text-primary font-black px-4 py-1.5 rounded-lg text-xs">
+                  <Badge variant="outline" className="bg-primary/5 border-primary/20 text-primary font-black px-4 py-1.5 rounded-lg text-sm">
                     ESCROW: {campaign.totalBudget} ${campaign.tokenName}
                   </Badge>
-                  <Badge variant="secondary" className="gap-2 px-4 py-1.5 bg-white/5 text-white border-white/10 rounded-lg text-xs font-black">
+                  <Badge variant="secondary" className="gap-2 px-4 py-1.5 bg-white/5 text-white border-white/10 rounded-lg text-sm font-black">
                     <CheckCircle className="w-4 h-4 text-primary" /> {participants?.filter(p => p.status === 'paid').length || 0} PAID
                   </Badge>
                 </div>
               </div>
 
-              {campaign.fundingTxSignature && (
-                <div className="bg-primary/5 border border-primary/10 p-4 rounded-2xl flex items-center justify-between group hover:bg-primary/10 transition-all">
-                  <div className="flex items-center gap-4">
-                    <div className="w-10 h-10 rounded-xl bg-primary/20 flex items-center justify-center border border-primary/20">
-                      <ShieldCheck className="w-5 h-5 text-primary" />
-                    </div>
-                    <div>
+              <div className="grid gap-4 bg-white/5 p-8 rounded-2xl border border-white/5">
+                <div className="flex items-center justify-between py-2 border-b border-white/5">
+                  <span className="text-sm font-black text-white/40 uppercase tracking-widest">Escrow Wallet</span>
+                  <div className="flex items-center gap-2">
+                    <span className="text-base font-black text-green-400 font-mono">
+                      {campaign.escrowWallet ? `${campaign.escrowWallet.slice(0, 6)}...${campaign.escrowWallet.slice(-6)}` : "Generating..."}
+                    </span>
+                    {campaign.escrowWallet && (
+                      <a href={`https://solscan.io/account/${campaign.escrowWallet}`} target="_blank" rel="noreferrer" className="text-white/40 hover:text-white">
+                        <ExternalLink className="w-4 h-4" />
+                      </a>
+                    )}
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-between py-2 border-b border-white/5">
+                  <span className="text-sm font-black text-white/40 uppercase tracking-widest">Locked Rewards</span>
+                  <span className="text-base font-black text-white">
+                    {Number(campaign.totalBudget).toLocaleString()} ${campaign.tokenName}
+                  </span>
+                </div>
+
+                <div className="flex items-center justify-between py-2 border-b border-white/5">
+                  <span className="text-sm font-black text-white/40 uppercase tracking-widest">Gas Reserve</span>
+                  <span className="text-base font-black text-green-400">
+                    {campaign.gasBudgetSol || "0"} SOL
+                  </span>
+                </div>
+
+                <div className="flex items-center justify-between py-2">
+                  <span className="text-sm font-black text-white/40 uppercase tracking-widest">Contract Status</span>
+                  <Badge variant="outline" className={cn(
+                    "text-xs font-black uppercase tracking-widest px-4 py-1",
+                    campaign.fundingTxSignature ? "text-green-400 border-green-500/30 bg-green-500/10" : "text-yellow-400 border-yellow-500/30 bg-yellow-500/10"
+                  )}>
+                    {campaign.fundingTxSignature ? "FULLY FUNDED" : "PENDING FUNDING"}
+                  </Badge>
+                </div>
+              </div>
+            </section>
                       <p className="text-sm font-black text-white uppercase tracking-tight">Project Funded</p>
                       <p className="text-[10px] text-white/40 font-bold uppercase tracking-widest">The reward tokens are secured in Dropy's Escrow</p>
                     </div>
