@@ -1,0 +1,43 @@
+import { Express } from "express";
+import { storage } from "../storage";
+import { api } from "@shared/routes";
+import { insertCampaignSchema, insertActionSchema } from "@shared/schema";
+import { z } from "zod";
+
+export function setupCampaignRoutes(app: Express) {
+  app.get(api.campaigns.list.path, async (req, res) => {
+    const campaigns = await storage.getCampaigns();
+    res.json(campaigns);
+  });
+
+  app.get(api.campaigns.get.path, async (req, res) => {
+    const campaign = await storage.getCampaign(parseInt(req.params.id));
+    if (!campaign) return res.status(404).json({ message: "Campaign not found" });
+    res.json(campaign);
+  });
+
+  app.post(api.campaigns.create.path, async (req, res) => {
+    try {
+      const settings = await storage.getSystemSettings();
+      if (!settings.campaignsEnabled) {
+        return res.status(503).json({ message: "Campaign creation is temporarily disabled." });
+      }
+
+      const campaignData = insertCampaignSchema.parse(req.body);
+      const campaign = await storage.createCampaign(campaignData);
+
+      const actionsData = z.array(insertActionSchema.omit({ campaignId: true })).parse(req.body.actions);
+      for (const action of actionsData) {
+        await storage.createAction({ ...action, campaignId: campaign.id });
+      }
+
+      const result = await storage.getCampaign(campaign.id);
+      res.status(201).json(result);
+    } catch (err) {
+      if (err instanceof z.ZodError) {
+        return res.status(400).json({ message: err.errors[0].message });
+      }
+      res.status(500).json({ message: "Failed to create campaign" });
+    }
+  });
+}
