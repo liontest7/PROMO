@@ -268,6 +268,36 @@ export default function AdminDashboard() {
 
                 <div className="space-y-4 p-4 rounded-xl bg-white/5 border border-white/10">
                   <div className="flex items-center justify-between">
+                    <h3 className="font-bold uppercase text-[10px] tracking-widest text-primary">Weekly Rewards Pool</h3>
+                    <Badge variant="outline" className="text-primary border-primary/20 text-[10px] font-black uppercase">
+                      Active Balance
+                    </Badge>
+                  </div>
+                  <div className="flex items-center justify-between gap-4">
+                    <div className="flex-1 space-y-1">
+                      <p className="text-2xl font-display font-bold text-white">
+                        {parseFloat(settings?.weeklyRewardsPool || "0").toLocaleString()} <span className="text-xs text-muted-foreground">$DROPY</span>
+                      </p>
+                      <p className="text-[10px] text-muted-foreground uppercase tracking-wider">Accumulated from creation fees</p>
+                    </div>
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      className="h-8 border-primary/20 hover:bg-primary/10 text-primary font-bold text-[10px] uppercase tracking-widest"
+                      onClick={() => {
+                        toast({ 
+                          title: "Coming Soon", 
+                          description: "Weekly rewards distribution mechanism is being finalized on-chain.",
+                        });
+                      }}
+                    >
+                      Distribute
+                    </Button>
+                  </div>
+                </div>
+
+                <div className="space-y-4 p-4 rounded-xl bg-white/5 border border-white/10">
+                  <div className="flex items-center justify-between">
                     <h3 className="font-bold uppercase text-[10px] tracking-widest text-primary">Protocol Parameters</h3>
                     <Badge variant="outline" className={cn(
                       "text-[9px] font-black uppercase",
