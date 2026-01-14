@@ -52,11 +52,17 @@ export async function registerRoutes(
 
     authStates.set(state, { code_verifier, walletAddress });
 
+    // Ensure we use the current host for the redirect URI
+    const host = req.get('host') || process.env.REPLIT_DEV_DOMAIN;
+    const redirect_uri = `https://${host}/api/auth/twitter/callback`;
+    console.log(`[Twitter Auth] Starting flow with redirect_uri: ${redirect_uri}`);
+
     const authUrl = twitterClient.authorizationUrl({
       scope: "tweet.read users.read follows.read offline.access",
       state,
       code_challenge,
       code_challenge_method: "S256",
+      redirect_uri
     });
 
     res.redirect(authUrl);
@@ -67,17 +73,22 @@ export async function registerRoutes(
     const authData = authStates.get(state as string);
 
     if (!authData || !code) {
+      console.error("[Twitter Auth] Invalid state or missing code", { state, code });
       return res.status(400).send("Invalid state or missing code");
     }
 
     try {
+      const host = req.get('host') || process.env.REPLIT_DEV_DOMAIN;
+      const redirect_uri = `https://${host}/api/auth/twitter/callback`;
       const tokenSet = await twitterClient.callback(
-        twitterClient.metadata.redirect_uris![0],
+        redirect_uri,
         { code: code as string, state: state as string },
         { code_verifier: authData.code_verifier, state: state as string }
       );
 
       const userinfo: any = await twitterClient.userinfo(tokenSet);
+      console.log(`[Twitter Auth] Success! User: ${userinfo.data.username}`);
+      
       const user = await storage.getUserByWallet(authData.walletAddress);
       
       if (user) {
@@ -97,9 +108,11 @@ export async function registerRoutes(
           }
         </script>
       `);
-    } catch (err) {
+    } catch (err: any) {
       console.error("Twitter Auth Callback Error:", err);
-      res.status(500).send("Authentication failed");
+      // Detailed error for debugging
+      const errorMsg = err.response?.body || err.message;
+      res.status(500).send(`Authentication failed: ${errorMsg}`);
     } finally {
       authStates.delete(state as string);
     }
