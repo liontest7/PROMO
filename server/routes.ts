@@ -107,6 +107,54 @@ export async function registerRoutes(
       const action = await storage.getAction(req.body.actionId);
       if (!action) return res.status(404).json({ message: "Action not found" });
 
+      const campaign = await storage.getCampaign(action.campaignId);
+      if (!campaign) return res.status(404).json({ message: "Campaign not found" });
+
+      // Anti-Bot & Requirements Validation
+      if (campaign.requirements) {
+        const { minSolBalance, minWalletAgeDays, multiDaySolHolding } = campaign.requirements;
+        const connection = await getSolanaConnection();
+        const pubkey = new PublicKey(user.walletAddress);
+
+        // 1. Min SOL Balance
+        if (minSolBalance && minSolBalance > 0) {
+          const balance = await connection.getBalance(pubkey);
+          const solBalance = balance / 1e9;
+          if (solBalance < minSolBalance) {
+            return res.status(403).json({ 
+              message: `Requirement failed: Minimum ${minSolBalance} SOL balance required. Your balance: ${solBalance.toFixed(3)} SOL.` 
+            });
+          }
+        }
+
+        // 2. Min Wallet Age
+        if (minWalletAgeDays && minWalletAgeDays > 0) {
+          const signatures = await connection.getSignaturesForAddress(pubkey, { limit: 1 }, 'confirmed');
+          if (signatures.length === 0) {
+            return res.status(403).json({ message: "Requirement failed: Wallet has no transaction history." });
+          }
+          const firstTx = signatures[signatures.length - 1];
+          const firstTxTime = firstTx.blockTime ? firstTx.blockTime * 1000 : Date.now();
+          const ageInDays = (Date.now() - firstTxTime) / (1000 * 60 * 60 * 24);
+          if (ageInDays < minWalletAgeDays) {
+            return res.status(403).json({ 
+              message: `Requirement failed: Wallet age must be at least ${minWalletAgeDays} days. Your wallet is ${Math.floor(ageInDays)} days old.` 
+            });
+          }
+        }
+
+        // 3. Multi-day SOL Holding (Simplified for MVP: checks current balance)
+        if (multiDaySolHolding && multiDaySolHolding.amount > 0) {
+          const balance = await connection.getBalance(pubkey);
+          const solBalance = balance / 1e9;
+          if (solBalance < multiDaySolHolding.amount) {
+            return res.status(403).json({ 
+              message: `Requirement failed: Must hold ${multiDaySolHolding.amount} SOL for ${multiDaySolHolding.days} consecutive days.` 
+            });
+          }
+        }
+      }
+
       // Verification logic...
       await storage.createExecution({
         actionId: action.id,
