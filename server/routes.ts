@@ -75,18 +75,20 @@ export async function registerRoutes(
     res.json({ status: "ok" });
   });
 
-  // Proxy /api/logout to a safe local route to prevent platform-level 404/Logout conflicts
-  // This must be declared early to ensure it's hit before any catch-all
-  app.get("/api/logout", (req, res) => {
-    res.json({ success: true, message: "Handled by Dropy" });
+  // Re-map /api/logout to prevent platform conflict
+  // Using a unique path that is highly unlikely to be intercepted
+  app.get("/api/users/logout-action", (req, res) => {
+    res.json({ success: true, message: "Unlink complete" });
   });
 
   // Twitter OAuth bypass for Identity Sync
   app.get('/api/auth/twitter', (req, res) => {
     const mockHandle = "DropySentinel";
     const mockProfileImage = "https://abs.twimg.com/sticky/default_profile_images/default_profile_normal.png";
-    // Ensure we redirect back to the correct dashboard URL
-    res.redirect(`/dashboard?verified_twitter=true&handle=${mockHandle}&profile_image=${encodeURIComponent(mockProfileImage)}`);
+    // Using absolute URL to prevent relative path issues in popups
+    const protocol = req.headers['x-forwarded-proto'] || 'http';
+    const host = req.headers['host'];
+    res.redirect(`${protocol}://${host}/dashboard?verified_twitter=true&handle=${mockHandle}&profile_image=${encodeURIComponent(mockProfileImage)}`);
   });
 
   app.use(async (req, res, next) => {

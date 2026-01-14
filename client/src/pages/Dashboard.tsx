@@ -96,9 +96,11 @@ const IdentitySync = ({ isAuthenticated, user, logout }: { isAuthenticated: bool
                 
                 if (res.ok) {
                   const updatedData = await res.json();
-                  // Directly update local cache to reflect change immediately
+                  // Force immediate update of multiple cache keys to be safe
                   queryClient.setQueryData(["/api/users", walletAddress], updatedData);
                   await queryClient.invalidateQueries({ queryKey: ["/api/users", walletAddress] });
+                  await queryClient.refetchQueries({ queryKey: ["/api/users", walletAddress] });
+                  
                   toast({ title: "X Identity Removed", description: "Your X account has been successfully unlinked." });
                 } else {
                   const errorData = await res.json().catch(() => ({}));
