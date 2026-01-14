@@ -81,7 +81,7 @@ export const IdentitySync = ({ user, walletAddress }: IdentitySyncProps) => {
     const top = window.screen.height / 2 - height / 2;
     
     window.open(
-      '/api/auth/twitter',
+      `/api/auth/twitter?walletAddress=${walletAddress}`,
       'Twitter Auth',
       `width=${width},height=${height},left=${left},top=${top},status=no,location=no,toolbar=no,menubar=no`
     );

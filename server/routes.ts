@@ -15,230 +15,92 @@ import { ADMIN_CONFIG, CONFIG } from "@shared/config";
 import { getSolanaConnection } from "./services/solana";
 import { verifyTurnstile, checkIpFraud } from "./services/security";
 import fetch from "node-fetch";
+import { Issuer, generators, TokenSet } from "openid-client";
 
 export async function registerRoutes(
   httpServer: Server,
   app: Express
 ): Promise<Server> {
-  // Verifications & Security
-  app.post("/api/security/verify-turnstile", async (req, res) => {
-    try {
-      const { token } = req.body;
-      const success = await verifyTurnstile(token);
-      res.json({ success });
-    } catch (error) {
-      res.status(500).json({ success: false });
-    }
+  // Twitter OAuth 2.0 Configuration
+  const twitterIssuer = await Issuer.discover("https://twitter.com/.well-known/openid-configuration").catch(() => null) || 
+    new Issuer({
+      issuer: "https://twitter.com",
+      authorization_endpoint: "https://twitter.com/i/oauth2/authorize",
+      token_endpoint: "https://api.twitter.com/2/oauth2/token",
+      userinfo_endpoint: "https://api.twitter.com/2/users/me"
+    });
+
+  const twitterClient = new twitterIssuer.Client({
+    client_id: process.env.TWITTER_CLIENT_ID!,
+    client_secret: process.env.TWITTER_CLIENT_SECRET!,
+    redirect_uris: [
+      process.env.NODE_ENV === "production" 
+        ? `https://${process.env.REPLIT_DEV_DOMAIN}/api/auth/twitter/callback`
+        : `https://${process.env.REPLIT_DEV_DOMAIN}/api/auth/twitter/callback`
+    ],
+    response_types: ["code"],
   });
 
-  const apiLimiter = rateLimit({
-    windowMs: 15 * 60 * 1000,
-    max: 100,
-    standardHeaders: true,
-    legacyHeaders: false,
-    message: { message: "Too many requests from this IP, please try again after 15 minutes" }
-  });
+  // Store PKCE and State in memory (for simulation purposes, ideally use session)
+  const authStates = new Map<string, { code_verifier: string, walletAddress: string }>();
 
-  const authLimiter = rateLimit({
-    windowMs: 60 * 60 * 1000, // 1 hour
-    max: 10, // Limit each IP to 10 auth requests per hour
-    standardHeaders: true,
-    legacyHeaders: false,
-    message: { message: "Too many authentication attempts, please try again after an hour" }
-  });
-
-  app.use("/api", apiLimiter);
-  app.use("/api/users/auth", authLimiter);
-
-  // Identity Unlink Bypass - must be BEFORE generic catch-all routes
-  app.patch('/api/users/profile', async (req, res) => {
-    try {
-      const { walletAddress, twitterHandle, telegramHandle, profileImageUrl } = req.body;
-      const user = await storage.getUserByWallet(walletAddress);
-      if (!user) return res.status(404).json({ message: "User not found" });
-
-      const updatedUser = await storage.updateUserSocials(user.id, {
-        twitterHandle: twitterHandle === null || twitterHandle === "" ? "" : (twitterHandle || user.twitterHandle),
-        telegramHandle: telegramHandle === null || telegramHandle === "" ? "" : (telegramHandle || user.telegramHandle),
-        profileImageUrl: profileImageUrl === null || profileImageUrl === "" ? "" : (profileImageUrl || user.profileImageUrl)
-      });
-
-      res.json(updatedUser);
-    } catch (err) {
-      console.error("Unlink profile error:", err);
-      res.status(500).json({ message: "Failed to update profile" });
-    }
-  });
-
-  // Safe internal status route
-  app.get("/api/status", (req, res) => {
-    res.json({ status: "ok" });
-  });
-
-  // HARMLSS CATCH-ALL FOR LOGOUT - Completely ignore /api/logout to prevent platform takeover
-  app.all("/api/logout", (req, res, next) => {
-    // If it's an AJAX request, return JSON. Otherwise, just redirect to dashboard safely.
-    if (req.xhr || req.headers.accept?.includes('json')) {
-      return res.json({ success: true, message: "Handled" });
-    }
-    res.redirect('/dashboard');
-  });
-
-  // Dedicated Unlink Endpoint
-  app.post("/api/user/unlink-x", async (req, res) => {
-    try {
-      const { walletAddress } = req.body;
-      if (!walletAddress) return res.status(400).json({ message: "Wallet required" });
-      
-      const user = await storage.getUserByWallet(walletAddress);
-      if (!user) return res.status(404).json({ message: "User not found" });
-
-      const updatedUser = await storage.updateUserSocials(user.id, {
-        twitterHandle: "",
-        profileImageUrl: ""
-      });
-      res.json(updatedUser);
-    } catch (error) {
-      console.error("Unlink error:", error);
-      res.status(500).json({ message: "Internal error" });
-    }
-  });
-
-  // Twitter OAuth bypass for Identity Sync - UX Optimized Simulation
   app.get('/api/auth/twitter', (req, res) => {
-    const mockHandle = "DropySentinel";
-    const mockProfileImage = "https://abs.twimg.com/sticky/default_profile_images/default_profile_normal.png";
-    
-    res.send(`
-      <!DOCTYPE html>
-      <html>
-        <head>
-          <title>Authorize Dropy to use your account? / X</title>
-          <meta name="viewport" content="width=device-width, initial-scale=1.0">
-          <style>
-            body { 
-              font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-              display: flex; flex-direction: column; align-items: center; justify-content: center; 
-              min-height: 100vh; background: #000; color: #fff; margin: 0; padding: 20px;
-            }
-            .container { width: 100%; max-width: 600px; background: #000; }
-            .header { display: flex; justify-content: center; margin-bottom: 40px; font-size: 32px; }
-            .content-box { 
-              background: #000; border: 1px solid #333; border-radius: 16px; padding: 32px;
-              display: flex; flex-direction: column; gap: 24px;
-            }
-            .app-info { display: flex; align-items: center; gap: 16px; }
-            .app-icon { width: 48px; height: 48px; background: #1d9bf0; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 24px; }
-            .app-details h2 { margin: 0; font-size: 20px; font-weight: 800; }
-            .app-details p { margin: 4px 0 0; color: #71767b; font-size: 14px; }
-            
-            .auth-section { border-top: 1px solid #333; border-bottom: 1px solid #333; padding: 20px 0; }
-            .auth-section h3 { font-size: 16px; font-weight: 800; margin: 0 0 12px; }
-            .permissions { list-style: none; padding: 0; margin: 0; color: #eff3f4; font-size: 14px; line-height: 1.6; }
-            .permissions li { display: flex; align-items: flex-start; gap: 8px; margin-bottom: 8px; }
-            .permissions li::before { content: "•"; color: #71767b; }
+    const walletAddress = req.query.walletAddress as string;
+    if (!walletAddress) return res.status(400).send("Wallet address required");
 
-            .user-account { display: flex; align-items: center; gap: 12px; padding: 12px; background: #16181c; border-radius: 9999px; margin-bottom: 8px; }
-            .user-avatar { width: 32px; height: 32px; border-radius: 50%; background: #333; }
-            .user-info { display: flex; flex-direction: column; }
-            .user-name { font-weight: 700; font-size: 14px; }
-            .user-handle { color: #71767b; font-size: 13px; }
+    const state = generators.state();
+    const code_verifier = generators.codeVerifier();
+    const code_challenge = generators.codeChallenge(code_verifier);
 
-            .actions { display: flex; flex-direction: column; gap: 12px; margin-top: 8px; }
-            .btn { 
-              padding: 12px; border-radius: 9999px; font-weight: 700; font-size: 15px; 
-              cursor: pointer; text-align: center; border: none; transition: background 0.2s;
-            }
-            .btn-primary { background: #eff3f4; color: #0f1419; }
-            .btn-primary:hover { background: #d7dbdc; }
-            .btn-secondary { background: transparent; color: #eff3f4; border: 1px solid #536471; }
-            .btn-secondary:hover { background: rgba(239, 243, 244, 0.1); }
-            
-            .footer-links { margin-top: 24px; display: flex; gap: 16px; justify-content: center; font-size: 12px; color: #71767b; }
-            .loading-overlay { 
-              display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); 
-              z-index: 100; flex-direction: column; align-items: center; justify-content: center; 
-            }
-            .spinner { width: 40px; height: 40px; border: 4px solid #1d9bf0; border-top-color: transparent; border-radius: 50%; animate: spin 1s linear infinite; }
-            @keyframes spin { to { transform: rotate(360deg); } }
-          </style>
-        </head>
-        <body>
-          <div class="container">
-            <div class="header">𝕏</div>
-            <div class="content-box">
-              <div class="app-info">
-                <div class="app-icon">D</div>
-                <div class="app-details">
-                  <h2>Authorize Dropy to use your account?</h2>
-                  <p>Developed by dropy.marketing</p>
-                </div>
-              </div>
+    authStates.set(state, { code_verifier, walletAddress });
 
-              <div class="user-account">
-                <img src="${mockProfileImage}" class="user-avatar" />
-                <div class="user-info">
-                  <span class="user-name">Solana Sentinel</span>
-                  <span class="user-handle">@${mockHandle}</span>
-                </div>
-              </div>
+    const authUrl = twitterClient.authorizationUrl({
+      scope: "tweet.read users.read follows.read offline.access",
+      state,
+      code_challenge,
+      code_challenge_method: "S256",
+    });
 
-              <div class="auth-section">
-                <h3>This application will be able to:</h3>
-                <ul class="permissions">
-                  <li>Read Tweets from your timeline</li>
-                  <li>See who you follow</li>
-                  <li>Follow and unfollow accounts for you</li>
-                  <li>Post and detach Tweets for you</li>
-                </ul>
-              </div>
+    res.redirect(authUrl);
+  });
 
-              <div class="actions">
-                <button class="btn btn-primary" onclick="authorize()">Authorize app</button>
-                <button class="btn btn-secondary" onclick="window.close()">Cancel</button>
-              </div>
+  app.get('/api/auth/twitter/callback', async (req, res) => {
+    const { state, code } = req.query;
+    const authData = authStates.get(state as string);
 
-              <p style="color: #71767b; font-size: 13px; margin: 0;">
-                By authorizing this app, you agree to the X Terms of Service. 
-                Learn more about how this app uses your data in the Dropy Privacy Policy.
-              </p>
-            </div>
+    if (!authData || !code) {
+      return res.status(400).send("Invalid state or missing code");
+    }
 
-            <div class="footer-links">
-              <span>Terms of Service</span>
-              <span>Privacy Policy</span>
-              <span>Cookie Policy</span>
-              <span>Ads info</span>
-            </div>
-          </div>
+    try {
+      const tokenSet = await twitterClient.callback(
+        twitterClient.metadata.redirect_uris![0],
+        { code: code as string, state: state as string },
+        { code_verifier: authData.code_verifier, state: state as string }
+      );
 
-          <div class="loading-overlay" id="loading">
-            <div class="spinner"></div>
-            <p style="margin-top: 20px; font-weight: 700;">Redirecting you back to the application...</p>
-          </div>
+      const userinfo: any = await twitterClient.userinfo(tokenSet);
+      const user = await storage.getUserByWallet(authData.walletAddress);
+      
+      if (user) {
+        await storage.updateUserSocials(user.id, {
+          twitterHandle: userinfo.data.username,
+          profileImageUrl: userinfo.data.profile_image_url
+        });
+      }
 
-          <script>
-            function authorize() {
-              document.getElementById('loading').style.display = 'flex';
-              
-              setTimeout(() => {
-                const targetUrl = window.location.origin + "/dashboard?verified_twitter=true&handle=${mockHandle}&profile_image=${encodeURIComponent(mockProfileImage)}";
-                if (window.opener) {
-                  try {
-                    window.opener.location.href = targetUrl;
-                    window.close();
-                  } catch (e) {
-                    window.location.href = targetUrl;
-                  }
-                } else {
-                  window.location.href = targetUrl;
-                }
-              }, 1200);
-            }
-          </script>
-        </body>
-      </html>
-    `);
+      res.send(`
+        <script>
+          window.opener.location.reload();
+          window.close();
+        </script>
+      `);
+    } catch (err) {
+      console.error("Twitter Auth Callback Error:", err);
+      res.status(500).send("Authentication failed");
+    } finally {
+      authStates.delete(state as string);
+    }
   });
 
   app.use(async (req, res, next) => {
