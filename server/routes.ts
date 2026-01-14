@@ -165,6 +165,13 @@ export async function registerRoutes(
         // In a real production environment, we would use the user's stored OAuth tokens to check the API.
         // For this MVP, we are setting up the structure for that verification.
         console.log(`Verifying Twitter action for @${user.twitterHandle}`);
+        
+        // Detailed Toast Error Messages for Twitter Requirements
+        if (action.type === 'twitter_follow' && !user.twitterHandle) {
+          return res.status(403).json({ 
+            message: "X (Twitter) verification failed: Your account is not linked. Please connect your X profile in settings." 
+          });
+        }
       }
 
       // Verification logic...
