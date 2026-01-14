@@ -518,18 +518,6 @@ export default function CampaignDetails() {
                   </Badge>
                 </div>
               </div>
-            </section>
-                      <p className="text-sm font-black text-white uppercase tracking-tight">Project Funded</p>
-                      <p className="text-[10px] text-white/40 font-bold uppercase tracking-widest">The reward tokens are secured in Dropy's Escrow</p>
-                    </div>
-                  </div>
-                  <Button variant="ghost" size="sm" className="gap-2 text-primary hover:text-primary hover:bg-primary/10 font-black text-[10px] tracking-widest uppercase" asChild>
-                    <a href={`https://solscan.io/tx/${campaign.fundingTxSignature}`} target="_blank" rel="noreferrer">
-                      VERIFY ON SOLSCAN <ExternalLink className="w-3 h-3" />
-                    </a>
-                  </Button>
-                </div>
-              )}
               
               <div className="grid sm:grid-cols-2 gap-4">
                 {participantsLoading ? (
