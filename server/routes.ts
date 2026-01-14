@@ -43,32 +43,33 @@ export async function registerRoutes(
     });
   };
 
-  // Store PKCE and State in memory (for simulation purposes, ideally use session)
-  const authStates = new Map<string, { code_verifier: string, walletAddress: string }>();
-
   app.get('/api/auth/twitter', async (req, res) => {
     const { state, code, walletAddress } = req.query;
     const client = getTwitterClient(req);
 
     // Phase 2: Callback handling (when code is present)
     if (code && state) {
-      const authData = authStates.get(state as string);
-      if (!authData) {
-        console.error("[Twitter Auth] Invalid state");
-        return res.status(400).send("Invalid state");
+      const sessionData = (req.session as any).twitterAuth;
+      
+      if (!sessionData || sessionData.state !== state) {
+        console.error("[Twitter Auth] Invalid session state or missing data", { 
+          sessionState: sessionData?.state, 
+          queryState: state 
+        });
+        return res.status(400).send("Invalid session state");
       }
 
       try {
         const tokenSet = await client.callback(
           client.metadata.redirect_uris![0],
           { code: code as string, state: state as string },
-          { code_verifier: authData.code_verifier, state: state as string }
+          { code_verifier: sessionData.code_verifier, state: state as string }
         );
 
         const userinfo: any = await client.userinfo(tokenSet);
         console.log(`[Twitter Auth] Success! User: ${userinfo.data.username}`);
         
-        const user = await storage.getUserByWallet(authData.walletAddress);
+        const user = await storage.getUserByWallet(sessionData.walletAddress);
         
         if (user) {
           await storage.updateUserSocials(user.id, {
@@ -76,6 +77,9 @@ export async function registerRoutes(
             profileImageUrl: userinfo.data.profile_image_url
           });
         }
+
+        // Clear auth data from session
+        delete (req.session as any).twitterAuth;
 
         return res.send(`
           <script>
@@ -91,8 +95,6 @@ export async function registerRoutes(
         console.error("Twitter Auth Callback Error:", err);
         const errorMsg = err.response?.body || err.message;
         return res.status(500).send(`Authentication failed: ${errorMsg}`);
-      } finally {
-        authStates.delete(state as string);
       }
     }
 
@@ -103,7 +105,12 @@ export async function registerRoutes(
     const code_verifier = generators.codeVerifier();
     const code_challenge = generators.codeChallenge(code_verifier);
 
-    authStates.set(newState, { code_verifier, walletAddress: walletAddress as string });
+    // Store in session instead of memory map
+    (req.session as any).twitterAuth = {
+      state: newState,
+      code_verifier,
+      walletAddress: walletAddress as string
+    };
 
     const authUrl = client.authorizationUrl({
       scope: "tweet.read users.read follows.read offline.access",
