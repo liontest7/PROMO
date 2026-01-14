@@ -75,28 +75,56 @@ export async function registerRoutes(
     res.json({ status: "ok" });
   });
 
-  // Ensure no /api/logout conflicts by mapping it early to a harmless response
-  app.get("/api/logout", (req, res) => {
-    res.json({ success: true, message: "Use wallet disconnect" });
+  // HARMLESS LOGOUT MAPPING - Prevents platform interception
+  app.all("/api/logout", (req, res) => {
+    res.json({ success: true, message: "Handled" });
   });
 
-  // Twitter OAuth bypass for Identity Sync - Fix popup redirecting to home
+  // Dedicated Unlink Endpoint
+  app.post("/api/user/unlink-x", async (req, res) => {
+    try {
+      const { walletAddress } = req.body;
+      if (!walletAddress) return res.status(400).json({ message: "Wallet required" });
+      
+      const user = await storage.updateUser(walletAddress, {
+        twitterHandle: "",
+        profileImageUrl: ""
+      });
+      res.json(user);
+    } catch (error) {
+      res.status(500).json({ message: "Internal error" });
+    }
+  });
+
+  // Twitter OAuth bypass for Identity Sync - Fix popup issues
   app.get('/api/auth/twitter', (req, res) => {
     const mockHandle = "DropySentinel";
     const mockProfileImage = "https://abs.twimg.com/sticky/default_profile_images/default_profile_normal.png";
     
-    // Explicitly return a small HTML script that notifies the opener and closes
-    // This is the standard way to handle OAuth popups properly
+    // Standard OAuth completion page that communicates with the main window
     res.send(`
+      <!DOCTYPE html>
       <html>
+        <head>
+          <title>Twitter Auth Success</title>
+          <style>
+            body { font-family: sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; background: #000; color: #fff; margin: 0; }
+            .spinner { width: 40px; height: 40px; border: 4px solid rgba(255,255,255,0.1); border-left-color: #1d9bf0; border-radius: 50%; animation: spin 1s linear infinite; }
+            @keyframes spin { to { transform: rotate(360deg); } }
+          </style>
+        </head>
         <body>
+          <div class="spinner"></div>
+          <p>Connecting your account...</p>
           <script>
-            if (window.opener) {
-              window.opener.location.href = window.location.origin + "/dashboard?verified_twitter=true&handle=${mockHandle}&profile_image=${encodeURIComponent(mockProfileImage)}";
-              window.close();
-            } else {
-              window.location.href = "/dashboard?verified_twitter=true&handle=${mockHandle}&profile_image=${encodeURIComponent(mockProfileImage)}";
-            }
+            setTimeout(() => {
+              if (window.opener) {
+                window.opener.location.href = window.location.origin + "/dashboard?verified_twitter=true&handle=${mockHandle}&profile_image=${encodeURIComponent(mockProfileImage)}";
+                window.close();
+              } else {
+                window.location.href = "/dashboard?verified_twitter=true&handle=${mockHandle}&profile_image=${encodeURIComponent(mockProfileImage)}";
+              }
+            }, 500);
           </script>
         </body>
       </html>

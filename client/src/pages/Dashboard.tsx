@@ -81,22 +81,20 @@ const IdentitySync = ({ isAuthenticated, user, logout }: { isAuthenticated: bool
               e.stopPropagation();
               console.log("Unlinking X Identity...");
               try {
-                // Perform the unlink via API call using the specific profile update endpoint
-                const res = await fetch('/api/users/profile', {
-                  method: 'PATCH',
+                // Use a different endpoint name to avoid any potential middleware interference
+                const res = await fetch('/api/user/unlink-x', {
+                  method: 'POST',
                   headers: { 
                     'Content-Type': 'application/json'
                   },
                   body: JSON.stringify({
-                    walletAddress: walletAddress,
-                    twitterHandle: "",
-                    profileImageUrl: ""
+                    walletAddress: walletAddress
                   })
                 });
                 
                 if (res.ok) {
                   const updatedData = await res.json();
-                  // Force immediate cache update to bypass any middleware/interception
+                  // Update cache directly and refetch to be 100% sure
                   queryClient.setQueryData(["/api/users", walletAddress], updatedData);
                   await queryClient.invalidateQueries({ queryKey: ["/api/users", walletAddress] });
                   toast({ title: "X Identity Removed", description: "Your X account has been successfully unlinked." });
