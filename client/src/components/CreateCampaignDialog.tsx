@@ -462,18 +462,18 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
                           </h3>
                           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <FormField control={form.control} name="minHoldingAmount" render={({ field }) => (
-                              <FormItem><FormLabel>Min Holding Amount</FormLabel><FormControl><Input type="number" placeholder="1000" {...field} /></FormControl><FormMessage /></FormItem>
+                              <FormItem><FormLabel>Min Holding Amount</FormLabel><FormControl><Input type="number" placeholder="1000" {...field} value={field.value ?? ""} /></FormControl><FormMessage /></FormItem>
                             )} />
                             <FormField control={form.control} name="minHoldingDuration" render={({ field }) => (
-                              <FormItem><FormLabel>Min Duration (Days)</FormLabel><FormControl><Input type="number" placeholder="7" {...field} /></FormControl><FormMessage /></FormItem>
+                              <FormItem><FormLabel>Min Duration (Days)</FormLabel><FormControl><Input type="number" placeholder="7" {...field} value={field.value ?? ""} /></FormControl><FormMessage /></FormItem>
                             )} />
                           </div>
                           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <FormField control={form.control} name="rewardPerWallet" render={({ field }) => (
-                              <FormItem><FormLabel>Reward Per Wallet</FormLabel><FormControl><Input type="number" placeholder="10" {...field} /></FormControl><FormMessage /></FormItem>
+                              <FormItem><FormLabel>Reward Per Wallet</FormLabel><FormControl><Input type="number" placeholder="10" {...field} value={field.value ?? ""} /></FormControl><FormMessage /></FormItem>
                             )} />
                             <FormField control={form.control} name="maxClaims" render={({ field }) => (
-                              <FormItem><FormLabel>Max Participants</FormLabel><FormControl><Input type="number" placeholder="100" {...field} /></FormControl><FormMessage /></FormItem>
+                              <FormItem><FormLabel>Max Participants</FormLabel><FormControl><Input type="number" placeholder="100" {...field} value={field.value ?? ""} /></FormControl><FormMessage /></FormItem>
                             )} />
                           </div>
                         </div>
@@ -611,7 +611,12 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
                           variant="outline" 
                           className="flex-1" 
                           onClick={async () => {
+                            console.log("Current form values:", form.getValues());
                             const isValid = await form.trigger();
+                            console.log("Form is valid:", isValid);
+                            if (!isValid) {
+                              console.log("Form errors:", form.formState.errors);
+                            }
                             if (isValid) {
                               setStep("preview");
                             } else {
