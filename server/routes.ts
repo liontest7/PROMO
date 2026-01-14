@@ -151,6 +151,19 @@ export async function registerRoutes(
     }
   });
 
+  app.get("/api/executions/user/:wallet/campaign/:campaignId", async (req, res) => {
+    try {
+      const user = await storage.getUserByWallet(req.params.wallet);
+      if (!user) return res.status(404).json({ message: "User not found" });
+      const campaignId = parseInt(req.params.campaignId);
+      const allExecutions = await storage.getExecutionsByUser(user.id);
+      const filtered = allExecutions.filter(e => e.campaignId === campaignId);
+      res.json(filtered);
+    } catch (err) {
+      res.status(500).json({ message: "Error fetching user executions" });
+    }
+  });
+
   app.post(api.executions.verify.path, async (req, res) => {
     // Keep verification logic here for now or move to separate service
     try {

@@ -113,6 +113,11 @@ export default function CampaignDetails() {
 
   const campaignId = campaign?.id;
 
+  const { data: executions, isLoading: executionsLoading } = useQuery<Execution[]>({
+    queryKey: [`/api/executions/user/${walletAddress}/campaign/${campaign?.id}`],
+    enabled: !!(isConnected && walletAddress && campaign?.id),
+  });
+
   const { data: participants, isLoading: participantsLoading, refetch: refetchExecutions } = useQuery<(Execution & { user: { walletAddress: string } })[]>({
     queryKey: [`/api/executions/campaign/${campaignId}`],
     enabled: !!campaignId,
