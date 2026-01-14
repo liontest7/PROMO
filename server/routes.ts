@@ -109,58 +109,131 @@ export async function registerRoutes(
     const mockHandle = "DropySentinel";
     const mockProfileImage = "https://abs.twimg.com/sticky/default_profile_images/default_profile_normal.png";
     
-    // This page simulates the Twitter authorization screen
     res.send(`
       <!DOCTYPE html>
       <html>
         <head>
-          <title>Authorize Dropy to use your account?</title>
+          <title>Authorize Dropy to use your account? / X</title>
           <meta name="viewport" content="width=device-width, initial-scale=1.0">
           <style>
             body { 
               font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
               display: flex; flex-direction: column; align-items: center; justify-content: center; 
-              height: 100vh; background: #000; color: #fff; margin: 0; padding: 20px; text-align: center;
+              min-height: 100vh; background: #000; color: #fff; margin: 0; padding: 20px;
             }
-            .card { background: #16181c; padding: 30px; border-radius: 16px; width: 100%; max-width: 400px; border: 1px solid #333; }
-            .logo { font-size: 40px; margin-bottom: 20px; }
-            h1 { font-size: 20px; margin-bottom: 10px; }
-            p { color: #71767b; font-size: 14px; margin-bottom: 30px; line-height: 1.5; }
+            .container { width: 100%; max-width: 600px; background: #000; }
+            .header { display: flex; justify-content: center; margin-bottom: 40px; font-size: 32px; }
+            .content-box { 
+              background: #000; border: 1px solid #333; border-radius: 16px; padding: 32px;
+              display: flex; flex-direction: column; gap: 24px;
+            }
+            .app-info { display: flex; align-items: center; gap: 16px; }
+            .app-icon { width: 48px; height: 48px; background: #1d9bf0; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 24px; }
+            .app-details h2 { margin: 0; font-size: 20px; font-weight: 800; }
+            .app-details p { margin: 4px 0 0; color: #71767b; font-size: 14px; }
+            
+            .auth-section { border-top: 1px solid #333; border-bottom: 1px solid #333; padding: 20px 0; }
+            .auth-section h3 { font-size: 16px; font-weight: 800; margin: 0 0 12px; }
+            .permissions { list-style: none; padding: 0; margin: 0; color: #eff3f4; font-size: 14px; line-height: 1.6; }
+            .permissions li { display: flex; align-items: flex-start; gap: 8px; margin-bottom: 8px; }
+            .permissions li::before { content: "•"; color: #71767b; }
+
+            .user-account { display: flex; align-items: center; gap: 12px; padding: 12px; background: #16181c; border-radius: 9999px; margin-bottom: 8px; }
+            .user-avatar { width: 32px; height: 32px; border-radius: 50%; background: #333; }
+            .user-info { display: flex; flex-direction: column; }
+            .user-name { font-weight: 700; font-size: 14px; }
+            .user-handle { color: #71767b; font-size: 13px; }
+
+            .actions { display: flex; flex-direction: column; gap: 12px; margin-top: 8px; }
             .btn { 
-              background: #1d9bf0; color: white; border: none; padding: 12px 24px; 
-              border-radius: 9999px; font-weight: bold; font-size: 15px; cursor: pointer;
-              width: 100%; transition: background 0.2s;
+              padding: 12px; border-radius: 9999px; font-weight: 700; font-size: 15px; 
+              cursor: pointer; text-align: center; border: none; transition: background 0.2s;
             }
-            .btn:hover { background: #1a8cd8; }
-            .btn-secondary { background: transparent; border: 1px solid #536471; color: #1d9bf0; margin-top: 12px; }
-            .loading { display: none; }
+            .btn-primary { background: #eff3f4; color: #0f1419; }
+            .btn-primary:hover { background: #d7dbdc; }
+            .btn-secondary { background: transparent; color: #eff3f4; border: 1px solid #536471; }
+            .btn-secondary:hover { background: rgba(239, 243, 244, 0.1); }
+            
+            .footer-links { margin-top: 24px; display: flex; gap: 16px; justify-content: center; font-size: 12px; color: #71767b; }
+            .loading-overlay { 
+              display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); 
+              z-index: 100; flex-direction: column; align-items: center; justify-content: center; 
+            }
+            .spinner { width: 40px; height: 40px; border: 4px solid #1d9bf0; border-top-color: transparent; border-radius: 50%; animate: spin 1s linear infinite; }
+            @keyframes spin { to { transform: rotate(360deg); } }
           </style>
         </head>
         <body>
-          <div class="card" id="main-card">
-            <div class="logo">𝕏</div>
-            <h1>Authorize Dropy?</h1>
-            <p>Dropy would like to view your profile information and handle.</p>
-            <button class="btn" onclick="authorize()">Authorize App</button>
-            <button class="btn btn-secondary" onclick="window.close()">Cancel</button>
+          <div class="container">
+            <div class="header">𝕏</div>
+            <div class="content-box">
+              <div class="app-info">
+                <div class="app-icon">D</div>
+                <div class="app-details">
+                  <h2>Authorize Dropy to use your account?</h2>
+                  <p>Developed by dropy.marketing</p>
+                </div>
+              </div>
+
+              <div class="user-account">
+                <img src="${mockProfileImage}" class="user-avatar" />
+                <div class="user-info">
+                  <span class="user-name">Solana Sentinel</span>
+                  <span class="user-handle">@${mockHandle}</span>
+                </div>
+              </div>
+
+              <div class="auth-section">
+                <h3>This application will be able to:</h3>
+                <ul class="permissions">
+                  <li>Read Tweets from your timeline</li>
+                  <li>See who you follow</li>
+                  <li>Follow and unfollow accounts for you</li>
+                  <li>Post and detach Tweets for you</li>
+                </ul>
+              </div>
+
+              <div class="actions">
+                <button class="btn btn-primary" onclick="authorize()">Authorize app</button>
+                <button class="btn btn-secondary" onclick="window.close()">Cancel</button>
+              </div>
+
+              <p style="color: #71767b; font-size: 13px; margin: 0;">
+                By authorizing this app, you agree to the X Terms of Service. 
+                Learn more about how this app uses your data in the Dropy Privacy Policy.
+              </p>
+            </div>
+
+            <div class="footer-links">
+              <span>Terms of Service</span>
+              <span>Privacy Policy</span>
+              <span>Cookie Policy</span>
+              <span>Ads info</span>
+            </div>
           </div>
-          <div class="loading" id="loading">
-            <div style="font-size: 30px; margin-bottom: 20px;">⚡</div>
-            <p style="color: #fff;">Connecting to Dropy...</p>
+
+          <div class="loading-overlay" id="loading">
+            <div class="spinner"></div>
+            <p style="margin-top: 20px; font-weight: 700;">Redirecting you back to the application...</p>
           </div>
+
           <script>
             function authorize() {
-              document.getElementById('main-card').style.display = 'none';
-              document.getElementById('loading').style.display = 'block';
+              document.getElementById('loading').style.display = 'flex';
               
               setTimeout(() => {
+                const targetUrl = window.location.origin + "/dashboard?verified_twitter=true&handle=${mockHandle}&profile_image=${encodeURIComponent(mockProfileImage)}";
                 if (window.opener) {
-                  window.opener.location.href = window.location.origin + "/dashboard?verified_twitter=true&handle=${mockHandle}&profile_image=${encodeURIComponent(mockProfileImage)}";
-                  window.close();
+                  try {
+                    window.opener.location.href = targetUrl;
+                    window.close();
+                  } catch (e) {
+                    window.location.href = targetUrl;
+                  }
                 } else {
-                  window.location.href = "/dashboard?verified_twitter=true&handle=${mockHandle}&profile_image=${encodeURIComponent(mockProfileImage)}";
+                  window.location.href = targetUrl;
                 }
-              }, 800);
+              }, 1200);
             }
           </script>
         </body>
