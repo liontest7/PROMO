@@ -18,6 +18,7 @@ export async function setupTwitterRoutes(app: Express) {
     client_secret: process.env.TWITTER_CLIENT_SECRET!,
     redirect_uris: [TWITTER_REDIRECT_URI],
     response_types: ["code"],
+    token_endpoint_auth_method: "client_secret_post",
   });
 
   app.get("/api/auth/twitter", async (req, res) => {
@@ -25,15 +26,20 @@ export async function setupTwitterRoutes(app: Express) {
 
     /* ================= CALLBACK ================= */
     if (code) {
-      console.log("[Twitter OAuth2] Callback received with code and state:", { state });
+      console.log("[Twitter OAuth2] Callback received with code and state:", { 
+        state, 
+        sessionId: req.sessionID,
+        sessionData: req.session
+      });
       const session = (req.session as any).twitterAuth;
-      console.log("[Twitter OAuth2] Session data:", session);
+      console.log("[Twitter OAuth2] Session data from req.session.twitterAuth:", session);
 
       if (!session || session.state !== state) {
         console.error("[Twitter OAuth2] Session mismatch or missing:", { 
           hasSession: !!session, 
           sessionState: session?.state, 
-          queryState: state 
+          queryState: state,
+          sessionId: req.sessionID
         });
         return res.status(400).send("Invalid or expired session");
       }
@@ -113,7 +119,14 @@ export async function setupTwitterRoutes(app: Express) {
       code_challenge_method: "S256",
     });
 
-    console.log("[Twitter OAuth2] Redirecting to:", authUrl);
+    await new Promise((resolve, reject) => {
+      req.session.save((err) => {
+        if (err) reject(err);
+        else resolve(true);
+      });
+    });
+
+    console.log("[Twitter OAuth2] Session saved, redirecting to:", authUrl);
     return res.redirect(authUrl);
   });
 }
