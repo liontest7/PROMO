@@ -56,7 +56,10 @@ export async function setupTwitterRoutes(app: Express) {
           client.metadata.redirect_uris![0],
           { code: code as string, state: state as string },
           { code_verifier: session.code_verifier }
-        );
+        ).catch(err => {
+          console.error("[Twitter OAuth] Callback Error Details:", err.response?.body || err.message);
+          throw err;
+        });
 
         const accessToken = tokenSet.access_token;
         if (!accessToken) throw new Error("No access token");
@@ -106,7 +109,7 @@ export async function setupTwitterRoutes(app: Express) {
     };
 
     const authUrl = client.authorizationUrl({
-      scope: "tweet.read users.read",
+      scope: "tweet.read users.read offline.access",
       state: stateValue,
       code_challenge: codeChallenge,
       code_challenge_method: "S256",
