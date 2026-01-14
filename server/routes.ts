@@ -75,20 +75,32 @@ export async function registerRoutes(
     res.json({ status: "ok" });
   });
 
-  // Re-map /api/logout to prevent platform conflict
-  // Using a unique path that is highly unlikely to be intercepted
-  app.get("/api/users/logout-action", (req, res) => {
-    res.json({ success: true, message: "Unlink complete" });
+  // Ensure no /api/logout conflicts by mapping it early to a harmless response
+  app.get("/api/logout", (req, res) => {
+    res.json({ success: true, message: "Use wallet disconnect" });
   });
 
-  // Twitter OAuth bypass for Identity Sync
+  // Twitter OAuth bypass for Identity Sync - Fix popup redirecting to home
   app.get('/api/auth/twitter', (req, res) => {
     const mockHandle = "DropySentinel";
     const mockProfileImage = "https://abs.twimg.com/sticky/default_profile_images/default_profile_normal.png";
-    // Using absolute URL to prevent relative path issues in popups
-    const protocol = req.headers['x-forwarded-proto'] || 'http';
-    const host = req.headers['host'];
-    res.redirect(`${protocol}://${host}/dashboard?verified_twitter=true&handle=${mockHandle}&profile_image=${encodeURIComponent(mockProfileImage)}`);
+    
+    // Explicitly return a small HTML script that notifies the opener and closes
+    // This is the standard way to handle OAuth popups properly
+    res.send(`
+      <html>
+        <body>
+          <script>
+            if (window.opener) {
+              window.opener.location.href = window.location.origin + "/dashboard?verified_twitter=true&handle=${mockHandle}&profile_image=${encodeURIComponent(mockProfileImage)}";
+              window.close();
+            } else {
+              window.location.href = "/dashboard?verified_twitter=true&handle=${mockHandle}&profile_image=${encodeURIComponent(mockProfileImage)}";
+            }
+          </script>
+        </body>
+      </html>
+    `);
   });
 
   app.use(async (req, res, next) => {
