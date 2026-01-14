@@ -123,6 +123,15 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
   const watchedActions = form.watch("actions");
   const watchedType = form.watch("campaignType");
   const watchedTokenAddress = form.watch("tokenAddress");
+
+  const isHolderDisabled = !settings?.holderQualificationEnabled;
+  const isSocialDisabled = !settings?.socialEngagementEnabled;
+
+  const getCampaignStatusLabel = (type: string) => {
+    if (type === "holder_qualification" && isHolderDisabled) return "(Maintenance)";
+    if (type === "engagement" && isSocialDisabled) return "(Maintenance)";
+    return "(Live)";
+  };
   
   const totalCalculatedCost = (watchedActions || []).reduce((acc, action) => {
     const reward = Number(action.rewardAmount) || 0;
@@ -361,9 +370,11 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
                           <Select onValueChange={(value) => { field.onChange(value); if (value === "holder_qualification") { form.setValue("actions", []); } else { form.setValue("actions", [{ type: "website", title: "Visit Website", url: "", rewardAmount: 0.01, maxExecutions: 10 }]); } }} value={field.value}>
                             <FormControl><SelectTrigger><SelectValue placeholder="Select type" /></SelectTrigger></FormControl>
                             <SelectContent>
-                              <SelectItem value="holder_qualification">Holder Qualification (Live)</SelectItem>
-                              <SelectItem value="engagement" disabled={settings?.twitterApiStatus !== 'active'}>
-                                Social Engagement {settings?.twitterApiStatus === 'active' ? '(Live)' : '(Coming Soon)'}
+                              <SelectItem value="holder_qualification" disabled={isHolderDisabled}>
+                                Holder Qualification {getCampaignStatusLabel("holder_qualification")}
+                              </SelectItem>
+                              <SelectItem value="engagement" disabled={isSocialDisabled || settings?.twitterApiStatus !== 'active'}>
+                                Social Engagement {getCampaignStatusLabel("engagement")}
                               </SelectItem>
                             </SelectContent>
                           </Select>
@@ -493,10 +504,19 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
                       </div>
 
                       <div className="flex gap-3 pt-6 border-t border-white/5">
-                        <Button type="button" variant="outline" className="flex-1" onClick={() => setStep("preview")}>
+                        <Button 
+                          type="button" 
+                          variant="outline" 
+                          className="flex-1" 
+                          onClick={async () => {
+                            const isValid = await form.trigger();
+                            if (isValid) setStep("preview");
+                          }}
+                          disabled={!form.formState.isValid}
+                        >
                           <Eye className="mr-2 h-4 w-4" /> Preview
                         </Button>
-                        <Button type="submit" className="flex-1 font-bold" disabled={isPending}>
+                        <Button type="submit" className="flex-1 font-bold" disabled={isPending || !form.formState.isValid}>
                           {isPending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Rocket className="mr-2 h-4 w-4" />}
                           Launch
                         </Button>

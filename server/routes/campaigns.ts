@@ -23,6 +23,14 @@ export function setupCampaignRoutes(app: Express) {
         return res.status(503).json({ message: "Campaign creation is temporarily disabled." });
       }
 
+      const body = req.body;
+      if (body.campaignType === "holder_qualification" && !settings.holderQualificationEnabled) {
+        return res.status(403).json({ message: "Holder Qualification campaigns are currently disabled." });
+      }
+      if (body.campaignType === "engagement" && !settings.socialEngagementEnabled) {
+        return res.status(403).json({ message: "Social Engagement campaigns are currently disabled." });
+      }
+
       const campaignData = insertCampaignSchema.parse(req.body);
       const campaign = await storage.createCampaign(campaignData);
 
