@@ -28,7 +28,8 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
-import { Plus, Trash2, Rocket, Eye, CheckCircle2, Globe, Twitter, Send, Loader2, Coins, Shield } from "lucide-react";
+import { Plus, Trash2, Rocket, Eye, CheckCircle2, Globe, Twitter, Send, Loader2, Coins, Shield, ChevronDown, ChevronUp } from "lucide-react";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { CampaignSuccessCard } from "./CampaignSuccessCard";
 
@@ -423,68 +424,87 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
 
                   {watchedType && (
                     <div className="space-y-6 animate-in fade-in slide-in-from-top-4 duration-300">
-                      {/* Advanced Protection Section */}
-                      <div className="space-y-4 p-4 rounded-xl bg-orange-500/5 border border-orange-500/20">
-                        <h3 className="text-sm font-semibold text-orange-500 flex items-center gap-2">
-                          <Shield className="w-4 h-4" /> Advanced Anti-Bot Protection
-                        </h3>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                          <FormField
-                            control={form.control}
-                            name="minSolBalance"
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel>Min SOL Balance</FormLabel>
-                                <FormControl>
-                                  <Input type="number" step="0.01" placeholder="e.g. 0.1" {...field} />
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-                          <FormField
-                            control={form.control}
-                            name="minWalletAgeDays"
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel>Min Wallet Age (Days)</FormLabel>
-                                <FormControl>
-                                  <Input type="number" placeholder="e.g. 30" {...field} />
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-                        </div>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                          <FormField
-                            control={form.control}
-                            name="multiDaySolAmount"
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel>Must Hold (SOL)</FormLabel>
-                                <FormControl>
-                                  <Input type="number" step="0.1" placeholder="e.g. 1.0" {...field} />
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-                          <FormField
-                            control={form.control}
-                            name="multiDaySolDays"
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel>For (Consecutive Days)</FormLabel>
-                                <FormControl>
-                                  <Input type="number" placeholder="e.g. 3" {...field} />
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-                        </div>
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <FormField control={form.control} name="websiteUrl" render={({ field }) => (
+                          <FormItem><FormLabel>Website</FormLabel><FormControl><Input placeholder="https://..." {...field} /></FormControl><FormMessage /></FormItem>
+                        )} />
+                        <FormField control={form.control} name="twitterUrl" render={({ field }) => (
+                          <FormItem><FormLabel>Twitter</FormLabel><FormControl><Input placeholder="https://x.com/..." {...field} /></FormControl><FormMessage /></FormItem>
+                        )} />
+                        <FormField control={form.control} name="telegramUrl" render={({ field }) => (
+                          <FormItem><FormLabel>Telegram</FormLabel><FormControl><Input placeholder="https://t.me/..." {...field} /></FormControl><FormMessage /></FormItem>
+                        )} />
                       </div>
+
+                      {/* Advanced Protection Section wrapped in Collapsible */}
+                      <Accordion type="single" collapsible className="w-full">
+                        <AccordionItem value="advanced-protection" className="border-orange-500/20 px-4 rounded-xl bg-orange-500/5">
+                          <AccordionTrigger className="hover:no-underline py-4">
+                            <div className="flex items-center gap-2 text-orange-500">
+                              <Shield className="w-4 h-4" />
+                              <span className="text-sm font-semibold">Advanced Anti-Bot Protection</span>
+                            </div>
+                          </AccordionTrigger>
+                          <AccordionContent className="pb-4 space-y-4 border-t border-orange-500/10 pt-4">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                              <FormField
+                                control={form.control}
+                                name="minSolBalance"
+                                render={({ field }) => (
+                                  <FormItem>
+                                    <FormLabel>Min SOL Balance</FormLabel>
+                                    <FormControl>
+                                      <Input type="number" step="0.01" placeholder="e.g. 0.1" {...field} />
+                                    </FormControl>
+                                    <FormMessage />
+                                  </FormItem>
+                                )}
+                              />
+                              <FormField
+                                control={form.control}
+                                name="minWalletAgeDays"
+                                render={({ field }) => (
+                                  <FormItem>
+                                    <FormLabel>Min Wallet Age (Days)</FormLabel>
+                                    <FormControl>
+                                      <Input type="number" placeholder="e.g. 30" {...field} />
+                                    </FormControl>
+                                    <FormMessage />
+                                  </FormItem>
+                                )}
+                              />
+                            </div>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                              <FormField
+                                control={form.control}
+                                name="multiDaySolAmount"
+                                render={({ field }) => (
+                                  <FormItem>
+                                    <FormLabel>Must Hold (SOL)</FormLabel>
+                                    <FormControl>
+                                      <Input type="number" step="0.1" placeholder="e.g. 1.0" {...field} />
+                                    </FormControl>
+                                    <FormMessage />
+                                  </FormItem>
+                                )}
+                              />
+                              <FormField
+                                control={form.control}
+                                name="multiDaySolDays"
+                                render={({ field }) => (
+                                  <FormItem>
+                                    <FormLabel>For (Consecutive Days)</FormLabel>
+                                    <FormControl>
+                                      <Input type="number" placeholder="e.g. 3" {...field} />
+                                    </FormControl>
+                                    <FormMessage />
+                                  </FormItem>
+                                )}
+                              />
+                            </div>
+                          </AccordionContent>
+                        </AccordionItem>
+                      </Accordion>
 
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <FormField
