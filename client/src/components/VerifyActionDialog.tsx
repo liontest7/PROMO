@@ -33,12 +33,14 @@ export function VerifyActionDialog({ action, campaign, open, onOpenChange, onSuc
   const [proof, setProof] = useState("");
   const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
   const [step, setStep] = useState<"perform" | "verify" | "success">("perform");
+  const [isVerifying, setIsVerifying] = useState(false);
   const [holdingStatus, setHoldingStatus] = useState<{ 
     status: string; 
     remaining?: number;
     currentBalance?: number;
     requiredBalance?: number;
     holdDuration?: number;
+    error?: string;
   } | null>(null);
 
   const siteKey = import.meta.env.VITE_TURNSTILE_SITE_KEY || "0x4AAAAAACLuMcElS7ceqnxe";
@@ -61,6 +63,7 @@ export function VerifyActionDialog({ action, campaign, open, onOpenChange, onSuc
       setProof("");
       setHoldingStatus(null);
       setTurnstileToken(null);
+      setIsVerifying(false);
     }
   }, [open]);
 
@@ -95,8 +98,17 @@ export function VerifyActionDialog({ action, campaign, open, onOpenChange, onSuc
                 remaining: data.remaining,
                 currentBalance: data.currentBalance,
                 requiredBalance: data.requiredBalance,
-                holdDuration: data.holdDuration
+                holdDuration: data.holdDuration,
+                error: data.error
               });
+
+              if (data.error) {
+                toast({
+                  title: "Protection Check Failed",
+                  description: data.error,
+                  variant: "destructive"
+                });
+              }
 
               if (!isAutoFetch && (data.status === 'ready' || data.status === 'verified')) {
                 setStep("success");
@@ -114,8 +126,31 @@ export function VerifyActionDialog({ action, campaign, open, onOpenChange, onSuc
       }
 
       if (!action) return;
+      
+      // Twitter API Verification
+      if (action.type === 'twitter') {
+        setIsVerifying(true);
+        try {
+          const verifyRes = await fetch("/api/twitter/verify", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              actionId: action.id,
+              userWallet: walletAddress,
+              handle: proof
+            })
+          });
+          const verifyData = await verifyRes.json();
+          if (!verifyData.success) {
+            throw new Error(verifyData.message || "Twitter verification failed. Make sure you followed/retweeted.");
+          }
+        } finally {
+          setIsVerifying(false);
+        }
+      }
+
       const isWebsiteAction = action.type === "website";
-      let proofData: any = { proofText: proof };
+      let proofData: any = { proofText: proof, socialVerified: action.type === 'twitter' };
 
       if (!isWebsiteAction) {
         if (!proof || proof.length < 3) {
@@ -147,7 +182,15 @@ export function VerifyActionDialog({ action, campaign, open, onOpenChange, onSuc
           turnstileToken
         },
         {
-          onSuccess: () => {
+          onSuccess: (data: any) => {
+            if (data.error) {
+              toast({
+                title: "Protection Check Failed",
+                description: data.error,
+                variant: "destructive"
+              });
+              return;
+            }
             setStep("success");
             toast({ title: "Action Verified!" });
             if (onSuccess) onSuccess(action.id);
@@ -312,8 +355,8 @@ export function VerifyActionDialog({ action, campaign, open, onOpenChange, onSuc
                     />
                   </div>
 
-                  <Button onClick={() => handleVerify(false)} disabled={verifyMutation.isPending || !turnstileToken} className="w-full h-16 bg-[#00D1FF] hover:bg-[#00D1FF]/90 text-black rounded-2xl font-black uppercase tracking-widest">
-                    {verifyMutation.isPending ? <Loader2 className="animate-spin" /> : "CONFIRM"}
+                  <Button onClick={() => handleVerify(false)} disabled={verifyMutation.isPending || isVerifying || !turnstileToken} className="w-full h-16 bg-[#00D1FF] hover:bg-[#00D1FF]/90 text-black rounded-2xl font-black uppercase tracking-widest">
+                    {verifyMutation.isPending || isVerifying ? <Loader2 className="animate-spin" /> : "CONFIRM"}
                   </Button>
                 </div>
               )}
