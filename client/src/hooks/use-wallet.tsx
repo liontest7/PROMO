@@ -4,6 +4,12 @@ import { useQueryClient, useQuery } from "@tanstack/react-query";
 import { api } from "@shared/routes";
 import { Connection, PublicKey, LAMPORTS_PER_SOL, clusterApiUrl } from "@solana/web3.js";
 import { WalletSelector } from "@/components/WalletSelector";
+import { Buffer } from 'buffer';
+
+// Polyfill Buffer for Solana web3.js in browser
+if (typeof window !== 'undefined' && !window.Buffer) {
+  window.Buffer = Buffer;
+}
 
 import { StatusAlert } from "@/components/StatusAlert";
 
@@ -26,6 +32,7 @@ interface WalletContextType {
 declare global {
   interface Window {
     solana: any;
+    Buffer: typeof Buffer;
   }
 }
 
@@ -265,7 +272,22 @@ export function WalletProvider({ children }: { children: ReactNode }) {
 export function useWallet() {
   const context = useContext(WalletContext);
   if (context === undefined) {
-    throw new Error("useWallet must be used within a WalletProvider");
+    // Return a dummy object if used outside provider to prevent crashing during SSR or HMR
+    return {
+      isConnected: false,
+      walletAddress: null,
+      userId: null,
+      role: null,
+      connect: async () => {},
+      disconnect: () => {},
+      isLoading: false,
+      solBalance: null,
+      walletBalance: null,
+      showSelector: false,
+      setShowSelector: () => {},
+      pendingRole: null,
+      accountStatus: "active" as const
+    };
   }
   return context;
 }
