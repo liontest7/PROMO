@@ -37,6 +37,7 @@ export async function setupTwitterRoutes(app: Express) {
         client_secret: process.env.TWITTER_CLIENT_SECRET!,
         redirect_uris: [redirectUri],
         response_types: ["code"],
+        id_token_signed_response_alg: "HS256",
       });
     };
 
