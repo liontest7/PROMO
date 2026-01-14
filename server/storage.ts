@@ -56,6 +56,7 @@ export interface IStorage {
   getSystemSettings(): Promise<typeof systemSettings.$inferSelect>;
   updateSystemSettings(settings: Partial<typeof systemSettings.$inferSelect>): Promise<typeof systemSettings.$inferSelect>;
   updateUser(id: number, data: Partial<User>): Promise<User>;
+  getCampaignBySymbol(symbol: string): Promise<(Campaign & { actions: Action[] }) | undefined>;
   // Anti-fraud
   getWalletsByIp(ip: string): Promise<string[]>;
   logIpWalletAssociation(ip: string, wallet: string): Promise<void>;
@@ -73,6 +74,14 @@ export class DatabaseStorage implements IStorage {
       this.ipWalletLog.set(ip, new Set());
     }
     this.ipWalletLog.get(ip)!.add(wallet);
+  }
+
+  async getCampaignBySymbol(symbol: string): Promise<(Campaign & { actions: Action[] }) | undefined> {
+    const [campaign] = await db.select().from(campaigns).where(sql`LOWER(${campaigns.tokenName}) = LOWER(${symbol})`);
+    if (!campaign) return undefined;
+    
+    const campaignActions = await db.select().from(actions).where(eq(actions.campaignId, campaign.id));
+    return { ...campaign, actions: campaignActions };
   }
 
   async getUserByWallet(walletAddress: string): Promise<User | undefined> {

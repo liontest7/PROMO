@@ -11,7 +11,21 @@ export function setupCampaignRoutes(app: Express) {
   });
 
   app.get(api.campaigns.get.path, async (req, res) => {
-    const campaign = await storage.getCampaign(parseInt(req.params.id));
+    const id = req.params.id;
+    // Handle both numeric ID and Symbol
+    let campaign;
+    if (/^\d+$/.test(id)) {
+      campaign = await storage.getCampaign(parseInt(id));
+    } else {
+      campaign = await storage.getCampaignBySymbol(id);
+    }
+    
+    if (!campaign) return res.status(404).json({ message: "Campaign not found" });
+    res.json(campaign);
+  });
+
+  app.get("/api/campaigns/symbol/:symbol", async (req, res) => {
+    const campaign = await storage.getCampaignBySymbol(req.params.symbol);
     if (!campaign) return res.status(404).json({ message: "Campaign not found" });
     res.json(campaign);
   });
