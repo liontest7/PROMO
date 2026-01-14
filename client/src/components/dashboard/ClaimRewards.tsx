@@ -13,14 +13,17 @@ interface PendingReward {
   tokenAddress: string;
 }
 
-export function ClaimRewards({ walletAddress }: { walletAddress: string }) {
+export function ClaimRewards({ walletAddress, campaignId }: { walletAddress: string, campaignId?: number }) {
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
   const { data: pendingRewards, isLoading } = useQuery<PendingReward[]>({
-    queryKey: ["/api/rewards/pending", walletAddress],
+    queryKey: ["/api/rewards/pending", walletAddress, campaignId],
     queryFn: async () => {
-      const res = await fetch(`/api/rewards/pending?wallet=${walletAddress}`);
+      const url = campaignId 
+        ? `/api/rewards/pending?wallet=${walletAddress}&campaignId=${campaignId}`
+        : `/api/rewards/pending?wallet=${walletAddress}`;
+      const res = await fetch(url);
       if (!res.ok) throw new Error("Failed to fetch pending rewards");
       return res.json();
     },

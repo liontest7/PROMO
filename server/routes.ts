@@ -86,7 +86,13 @@ export async function registerRoutes(
     try {
       const user = await storage.getUserByWallet(req.query.wallet as string);
       if (!user) return res.status(404).json({ message: "User not found" });
-      const pending = await storage.getPendingRewards(user.id);
+      const campaignId = req.query.campaignId ? parseInt(req.query.campaignId as string) : undefined;
+      let pending = await storage.getPendingRewards(user.id);
+      
+      if (campaignId) {
+        pending = pending.filter(r => r.campaignId === campaignId);
+      }
+      
       res.json(pending);
     } catch (err) {
       res.status(500).json({ message: "Error fetching pending rewards" });

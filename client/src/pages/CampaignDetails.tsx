@@ -28,6 +28,7 @@ import confetti from "canvas-confetti";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { type Action, type Campaign, type Execution, type CampaignWithActions } from "@shared/schema";
 import { VerifyActionDialog } from "@/components/VerifyActionDialog";
+import { ClaimRewards } from "@/components/dashboard/ClaimRewards";
 
 export default function CampaignDetails() {
   const { id, symbol } = useParams();
@@ -299,6 +300,8 @@ export default function CampaignDetails() {
                   </div>
                 </div>
               </div>
+
+              <ClaimRewards walletAddress={walletAddress!} />
 
               <div className="grid gap-4">
                 {campaign.campaignType === 'holder_qualification' ? (
