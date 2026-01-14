@@ -117,10 +117,30 @@ export async function registerRoutes(
       console.log(`[Claim] Processing claim for user ${user.walletAddress} across ${campaignIds.length} campaigns`);
       
       try {
-        // Here we would call solanaService.transferTokens(...)
-        // Since we are doing this incrementally, we update DB status
+        const { Keypair } = await import("@solana/web3.js");
+        const { transferTokens } = await import("./services/solana");
+        const bs58 = (await import("bs58")).default;
+
+        const systemKeypairString = process.env.SYSTEM_WALLET_PRIVATE_KEY;
+        if (!systemKeypairString) {
+          throw new Error("System wallet not configured");
+        }
+
+        const fromKeypair = Keypair.fromSecretKey(bs58.decode(systemKeypairString));
+        const signatures: string[] = [];
+
+        for (const reward of filteredPending) {
+          const sig = await transferTokens(
+            user.walletAddress,
+            parseFloat(reward.amount),
+            reward.tokenAddress,
+            fromKeypair
+          );
+          signatures.push(sig);
+        }
+
         await storage.claimRewards(user.id, campaignIds);
-        res.json({ success: true, message: "Rewards claimed successfully" });
+        res.json({ success: true, message: "Rewards claimed successfully", signatures });
       } catch (transferError: any) {
         console.error("Transfer error during claim:", transferError);
         res.status(500).json({ message: "Blockchain transfer failed", error: transferError.message });

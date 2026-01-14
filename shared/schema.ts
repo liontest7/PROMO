@@ -101,7 +101,7 @@ export const holderState = pgTable("holder_state", {
 export const actions = pgTable("actions", {
   id: serial("id").primaryKey(),
   campaignId: integer("campaign_id").references(() => campaigns.id).notNull(),
-  type: text("type", { enum: ["website", "telegram", "twitter"] }).notNull(),
+  type: text("type", { enum: ["website", "telegram", "twitter", "twitter_follow", "twitter_retweet"] }).notNull(),
   title: text("title").notNull(),
   rewardAmount: numeric("reward_amount").notNull(),
   url: text("url").notNull(),
