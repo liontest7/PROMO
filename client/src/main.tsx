@@ -2,11 +2,14 @@ import { createRoot } from "react-dom/client";
 import App from "./App";
 import "./index.css";
 
-// Polyfill Buffer globally before any other imports that might depend on it
-import { Buffer } from "buffer";
+// Final Buffer injection attempt from multiple potential sources
 if (typeof window !== "undefined") {
-  (window as any).global = window;
-  (window as any).Buffer = Buffer;
+  window.global = window;
+  // @ts-ignore
+  window.Buffer = window.Buffer || (window as any).buffer?.Buffer;
 }
 
-createRoot(document.getElementById("root")!).render(<App />);
+const rootElement = document.getElementById("root");
+if (!rootElement) throw new Error("Failed to find the root element");
+
+createRoot(rootElement).render(<App />);
