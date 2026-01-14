@@ -46,7 +46,15 @@ export function setupCampaignRoutes(app: Express) {
       }
 
       const campaignData = insertCampaignSchema.parse(req.body);
-      const campaign = await storage.createCampaign(campaignData);
+      
+      // Calculate real gas budget based on actions and max claims
+      const totalPotentialExecutions = body.actions.reduce((acc: number, action: any) => acc + (action.maxExecutions || 100), 0);
+      const gasBudgetSol = (totalPotentialExecutions * 0.000005).toFixed(6); // 5000 lamports per tx as base
+
+      const campaign = await storage.createCampaign({
+        ...campaignData,
+        gasBudgetSol
+      } as any);
 
       const actionsData = z.array(insertActionSchema.omit({ campaignId: true })).parse(req.body.actions);
       for (const action of actionsData) {

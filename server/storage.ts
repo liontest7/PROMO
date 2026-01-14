@@ -226,8 +226,17 @@ export class DatabaseStorage implements IStorage {
       ...insertCampaign,
       totalBudget,
       remainingBudget: totalBudget,
-      status: "active"
+      status: "active",
+      creationFeePaid: false
     } as any).returning();
+    return campaign;
+  }
+
+  async updateCampaignFunding(id: number, data: { escrowWallet?: string; fundingTxSignature?: string; creationFeePaid?: boolean }): Promise<Campaign> {
+    const [campaign] = await db.update(campaigns)
+      .set(data)
+      .where(eq(campaigns.id, id))
+      .returning();
     return campaign;
   }
 
