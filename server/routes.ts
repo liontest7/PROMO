@@ -30,92 +30,89 @@ export async function registerRoutes(
       userinfo_endpoint: "https://api.twitter.com/2/users/me"
     });
 
-  const twitterClient = new twitterIssuer.Client({
-    client_id: process.env.TWITTER_CLIENT_ID!,
-    client_secret: process.env.TWITTER_CLIENT_SECRET!,
-    redirect_uris: [
-      `https://${process.env.REPLIT_DEV_DOMAIN}/api/auth/twitter/callback`
-    ],
-    response_types: ["code"],
-  });
+  // Twitter Client Factory
+  const getTwitterClient = (req: any) => {
+    const host = req.get('host') || process.env.REPLIT_DEV_DOMAIN;
+    return new twitterIssuer.Client({
+      client_id: process.env.TWITTER_CLIENT_ID!,
+      client_secret: process.env.TWITTER_CLIENT_SECRET!,
+      redirect_uris: [
+        `https://${host}/api/auth/twitter`
+      ],
+      response_types: ["code"],
+    });
+  };
 
   // Store PKCE and State in memory (for simulation purposes, ideally use session)
   const authStates = new Map<string, { code_verifier: string, walletAddress: string }>();
 
-  app.get('/api/auth/twitter', (req, res) => {
-    const walletAddress = req.query.walletAddress as string;
+  app.get('/api/auth/twitter', async (req, res) => {
+    const { state, code, walletAddress } = req.query;
+    const client = getTwitterClient(req);
+
+    // Phase 2: Callback handling (when code is present)
+    if (code && state) {
+      const authData = authStates.get(state as string);
+      if (!authData) {
+        console.error("[Twitter Auth] Invalid state");
+        return res.status(400).send("Invalid state");
+      }
+
+      try {
+        const tokenSet = await client.callback(
+          client.metadata.redirect_uris![0],
+          { code: code as string, state: state as string },
+          { code_verifier: authData.code_verifier, state: state as string }
+        );
+
+        const userinfo: any = await client.userinfo(tokenSet);
+        console.log(`[Twitter Auth] Success! User: ${userinfo.data.username}`);
+        
+        const user = await storage.getUserByWallet(authData.walletAddress);
+        
+        if (user) {
+          await storage.updateUserSocials(user.id, {
+            twitterHandle: userinfo.data.username,
+            profileImageUrl: userinfo.data.profile_image_url
+          });
+        }
+
+        return res.send(`
+          <script>
+            if (window.opener) {
+              window.opener.location.reload();
+              window.close();
+            } else {
+              window.location.href = "/dashboard";
+            }
+          </script>
+        `);
+      } catch (err: any) {
+        console.error("Twitter Auth Callback Error:", err);
+        const errorMsg = err.response?.body || err.message;
+        return res.status(500).send(`Authentication failed: ${errorMsg}`);
+      } finally {
+        authStates.delete(state as string);
+      }
+    }
+
+    // Phase 1: Initiation (no code present)
     if (!walletAddress) return res.status(400).send("Wallet address required");
 
-    const state = generators.state();
+    const newState = generators.state();
     const code_verifier = generators.codeVerifier();
     const code_challenge = generators.codeChallenge(code_verifier);
 
-    authStates.set(state, { code_verifier, walletAddress });
+    authStates.set(newState, { code_verifier, walletAddress: walletAddress as string });
 
-    // Ensure we use the current host for the redirect URI
-    const host = req.get('host') || process.env.REPLIT_DEV_DOMAIN;
-    const redirect_uri = `https://${host}/api/auth/twitter/callback`;
-    console.log(`[Twitter Auth] Starting flow with redirect_uri: ${redirect_uri}`);
-
-    const authUrl = twitterClient.authorizationUrl({
+    const authUrl = client.authorizationUrl({
       scope: "tweet.read users.read follows.read offline.access",
-      state,
+      state: newState,
       code_challenge,
       code_challenge_method: "S256",
-      redirect_uri
     });
 
     res.redirect(authUrl);
-  });
-
-  app.get('/api/auth/twitter/callback', async (req, res) => {
-    const { state, code } = req.query;
-    const authData = authStates.get(state as string);
-
-    if (!authData || !code) {
-      console.error("[Twitter Auth] Invalid state or missing code", { state, code });
-      return res.status(400).send("Invalid state or missing code");
-    }
-
-    try {
-      const host = req.get('host') || process.env.REPLIT_DEV_DOMAIN;
-      const redirect_uri = `https://${host}/api/auth/twitter/callback`;
-      const tokenSet = await twitterClient.callback(
-        redirect_uri,
-        { code: code as string, state: state as string },
-        { code_verifier: authData.code_verifier, state: state as string }
-      );
-
-      const userinfo: any = await twitterClient.userinfo(tokenSet);
-      console.log(`[Twitter Auth] Success! User: ${userinfo.data.username}`);
-      
-      const user = await storage.getUserByWallet(authData.walletAddress);
-      
-      if (user) {
-        await storage.updateUserSocials(user.id, {
-          twitterHandle: userinfo.data.username,
-          profileImageUrl: userinfo.data.profile_image_url
-        });
-      }
-
-      res.send(`
-        <script>
-          if (window.opener) {
-            window.opener.location.reload();
-            window.close();
-          } else {
-            window.location.href = "/dashboard";
-          }
-        </script>
-      `);
-    } catch (err: any) {
-      console.error("Twitter Auth Callback Error:", err);
-      // Detailed error for debugging
-      const errorMsg = err.response?.body || err.message;
-      res.status(500).send(`Authentication failed: ${errorMsg}`);
-    } finally {
-      authStates.delete(state as string);
-    }
   });
 
   app.use(async (req, res, next) => {
