@@ -314,80 +314,70 @@ export default function CampaignDetails() {
 
               <div className="grid gap-4">
                 {campaign.campaignType === 'holder_qualification' ? (
-                  <Card className="glass-card border-white/5 bg-white/5 overflow-hidden group hover:border-primary/20 transition-all rounded-2xl">
-                    <CardContent className="p-0">
-                      <div className="flex flex-col md:flex-row items-center gap-6 p-6 md:px-8 md:py-6 w-full min-h-[100px]">
-                        <div className="flex items-center gap-4 shrink-0">
-                          <div className="w-12 h-12 rounded-xl bg-primary/20 flex items-center justify-center shrink-0 border border-primary/10">
-                            <ShieldCheck className="w-6 h-6 text-primary" />
-                          </div>
-                          <div className="space-y-1">
-                            <h3 className="text-base font-black uppercase tracking-tight text-white leading-none">Holder Verification</h3>
-                            <p className="text-[11px] font-bold text-white/50 uppercase tracking-widest leading-normal">
-                              Hold {Number(campaign.minHoldingAmount).toLocaleString()} ${campaign.tokenName} for {campaign.minHoldingDuration} {campaign.minHoldingDuration === 1 ? 'day' : 'days'}
-                            </p>
-                            <div className="flex flex-wrap gap-x-3 gap-y-1">
-                              {campaign.requirements?.minSolBalance && (
-                                <p className="text-[10px] font-bold text-primary/70 uppercase tracking-widest leading-none">
-                                  Min SOL: {campaign.requirements.minSolBalance}
+                  <div className="space-y-4">
+                    {/* Simplified Holder Task UI to match Social Missions style */}
+                    <Card className="glass-card border-white/5 bg-white/5 overflow-hidden group hover:border-primary/30 transition-all rounded-2xl">
+                      <CardContent className="p-0">
+                        <div className="flex items-center justify-between px-8 py-5 h-20">
+                          <div className="flex items-center gap-5">
+                            <div className={cn(
+                              "w-10 h-10 rounded-lg flex items-center justify-center transition-all border",
+                              executions?.some(e => e.status === 'verified' || e.status === 'paid') 
+                                ? "bg-primary text-white border-primary" 
+                                : "bg-white/5 text-white/50 border-white/5 group-hover:bg-primary group-hover:text-white"
+                            )}>
+                              <ShieldCheck className="w-5 h-5" />
+                            </div>
+                            <div className="text-left">
+                              <p className="font-black text-base text-white uppercase tracking-tight">Holder Verification</p>
+                              <div className="flex flex-wrap gap-x-3 gap-y-1 mt-1">
+                                <p className="text-[10px] font-bold text-white/40 uppercase tracking-widest leading-none">
+                                  Hold {Number(campaign.minHoldingAmount).toLocaleString()} ${campaign.tokenName}
                                 </p>
-                              )}
-                              {campaign.requirements?.minWalletAgeDays && (
-                                <p className="text-[10px] font-bold text-primary/70 uppercase tracking-widest leading-none">
-                                  Min Wallet Age: {campaign.requirements.minWalletAgeDays} Days
-                                </p>
-                              )}
+                                {campaign.requirements?.minSolBalance && (
+                                  <p className="text-[10px] font-bold text-primary/50 uppercase tracking-widest leading-none">
+                                    Min SOL: {campaign.requirements.minSolBalance}
+                                  </p>
+                                )}
+                                {campaign.requirements?.minWalletAgeDays && (
+                                  <p className="text-[10px] font-bold text-primary/50 uppercase tracking-widest leading-none">
+                                    Age: {campaign.requirements.minWalletAgeDays}d
+                                  </p>
+                                )}
+                              </div>
                             </div>
                           </div>
-                        </div>
+                          <div className="flex items-center gap-6">
+                            <div className="text-right hidden sm:block">
+                              <p className="text-[10px] font-black text-white/30 uppercase tracking-widest">Reward</p>
+                              <p className="text-sm font-black text-primary">+{campaign.rewardPerWallet}</p>
+                            </div>
+                            {(() => {
+                              const execution = executions?.[0]; // For holder, usually one execution
+                              const isCompleted = execution?.status === 'verified' || execution?.status === 'paid';
+                              const isWithdrawn = execution?.withdrawn === true || execution?.status === 'paid';
 
-                        <div className="flex-1 flex items-center justify-between md:px-6 gap-6 w-full border-y md:border-y-0 md:border-x border-white/10 py-4 md:py-0">
-                          {isConnected ? (
-                            <>
-                          <div className="space-y-2.5 flex-1 min-w-0">
-                                <div className="flex flex-col items-center gap-1.5">
-                                  <div className="flex justify-between w-full items-center text-[11px] font-black uppercase tracking-widest text-white/90">
-                                    <span>Task Progress</span>
-                                    <span className="text-primary">
-                                      {executions?.filter(e => e.status === 'verified' || e.status === 'paid').length || 0} / {campaign.actions?.length || 0} Complete
-                                    </span>
-                                  </div>
-                                  <div className="relative h-2.5 w-full bg-white/10 rounded-full overflow-hidden border border-white/5">
-                                    <div 
-                                      className="absolute inset-y-0 left-0 bg-primary transition-all duration-1000 shadow-[0_0_10px_rgba(var(--primary),0.8)]" 
-                                      style={{ width: `${((executions?.filter(e => e.status === 'verified' || e.status === 'paid').length || 0) / (campaign.actions?.length || 1)) * 100}%` }}
-                                    />
-                                  </div>
-                                </div>
-                              </div>
-                              <div className="shrink-0 flex flex-col items-center gap-1 min-w-[100px]">
-                                <p className="text-[11px] font-black text-white/90 uppercase tracking-widest leading-none">Earned Rewards</p>
-                                <p className="text-lg font-black text-white font-mono leading-none mt-1">
-                                  {executions?.filter(e => e.status === 'verified' || e.status === 'paid').reduce((acc, e) => acc + parseFloat(e.action?.rewardAmount || "0"), 0).toFixed(2)} <span className="text-[10px] text-primary font-bold uppercase ml-0.5 tracking-tighter">${campaign.tokenName}</span>
-                                </p>
-                              </div>
-                            </>
-                          ) : (
-                            <div className="flex-1 text-center py-1">
-                              <p className="text-[11px] font-black text-white/20 uppercase tracking-[0.2em] italic">Connect wallet to view status</p>
-                            </div>
-                          )}
+                              return (
+                                <Button 
+                                  size="sm"
+                                  variant={isCompleted ? "outline" : "default"}
+                                  disabled={isCompleted && !isWithdrawn}
+                                  className={cn(
+                                    "font-black px-5 h-9 rounded-lg text-xs uppercase tracking-widest transition-all",
+                                    isCompleted && "border-primary/50 text-primary bg-primary/5 no-default-hover-elevate",
+                                    isWithdrawn && "bg-muted text-muted-foreground border-muted cursor-default opacity-70"
+                                  )}
+                                  onClick={handleHolderClick}
+                                >
+                                  {isWithdrawn ? "CLAIMED" : isCompleted ? `+${campaign.rewardPerWallet}` : "COMPLETE"}
+                                </Button>
+                              );
+                            })()}
+                          </div>
                         </div>
-                        
-                        <div className="shrink-0">
-                          <Button 
-                            className="font-black h-10 px-5 rounded-xl text-[10px] shadow-2xl transition-all min-w-[130px] uppercase tracking-widest group/btn bg-primary text-primary-foreground hover:scale-[1.02] active:scale-[0.98] shadow-primary/30"
-                            onClick={handleHolderClick}
-                          >
-                            <div className="flex items-center gap-1.5">
-                              {isConnected ? "Check Status" : "Verify & Start"}
-                              <ArrowRight className="w-3.5 h-3.5 group-hover/btn:translate-x-0.5 transition-transform" />
-                            </div>
-                          </Button>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
+                      </CardContent>
+                    </Card>
+                  </div>
                 ) : (
                   <div className="space-y-4">
                     {campaign.actions?.map((action: any) => {

@@ -240,8 +240,8 @@ export function VerifyActionDialog({ action, campaign, open, onOpenChange, onSuc
               <DialogTitle className="text-2xl font-black uppercase text-white tracking-tighter">
                 {isHolderCampaign ? "ELIGIBILITY CHECK" : "TASK VERIFICATION"}
               </DialogTitle>
-              <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-white">
-                VERIFICATION FOR {campaign.tokenName}
+              <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-primary">
+                VERIFYING COMMUNITY STATUS
               </p>
             </div>
           </div>
@@ -250,89 +250,70 @@ export function VerifyActionDialog({ action, campaign, open, onOpenChange, onSuc
         <div className="px-8 pb-10 space-y-6">
           {isHolderCampaign ? (
             <div className="space-y-6">
-              <div className="grid grid-cols-2 gap-4">
-                <div className="bg-[#141414] p-6 rounded-3xl border border-white/5 space-y-2">
-                  <p className="text-[10px] font-black uppercase text-white tracking-widest">Balance</p>
-                  <p className={cn("text-3xl font-black font-mono tracking-tighter", (holdingStatus?.currentBalance || 0) >= Number(campaign.minHoldingAmount || 0) ? "text-primary" : "text-[#FF4B4B]")}>
-                    {holdingStatus?.currentBalance?.toLocaleString() || "0"}
-                  </p>
-                </div>
-                <div className="bg-[#141414] p-6 rounded-3xl border border-white/5 space-y-2">
-                  <p className="text-[10px] font-black uppercase text-white tracking-widest">Required</p>
-                  <p className="text-3xl font-black font-mono text-white tracking-tighter">
-                    {Number(campaign.minHoldingAmount).toLocaleString()}
-                  </p>
-                </div>
-              </div>
-
-              <div className="bg-[#141414] p-6 rounded-3xl border border-white/5 space-y-4">
-                <div className="flex justify-between items-center">
-                  <p className="text-[10px] font-black uppercase text-white tracking-widest">Progress</p>
-                  <p className="text-[10px] font-black text-primary tracking-widest">
-                    {holdingStatus?.status === 'verified' ? '100%' : '0%'}
-                  </p>
-                </div>
-                <div className="relative h-4 w-full bg-white/5 rounded-full overflow-hidden border border-white/10">
-                  <div 
-                    className="h-full bg-gradient-to-r from-primary/80 to-primary transition-all duration-1000 flex items-center justify-center" 
-                    style={{ width: holdingStatus?.status === 'verified' ? '100%' : '0%' }}
-                  >
-                    {holdingStatus?.status === 'verified' && (
-                      <span className="text-[8px] font-black text-primary-foreground uppercase">Verified</span>
-                    )}
+              <div className="bg-white/5 p-6 rounded-3xl border border-white/10 space-y-4">
+                <div className="flex justify-between items-center border-b border-white/5 pb-4">
+                  <div className="space-y-1">
+                    <p className="text-[10px] font-black uppercase text-white/40 tracking-widest">Your Balance</p>
+                    <p className={cn("text-2xl font-black font-mono tracking-tighter", (holdingStatus?.currentBalance || 0) >= Number(campaign.minHoldingAmount || 0) ? "text-primary" : "text-red-500")}>
+                      {holdingStatus?.currentBalance?.toLocaleString() || "0"} <span className="text-xs">${campaign.tokenName}</span>
+                    </p>
+                  </div>
+                  <div className="text-right space-y-1">
+                    <p className="text-[10px] font-black uppercase text-white/40 tracking-widest">Requirement</p>
+                    <p className="text-2xl font-black font-mono text-white tracking-tighter">
+                      {Number(campaign.minHoldingAmount).toLocaleString()}
+                    </p>
                   </div>
                 </div>
-                {holdingStatus && (
-                  <div className="pt-2 space-y-3 border-t border-white/5">
-                    <div className="grid grid-cols-2 gap-4">
-                      <div className="space-y-1">
-                        <span className="text-[8px] font-black text-white uppercase tracking-widest block">Hold Required</span>
-                        <span className="text-[10px] font-bold text-white">{holdingStatus.holdDuration || 0} Days</span>
-                      </div>
-                      <div className="space-y-1 text-right">
-                        <span className="text-[8px] font-black text-white uppercase tracking-widest block">Remaining</span>
-                        <span className="text-[10px] font-bold text-white">{holdingStatus.remaining !== undefined ? `${holdingStatus.remaining} Blocks` : '---'}</span>
-                      </div>
-                    </div>
+
+                <div className="space-y-3">
+                  <div className="flex justify-between items-center">
+                    <p className="text-[10px] font-black uppercase text-white/60 tracking-widest">Verification Status</p>
+                    <Badge className={cn("text-[9px] font-black px-2 py-0.5", holdingStatus?.status === 'verified' ? "bg-primary/20 text-primary border-primary/30" : "bg-white/5 text-white/40 border-white/10")}>
+                      {holdingStatus?.status === 'verified' ? 'VERIFIED' : 'PENDING'}
+                    </Badge>
                   </div>
-                )}
+                  <div className="relative h-2 w-full bg-white/5 rounded-full overflow-hidden border border-white/10">
+                    <div 
+                      className="h-full bg-primary transition-all duration-1000 shadow-[0_0_15px_rgba(34,197,94,0.4)]" 
+                      style={{ width: holdingStatus?.status === 'verified' ? '100%' : '0%' }}
+                    />
+                  </div>
+                </div>
               </div>
 
-              <div className="bg-[#141414] p-6 rounded-3xl border border-white/5 flex items-center justify-center min-h-[70px]">
-                <Turnstile
-                  siteKey={siteKey}
-                  onSuccess={(token) => setTurnstileToken(token)}
-                  options={{ theme: "dark" }}
-                />
-              </div>
+              {holdingStatus?.status !== 'verified' && (
+                <div className="bg-white/5 p-6 rounded-3xl border border-white/5 flex items-center justify-center min-h-[70px]">
+                  <Turnstile
+                    siteKey={siteKey}
+                    onSuccess={(token) => setTurnstileToken(token)}
+                    options={{ theme: "dark" }}
+                  />
+                </div>
+              )}
 
-              <div className="space-y-3">
+              <div className="space-y-4">
                 <Button 
                   onClick={() => handleVerify(false)} 
-                  disabled={verifyMutation.isPending || !turnstileToken} 
-                  className="w-full h-16 bg-primary hover:bg-primary/90 text-primary-foreground rounded-2xl font-black uppercase tracking-widest text-sm shadow-[0_0_20px_rgba(34,197,94,0.3)] transition-all hover:scale-[1.02] active:scale-[0.98]"
+                  disabled={verifyMutation.isPending || (holdingStatus?.status !== 'verified' && !turnstileToken)} 
+                  className="w-full h-14 bg-primary hover:bg-primary/90 text-primary-foreground rounded-2xl font-black uppercase tracking-widest text-sm shadow-[0_10px_20px_rgba(34,197,94,0.2)] transition-all hover:scale-[1.02]"
                 >
-                  {verifyMutation.isPending ? <Loader2 className="animate-spin" /> : "REFRESH"}
+                  {verifyMutation.isPending ? <Loader2 className="animate-spin mr-2" /> : null}
+                  {holdingStatus?.status === 'verified' ? "CLOSE WINDOW" : "VERIFY ELIGIBILITY"}
                 </Button>
                 
-                <div className="space-y-4 pt-2">
-                  <p className="text-[10px] font-black text-center text-white uppercase tracking-[0.3em]">Quick Links</p>
-                  <div className="flex justify-center items-center gap-6">
-                    <button onClick={() => window.open(`${CONFIG.TOKEN_DETAILS.BUY_LINKS.JUPITER}${campaign.tokenAddress}`, '_blank')} className="opacity-40 hover:opacity-100 transition-all hover:scale-110 flex flex-col items-center gap-1">
-                      <img src={CONFIG.ui.walletIcons.jupiter} className="w-8 h-8" alt="Jupiter" />
-                      <span className="text-[8px] font-black text-white">JUPITER</span>
-                    </button>
-                    <button onClick={() => window.open(`https://dexscreener.com/solana/${campaign.tokenAddress}`, '_blank')} className="opacity-40 hover:opacity-100 transition-all hover:scale-110 flex flex-col items-center gap-1">
-                      <img src={CONFIG.ui.walletIcons.dexscreener} className="w-8 h-8 grayscale invert" alt="DexScreener" />
-                      <span className="text-[8px] font-black text-white">DEX</span>
-                    </button>
-                    <button onClick={() => window.open(`https://pump.fun/coin/${campaign.tokenAddress}`, '_blank')} className="opacity-40 hover:opacity-100 transition-all hover:scale-110 flex flex-col items-center gap-1">
-                      <img src={CONFIG.ui.walletIcons.pumpfun} className="w-8 h-8" alt="Pump.fun" />
-                      <span className="text-[8px] font-black text-white">PUMP</span>
-                    </button>
-                  </div>
+                <div className="flex justify-center items-center gap-4">
+                  <Button variant="ghost" size="sm" className="text-[10px] font-black text-white/40 hover:text-white uppercase tracking-widest" onClick={() => window.open(`${CONFIG.TOKEN_DETAILS.BUY_LINKS.JUPITER}${campaign.tokenAddress}`, '_blank')}>
+                    Buy ${campaign.tokenName}
+                  </Button>
+                  <div className="w-1 h-1 rounded-full bg-white/10" />
+                  <Button variant="ghost" size="sm" className="text-[10px] font-black text-white/40 hover:text-white uppercase tracking-widest" onClick={() => window.open(`https://dexscreener.com/solana/${campaign.tokenAddress}`, '_blank')}>
+                    View Chart
+                  </Button>
                 </div>
               </div>
+            </div>
+          ) : (
 
               <div className="flex items-start gap-3 p-4 bg-white/[0.02] rounded-2xl border border-white/5 mt-4">
                 <Info className="w-4 h-4 text-white mt-0.5" />
