@@ -81,7 +81,7 @@ const IdentitySync = ({ isAuthenticated, user, logout }: { isAuthenticated: bool
               e.stopPropagation();
               console.log("Unlinking X Identity...");
               try {
-                // Use a different endpoint name to avoid any potential middleware interference
+                // Perform the unlink via API call
                 const res = await fetch('/api/user/unlink-x', {
                   method: 'POST',
                   headers: { 
@@ -94,7 +94,7 @@ const IdentitySync = ({ isAuthenticated, user, logout }: { isAuthenticated: bool
                 
                 if (res.ok) {
                   const updatedData = await res.json();
-                  // Update cache directly and refetch to be 100% sure
+                  // Directly update local cache to reflect change immediately without refresh
                   queryClient.setQueryData(["/api/users", walletAddress], updatedData);
                   await queryClient.invalidateQueries({ queryKey: ["/api/users", walletAddress] });
                   toast({ title: "X Identity Removed", description: "Your X account has been successfully unlinked." });

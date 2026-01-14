@@ -75,9 +75,13 @@ export async function registerRoutes(
     res.json({ status: "ok" });
   });
 
-  // HARMLESS LOGOUT MAPPING - Prevents platform interception
-  app.all("/api/logout", (req, res) => {
-    res.json({ success: true, message: "Handled" });
+  // HARMLSS CATCH-ALL FOR LOGOUT - Completely ignore /api/logout to prevent platform takeover
+  app.all("/api/logout", (req, res, next) => {
+    // If it's an AJAX request, return JSON. Otherwise, just redirect to dashboard safely.
+    if (req.xhr || req.headers.accept?.includes('json')) {
+      return res.json({ success: true, message: "Ignored" });
+    }
+    res.redirect('/dashboard');
   });
 
   // Dedicated Unlink Endpoint
@@ -96,35 +100,64 @@ export async function registerRoutes(
     }
   });
 
-  // Twitter OAuth bypass for Identity Sync - Fix popup issues
+  // Twitter OAuth bypass for Identity Sync - UX Optimized Simulation
   app.get('/api/auth/twitter', (req, res) => {
     const mockHandle = "DropySentinel";
     const mockProfileImage = "https://abs.twimg.com/sticky/default_profile_images/default_profile_normal.png";
     
-    // Standard OAuth completion page that communicates with the main window
+    // This page simulates the Twitter authorization screen
     res.send(`
       <!DOCTYPE html>
       <html>
         <head>
-          <title>Twitter Auth Success</title>
+          <title>Authorize Dropy to use your account?</title>
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
           <style>
-            body { font-family: sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; background: #000; color: #fff; margin: 0; }
-            .spinner { width: 40px; height: 40px; border: 4px solid rgba(255,255,255,0.1); border-left-color: #1d9bf0; border-radius: 50%; animation: spin 1s linear infinite; }
-            @keyframes spin { to { transform: rotate(360deg); } }
+            body { 
+              font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+              display: flex; flex-direction: column; align-items: center; justify-content: center; 
+              height: 100vh; background: #000; color: #fff; margin: 0; padding: 20px; text-align: center;
+            }
+            .card { background: #16181c; padding: 30px; border-radius: 16px; width: 100%; max-width: 400px; border: 1px solid #333; }
+            .logo { font-size: 40px; margin-bottom: 20px; }
+            h1 { font-size: 20px; margin-bottom: 10px; }
+            p { color: #71767b; font-size: 14px; margin-bottom: 30px; line-height: 1.5; }
+            .btn { 
+              background: #1d9bf0; color: white; border: none; padding: 12px 24px; 
+              border-radius: 9999px; font-weight: bold; font-size: 15px; cursor: pointer;
+              width: 100%; transition: background 0.2s;
+            }
+            .btn:hover { background: #1a8cd8; }
+            .btn-secondary { background: transparent; border: 1px solid #536471; color: #1d9bf0; margin-top: 12px; }
+            .loading { display: none; }
           </style>
         </head>
         <body>
-          <div class="spinner"></div>
-          <p>Connecting your account...</p>
+          <div class="card" id="main-card">
+            <div class="logo">𝕏</div>
+            <h1>Authorize Dropy?</h1>
+            <p>Dropy would like to view your profile information and handle.</p>
+            <button class="btn" onclick="authorize()">Authorize App</button>
+            <button class="btn btn-secondary" onclick="window.close()">Cancel</button>
+          </div>
+          <div class="loading" id="loading">
+            <div style="font-size: 30px; margin-bottom: 20px;">⚡</div>
+            <p style="color: #fff;">Connecting to Dropy...</p>
+          </div>
           <script>
-            setTimeout(() => {
-              if (window.opener) {
-                window.opener.location.href = window.location.origin + "/dashboard?verified_twitter=true&handle=${mockHandle}&profile_image=${encodeURIComponent(mockProfileImage)}";
-                window.close();
-              } else {
-                window.location.href = "/dashboard?verified_twitter=true&handle=${mockHandle}&profile_image=${encodeURIComponent(mockProfileImage)}";
-              }
-            }, 500);
+            function authorize() {
+              document.getElementById('main-card').style.display = 'none';
+              document.getElementById('loading').style.display = 'block';
+              
+              setTimeout(() => {
+                if (window.opener) {
+                  window.opener.location.href = window.location.origin + "/dashboard?verified_twitter=true&handle=${mockHandle}&profile_image=${encodeURIComponent(mockProfileImage)}";
+                  window.close();
+                } else {
+                  window.location.href = "/dashboard?verified_twitter=true&handle=${mockHandle}&profile_image=${encodeURIComponent(mockProfileImage)}";
+                }
+              }, 800);
+            }
           </script>
         </body>
       </html>
