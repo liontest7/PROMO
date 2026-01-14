@@ -55,6 +55,7 @@ export interface IStorage {
   // System Settings
   getSystemSettings(): Promise<typeof systemSettings.$inferSelect>;
   updateSystemSettings(settings: Partial<typeof systemSettings.$inferSelect>): Promise<typeof systemSettings.$inferSelect>;
+  updateUser(id: number, data: Partial<User>): Promise<User>;
   // Anti-fraud
   getWalletsByIp(ip: string): Promise<string[]>;
   logIpWalletAssociation(ip: string, wallet: string): Promise<void>;
@@ -423,6 +424,15 @@ export class DatabaseStorage implements IStorage {
       .where(eq(systemSettings.id, settings.id))
       .returning();
     return updated;
+  }
+
+  async updateUser(id: number, data: Partial<User>): Promise<User> {
+    const [user] = await db.update(users)
+      .set(data)
+      .where(eq(users.id, id))
+      .returning();
+    if (!user) throw new Error("User not found");
+    return user;
   }
 }
 

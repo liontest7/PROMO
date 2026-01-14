@@ -1,6 +1,121 @@
 import type { Express } from "express";
+import { storage } from "../storage";
+import { PLATFORM_CONFIG } from "@shared/config";
+import os from "os";
 
 export function setupAdminRoutes(app: Express) {
-  // Admin routes are currently handled in the main routes.ts file
-  // This module can be extended with additional admin functionality
+  // Admin stats
+  app.get("/api/admin/stats", async (req, res) => {
+    try {
+      const allUsers = await storage.getAllUsers();
+      const allCampaigns = await storage.getAllCampaigns();
+      const allExecutions = await storage.getAllExecutions();
+      
+      const stats = {
+        totalUsers: allUsers.length,
+        activeCampaigns: allCampaigns.filter(c => c.status === 'active').length,
+        totalExecutions: allExecutions.length,
+        totalRewardsPaid: allExecutions
+          .filter(e => e.status === 'paid')
+          .reduce((acc, e) => {
+            const reward = e.action ? parseFloat(e.action.rewardAmount) : 0;
+            return acc + reward;
+          }, 0),
+        blockedUsers: allUsers.filter(u => u.status === 'blocked').length,
+        suspendedUsers: allUsers.filter(u => u.status === 'suspended').length,
+        suspiciousUsers: allUsers.filter(u => (u.reputationScore || 0) < 50).length
+      };
+      res.json(stats);
+    } catch (err) {
+      console.error("Admin stats error:", err);
+      res.status(500).json({ message: "Error fetching admin stats" });
+    }
+  });
+
+  // Users management
+  app.get("/api/admin/users", async (req, res) => {
+    try {
+      const users = await storage.getAllUsers();
+      res.json(users);
+    } catch (err) {
+      res.status(500).json({ message: "Error fetching users" });
+    }
+  });
+
+  app.post("/api/admin/users/:id/role", async (req, res) => {
+    try {
+      const user = await storage.updateUser(parseInt(req.params.id), { role: req.body.role });
+      res.json(user);
+    } catch (err) {
+      res.status(500).json({ message: "Error updating user role" });
+    }
+  });
+
+  app.post("/api/admin/users/:id/status", async (req, res) => {
+    try {
+      const user = await storage.updateUser(parseInt(req.params.id), { status: req.body.status });
+      res.json(user);
+    } catch (err) {
+      res.status(500).json({ message: "Error updating user status" });
+    }
+  });
+
+  app.post("/api/admin/users/:id/balance", async (req, res) => {
+    try {
+      const user = await storage.updateUser(parseInt(req.params.id), { balance: req.body.balance });
+      res.json(user);
+    } catch (err) {
+      res.status(500).json({ message: "Error updating user balance" });
+    }
+  });
+
+  app.post("/api/admin/users/:id/reputation", async (req, res) => {
+    try {
+      const user = await storage.updateUser(parseInt(req.params.id), { reputationScore: req.body.reputationScore });
+      res.json(user);
+    } catch (err) {
+      res.status(500).json({ message: "Error updating user reputation" });
+    }
+  });
+
+  // Campaigns management
+  app.get("/api/admin/campaigns", async (req, res) => {
+    try {
+      const campaigns = await storage.getAllCampaigns();
+      res.json(campaigns);
+    } catch (err) {
+      res.status(500).json({ message: "Error fetching campaigns" });
+    }
+  });
+
+  // Executions management
+  app.get("/api/admin/executions", async (req, res) => {
+    try {
+      const executions = await storage.getAllExecutions();
+      res.json(executions);
+    } catch (err) {
+      res.status(500).json({ message: "Error fetching executions" });
+    }
+  });
+
+  // System Health
+  app.get("/api/admin/system-health", async (req, res) => {
+    try {
+      const health = {
+        uptime: process.uptime(),
+        memory: {
+          rss: Math.round(process.memoryUsage().rss / 1024 / 1024),
+          heapTotal: Math.round(process.memoryUsage().heapTotal / 1024 / 1024),
+          heapUsed: Math.round(process.memoryUsage().heapUsed / 1024 / 1024),
+        },
+        cpu: os.loadavg(),
+        dbStatus: 'Connected',
+        rpcStatus: 'Healthy',
+        errorLogs: []
+      };
+      res.json(health);
+    } catch (err) {
+      res.status(500).json({ message: "Error fetching system health" });
+    }
+  });
 }
