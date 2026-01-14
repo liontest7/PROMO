@@ -22,6 +22,8 @@ export const users = pgTable("users", {
   telegramHandle: text("telegram_handle"),
   profileImageUrl: text("profile_image_url"),
   status: text("status", { enum: ["active", "suspended", "blocked"] }).default("active").notNull(),
+  earnedXBonus: boolean("earned_x_bonus").default(false).notNull(),
+  earnedTGBonus: boolean("earned_tg_bonus").default(false).notNull(),
   createdAt: timestamp("created_at").defaultNow(),
 });
 

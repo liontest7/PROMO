@@ -106,9 +106,16 @@ export class DatabaseStorage implements IStorage {
     
     // Award reputation for first-time social link
     if (user && !user.twitterHandle && socials.twitterHandle) {
-      await db.update(users)
-        .set({ reputationScore: (user.reputationScore || 0) + 25 })
-        .where(eq(users.id, id));
+      const hasAlreadyEarnedXBonus = (user as any).earnedXBonus || false;
+      if (!hasAlreadyEarnedXBonus) {
+        await db.update(users)
+          .set({ 
+            reputationScore: (user.reputationScore || 0) + 25,
+            // @ts-ignore
+            earnedXBonus: true 
+          })
+          .where(eq(users.id, id));
+      }
     } else if (user && user.twitterHandle && socials.twitterHandle === null) {
       // Deduct reputation when unlinking Twitter
       await db.update(users)
@@ -117,9 +124,16 @@ export class DatabaseStorage implements IStorage {
     }
 
     if (user && !user.telegramHandle && socials.telegramHandle) {
-      await db.update(users)
-        .set({ reputationScore: (user.reputationScore || 0) + 25 })
-        .where(eq(users.id, id));
+      const hasAlreadyEarnedTGBonus = (user as any).earnedTGBonus || false;
+      if (!hasAlreadyEarnedTGBonus) {
+        await db.update(users)
+          .set({ 
+            reputationScore: (user.reputationScore || 0) + 25,
+            // @ts-ignore
+            earnedTGBonus: true 
+          })
+          .where(eq(users.id, id));
+      }
     } else if (user && user.telegramHandle && socials.telegramHandle === null) {
       // Deduct reputation when unlinking Telegram
       await db.update(users)

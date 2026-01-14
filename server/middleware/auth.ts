@@ -18,6 +18,18 @@ export async function authMiddleware(req: Request, res: Response, next: NextFunc
       });
     }
 
+    // IP-Wallet association for anti-fraud
+    const clientIp = req.ip || req.socket.remoteAddress || "unknown";
+    if (walletAddress && typeof clientIp === 'string') {
+      await storage.logIpWalletAssociation(clientIp, walletAddress);
+      
+      const walletsOnIp = await storage.getWalletsByIp(clientIp);
+      if (walletsOnIp.length > 3) {
+        console.warn(`[Anti-Fraud] IP ${clientIp} has ${walletsOnIp.length} wallets associated:`, walletsOnIp);
+        // Optional: Auto-flag or suspend if it exceeds a threshold
+      }
+    }
+
     // Branding update
     const originalSend = res.send;
     res.send = function(body) {
