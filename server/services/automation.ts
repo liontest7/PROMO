@@ -80,7 +80,10 @@ export class AutomationService {
       const settings = await storage.getSystemSettings();
       const rewardsPercent = (settings.rewardsPercent || 40) / 100;
       const creationFee = settings.creationFee || 10000;
-      const weeklyPrizePool = allCampaigns.length * creationFee * rewardsPercent;
+      
+      // Safety check: Filter for only active and funded campaigns
+      const activeCampaigns = allCampaigns.filter(c => c.status === 'active' && c.creationFeePaid);
+      const weeklyPrizePool = activeCampaigns.length * creationFee * rewardsPercent;
 
       // Get leaderboard based on weekly timeframe points
       const allUsers = await storage.getAllUsers();

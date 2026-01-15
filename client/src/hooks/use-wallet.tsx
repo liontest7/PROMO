@@ -47,18 +47,20 @@ export function WalletProvider({ children }: { children: ReactNode }) {
 
   const fetchBalance = async (address: string) => {
     try {
-      const connection = new Connection(clusterApiUrl("mainnet-beta"), "confirmed");
+      // Use public RPC for balance check to avoid API limits
+      const connection = new Connection("https://api.mainnet-beta.solana.com", "confirmed");
       const publicKey = new PublicKey(address);
       const balance = await connection.getBalance(publicKey);
       setSolBalance(balance / LAMPORTS_PER_SOL);
     } catch (error) {
-      console.error("Error fetching balance:", error);
+      console.warn("Failed to fetch mainnet balance, trying devnet...");
       try {
-        const connection = new Connection(clusterApiUrl("devnet"), "confirmed");
+        const connection = new Connection("https://api.devnet.solana.com", "confirmed");
         const publicKey = new PublicKey(address);
         const balance = await connection.getBalance(publicKey);
         setSolBalance(balance / LAMPORTS_PER_SOL);
       } catch (e) {
+        console.error("Balance fetch failed across all networks");
         setSolBalance(0);
       }
     }
