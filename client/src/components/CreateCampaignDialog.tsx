@@ -31,7 +31,6 @@ import { Textarea } from "@/components/ui/textarea";
 import { Plus, Trash2, Rocket, Eye, CheckCircle2, Globe, Twitter, Send, Loader2, Coins, Shield, ChevronDown, ChevronUp } from "lucide-react";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { CampaignSuccessCard } from "./CampaignSuccessCard";
 
 // Form Schema
 const formSchema = insertCampaignSchema.extend({

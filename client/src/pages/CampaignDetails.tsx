@@ -109,7 +109,7 @@ export default function CampaignDetails() {
     enabled: !!(isConnected && walletAddress && campaign?.id),
   });
 
-  const { data: participants, refetch: refetchExecutions } = useQuery<(Execution & { user: { walletAddress: string } })[]>({
+  const { data: participants } = useQuery<(Execution & { user: { walletAddress: string } })[]>({
     queryKey: [`/api/executions/campaign/${campaignId}`],
     enabled: !!campaignId,
   });
@@ -157,7 +157,6 @@ export default function CampaignDetails() {
 
   const onVerificationSuccess = (actionId: number) => {
     queryClient.invalidateQueries({ queryKey: [`/api/executions/campaign/${campaign?.id}`] });
-    refetchExecutions();
     
     // Find action for celebration
     let action = campaign?.actions.find((a: any) => a.id === actionId);
