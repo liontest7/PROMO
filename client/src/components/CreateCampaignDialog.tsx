@@ -32,6 +32,8 @@ import { Plus, Trash2, Rocket, Eye, CheckCircle2, Globe, Twitter, Send, Loader2,
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
+import { SuccessCard } from "./SuccessCard";
+
 // Form Schema
 const formSchema = insertCampaignSchema.extend({
   title: z.string().min(3, "Campaign title must be at least 3 characters").max(50, "Title too long"),
@@ -359,7 +361,7 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
             colors: ['#22c55e', '#16a34a', '#ffffff']
           });
         });
-        setCreatedCampaign(data);
+        setShowSuccessCard(true); // Added this to trigger success card
         window.dispatchEvent(new CustomEvent('campaign-created', { detail: data }));
       },
       onError: (error: any) => {
@@ -861,10 +863,13 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
         </DialogContent>
       </Dialog>
 
-      <CampaignSuccessCard 
-        open={showSuccessCard} 
-        campaign={createdCampaign} 
-        onClose={() => setShowSuccessCard(false)} 
+      <SuccessCard 
+        isOpen={showSuccessCard} 
+        onClose={() => setShowSuccessCard(false)}
+        campaignTitle={createdCampaign?.title || ""}
+        rewardAmount={createdCampaign?.totalBudget || "0"}
+        tokenName={createdCampaign?.tokenName || ""}
+        actionTitle="Campaign Launched"
       />
     </>
   );
