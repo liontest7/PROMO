@@ -19,8 +19,8 @@ export async function authMiddleware(req: Request, res: Response, next: NextFunc
     }
 
     // IP-Wallet association for anti-fraud
-    const clientIp = req.ip || req.socket.remoteAddress || "unknown";
-    if (walletAddress && typeof clientIp === 'string') {
+    const clientIp = (req.headers['x-forwarded-for'] as string || req.ip || req.socket.remoteAddress || "unknown").split(',')[0].trim();
+    if (walletAddress && typeof clientIp === 'string' && clientIp !== "unknown") {
       await storage.logIpWalletAssociation(clientIp, walletAddress);
       
       const walletsOnIp = await storage.getWalletsByIp(clientIp);
