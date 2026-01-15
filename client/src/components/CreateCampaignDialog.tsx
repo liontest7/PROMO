@@ -802,6 +802,36 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
                   </div>
                 </div>
 
+                <div className="space-y-4">
+                  <h4 className="text-[10px] font-black uppercase text-primary tracking-[0.2em]">Active Protections</h4>
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                    {form.getValues("minSolBalance") > 0 && (
+                      <div className="p-3 rounded-xl bg-white/5 border border-white/10">
+                        <p className="text-[9px] text-white/40 font-bold uppercase mb-1">Min Balance</p>
+                        <p className="text-sm font-black text-white">{form.getValues("minSolBalance")} SOL</p>
+                      </div>
+                    )}
+                    {form.getValues("minWalletAgeDays") > 0 && (
+                      <div className="p-3 rounded-xl bg-white/5 border border-white/10">
+                        <p className="text-[9px] text-white/40 font-bold uppercase mb-1">Wallet Age</p>
+                        <p className="text-sm font-black text-white">{form.getValues("minWalletAgeDays")} Days</p>
+                      </div>
+                    )}
+                    {form.getValues("minXAccountAgeDays") > 0 && (
+                      <div className="p-3 rounded-xl bg-white/5 border border-white/10">
+                        <p className="text-[9px] text-white/40 font-bold uppercase mb-1">X Account Age</p>
+                        <p className="text-sm font-black text-white">{form.getValues("minXAccountAgeDays")} Days</p>
+                      </div>
+                    )}
+                    {form.getValues("minXFollowers") > 0 && (
+                      <div className="p-3 rounded-xl bg-white/5 border border-white/10">
+                        <p className="text-[9px] text-white/40 font-bold uppercase mb-1">X Followers</p>
+                        <p className="text-sm font-black text-white">{form.getValues("minXFollowers")}+</p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
                 <div className="flex gap-3">
                   <Button variant="outline" className="flex-1" onClick={() => setStep("edit")}>Back to Edit</Button>
                   <Button className="flex-1 font-bold shadow-[0_0_20px_rgba(34,197,94,0.3)]" onClick={form.handleSubmit(onSubmit)} disabled={isPending}>

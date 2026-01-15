@@ -246,8 +246,17 @@ export function VerifyActionDialog({ action, campaign, open, onOpenChange, onSuc
         <DialogHeader className="p-8 pb-4">
           <div className="flex justify-between items-start mb-2">
             <div>
-              <DialogTitle className="text-2xl font-black uppercase text-white tracking-tighter">
+              <DialogTitle className="text-2xl font-black uppercase text-white tracking-tighter flex items-center gap-2">
                 {isHolderCampaign ? "ELIGIBILITY CHECK" : "TASK VERIFICATION"}
+                <Button 
+                  variant="ghost" 
+                  size="icon" 
+                  className="h-6 w-6 text-white/20 hover:text-white transition-colors"
+                  onClick={() => handleVerify(true)}
+                  disabled={verifyMutation.isPending || isVerifying}
+                >
+                  <RefreshCw className={cn("w-4 h-4", (verifyMutation.isPending || isVerifying) && "animate-spin")} />
+                </Button>
               </DialogTitle>
               <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-primary">
                 VERIFYING COMMUNITY STATUS
