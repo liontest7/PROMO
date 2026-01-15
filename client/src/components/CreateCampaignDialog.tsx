@@ -176,8 +176,8 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
   }, 0);
 
   const platformFee = PLATFORM_CONFIG.TOKENOMICS.CREATION_FEE;
-  const baseGasFee = PLATFORM_CONFIG.FEE_SOL;
-  const perRewardGasFee = 0.002; // Estimated gas fee per reward transaction
+  const baseGasFee = PLATFORM_CONFIG.FEE_SOL; // Base fee for Escrow setup (0.005 SOL)
+  const perRewardGasFee = 0.0015; // Optimized gas fee per reward transaction
   
   const totalExecutions = watchedType === "holder_qualification" 
     ? Number(form.watch("maxClaims") || 0)

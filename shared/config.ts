@@ -1,7 +1,7 @@
 export const PLATFORM_CONFIG = {
   BURN_AMOUNT: 10000,
   TOKEN_SYMBOL: "Dropy",
-  FEE_SOL: 0.05,
+  FEE_SOL: 0.005,
   SOLANA_RPC_ENDPOINTS: [
     "https://mainnet.helius-rpc.com/?api-key=d2e5b128-da30-4ef0-84ea-d7afaf76c596",
     "https://mainnet.helius-rpc.com/?api-key=dd4d0f55-719e-4f2e-b8b8-2f686bc7d2bf",
