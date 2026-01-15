@@ -22,8 +22,7 @@ export default function Leaderboard() {
 
   const { data: leaderboardRes, isLoading, error } = useQuery<any>({
     queryKey: ["/api/leaderboard", timeframe],
-    refetchInterval: 30000, 
-    staleTime: 5000,
+    staleTime: 30000, // Keep data fresh for 30s but don't force refresh
   });
 
   if (error) {
