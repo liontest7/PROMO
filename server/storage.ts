@@ -202,11 +202,12 @@ export class DatabaseStorage implements IStorage {
       .where(sql`${campaigns.remainingBudget}::numeric < 0 OR ${campaigns.status} = 'paused'`)
       .orderBy(desc(campaigns.createdAt));
     
-    const results = [];
-    for (const campaign of suspicious) {
+    if (suspicious.length === 0) return [];
+
+    const results = await Promise.all(suspicious.map(async (campaign) => {
       const campaignActions = await db.select().from(actions).where(eq(actions.campaignId, campaign.id));
-      results.push({ ...campaign, actions: campaignActions });
-    }
+      return { ...campaign, actions: campaignActions };
+    }));
     return results;
   }
 
@@ -215,16 +216,12 @@ export class DatabaseStorage implements IStorage {
       ? db.select().from(campaigns).where(eq(campaigns.creatorId, creatorId)).orderBy(desc(campaigns.createdAt))
       : db.select().from(campaigns).orderBy(desc(campaigns.createdAt)));
     
-    // Filter out campaigns that might be MOCK if requested, but let's assume we want all that exist in DB.
-    // The user specifically wants to remove MOCK coins/data.
-    
-    const results = [];
-    for (const campaign of allCampaigns) {
-      // Skip campaigns that look like mock data if they aren't created by real users
-      // For now, let's just make sure we don't have hardcoded mocks here.
+    if (allCampaigns.length === 0) return [];
+
+    const results = await Promise.all(allCampaigns.map(async (campaign) => {
       const campaignActions = await db.select().from(actions).where(eq(actions.campaignId, campaign.id));
-      results.push({ ...campaign, actions: campaignActions });
-    }
+      return { ...campaign, actions: campaignActions };
+    }));
     return results;
   }
 
@@ -309,16 +306,22 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getExecutionsByUser(userId: number): Promise<(Execution & { action: Action; campaign: Campaign })[]> {
-    const userExecutions = await db.select().from(executions).where(eq(executions.userId, userId)).orderBy(desc(executions.createdAt));
-    const results = [];
-    for (const execution of userExecutions) {
-      const [action] = await db.select().from(actions).where(eq(actions.id, execution.actionId));
-      const [campaign] = await db.select().from(campaigns).where(eq(campaigns.id, execution.campaignId));
-      if (action && campaign) {
-        results.push({ ...execution, action, campaign });
-      }
-    }
-    return results;
+    const results = await db.select({
+      execution: executions,
+      action: actions,
+      campaign: campaigns
+    })
+    .from(executions)
+    .innerJoin(actions, eq(executions.actionId, actions.id))
+    .innerJoin(campaigns, eq(executions.campaignId, campaigns.id))
+    .where(eq(executions.userId, userId))
+    .orderBy(desc(executions.createdAt));
+
+    return results.map(r => ({
+      ...r.execution,
+      action: r.action,
+      campaign: r.campaign
+    }));
   }
 
   async updateExecutionStatus(id: number, status: "pending" | "verified" | "paid" | "rejected" | "failed", txSignature?: string, errorMessage?: string): Promise<Execution> {
