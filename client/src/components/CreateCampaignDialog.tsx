@@ -323,6 +323,8 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
 
     const formattedValues = {
       ...values,
+      initialMarketCap: values.initialMarketCap || "0",
+      currentMarketCap: values.initialMarketCap || "0",
       creatorId: userId,
       totalBudget: values.campaignType === 'holder_qualification' 
         ? (Number(values.rewardPerWallet || 0) * Number(values.maxClaims || 0)).toString()

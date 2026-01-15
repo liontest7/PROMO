@@ -48,7 +48,8 @@ export function CampaignCard({ campaign, onActionClick, isOwner }: CampaignCardP
   }, [campaign.tokenAddress]);
 
   const initialMC = campaign.initialMarketCap ? Number(campaign.initialMarketCap) : null;
-  const mcChange = (initialMC && currentMC) ? ((currentMC - initialMC) / initialMC) * 100 : null;
+  const currentMCVal = campaign.currentMarketCap ? Number(campaign.currentMarketCap) : currentMC;
+  const mcChange = (initialMC && currentMCVal) ? ((currentMCVal - initialMC) / initialMC) * 100 : null;
 
   const formatMC = (val: number) => {
     if (val >= 1000000) return `$${(val / 1000000).toFixed(1)}M`;

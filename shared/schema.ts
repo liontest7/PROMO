@@ -90,6 +90,8 @@ export const campaigns = pgTable("campaigns", {
     };
   }>(),
   celebrationTriggered: boolean("celebration_triggered").default(false).notNull(),
+  initialMarketCap: numeric("initial_market_cap"),
+  currentMarketCap: numeric("current_market_cap"),
   createdAt: timestamp("created_at").defaultNow(),
 });
 

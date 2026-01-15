@@ -82,7 +82,7 @@ export default function CampaignDetails() {
     return () => clearInterval(interval);
   }, [campaign?.tokenAddress]);
 
-  const initialMC = (campaign as any)?.initialMarketCap ? Number((campaign as any).initialMarketCap) : null;
+  const initialMC = campaign?.initialMarketCap ? Number(campaign.initialMarketCap) : null;
   const mcChange = (initialMC && currentMC) ? ((currentMC - initialMC) / initialMC) * 100 : null;
 
   const formatMC = (val: number) => {
@@ -542,7 +542,7 @@ export default function CampaignDetails() {
             </section>
           </div>
 
-          <div className="space-y-4">
+          <div className="lg:col-span-1 space-y-6">
             <Card className="glass-card border-primary/20 bg-primary/5 rounded-2xl overflow-hidden shadow-2xl">
               <CardHeader className="bg-primary/10 border-b border-primary/10 py-5">
                 <CardTitle className="text-xs uppercase tracking-[0.2em] text-primary flex items-center justify-between font-black">
@@ -551,7 +551,7 @@ export default function CampaignDetails() {
                 </CardTitle>
               </CardHeader>
               <CardContent className="p-6 space-y-5">
-                {initialMC && currentMC && (
+                {initialMC !== null && currentMC !== null && (
                   <div className="p-5 rounded-2xl bg-white/[0.03] border border-white/5 space-y-4">
                     <div className="flex justify-between items-center">
                       <span className="text-xs font-black text-white/40 uppercase tracking-widest">Performance</span>
@@ -564,13 +564,13 @@ export default function CampaignDetails() {
                       </div>
                     </div>
                     <div className="grid grid-cols-2 gap-6">
-                      <div>
-                        <p className="text-[11px] font-black text-white/30 uppercase tracking-tight mb-1.5">MC Air-drop Launch</p>
-                        <p className="text-base font-black text-white">{formatMC(initialMC)}</p>
+                      <div className="space-y-1">
+                        <p className="text-[11px] font-black text-white/30 uppercase tracking-tight">MC Air-drop Launch</p>
+                        <p className="text-lg font-black text-white">{formatMC(initialMC)}</p>
                       </div>
-                      <div>
-                        <p className="text-[11px] font-black text-white/30 uppercase tracking-tight mb-1.5">Current Real MC</p>
-                        <p className="text-base font-black text-primary">{formatMC(currentMC)}</p>
+                      <div className="space-y-1">
+                        <p className="text-[11px] font-black text-primary/40 uppercase tracking-tight">Current Real MC</p>
+                        <p className="text-lg font-black text-primary">{formatMC(currentMC)}</p>
                       </div>
                     </div>
                   </div>
@@ -579,7 +579,7 @@ export default function CampaignDetails() {
                   <div className="flex justify-between items-center">
                     <span className="text-white/40 text-sm font-black uppercase tracking-wider">Network</span>
                     <span className="font-black text-white text-base flex items-center gap-2">
-                      <img src="https://raw.githubusercontent.com/solana-labs/token-list/main/assets/mainnet/So11111111111111111111111111111111111111112/logo.png" alt="Solana" className="w-4 h-4" />
+                      <img src={CONFIG.ui.walletIcons.solana} alt="Solana" className="w-4 h-4" />
                       SOLANA
                     </span>
                   </div>
