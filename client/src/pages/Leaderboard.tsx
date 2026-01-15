@@ -59,7 +59,7 @@ export default function Leaderboard() {
   return (
     <div className="min-h-screen bg-[#050505] text-white">
       <Navigation />
-      <main className="max-w-6xl mx-auto px-4 py-4">
+      <main className="max-w-6xl mx-auto px-4 pt-4 pb-24">
         <div className="text-center mb-8 relative">
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-primary/10 blur-[100px] rounded-full" />
           
