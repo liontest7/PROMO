@@ -10,7 +10,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 
 export default function Leaderboard() {
-  const [timeframe, setTimeframe] = useState<"all_time" | "monthly" | "weekly">("all_time");
+  const [timeframe, setTimeframe] = useState<"all_time" | "monthly" | "weekly">("weekly");
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
 
@@ -49,34 +49,34 @@ export default function Leaderboard() {
                   Hall <span className="text-primary">of Fame</span>
                 </h1>
                 <p className="text-white uppercase tracking-[0.5em] text-sm md:text-base font-black italic">Top Ecosystem Contributors • Real-time Sync</p>
-                <div className="mt-4 flex flex-col items-center gap-2">
-                  <div className="bg-primary/10 border border-primary/20 px-8 py-4 rounded-3xl backdrop-blur-md">
-                    <p className="text-xs text-primary font-black uppercase tracking-[0.25em] mb-1">Weekly Prize Pool</p>
-                    <p className="text-3xl md:text-4xl font-black text-white flex items-baseline gap-3">
-                      {(PLATFORM_CONFIG.TOKENOMICS.CREATION_FEE * 0.4).toLocaleString()} <span className="text-lg text-primary font-black">$DROP</span>
+                <div className="mt-2 flex flex-col items-center gap-1">
+                  <div className="bg-primary/10 border border-primary/20 px-6 py-2 rounded-2xl backdrop-blur-md">
+                    <p className="text-[10px] text-primary font-black uppercase tracking-[0.2em] mb-0.5">Weekly Prize Pool</p>
+                    <p className="text-2xl md:text-3xl font-black text-white flex items-baseline gap-2">
+                      {(PLATFORM_CONFIG.TOKENOMICS.CREATION_FEE * 0.4).toLocaleString()} <span className="text-sm text-primary font-black">$DROP</span>
                     </p>
                   </div>
-                  <p className="text-xs md:text-sm text-white/90 uppercase tracking-[0.15em] font-black italic">
+                  <p className="text-[10px] md:text-xs text-white/80 uppercase tracking-[0.1em] font-black italic">
                     40% of all campaign fees distributed weekly to Top 3
                   </p>
                 </div>
               </div>
               
               {/* Character Trophy positioned to the right and lower */}
-              <div className="absolute -bottom-16 right-0 md:right-[-80px] transform translate-y-1/2">
+              <div className="absolute -bottom-12 right-0 md:right-[-60px] transform translate-y-1/2">
                 <div className="relative">
                   <div className="absolute inset-0 bg-primary/20 blur-3xl rounded-full" />
                   <img 
                     src="https://i.ibb.co/5Xd708DM/20260110-2035-Dropy-Wins-Trophy-remix-01kemjzex0f9xvh2emrc9tk4jy.png" 
                     alt="Dropy Trophy" 
-                    className="w-48 h-48 md:w-60 md:h-60 object-contain relative z-10 drop-shadow-[0_0_50px_rgba(34,197,94,0.5)] scale-x-[-1]"
+                    className="w-40 h-40 md:w-52 md:h-52 object-contain relative z-10 drop-shadow-[0_0_40px_rgba(34,197,94,0.5)] scale-x-[-1]"
                   />
                 </div>
               </div>
             </div>
           </div>
 
-          <div className="flex justify-center gap-4 mt-8 relative z-10">
+          <div className="flex justify-center gap-3 mt-4 relative z-10">
             {[
               { id: "weekly", label: "Weekly", icon: Clock },
               { id: "monthly", label: "Monthly", icon: Calendar },
