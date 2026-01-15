@@ -53,8 +53,8 @@ export default function Leaderboard() {
   return (
     <div className="min-h-screen bg-[#050505] text-white">
       <Navigation />
-      <main className="max-w-6xl mx-auto px-4 py-12">
-        <div className="text-center mb-16 relative">
+      <main className="max-w-6xl mx-auto px-4 py-4">
+        <div className="text-center mb-8 relative">
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-primary/10 blur-[100px] rounded-full" />
           
           <div className="relative z-10 max-w-4xl mx-auto">
@@ -65,7 +65,7 @@ export default function Leaderboard() {
                 </h1>
                 <p className="text-white uppercase tracking-[0.5em] text-sm md:text-base font-black italic">Top Ecosystem Contributors • Real-time Sync</p>
                 
-                <div className="flex flex-col items-center gap-4 mt-16 mb-16">
+                <div className="flex flex-col items-center gap-4 mt-12 mb-12">
                   <div className="flex bg-white/5 p-1.5 rounded-2xl border border-white/10 shadow-2xl backdrop-blur-xl">
                     <Button 
                       variant="ghost" 
