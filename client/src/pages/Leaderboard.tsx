@@ -65,7 +65,7 @@ export default function Leaderboard() {
                 </h1>
                 <p className="text-white uppercase tracking-[0.5em] text-sm md:text-base font-black italic">Top Ecosystem Contributors • Real-time Sync</p>
                 
-                <div className="flex flex-col items-center gap-4 mt-28 mb-12">
+                <div className="flex flex-col items-center gap-4 mt-[120px] mb-12 relative z-50">
                   <div className="flex bg-white/5 p-1.5 rounded-2xl border border-white/10 shadow-2xl backdrop-blur-xl">
                     <Button 
                       variant="ghost" 
