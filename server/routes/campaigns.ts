@@ -1,9 +1,10 @@
 import { Express } from "express";
 import { storage } from "../storage";
 import { api } from "@shared/routes";
-import { insertCampaignSchema, insertActionSchema, auditLogs } from "@shared/schema";
+import { insertCampaignSchema, insertActionSchema, auditLogs, executions } from "@shared/schema";
 import { z } from "zod";
 import { db } from "../db";
+import { eq, and, sql } from "drizzle-orm";
 
 export function setupCampaignRoutes(app: Express) {
   app.get(api.campaigns.list.path, async (req, res) => {

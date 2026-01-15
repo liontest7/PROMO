@@ -62,6 +62,9 @@ const formSchema = insertCampaignSchema.extend({
   telegramUrl: z.string().url("Invalid Telegram URL").optional().or(z.literal("")),
   minSolBalance: z.coerce.number().min(0).default(0),
   minWalletAgeDays: z.coerce.number().min(0).default(0),
+  minXAccountAgeDays: z.coerce.number().min(0).default(0),
+  minXFollowers: z.coerce.number().min(0).default(0),
+  minFollowDurationDays: z.coerce.number().min(0).default(0),
   multiDaySolAmount: z.coerce.number().min(0).default(0),
   multiDaySolDays: z.coerce.number().min(0).default(0),
   initialMarketCap: z.string().optional().or(z.literal("")),
@@ -137,6 +140,9 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
       telegramUrl: "",
       minSolBalance: 0,
       minWalletAgeDays: 0,
+      minXAccountAgeDays: 0,
+      minXFollowers: 0,
+      minFollowDurationDays: 0,
       multiDaySolAmount: 0,
       multiDaySolDays: 0,
       campaignType: undefined,
@@ -315,6 +321,9 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
       requirements: {
         minSolBalance: values.minSolBalance,
         minWalletAgeDays: values.minWalletAgeDays,
+        minXAccountAgeDays: values.minXAccountAgeDays,
+        minXFollowers: values.minXFollowers,
+        minFollowDurationDays: values.minFollowDurationDays,
         multiDaySolHolding: values.multiDaySolAmount > 0 && values.multiDaySolDays > 0 ? {
           amount: values.multiDaySolAmount,
           days: values.multiDaySolDays
@@ -502,75 +511,59 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
                         </div>
                       </div>
 
-                      {/* Advanced Protection Section moved even further down */}
-                      <Accordion type="single" collapsible className="w-full">
-                        <AccordionItem value="advanced-protection" className="border-orange-500/20 px-4 rounded-xl bg-orange-500/5">
-                          <AccordionTrigger className="hover:no-underline py-4">
-                            <div className="flex items-center gap-2 text-orange-500">
-                              <Shield className="w-4 h-4" />
-                              <span className="text-sm font-semibold">Advanced Anti-Bot Protection</span>
+                      {/* Unified Anti-Bot Protection Section */}
+                      <div className="space-y-4">
+                        <div className="flex items-center gap-2 mb-2 p-4 rounded-xl bg-orange-500/5 border border-orange-500/20">
+                          <Shield className="w-5 h-5 text-orange-500" />
+                          <div className="flex-1">
+                            <h3 className="text-sm font-black text-white uppercase tracking-wider leading-none mb-1">Advanced Anti-Bot Protection</h3>
+                            <p className="text-[10px] text-white/40 font-bold uppercase tracking-widest">Multi-layer security for your campaign</p>
+                          </div>
+                        </div>
+                        
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-5 rounded-2xl border border-white/5 bg-white/5">
+                          <div className="space-y-4">
+                            <p className="text-[10px] font-black uppercase text-primary tracking-widest border-b border-white/5 pb-2">Wallet Requirements</p>
+                            <FormField control={form.control} name="minSolBalance" render={({ field }) => (
+                              <FormItem><FormLabel className="text-[10px] uppercase font-bold text-white/60">Min SOL Balance</FormLabel><FormControl><Input type="number" step="0.01" placeholder="0.1" className="h-10 bg-black/20" {...field} /></FormControl></FormItem>
+                            )} />
+                            <FormField control={form.control} name="minWalletAgeDays" render={({ field }) => (
+                              <FormItem><FormLabel className="text-[10px] uppercase font-bold text-white/60">Min Wallet Age (Days)</FormLabel><FormControl><Input type="number" placeholder="30" className="h-10 bg-black/20" {...field} /></FormControl></FormItem>
+                            )} />
+                          </div>
+
+                          <div className="space-y-4 border-l border-white/5 pl-4">
+                            <p className="text-[10px] font-black uppercase text-[#1DA1F2] tracking-widest border-b border-white/5 pb-2">X (Twitter) Requirements</p>
+                            <div className="grid grid-cols-1 gap-3">
+                              <FormField control={form.control} name="minXAccountAgeDays" render={({ field }) => (
+                                <FormItem><FormLabel className="text-[10px] uppercase font-bold text-white/60">Account Age (Days)</FormLabel><FormControl><Input type="number" placeholder="90" className="h-10 bg-black/20" {...field} /></FormControl></FormItem>
+                              )} />
+                              <div className="grid grid-cols-2 gap-3">
+                                <FormField control={form.control} name="minXFollowers" render={({ field }) => (
+                                  <FormItem><FormLabel className="text-[10px] uppercase font-bold text-white/60">Min Followers</FormLabel><FormControl><Input type="number" placeholder="10" className="h-10 bg-black/20" {...field} /></FormControl></FormItem>
+                                )} />
+                                <FormField control={form.control} name="minFollowDurationDays" render={({ field }) => (
+                                  <FormItem><FormLabel className="text-[10px] uppercase font-bold text-white/60">Hold Follow (Days)</FormLabel><FormControl><Input type="number" placeholder="3" className="h-10 bg-black/20" {...field} /></FormControl></FormItem>
+                                )} />
+                              </div>
                             </div>
-                          </AccordionTrigger>
-                          <AccordionContent className="pb-4 space-y-4 border-t border-orange-500/10 pt-4">
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                              <FormField
-                                control={form.control}
-                                name="minSolBalance"
-                                render={({ field }) => (
-                                  <FormItem>
-                                    <FormLabel>Min SOL Balance</FormLabel>
-                                    <FormControl>
-                                      <Input type="number" step="0.01" placeholder="e.g. 0.1" {...field} />
-                                    </FormControl>
-                                    <FormMessage />
-                                  </FormItem>
-                                )}
-                              />
-                              <FormField
-                                control={form.control}
-                                name="minWalletAgeDays"
-                                render={({ field }) => (
-                                  <FormItem>
-                                    <FormLabel>Min Wallet Age (Days)</FormLabel>
-                                    <FormControl>
-                                      <Input type="number" placeholder="e.g. 30" {...field} />
-                                    </FormControl>
-                                    <FormMessage />
-                                  </FormItem>
-                                )}
-                              />
-                            </div>
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                              <FormField
-                                control={form.control}
-                                name="multiDaySolAmount"
-                                render={({ field }) => (
-                                  <FormItem>
-                                    <FormLabel>Must Hold (SOL)</FormLabel>
-                                    <FormControl>
-                                      <Input type="number" step="0.1" placeholder="e.g. 1.0" {...field} />
-                                    </FormControl>
-                                    <FormMessage />
-                                  </FormItem>
-                                )}
-                              />
-                              <FormField
-                                control={form.control}
-                                name="multiDaySolDays"
-                                render={({ field }) => (
-                                  <FormItem>
-                                    <FormLabel>For X Consecutive Days</FormLabel>
-                                    <FormControl>
-                                      <Input type="number" placeholder="e.g. 7" {...field} />
-                                    </FormControl>
-                                    <FormMessage />
-                                  </FormItem>
-                                )}
-                              />
-                            </div>
-                          </AccordionContent>
-                        </AccordionItem>
-                      </Accordion>
+                          </div>
+                        </div>
+
+                        {/* Visual Summary Sentence - Integrated as requested */}
+                        <div className="p-4 rounded-xl bg-primary/10 border border-primary/20 flex items-start gap-3">
+                          <div className="w-5 h-5 rounded-full bg-primary/20 flex items-center justify-center shrink-0 mt-0.5">
+                            <CheckCircle2 className="w-3 h-3 text-primary" />
+                          </div>
+                          <p className="text-[11px] font-bold text-white leading-relaxed uppercase tracking-tight">
+                            <span className="text-primary mr-1">Final Setup:</span>
+                            Only users with {form.watch('minSolBalance') || 0} SOL & {form.watch('minWalletAgeDays') || 0} day old wallets can participate. 
+                            {form.watch('minXAccountAgeDays') > 0 && ` Accounts must be ${form.watch('minXAccountAgeDays')}d+ old.`}
+                            {form.watch('minXFollowers') > 0 && ` ${form.watch('minXFollowers')}+ followers required.`}
+                            {form.watch('minFollowDurationDays') > 0 && ` Must maintain follow for ${form.watch('minFollowDurationDays')} days.`}
+                          </p>
+                        </div>
+                      </div>
 
                       {watchedType === "holder_qualification" ? (
                         <div className="space-y-4 p-4 rounded-xl bg-primary/5 border border-primary/20">

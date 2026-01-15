@@ -11,6 +11,9 @@ import { PLATFORM_CONFIG } from "@shared/config";
 import { PublicKey } from "@solana/web3.js";
 import { getSolanaConnection } from "./services/solana";
 import { checkIpFraud, verifyTurnstile } from "./services/security";
+import { db } from "./db";
+import { eq, and, sql } from "drizzle-orm";
+import { follower_tracking } from "@shared/schema";
 
 export async function registerRoutes(
   httpServer: Server,
@@ -235,6 +238,91 @@ export async function registerRoutes(
             return res.status(403).json({ 
               message: `Requirement failed: You must hold at least ${multiDaySolHolding.amount} SOL for ${multiDaySolHolding.days} consecutive days to participate.` 
             });
+          }
+        }
+
+        // 4. X (Twitter) Account Age
+        const { minXAccountAgeDays, minXFollowers, minFollowDurationDays } = campaign.requirements;
+        if (minXAccountAgeDays && minXAccountAgeDays > 0) {
+          const twitterUser = (req.session as any).twitterUser;
+          if (!twitterUser || !twitterUser.created_at) {
+             return res.status(400).json({ message: "X account details missing. Please re-link your account." });
+          }
+          const accountCreatedAt = new Date(twitterUser.created_at).getTime();
+          const accountAgeInDays = (Date.now() - accountCreatedAt) / (1000 * 60 * 60 * 24);
+          if (accountAgeInDays < minXAccountAgeDays) {
+            return res.status(403).json({ 
+              message: `Requirement failed: Your X account must be at least ${minXAccountAgeDays} days old. It is currently ${Math.floor(accountAgeInDays)} days old.` 
+            });
+          }
+        }
+
+        // 5. X (Twitter) Followers Count
+        if (minXFollowers && minXFollowers > 0) {
+          const twitterUser = (req.session as any).twitterUser;
+          if (!twitterUser || twitterUser.followers_count === undefined) {
+             return res.status(400).json({ message: "X account follower data missing. Please re-link your account." });
+          }
+          if (twitterUser.followers_count < minXFollowers) {
+            return res.status(403).json({ 
+              message: `Requirement failed: Your X account must have at least ${minXFollowers} followers. You currently have ${twitterUser.followers_count}.` 
+            });
+          }
+        }
+
+        // 6. Follow Duration Tracking
+        if (minFollowDurationDays && minFollowDurationDays > 0) {
+          const targetUsername = action.url.split('/').pop()?.split('?')[0] || "";
+          if (action.type === 'twitter_follow') {
+            const [tracking] = await db.select().from(follower_tracking)
+              .where(and(
+                eq(follower_tracking.userId, user.id),
+                eq(follower_tracking.campaignId, campaign.id)
+              ));
+            
+            if (!tracking) {
+              // Initial follow check
+              const accessToken = (req.session as any).twitterAccessToken;
+              const { verifyTwitterFollow } = await import("./services/twitter");
+              const isFollowing = await verifyTwitterFollow(accessToken, targetUsername);
+              
+              if (isFollowing) {
+                await db.insert(follower_tracking).values({
+                  userId: user.id,
+                  campaignId: campaign.id,
+                  followStartTimestamp: new Date(),
+                  lastVerifiedAt: new Date(),
+                });
+                return res.status(202).json({ 
+                  success: true, 
+                  status: "tracking", 
+                  message: "Follow detected! You must maintain this follow for " + minFollowDurationDays + " days to earn rewards.",
+                  followProgress: {
+                    currentDays: 0,
+                    requiredDays: minFollowDurationDays,
+                    startDate: new Date().toISOString()
+                  }
+                });
+              } else {
+                return res.status(403).json({ message: "Please follow @"+targetUsername+" first." });
+              }
+            } else {
+              const followStart = new Date(tracking.followStartTimestamp).getTime();
+              const daysFollowed = (Date.now() - followStart) / (1000 * 60 * 60 * 24);
+              
+              if (daysFollowed < minFollowDurationDays) {
+                return res.status(202).json({ 
+                  success: true, 
+                  status: "tracking", 
+                  message: `Tracking progress: ${Math.floor(daysFollowed)}/${minFollowDurationDays} days completed.`,
+                  followProgress: {
+                    currentDays: Math.floor(daysFollowed),
+                    requiredDays: minFollowDurationDays,
+                    startDate: tracking.followStartTimestamp.toISOString()
+                  }
+                });
+              }
+            }
           }
         }
       }

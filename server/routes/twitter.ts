@@ -59,7 +59,7 @@ export async function setupTwitterRoutes(app: Express) {
         if (!accessToken) throw new Error("No access token returned");
 
         const userRes = await fetch(
-          "https://api.twitter.com/2/users/me?user.fields=profile_image_url,username",
+          "https://api.twitter.com/2/users/me?user.fields=profile_image_url,username,created_at,public_metrics",
           {
             headers: {
               Authorization: `Bearer ${accessToken}`,
@@ -68,7 +68,10 @@ export async function setupTwitterRoutes(app: Express) {
         );
 
         const userJson: any = await userRes.json();
-        const twitterUser = userJson.data;
+        const twitterUser = {
+          ...userJson.data,
+          followers_count: userJson.data?.public_metrics?.followers_count || 0
+        };
 
         if (!twitterUser) {
           throw new Error("Failed to fetch Twitter user");
@@ -88,6 +91,7 @@ export async function setupTwitterRoutes(app: Express) {
           });
           // Store token securely in session or encrypted in DB for verification
           (req.session as any).twitterAccessToken = accessToken;
+          (req.session as any).twitterUser = twitterUser;
         }
 
         delete (req.session as any).twitterAuth;

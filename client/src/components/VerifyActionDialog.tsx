@@ -42,6 +42,11 @@ export function VerifyActionDialog({ action, campaign, open, onOpenChange, onSuc
     currentBalance?: number;
     requiredBalance?: number;
     holdDuration?: number;
+    followProgress?: {
+      currentDays: number;
+      requiredDays: number;
+      startDate: string;
+    };
     error?: string;
   } | null>(null);
 
@@ -378,6 +383,24 @@ export function VerifyActionDialog({ action, campaign, open, onOpenChange, onSuc
                       options={{ theme: "dark" }}
                     />
                   </div>
+
+                  {holdingStatus?.followProgress && (
+                    <div className="bg-white/5 p-5 rounded-2xl border border-white/10 space-y-3">
+                      <div className="flex justify-between items-center text-[10px] font-black uppercase tracking-widest">
+                        <span className="text-white/40">Follow Progress</span>
+                        <span className="text-primary">{holdingStatus.followProgress.currentDays} / {holdingStatus.followProgress.requiredDays} Days</span>
+                      </div>
+                      <div className="relative h-2 w-full bg-white/5 rounded-full overflow-hidden">
+                        <div 
+                          className="h-full bg-primary shadow-[0_0_10px_rgba(34,197,94,0.5)] transition-all duration-1000" 
+                          style={{ width: `${(holdingStatus.followProgress.currentDays / holdingStatus.followProgress.requiredDays) * 100}%` }}
+                        />
+                      </div>
+                      <p className="text-[9px] text-center text-white/30 font-bold uppercase">
+                        Required: Follow since {new Date(holdingStatus.followProgress.startDate).toLocaleDateString()}
+                      </p>
+                    </div>
+                  )}
 
                   <div className="flex flex-col gap-3">
                     <Button 
