@@ -61,12 +61,12 @@ export function setupCampaignRoutes(app: Express) {
 
       // Create actions
       if (req.body.actions && Array.isArray(req.body.actions)) {
-        for (const action of req.body.actions) {
-          await storage.createAction({
+        await Promise.all(req.body.actions.map((action: any) => 
+          storage.createAction({
             ...action,
             campaignId: campaign.id
-          });
-        }
+          })
+        ));
       }
 
       // Process deflationary fee (10,000 $Dropy)
