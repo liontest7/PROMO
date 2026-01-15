@@ -4,7 +4,7 @@ import fetch from "node-fetch";
 import { storage } from "../storage";
 
 const TWITTER_REDIRECT_URI = process.env.TWITTER_REDIRECT_URI!;
-// חייב להיות זהה 100% למה שמוגדר ב-X Developer Portal
+// Must be identical to what is configured in X Developer Portal
 
 export async function setupTwitterRoutes(app: Express) {
   const twitterIssuer = new Issuer({

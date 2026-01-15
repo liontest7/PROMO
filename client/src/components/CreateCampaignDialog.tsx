@@ -176,7 +176,16 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
   }, 0);
 
   const platformFee = PLATFORM_CONFIG.TOKENOMICS.CREATION_FEE;
-  const gasFeeSol = PLATFORM_CONFIG.FEE_SOL;
+  const baseGasFee = PLATFORM_CONFIG.FEE_SOL;
+  const perRewardGasFee = 0.002; // Estimated gas fee per reward transaction
+  
+  const totalExecutions = watchedType === "holder_qualification" 
+    ? Number(form.watch("maxClaims") || 0)
+    : (watchedActions || []).reduce((acc, a) => acc + (Number(a.maxExecutions) || 0), 0);
+    
+  const dynamicGasFee = baseGasFee + (totalExecutions * perRewardGasFee);
+  const gasFeeSol = Number(dynamicGasFee.toFixed(4));
+
   const totalProjectTokenCost = (watchedType === "holder_qualification" 
     ? (Number(form.watch("rewardPerWallet")) * Number(form.watch("maxClaims")) || 0)
     : totalCalculatedCost) + platformFee;
@@ -708,7 +717,12 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
                           </div>
                           <div className="flex justify-between text-sm">
                             <span className="text-muted-foreground italic">Network Gas (SOL)</span>
-                            <span className="font-bold text-emerald-500">{gasFeeSol} SOL</span>
+                            <div className="text-right">
+                              <span className="font-bold text-emerald-500">{gasFeeSol} SOL</span>
+                              <p className="text-[9px] text-white/40 font-bold uppercase tracking-tighter">
+                                {totalExecutions > 0 ? `Covers ${totalExecutions} distribution txs` : "Creation fee included"}
+                              </p>
+                            </div>
                           </div>
                         </div>
 
