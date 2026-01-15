@@ -48,7 +48,13 @@ export default function Leaderboard() {
 
   const activeLeaders = (timeframe === "all_time" ? allUsers : leaders) || [];
   const paginatedLeaders = activeLeaders.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
-  const totalPages = Math.ceil(activeLeaders.length / itemsPerPage);
+  
+  // Prize history pagination (5 weeks per page)
+  const historyItemsPerPage = 5;
+  const historyData = history || [];
+  const paginatedHistory = historyData.slice((currentPage - 1) * historyItemsPerPage, currentPage * historyItemsPerPage);
+  const totalHistoryPages = Math.ceil(historyData.length / historyItemsPerPage);
+  const totalPages = view === "ranking" ? Math.ceil(activeLeaders.length / itemsPerPage) : totalHistoryPages;
 
   return (
     <div className="min-h-screen bg-[#050505] text-white">
@@ -298,7 +304,7 @@ export default function Leaderboard() {
             </div>
             <CardContent className="p-0">
               <div className="divide-y divide-white/10">
-                {history?.map((week, idx) => (
+                {paginatedHistory?.map((week, idx) => (
                   <div key={idx} className="flex items-center px-12 py-10 hover:bg-white/[0.03] transition-all group">
                     <div className="w-40">
                       <p className="text-3xl font-black font-display text-white italic uppercase leading-none">#WEEK {idx + 1}</p>
@@ -331,7 +337,7 @@ export default function Leaderboard() {
                               )}>
                                 {winner.prizeAmount.toLocaleString()}
                               </span>
-                              <span className="text-xs font-black opacity-60 text-white">$DROPY</span>
+                              <span className="text-xs font-black text-white">$DROPY</span>
                             </div>
                           </div>
 
