@@ -13,7 +13,7 @@ import { getSolanaConnection } from "./services/solana";
 import { checkIpFraud, verifyTurnstile } from "./services/security";
 import { db } from "./db";
 import { eq, and, sql } from "drizzle-orm";
-import { follower_tracking } from "@shared/schema";
+import { followerTracking } from "@shared/schema";
 
 export async function registerRoutes(
   httpServer: Server,
@@ -274,10 +274,10 @@ export async function registerRoutes(
         if (minFollowDurationDays && minFollowDurationDays > 0) {
           const targetUsername = action.url.split('/').pop()?.split('?')[0] || "";
           if (action.type === 'twitter_follow') {
-            const [tracking] = await db.select().from(follower_tracking)
+            const [tracking] = await db.select().from(followerTracking)
               .where(and(
-                eq(follower_tracking.userId, user.id),
-                eq(follower_tracking.campaignId, campaign.id)
+                eq(followerTracking.userId, user.id),
+                eq(followerTracking.campaignId, campaign.id)
               ));
             
             if (!tracking) {
@@ -287,7 +287,7 @@ export async function registerRoutes(
               const isFollowing = await verifyTwitterFollow(accessToken, targetUsername);
               
               if (isFollowing) {
-                await db.insert(follower_tracking).values({
+                await db.insert(followerTracking).values({
                   userId: user.id,
                   campaignId: campaign.id,
                   followStartTimestamp: new Date(),
