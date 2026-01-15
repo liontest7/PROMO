@@ -22,7 +22,7 @@ const limiter = rateLimit({
 
 const strictLimiter = rateLimit({
   windowMs: 60 * 60 * 1000, // 1 hour
-  max: 5, // Very strict for sensitive ops
+  max: 10, // Strict for sensitive ops
   message: { message: "Too many attempts, please try again in an hour." },
   standardHeaders: true,
   legacyHeaders: false,
@@ -30,6 +30,7 @@ const strictLimiter = rateLimit({
 
 app.use("/api/auth", strictLimiter);
 app.use("/api/rewards/claim", strictLimiter);
+app.use("/api/campaigns/create", strictLimiter);
 app.use("/api", limiter);
 
 // Setup Session Store

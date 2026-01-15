@@ -172,13 +172,19 @@ export class AutomationService {
 
       try {
         log(`Paying ${winner.prizeAmount} $DROPY to ${winner.walletAddress}`, "Automation");
+        
+        // Robust wallet address validation
+        if (!winner.walletAddress || winner.walletAddress.length < 32) {
+          throw new Error(`Invalid wallet address format: ${winner.walletAddress}`);
+        }
+
         // Use the reward token address from config or system settings
         const settings = await storage.getSystemSettings();
         // Fallback to a valid default if needed, but ideally it's in settings
         const tokenAddress = "DROPyHsh35kS5eJ7qYqYqYqYqYqYqYqYqYqYqYqYqYq"; 
         
         const sig = await transferTokens(
-          winner.walletAddress,
+          winner.walletAddress.trim(),
           parseFloat(winner.prizeAmount),
           tokenAddress,
           fromKeypair
