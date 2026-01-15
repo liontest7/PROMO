@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "wouter";
 import { useWallet } from "@/hooks/use-wallet";
-import { useAuth } from "@/hooks/use-auth";
 import { Button } from "@/components/ui/button";
 import { 
   LayoutDashboard, 
@@ -37,7 +36,6 @@ import { Turnstile } from "@marsidev/react-turnstile";
 export function Navigation() {
   const [location] = useLocation();
   const { isConnected, role, walletAddress, disconnect, connect } = useWallet();
-  const { user, isAuthenticated, logout } = useAuth();
   const { toast } = useToast();
   const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
   const [isConnecting, setIsConnecting] = useState(false);
