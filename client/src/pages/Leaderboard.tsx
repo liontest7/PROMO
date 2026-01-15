@@ -108,13 +108,13 @@ export default function Leaderboard() {
               </div>
               
               {/* Floating Character - Adjusted positioning to avoid clipping and overlap */}
-              <div className="absolute -bottom-10 md:-bottom-20 right-[-20px] md:right-[-60px] transform z-50 pointer-events-none">
+              <div className="absolute -bottom-16 md:-bottom-24 right-[-20px] md:right-[-60px] transform z-50 pointer-events-none">
                 <div className="relative">
                   <div className="absolute inset-0 bg-primary/20 blur-[120px] rounded-full" />
                   <img 
                     src="https://i.ibb.co/5Xd708DM/20260110-2035-Dropy-Wins-Trophy-remix-01kemjzex0f9xvh2emrc9tk4jy.png" 
                     alt="Dropy Trophy" 
-                    className="w-56 h-56 md:w-[450px] md:h-[450px] object-contain relative z-10 drop-shadow-[0_0_60px_rgba(34,197,94,0.6)] scale-x-[-1]"
+                    className="w-56 h-56 md:w-[420px] md:h-[420px] object-contain relative z-10 drop-shadow-[0_0_60px_rgba(34,197,94,0.6)] scale-x-[-1]"
                   />
                 </div>
               </div>
@@ -152,7 +152,7 @@ export default function Leaderboard() {
 
         {view === "ranking" ? (
           <>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16 items-end px-4 overflow-hidden">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16 pt-24 items-end px-4 overflow-visible">
               <Card className="glass-card border-white/10 bg-white/[0.03] rounded-[3rem] overflow-hidden order-2 md:order-1 hover-elevate transition-all duration-500 min-h-[340px]">
                 <CardContent className="p-10 flex flex-col items-center text-center">
                   <div className="relative mb-8">
@@ -225,8 +225,8 @@ export default function Leaderboard() {
                 </div>
                 <CardContent className="p-0">
                   <div className="divide-y divide-white/10">
-                    {paginatedLeaders?.map((user) => (
-                      <div key={user.rank} className="flex items-center px-12 py-10 hover:bg-white/[0.05] transition-all group relative">
+                    {paginatedLeaders?.length > 0 ? paginatedLeaders.map((user, idx) => (
+                      <div key={user.rank || idx} className="flex items-center px-12 py-10 hover:bg-white/[0.05] transition-all group relative">
                         <div className="absolute left-0 w-1.5 h-0 bg-primary group-hover:h-full transition-all duration-300" />
                         <span className={cn(
                           "w-20 text-3xl font-black font-display transition-colors",
@@ -237,7 +237,7 @@ export default function Leaderboard() {
                         )}>#{user.rank}</span>
                         <div className="flex-1 flex items-center gap-8">
                           <Avatar className="h-16 w-16 border-2 border-white/10 group-hover:border-primary/60 transition-all shadow-xl">
-                            <AvatarFallback className="text-base font-black bg-white/10">{user.avatar}</AvatarFallback>
+                            <AvatarFallback className="text-base font-black bg-white/10">{user.avatar || 'U'}</AvatarFallback>
                           </Avatar>
                           <div className="flex flex-col gap-1">
                           <span className="font-black text-2xl font-display uppercase italic tracking-tight text-white group-hover:text-primary transition-colors">{user.name}</span>
@@ -248,12 +248,10 @@ export default function Leaderboard() {
                         <p className="text-3xl font-black font-display text-primary drop-shadow-[0_0_15px_rgba(34,197,94,0.4)]">{(user.points || 0).toLocaleString()}</p>
                       </div>
                       <div className="w-40 text-right">
-                        <p className="text-2xl font-black font-display text-white/50">{user.tasks}</p>
+                        <p className="text-2xl font-black font-display text-white/50">{user.tasks || 0}</p>
                       </div>
                     </div>
-                  ))}
-
-                  {(!paginatedLeaders || paginatedLeaders.length === 0) && (
+                  )) : (
                     <div className="p-32 text-center">
                       <p className="text-white/30 text-xl uppercase font-black tracking-[0.4em] italic animate-pulse">Neural Ranking Data Missing</p>
                     </div>
