@@ -16,7 +16,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
-import { Loader2, CheckCircle, ExternalLink, Info } from "lucide-react";
+import { Loader2, CheckCircle, ExternalLink, Info, RefreshCw } from "lucide-react";
 import { Turnstile } from "@marsidev/react-turnstile";
 
 interface VerifyActionDialogProps {
@@ -111,10 +111,11 @@ export function VerifyActionDialog({ action, campaign, open, onOpenChange, onSuc
 
               if (data.error) {
                 toast({
-                  title: "Protection Check Failed",
+                  title: "Verification Failed",
                   description: data.error,
                   variant: "destructive"
                 });
+                return;
               }
 
               if (!isAutoFetch && (data.status === 'ready' || data.status === 'verified')) {
@@ -123,7 +124,7 @@ export function VerifyActionDialog({ action, campaign, open, onOpenChange, onSuc
                   title: "Eligibility Verified!",
                   description: "You are eligible to claim your reward.",
                 });
-                if (onSuccess) onSuccess(0); // Trigger celebration for holder verification
+                if (onSuccess) onSuccess(0);
                 setTimeout(() => onOpenChange(false), 2000);
               }
             }
@@ -134,11 +135,13 @@ export function VerifyActionDialog({ action, campaign, open, onOpenChange, onSuc
 
       if (!action) return;
 
-      // Twitter check
-      if ((action.type === 'twitter' || action.type.startsWith('twitter_')) && !user?.twitterHandle) {
+      const isTwitterAction = action.type === 'twitter' || action.type.startsWith('twitter_');
+      
+      // Strict Twitter Check
+      if (isTwitterAction && !user?.twitterHandle) {
         toast({
-          title: "X Account Not Linked",
-          description: "Please link your X (Twitter) account in your profile settings first.",
+          title: "X Account Required",
+          description: "Please connect your X account to proceed.",
           variant: "destructive",
         });
         return;
@@ -349,11 +352,14 @@ export function VerifyActionDialog({ action, campaign, open, onOpenChange, onSuc
                           </div>
                           {!user?.twitterHandle && (
                             <Button 
-                              variant="outline" 
-                              className="w-full border-primary/30 text-primary hover:bg-primary/10 font-black uppercase text-[10px] tracking-widest h-10"
-                              onClick={() => window.location.href = '/dashboard'}
+                              variant="default" 
+                              className="w-full bg-[#1DA1F2] hover:bg-[#1DA1F2]/90 text-white font-black uppercase text-[10px] tracking-widest h-12 shadow-lg shadow-[#1DA1F2]/20"
+                              onClick={() => {
+                                // Direct Twitter OAuth link
+                                window.location.href = '/api/twitter/auth';
+                              }}
                             >
-                              Connect X in Dashboard
+                              Connect X Account Now
                             </Button>
                           )}
                         </div>
@@ -374,9 +380,29 @@ export function VerifyActionDialog({ action, campaign, open, onOpenChange, onSuc
                     />
                   </div>
 
-                  <Button onClick={() => handleVerify(false)} disabled={verifyMutation.isPending || isVerifying || !turnstileToken} className="w-full h-16 bg-[#00D1FF] hover:bg-[#00D1FF]/90 text-black rounded-2xl font-black uppercase tracking-widest">
-                    {verifyMutation.isPending || isVerifying ? <Loader2 className="animate-spin" /> : "CONFIRM"}
-                  </Button>
+                  <div className="flex flex-col gap-3">
+                    <Button 
+                      onClick={() => handleVerify(false)} 
+                      disabled={verifyMutation.isPending || isVerifying || !turnstileToken || ((action?.type === 'twitter' || action?.type.startsWith('twitter_')) && !user?.twitterHandle)} 
+                      className={cn(
+                        "w-full h-16 rounded-2xl font-black uppercase tracking-widest text-sm shadow-xl transition-all hover:scale-[1.02] active:scale-[0.98]",
+                        (action?.type === 'twitter' || action?.type.startsWith('twitter_')) ? "bg-[#1DA1F2] text-white" : "bg-primary text-primary-foreground"
+                      )}
+                    >
+                      {verifyMutation.isPending || isVerifying ? (
+                        <Loader2 className="animate-spin" />
+                      ) : (
+                        <div className="flex items-center gap-2">
+                          {(action?.type === 'twitter' || action?.type.startsWith('twitter_')) && <RefreshCw className="w-4 h-4" />}
+                          {holdingStatus?.status === 'verified' ? "CLOSE" : "VERIFY TASK"}
+                        </div>
+                      )}
+                    </Button>
+                    
+                    <p className="text-[10px] text-center text-white/30 font-bold uppercase tracking-widest">
+                      {isVerifying ? "Verifying with X API..." : "Verification is secured and encrypted"}
+                    </p>
+                  </div>
                 </div>
               )}
               {step === "success" && (
