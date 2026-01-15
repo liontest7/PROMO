@@ -44,7 +44,11 @@ export function setupUserRoutes(app: Express) {
   app.get(api.users.get.path, async (req, res) => {
     const user = await storage.getUserByWallet(req.params.walletAddress);
     if (!user) return res.status(404).json({ message: "User not found" });
-    res.json(user);
+    res.json({
+      ...user,
+      balance: user.balance || "0",
+      solBalance: 0 
+    });
   });
 
   app.get(api.users.stats.path, async (req, res) => {
