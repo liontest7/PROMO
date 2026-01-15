@@ -173,7 +173,7 @@ export function CampaignCard({ campaign, onActionClick, isOwner }: CampaignCardP
               </Badge>
             </div>
           </div>
-          <p className="text-sm text-muted-foreground line-clamp-1 min-h-[20px] mt-2 leading-relaxed">
+          <p className="text-base text-white/80 line-clamp-1 min-h-[20px] mt-2 leading-relaxed font-medium">
             {campaign.description}
           </p>
         </CardHeader>
@@ -181,14 +181,14 @@ export function CampaignCard({ campaign, onActionClick, isOwner }: CampaignCardP
         <CardContent className="flex-1 space-y-4 px-6 pt-2">
           {campaign.campaignType === 'holder_qualification' ? (
             <div className="space-y-2 bg-primary/10 p-4 rounded-2xl border border-primary/20 shadow-inner">
-              <div className="flex items-center gap-2 text-[11px] font-black text-primary uppercase tracking-tighter">
+              <div className="flex items-center gap-2 text-[12px] font-black text-primary uppercase tracking-tighter">
                 <ShieldCheck className="w-4 h-4" />
                 <span>HOLD {Number(campaign.minHoldingAmount).toLocaleString()} ${campaign.tokenName} FOR {campaign.minHoldingDuration} DAYS</span>
               </div>
             </div>
           ) : (
             <div className="space-y-2 bg-primary/10 p-4 rounded-2xl border border-primary/20 shadow-inner">
-              <div className="flex items-center gap-2 text-[11px] font-black text-primary uppercase tracking-tighter">
+              <div className="flex items-center gap-2 text-[12px] font-black text-primary uppercase tracking-tighter">
                 <Zap className="w-4 h-4" />
                 <span>{campaign.actions?.length || 0} TASKS AVAILABLE • EARN UP TO {campaign.actions?.reduce((acc, a) => acc + Number(a.rewardAmount), 0)} ${campaign.tokenName}</span>
               </div>
@@ -196,13 +196,13 @@ export function CampaignCard({ campaign, onActionClick, isOwner }: CampaignCardP
           )}
 
           <div className="bg-secondary/20 p-3 rounded-2xl border border-secondary/10 flex items-center justify-between">
-            <span className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">REWARD PER USER</span>
-            <span className="text-sm font-black text-secondary-foreground">{campaign.rewardPerWallet || '0'} ${campaign.tokenName}</span>
+            <span className="text-[11px] font-black text-white/60 uppercase tracking-widest">REWARD PER USER</span>
+            <span className="text-base font-black text-white">{campaign.rewardPerWallet || '0'} ${campaign.tokenName}</span>
           </div>
 
           <div className="space-y-2">
-            <div className="flex justify-between text-[10px] font-black uppercase tracking-widest mb-1">
-              <span className="text-muted-foreground">PROGRESS ({percentComplete.toFixed(0)}%)</span>
+            <div className="flex justify-between text-[11px] font-black uppercase tracking-widest mb-1">
+              <span className="text-white/60">PROGRESS ({percentComplete.toFixed(0)}%)</span>
               <span className="text-primary">{remainingBudgetNum.toLocaleString()} / {totalBudgetNum.toLocaleString()} ${campaign.tokenName}</span>
             </div>
             <Progress value={percentComplete} className="h-2 bg-white/5 rounded-full" />
@@ -224,8 +224,8 @@ export function CampaignCard({ campaign, onActionClick, isOwner }: CampaignCardP
               <div className="flex items-center gap-2">
                 <div className="w-1.5 h-1.5 rounded-full bg-primary/40 animate-pulse" />
                 <div className="flex flex-col">
-                  <span className="text-[9px] font-black text-white/30 uppercase tracking-widest leading-none">Growth</span>
-                  <span className="text-xs font-black text-white mt-0.5">{formatMC(currentMC)}</span>
+                  <span className="text-[10px] font-black text-white/60 uppercase tracking-widest leading-none">Growth</span>
+                  <span className="text-sm font-black text-white mt-0.5">{formatMC(currentMC)}</span>
                 </div>
               </div>
               <div className={cn(
@@ -237,12 +237,12 @@ export function CampaignCard({ campaign, onActionClick, isOwner }: CampaignCardP
               </div>
             </div>
           )}
-          <div className="flex items-center justify-center w-full gap-2 opacity-40">
-            <div className="h-[1px] flex-1 bg-gradient-to-r from-transparent to-white/20" />
-            <p className="text-[8px] font-black text-white uppercase tracking-[0.2em] whitespace-nowrap">
+          <div className="flex items-center justify-center w-full gap-2 opacity-60">
+            <div className="h-[1px] flex-1 bg-gradient-to-r from-transparent to-white/40" />
+            <p className="text-[9px] font-black text-white uppercase tracking-[0.2em] whitespace-nowrap">
               {formatDistanceToNow(new Date(campaign.createdAt || Date.now()), { addSuffix: true })}
             </p>
-            <div className="h-[1px] flex-1 bg-gradient-to-l from-transparent to-white/20" />
+            <div className="h-[1px] flex-1 bg-gradient-to-l from-transparent to-white/40" />
           </div>
         </CardFooter>
       </Card>

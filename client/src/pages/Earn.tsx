@@ -125,7 +125,7 @@ export default function Earn() {
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-12">
           <div className="flex-1">
             <h1 className="text-4xl font-display font-bold mb-2">Explore Campaigns</h1>
-            <p className="text-muted-foreground">Complete tasks and earn crypto rewards instantly.</p>
+            <p className="text-xl text-white/80 font-medium">Complete tasks and earn crypto rewards instantly.</p>
             
             <div className="flex gap-4 mt-6">
               <Button 
