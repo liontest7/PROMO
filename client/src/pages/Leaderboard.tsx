@@ -49,34 +49,34 @@ export default function Leaderboard() {
                   Hall <span className="text-primary">of Fame</span>
                 </h1>
                 <p className="text-white uppercase tracking-[0.5em] text-sm md:text-base font-black italic">Top Ecosystem Contributors • Real-time Sync</p>
-                <div className="mt-8 flex flex-col items-center gap-4">
-                  <div className="bg-primary/10 border border-primary/20 px-10 py-6 rounded-3xl backdrop-blur-md">
-                    <p className="text-xs text-primary font-black uppercase tracking-[0.25em] mb-2">Weekly Prize Pool</p>
-                    <p className="text-4xl md:text-5xl font-black text-white flex items-baseline gap-3">
-                      {(PLATFORM_CONFIG.TOKENOMICS.CREATION_FEE * 0.4).toLocaleString()} <span className="text-xl text-primary font-black">$DROP</span>
+                <div className="mt-4 flex flex-col items-center gap-2">
+                  <div className="bg-primary/10 border border-primary/20 px-8 py-4 rounded-3xl backdrop-blur-md">
+                    <p className="text-xs text-primary font-black uppercase tracking-[0.25em] mb-1">Weekly Prize Pool</p>
+                    <p className="text-3xl md:text-4xl font-black text-white flex items-baseline gap-3">
+                      {(PLATFORM_CONFIG.TOKENOMICS.CREATION_FEE * 0.4).toLocaleString()} <span className="text-lg text-primary font-black">$DROP</span>
                     </p>
                   </div>
-                  <p className="text-sm md:text-base text-white/90 uppercase tracking-[0.15em] font-black italic">
+                  <p className="text-xs md:text-sm text-white/90 uppercase tracking-[0.15em] font-black italic">
                     40% of all campaign fees distributed weekly to Top 3
                   </p>
                 </div>
               </div>
               
               {/* Character Trophy positioned to the right and lower */}
-              <div className="absolute -bottom-20 right-0 md:right-[-120px] transform translate-y-1/2">
+              <div className="absolute -bottom-16 right-0 md:right-[-80px] transform translate-y-1/2">
                 <div className="relative">
                   <div className="absolute inset-0 bg-primary/20 blur-3xl rounded-full" />
                   <img 
                     src="https://i.ibb.co/5Xd708DM/20260110-2035-Dropy-Wins-Trophy-remix-01kemjzex0f9xvh2emrc9tk4jy.png" 
                     alt="Dropy Trophy" 
-                    className="w-56 h-56 md:w-72 md:h-72 object-contain relative z-10 drop-shadow-[0_0_50px_rgba(34,197,94,0.5)] scale-x-[-1]"
+                    className="w-48 h-48 md:w-60 md:h-60 object-contain relative z-10 drop-shadow-[0_0_50px_rgba(34,197,94,0.5)] scale-x-[-1]"
                   />
                 </div>
               </div>
             </div>
           </div>
 
-          <div className="flex justify-center gap-4 mt-20 relative z-10">
+          <div className="flex justify-center gap-4 mt-8 relative z-10">
             {[
               { id: "weekly", label: "Weekly", icon: Clock },
               { id: "monthly", label: "Monthly", icon: Calendar },
@@ -90,13 +90,13 @@ export default function Leaderboard() {
                   setCurrentPage(1);
                 }}
                 className={cn(
-                  "rounded-2xl font-black uppercase tracking-[0.2em] text-xs md:text-sm h-14 px-10 transition-all",
+                  "rounded-2xl font-black uppercase tracking-[0.2em] text-xs h-12 px-8 transition-all",
                   timeframe === t.id 
                     ? "bg-primary text-white shadow-[0_0_30px_rgba(34,197,94,0.5)] border-primary scale-105" 
                     : "bg-white/5 border-white/10 text-white hover:text-white hover:bg-white/10"
                 )}
               >
-                <t.icon className="w-5 h-5 mr-3" />
+                <t.icon className="w-4 h-4 mr-2" />
                 {t.label}
               </Button>
             ))}
@@ -104,7 +104,7 @@ export default function Leaderboard() {
         </div>
 
         {/* Podium - Always Top 3 */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-10 mb-28 items-end px-4">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16 items-end px-4">
           {/* Rank 2 */}
           <Card className="glass-card border-white/10 bg-white/[0.03] rounded-[3rem] overflow-hidden order-2 md:order-1 hover-elevate transition-all duration-500 min-h-[340px]">
             <CardContent className="p-10 flex flex-col items-center text-center">

@@ -31,10 +31,13 @@ export async function registerRoutes(
   app.get("/api/leaderboard", async (req, res) => {
     try {
       const timeframe = req.query.timeframe as string || "all_time";
-      const users = await storage.getLeaderboard();
+      const users = await storage.getAllUsers();
       const allExecutions = await storage.getAllExecutions();
 
-      const leaderboardData = users.map((user, index) => {
+      // Filter for active users who accepted terms
+      const activeUsers = users.filter(u => u.acceptedTerms && u.role === 'user');
+
+      const leaderboardData = activeUsers.map((user, index) => {
         const userExecutions = allExecutions.filter(e => e.userId === user.id && e.status === 'verified');
         return {
           rank: index + 1,
@@ -46,7 +49,19 @@ export async function registerRoutes(
         };
       });
 
-      res.json(leaderboardData);
+      // Sort by points descending, then by tasks descending
+      leaderboardData.sort((a, b) => {
+        if (b.points !== a.points) return b.points - a.points;
+        return b.tasks - a.tasks;
+      });
+
+      // Update ranks after sorting
+      const rankedData = leaderboardData.map((item, idx) => ({
+        ...item,
+        rank: idx + 1
+      }));
+
+      res.json(rankedData);
     } catch (err) {
       console.error("Leaderboard API error:", err);
       res.status(500).json({ message: "Error fetching leaderboard data" });
