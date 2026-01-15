@@ -204,11 +204,13 @@ export class DatabaseStorage implements IStorage {
     
     if (suspicious.length === 0) return [];
 
-    const results = await Promise.all(suspicious.map(async (campaign) => {
-      const campaignActions = await db.select().from(actions).where(eq(actions.campaignId, campaign.id));
-      return { ...campaign, actions: campaignActions };
+    const campaignIds = suspicious.map(c => c.id);
+    const allActions = await db.select().from(actions).where(sql`${actions.campaignId} IN (${sql.join(campaignIds.map(id => sql`${id}`), sql`, `)})`);
+    
+    return suspicious.map(campaign => ({
+      ...campaign,
+      actions: allActions.filter(a => a.campaignId === campaign.id)
     }));
-    return results;
   }
 
   async getCampaigns(creatorId?: number): Promise<(Campaign & { actions: Action[] })[]> {
@@ -218,11 +220,13 @@ export class DatabaseStorage implements IStorage {
     
     if (allCampaigns.length === 0) return [];
 
-    const results = await Promise.all(allCampaigns.map(async (campaign) => {
-      const campaignActions = await db.select().from(actions).where(eq(actions.campaignId, campaign.id));
-      return { ...campaign, actions: campaignActions };
+    const campaignIds = allCampaigns.map(c => c.id);
+    const allActions = await db.select().from(actions).where(sql`${actions.campaignId} IN (${sql.join(campaignIds.map(id => sql`${id}`), sql`, `)})`);
+    
+    return allCampaigns.map(campaign => ({
+      ...campaign,
+      actions: allActions.filter(a => a.campaignId === campaign.id)
     }));
-    return results;
   }
 
   async getCampaign(id: number): Promise<(Campaign & { actions: Action[] }) | undefined> {
