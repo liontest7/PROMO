@@ -51,7 +51,7 @@ export default function About() {
             Dropy <br />
             <span className="text-primary">The Future of Growth</span>
           </motion.h1>
-          <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
+          <p className="text-xl text-white/80 max-w-3xl mx-auto leading-relaxed font-medium">
             Dropy is the premier marketing platform built specifically for the Solana ecosystem. We bridge the gap between innovative crypto projects and an engaged community of supporters through a unique, action-based reward system.
             <br/><br/>
             Our mission is to democratize token distribution while providing advertisers with high-quality, verified engagement. We believe that marketing in the Web3 space should be transparent, efficient, and rewarding for everyone involved.
@@ -228,20 +228,20 @@ export default function About() {
           <div className="grid md:grid-cols-3 gap-8">
             <Card className="glass-card border-primary/20 bg-primary/5">
               <CardContent className="p-8">
-                <h3 className="text-xl font-bold mb-4">Deflationary Burn</h3>
-                <p className="text-muted-foreground">Every campaign creation removes {burnAmount.toLocaleString()} ${PLATFORM_CONFIG.TOKEN_SYMBOL} from circulation forever, reducing supply.</p>
+                <h3 className="text-2xl font-black mb-4 uppercase italic tracking-tight text-white">Deflationary Burn</h3>
+                <p className="text-lg text-white/80 leading-relaxed font-medium">Every campaign creation removes {burnAmount.toLocaleString()} ${PLATFORM_CONFIG.TOKEN_SYMBOL} from circulation forever, reducing supply.</p>
               </CardContent>
             </Card>
             <Card className="glass-card border-white/5 bg-white/[0.02]">
               <CardContent className="p-8">
-                <h3 className="text-xl font-bold mb-4">Governance & Voting</h3>
-                <p className="text-muted-foreground">Token holders shape the future of the platform, voting on roadmap priorities and fee structures.</p>
+                <h3 className="text-2xl font-black mb-4 uppercase italic tracking-tight text-white">Governance & Voting</h3>
+                <p className="text-lg text-white/80 leading-relaxed font-medium">Token holders shape the future of the platform, voting on roadmap priorities and fee structures.</p>
               </CardContent>
             </Card>
             <Card className="glass-card border-white/5 bg-white/[0.02]">
               <CardContent className="p-8">
-                <h3 className="text-xl font-bold mb-4">Priority Access</h3>
-                <p className="text-muted-foreground">Holders get first access to high-reward campaigns and exclusive community-only distributions.</p>
+                <h3 className="text-2xl font-black mb-4 uppercase italic tracking-tight text-white">Priority Access</h3>
+                <p className="text-lg text-white/80 leading-relaxed font-medium">Holders get first access to high-reward campaigns and exclusive community-only distributions.</p>
               </CardContent>
             </Card>
           </div>
