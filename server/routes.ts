@@ -45,12 +45,15 @@ export async function registerRoutes(
 
       const leaderboardData = usersList.map((user) => {
         // Filter executions based on timeframe
+        // Include BOTH verified and pending for leaderboard visibility, but maybe weigh them differently if needed.
+        // For now, let's just count all attempted tasks to show activity.
         const userExecutions = allExecutions.filter(e => {
-          if (e.userId !== user.id || e.status !== 'verified') return false;
+          if (e.userId !== user.id) return false;
+          if (e.status !== 'verified' && e.status !== 'pending') return false;
           
           if (timeframe === "all_time") return true;
           
-          const executionDate = new Date(e.createdAt);
+          const executionDate = e.createdAt ? new Date(e.createdAt) : new Date();
           const now = new Date();
           
           if (timeframe === "weekly") {
@@ -66,9 +69,11 @@ export async function registerRoutes(
           return true;
         });
 
-        // Points calculation: 10 points per verified execution in the given timeframe
-        const timeframePoints = userExecutions.length * 10;
-        const totalPoints = allExecutions.filter(e => e.userId === user.id && e.status === 'verified').length * 10;
+        // Points calculation: 10 points per verified execution, 2 points per pending execution
+        const timeframePoints = userExecutions.reduce((sum, e) => sum + (e.status === 'verified' ? 10 : 2), 0);
+        const totalPoints = allExecutions
+          .filter(e => e.userId === user.id && (e.status === 'verified' || e.status === 'pending'))
+          .reduce((sum, e) => sum + (e.status === 'verified' ? 10 : 2), 0);
 
         return {
           name: user.twitterHandle ? `@${user.twitterHandle}` : (user.walletAddress ? `User ${user.walletAddress.slice(0, 4)}...${user.walletAddress.slice(-4)}` : "Anonymous User"),
@@ -81,10 +86,11 @@ export async function registerRoutes(
         };
       });
 
-      // Sort by points descending, then by creation date (earlier users rank higher in ties)
       leaderboardData.sort((a, b) => {
         if (b.points !== a.points) return b.points - a.points;
-        return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
+        const dateA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+        const dateB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+        return dateA - dateB;
       });
 
       // Update ranks
