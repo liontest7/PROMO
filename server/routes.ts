@@ -63,6 +63,10 @@ export async function registerRoutes(
         eligibleForReward: item.points > 0 // Explicit flag for reward eligibility
       }));
 
+      // If we have few users, the frontend might look empty. 
+      // The user wants to see all users regardless of points.
+      // The current logic already does this as long as they have a walletAddress.
+
       res.json(rankedData);
     } catch (err) {
       console.error("Leaderboard API error:", err);

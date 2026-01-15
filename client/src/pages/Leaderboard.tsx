@@ -107,13 +107,14 @@ export default function Leaderboard() {
                 )}
               </div>
               
-              <div className="absolute -bottom-36 md:-bottom-48 right-0 md:right-[-100px] transform translate-y-1/2">
+              {/* Floating Character - Adjusted positioning */}
+              <div className="absolute -bottom-20 md:-bottom-24 right-0 md:right-[-40px] transform z-50 pointer-events-none">
                 <div className="relative">
                   <div className="absolute inset-0 bg-primary/20 blur-[120px] rounded-full" />
                   <img 
                     src="https://i.ibb.co/5Xd708DM/20260110-2035-Dropy-Wins-Trophy-remix-01kemjzex0f9xvh2emrc9tk4jy.png" 
                     alt="Dropy Trophy" 
-                    className="w-64 h-64 md:w-96 md:h-96 object-contain relative z-10 drop-shadow-[0_0_60px_rgba(34,197,94,0.6)] scale-x-[-1]"
+                    className="w-48 h-48 md:w-72 md:h-72 object-contain relative z-10 drop-shadow-[0_0_60px_rgba(34,197,94,0.6)] scale-x-[-1]"
                   />
                 </div>
               </div>
@@ -151,7 +152,7 @@ export default function Leaderboard() {
 
         {view === "ranking" ? (
           <>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16 items-end px-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16 items-end px-4 overflow-hidden">
               <Card className="glass-card border-white/10 bg-white/[0.03] rounded-[3rem] overflow-hidden order-2 md:order-1 hover-elevate transition-all duration-500 min-h-[340px]">
                 <CardContent className="p-10 flex flex-col items-center text-center">
                   <div className="relative mb-8">
@@ -288,7 +289,18 @@ export default function Leaderboard() {
           </div>
         </>
       ) : (
-        <div className="space-y-6">
+        <div className="space-y-6 relative">
+          {/* History Page Floating Character - Adjusted to be higher and smaller */}
+          <div className="absolute -top-32 right-0 md:right-4 z-50 pointer-events-none">
+            <div className="relative">
+              <div className="absolute inset-0 bg-primary/20 blur-[80px] rounded-full" />
+              <img 
+                src="https://i.ibb.co/5Xd708DM/20260110-2035-Dropy-Wins-Trophy-remix-01kemjzex0f9xvh2emrc9tk4jy.png" 
+                alt="Dropy Trophy" 
+                className="w-32 h-32 md:w-48 md:h-48 object-contain relative z-10 drop-shadow-[0_0_40px_rgba(34,197,94,0.4)] scale-x-[-1]"
+              />
+            </div>
+          </div>
           <Card className="glass-card border-white/10 bg-white/[0.02] rounded-[3rem] overflow-hidden shadow-2xl backdrop-blur-xl">
             <div className="bg-white/[0.05] px-12 py-8 border-b border-white/10 flex items-center text-sm font-black text-white uppercase tracking-[0.5em] italic">
               <span className="w-40">Period</span>
@@ -303,7 +315,7 @@ export default function Leaderboard() {
                       <p className="text-2xl font-black font-display text-white italic uppercase leading-none">{week.period}</p>
                       <p className="text-[10px] font-black text-white/40 tracking-widest mt-2">{week.dates}</p>
                     </div>
-                    <div className="flex-1 flex items-center gap-2 overflow-x-auto no-scrollbar py-2">
+                    <div className="flex-1 flex items-center gap-2 overflow-hidden py-2">
                       {week.winners.map((winner: any, i: number) => (
                         <div key={i} className="flex flex-col gap-2 min-w-[240px] bg-white/5 border border-white/10 p-5 rounded-2xl relative group/winner">
                           <div className="flex items-center gap-4">
