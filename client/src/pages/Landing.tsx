@@ -119,7 +119,7 @@ export default function Landing() {
                 Empower Your Project <br />
                 <span className="text-primary neon-text italic">Drive Real Growth</span>
               </h1>
-              <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto mb-12 leading-relaxed font-medium">
+              <p className="text-xl md:text-2xl text-white/80 max-w-3xl mx-auto mb-12 leading-relaxed font-medium">
                 Dropy is Solana's premier Pay-Per-Action platform. Drive authentic growth with verified on-chain holder qualification, bot-free task verification, and automated token distribution. 
                 Built for projects that demand real engagement and a deflationary ecosystem.
               </p>
@@ -180,7 +180,7 @@ export default function Landing() {
                       </div>
                     )}
                     <h3 className={`text-xl md:text-3xl font-display font-black mb-1 tracking-tighter ${stat.isBurn ? 'text-orange-500' : 'text-white'}`}>{stat.value}</h3>
-                    <p className="text-[9px] md:text-[10px] text-muted-foreground uppercase font-black tracking-widest leading-tight">{stat.label}</p>
+                    <p className="text-[10px] md:text-[11px] text-white/80 uppercase font-black tracking-widest leading-tight">{stat.label}</p>
                   </div>
                 ))}
               </div>
@@ -194,7 +194,7 @@ export default function Landing() {
             <div className="flex flex-col md:flex-row justify-between items-end gap-6 mb-12">
               <div>
                 <h2 className="text-4xl font-display font-bold mb-2">Active Campaigns</h2>
-                <p className="text-muted-foreground">Join these top-tier projects and start earning rewards today.</p>
+                <p className="text-xl text-white/80 font-medium">Join these top-tier projects and start earning rewards today.</p>
               </div>
               <Link href="/earn">
                 <Button variant="ghost" className="text-primary hover:text-primary hover:bg-primary/10 group font-bold" data-testid="button-view-all">
@@ -217,21 +217,21 @@ export default function Landing() {
               <div className="grid md:grid-cols-2 gap-16 items-center">
                 <div>
                   <h2 className="text-5xl font-display font-black mb-8 tracking-tighter italic uppercase underline decoration-primary decoration-4 underline-offset-8">Deflationary by Design</h2>
-                  <p className="text-xl text-muted-foreground mb-10 leading-relaxed font-medium">
+                  <p className="text-xl text-white/80 mb-10 leading-relaxed font-medium">
                     We don't just grow communities; we strengthen the entire ecosystem. Every campaign created requires a <strong>{creationFee.toLocaleString()} ${PLATFORM_CONFIG.TOKEN_SYMBOL}</strong> fee, which is automatically distributed:
                   </p>
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
                     <div className="p-6 bg-black/40 rounded-[2rem] border border-orange-500/20 backdrop-blur-md group hover:border-orange-500/50 transition-all text-center">
                       <p className="text-3xl font-black text-orange-500 mb-2">{burnPercent}%</p>
-                      <p className="text-[10px] text-muted-foreground uppercase font-black tracking-widest">Permanent Burn</p>
+                      <p className="text-[11px] text-white/80 uppercase font-black tracking-widest">Permanent Burn</p>
                     </div>
                     <div className="p-6 bg-black/40 rounded-[2rem] border border-primary/20 backdrop-blur-md group hover:border-primary/50 transition-all text-center">
                       <p className="text-3xl font-black text-primary mb-2">{rewardsPercent}%</p>
-                      <p className="text-[10px] text-muted-foreground uppercase font-black tracking-widest">Weekly Rewards</p>
+                      <p className="text-[11px] text-white/80 uppercase font-black tracking-widest">Weekly Rewards</p>
                     </div>
                     <div className="p-6 bg-black/40 rounded-[2rem] border border-secondary/20 backdrop-blur-md group hover:border-secondary/50 transition-all text-center">
                       <p className="text-3xl font-black text-secondary mb-2">{systemPercent}%</p>
-                      <p className="text-[10px] text-muted-foreground uppercase font-black tracking-widest">System Fees</p>
+                      <p className="text-[11px] text-white/80 uppercase font-black tracking-widest">System Fees</p>
                     </div>
                   </div>
                 </div>
@@ -257,21 +257,21 @@ export default function Landing() {
         <section className="py-32 border-t border-white/5 bg-gradient-to-b from-transparent to-black/40" data-testid="section-social-cta">
           <div className="container mx-auto px-4 text-center">
             <div className="max-w-3xl mx-auto space-y-12">
-              <h2 className="text-6xl font-display font-black tracking-tighter italic uppercase underline decoration-primary decoration-8 underline-offset-12">Join the Alpha</h2>
-              <p className="text-2xl text-muted-foreground font-medium">Be part of the leading engagement movement on Solana. Get early access to high-reward campaigns and community updates.</p>
+              <h2 className="text-6xl font-display font-black tracking-tighter italic uppercase underline decoration-primary decoration-8 underline-offset-12">Join The Community</h2>
+              <p className="text-2xl text-white/80 font-bold leading-relaxed">Be part of the leading engagement movement on Solana. Get early access to high-reward campaigns and community updates.</p>
               <div className="flex flex-col sm:flex-row justify-center gap-8">
                 <Button size="lg" className="h-20 px-12 bg-[#0088cc] hover:bg-[#0088cc]/90 text-white font-black text-2xl rounded-2xl shadow-2xl shadow-blue-500/20 group transition-all hover:scale-105" asChild data-testid="link-telegram">
                   <a href={PLATFORM_CONFIG.SOCIAL_LINKS.TELEGRAM} target="_blank" rel="noreferrer" className="flex items-center gap-4">
-                    <div className="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center group-hover:rotate-12 transition-transform">
-                      <Send className="w-6 h-6 fill-white" />
+                    <div className="w-12 h-12 rounded-xl bg-white/20 flex items-center justify-center group-hover:rotate-12 transition-transform">
+                      <Send className="w-8 h-8 fill-white" />
                     </div>
                     JOIN TELEGRAM
                   </a>
                 </Button>
                 <Button size="lg" className="h-20 px-12 bg-white text-black hover:bg-gray-100 font-black text-2xl rounded-2xl shadow-2xl group transition-all hover:scale-105" asChild data-testid="link-twitter">
                   <a href={PLATFORM_CONFIG.SOCIAL_LINKS.TWITTER} target="_blank" rel="noreferrer" className="flex items-center gap-4">
-                    <div className="w-10 h-10 rounded-xl bg-black/10 flex items-center justify-center group-hover:rotate-12 transition-transform">
-                      <Twitter className="w-6 h-6 fill-black" />
+                    <div className="w-12 h-12 rounded-xl bg-black/10 flex items-center justify-center group-hover:rotate-12 transition-transform">
+                      <Twitter className="w-8 h-8 fill-black" />
                     </div>
                     FOLLOW TWITTER (X)
                   </a>
