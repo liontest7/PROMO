@@ -48,19 +48,19 @@ export function LiveTerminal({ errorLogs, executions }: LiveTerminalProps) {
       </CardHeader>
       <CardContent className="p-4 h-[500px] overflow-y-auto space-y-2 flex flex-col-reverse">
         {terminalLogs.length === 0 && (
-          <div className="text-sm text-white font-black uppercase tracking-widest italic flex items-center justify-center h-full opacity-50">
+          <div className="text-base text-white font-black uppercase tracking-widest italic flex items-center justify-center h-full opacity-100">
             Waiting for protocol events...
           </div>
         )}
         {terminalLogs.map((log: any, i: number) => (
-          <div key={i} className="text-xs leading-relaxed flex gap-3 group">
-            <span className="text-white/40 font-bold">[{format(new Date(log.timestamp), 'HH:mm:ss')}]</span>
+          <div key={i} className="text-sm leading-relaxed flex gap-4 group py-1 border-b border-white/5 last:border-0">
+            <span className="text-white/60 font-black min-w-[70px]">[{format(new Date(log.timestamp), 'HH:mm:ss')}]</span>
             <span className={cn(
-              "font-black uppercase tracking-tighter text-[10px]",
+              "font-black uppercase tracking-widest text-xs min-w-[100px]",
               log.source === 'EXECUTION' ? 'text-green-400' : 
               log.source === 'AUTOMATION' ? 'text-blue-400' : 'text-primary'
             )}>[{log.source}]</span>
-            <span className="text-white font-medium group-hover:text-primary transition-colors">{log.message}</span>
+            <span className="text-white font-bold group-hover:text-primary transition-colors flex-1">{log.message}</span>
           </div>
         ))}
       </CardContent>

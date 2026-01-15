@@ -371,26 +371,26 @@ export default function AdminDashboard() {
 
         <Tabs defaultValue="users" className="w-full">
           <div className="flex flex-col md:flex-row items-center justify-between mb-6 gap-4">
-            <TabsList className="bg-white/5 border border-white/10 p-1 rounded-xl w-full md:w-auto">
-              <TabsTrigger value="users" className="flex-1 md:flex-none rounded-lg px-6 font-bold uppercase text-[10px] tracking-widest data-[state=active]:bg-white data-[state=active]:text-black text-white hover:text-white">
+            <TabsList className="bg-white/5 border border-white/10 p-1.5 rounded-xl w-full md:w-auto h-auto">
+              <TabsTrigger value="users" className="flex-1 md:flex-none rounded-lg px-8 py-2 font-black uppercase text-xs tracking-widest data-[state=active]:bg-white data-[state=active]:text-black text-white hover:text-white transition-all">
                 Protocol Users
               </TabsTrigger>
-              <TabsTrigger value="analytics" className="flex-1 md:flex-none rounded-lg px-6 font-bold uppercase text-[10px] tracking-widest data-[state=active]:bg-white data-[state=active]:text-black text-white hover:text-white">
+              <TabsTrigger value="analytics" className="flex-1 md:flex-none rounded-lg px-8 py-2 font-black uppercase text-xs tracking-widest data-[state=active]:bg-white data-[state=active]:text-black text-white hover:text-white transition-all">
                 Analytics
               </TabsTrigger>
-              <TabsTrigger value="campaigns" className="flex-1 md:flex-none rounded-lg px-6 font-bold uppercase text-[10px] tracking-widest data-[state=active]:bg-white data-[state=active]:text-black text-white hover:text-white">
+              <TabsTrigger value="campaigns" className="flex-1 md:flex-none rounded-lg px-8 py-2 font-black uppercase text-xs tracking-widest data-[state=active]:bg-white data-[state=active]:text-black text-white hover:text-white transition-all">
                 Active Campaigns
               </TabsTrigger>
-              <TabsTrigger value="executions" className="flex-1 md:flex-none rounded-lg px-6 font-bold uppercase text-[10px] tracking-widest data-[state=active]:bg-white data-[state=active]:text-black text-white hover:text-white">
+              <TabsTrigger value="executions" className="flex-1 md:flex-none rounded-lg px-8 py-2 font-black uppercase text-xs tracking-widest data-[state=active]:bg-white data-[state=active]:text-black text-white hover:text-white transition-all">
                 Live Feed
               </TabsTrigger>
-              <TabsTrigger value="health" className="flex-1 md:flex-none rounded-lg px-6 font-bold uppercase text-[10px] tracking-widest data-[state=active]:bg-white data-[state=active]:text-black text-white hover:text-white">
+              <TabsTrigger value="health" className="flex-1 md:flex-none rounded-lg px-8 py-2 font-black uppercase text-xs tracking-widest data-[state=active]:bg-white data-[state=active]:text-black text-white hover:text-white transition-all">
                 System Health
               </TabsTrigger>
-              <TabsTrigger value="fraud" className="flex-1 md:flex-none rounded-lg px-6 font-bold uppercase text-[10px] tracking-widest data-[state=active]:bg-red-500 data-[state=active]:text-white text-red-400 hover:text-red-300">
+              <TabsTrigger value="fraud" className="flex-1 md:flex-none rounded-lg px-8 py-2 font-black uppercase text-xs tracking-widest data-[state=active]:bg-red-500 data-[state=active]:text-white text-red-400 hover:text-red-300 transition-all">
                 Fraud Shield
               </TabsTrigger>
-              <TabsTrigger value="logs" className="flex-1 md:flex-none rounded-lg px-6 font-bold uppercase text-[10px] tracking-widest data-[state=active]:bg-primary data-[state=active]:text-primary-foreground text-white hover:text-white">
+              <TabsTrigger value="logs" className="flex-1 md:flex-none rounded-lg px-8 py-2 font-black uppercase text-xs tracking-widest data-[state=active]:bg-primary data-[state=active]:text-primary-foreground text-white hover:text-white transition-all">
                 System Logs
               </TabsTrigger>
             </TabsList>
