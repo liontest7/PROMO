@@ -21,7 +21,7 @@ export default function Leaderboard() {
   const itemsPerPage = 10;
 
   const { data: leaderboardRes, isLoading, error } = useQuery<any>({
-    queryKey: ["/api/leaderboard", timeframe],
+    queryKey: ["/api/leaderboard", { timeframe }],
     staleTime: 30000, // Keep data fresh for 30s but don't force refresh
   });
 

@@ -30,7 +30,7 @@ export async function registerRoutes(
 
   app.get("/api/leaderboard", async (req, res) => {
     try {
-      const timeframe = req.query.timeframe as string || "all_time";
+      const timeframe = (req.query.timeframe as string) || "all_time";
       const usersList = await storage.getAllUsers();
       const allExecutions = await storage.getAllExecutions();
 
