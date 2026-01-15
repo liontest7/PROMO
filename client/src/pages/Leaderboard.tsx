@@ -244,7 +244,7 @@ export default function Leaderboard() {
                         </div>
                       </div>
                       <div className="w-40 text-right">
-                        <p className="text-3xl font-black font-display text-primary drop-shadow-[0_0_15px_rgba(34,197,94,0.4)]">{user.points.toLocaleString()}</p>
+                        <p className="text-3xl font-black font-display text-primary drop-shadow-[0_0_15px_rgba(34,197,94,0.4)]">{(user.points || 0).toLocaleString()}</p>
                       </div>
                       <div className="w-40 text-right">
                         <p className="text-2xl font-black font-display text-white/50">{user.tasks}</p>
@@ -314,9 +314,9 @@ export default function Leaderboard() {
                         </div>
                         <div className="flex flex-col">
                           <p className="text-sm font-black text-white/80 italic uppercase">
-                            Total Prize: <span className="text-primary">{week.prize.toLocaleString()} $DROP</span>
+                            Total Prize: <span className="text-primary">{(week.prize || 0).toLocaleString()} $DROP</span>
                           </p>
-                          <p className="text-[10px] font-black text-white/30 tracking-widest uppercase">{week.totalPoints.toLocaleString()} COMMUNITY POINTS</p>
+                          <p className="text-[10px] font-black text-white/30 tracking-widest uppercase">{(week.totalPoints || 0).toLocaleString()} COMMUNITY POINTS</p>
                         </div>
                       </div>
                       <AccordionTrigger className="w-32 justify-end hover:no-underline p-0">
@@ -339,7 +339,7 @@ export default function Leaderboard() {
                                 </div>
                                 <div className="flex-1">
                                   <p className="text-sm font-black text-white uppercase italic">{winner.name}</p>
-                                  <p className="text-[10px] font-black text-primary tracking-widest uppercase">{winner.prizeAmount.toLocaleString()} $DROP</p>
+                                  <p className="text-[10px] font-black text-primary tracking-widest uppercase">{(winner.prizeAmount || 0).toLocaleString()} $DROP</p>
                                 </div>
                               </div>
                               <Button variant="outline" size="sm" className="w-full bg-white/5 border-white/10 text-[10px] font-black uppercase tracking-widest h-8" asChild>

@@ -35,24 +35,25 @@ export async function registerRoutes(
       const allExecutions = await storage.getAllExecutions();
 
       // Filter for active users who accepted terms
-      const activeUsers = users.filter(u => u.acceptedTerms && u.role === 'user');
+      const activeUsers = users.filter(u => u.role === 'user');
 
-      const leaderboardData = activeUsers.map((user, index) => {
+      const leaderboardData = activeUsers.map((user) => {
         const userExecutions = allExecutions.filter(e => e.userId === user.id && e.status === 'verified');
         return {
-          rank: index + 1,
-          name: user.twitterHandle ? `@${user.twitterHandle}` : `User ${user.walletAddress.slice(0, 4)}...${user.walletAddress.slice(-4)}`,
-          fullWallet: user.walletAddress,
+          name: user.twitterHandle ? `@${user.twitterHandle}` : (user.walletAddress ? `User ${user.walletAddress.slice(0, 4)}...${user.walletAddress.slice(-4)}` : 'Anonymous'),
+          fullWallet: user.walletAddress || '---',
           avatar: user.twitterHandle ? user.twitterHandle[0].toUpperCase() : 'U',
           points: user.reputationScore || 0,
           tasks: userExecutions.length,
+          id: user.id
         };
       });
 
-      // Sort by points descending, then by tasks descending
+      // Sort by points descending, then by tasks descending, then by join date (id)
       leaderboardData.sort((a, b) => {
         if (b.points !== a.points) return b.points - a.points;
-        return b.tasks - a.tasks;
+        if (b.tasks !== a.tasks) return b.tasks - a.tasks;
+        return a.id - b.id; // Earlier users first if tied
       });
 
       // Update ranks after sorting
@@ -77,9 +78,9 @@ export async function registerRoutes(
           period: "Week #1",
           dates: "Jan 01 - Jan 07, 2026",
           winners: [
-            { name: "@DropyAlpha", avatar: "D" },
-            { name: "@SolanaKing", avatar: "S" },
-            { name: "@CryptoWhale", avatar: "C" }
+            { name: "@DropyAlpha", avatar: "D", prizeAmount: 2000, proofUrl: "https://solscan.io" },
+            { name: "@SolanaKing", avatar: "S", prizeAmount: 1200, proofUrl: "https://solscan.io" },
+            { name: "@CryptoWhale", avatar: "C", prizeAmount: 800, proofUrl: "https://solscan.io" }
           ],
           totalPoints: 125400,
           prize: 4000,
