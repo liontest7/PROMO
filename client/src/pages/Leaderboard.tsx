@@ -107,13 +107,13 @@ export default function Leaderboard() {
                 )}
               </div>
               
-              <div className="absolute -bottom-24 md:-bottom-32 right-0 md:right-[-100px] transform translate-y-1/2">
+              <div className="absolute -bottom-36 md:-bottom-48 right-0 md:right-[-100px] transform translate-y-1/2">
                 <div className="relative">
                   <div className="absolute inset-0 bg-primary/20 blur-[120px] rounded-full" />
                   <img 
                     src="https://i.ibb.co/5Xd708DM/20260110-2035-Dropy-Wins-Trophy-remix-01kemjzex0f9xvh2emrc9tk4jy.png" 
                     alt="Dropy Trophy" 
-                    className="w-56 h-56 md:w-80 md:h-80 object-contain relative z-10 drop-shadow-[0_0_60px_rgba(34,197,94,0.6)] scale-x-[-1]"
+                    className="w-64 h-64 md:w-96 md:h-96 object-contain relative z-10 drop-shadow-[0_0_60px_rgba(34,197,94,0.6)] scale-x-[-1]"
                   />
                 </div>
               </div>
@@ -303,12 +303,12 @@ export default function Leaderboard() {
                       <p className="text-2xl font-black font-display text-white italic uppercase leading-none">{week.period}</p>
                       <p className="text-[10px] font-black text-white/40 tracking-widest mt-2">{week.dates}</p>
                     </div>
-                    <div className="flex-1 flex items-center gap-4 overflow-x-auto no-scrollbar py-2">
+                    <div className="flex-1 flex items-center gap-2 overflow-x-auto no-scrollbar py-2">
                       {week.winners.map((winner: any, i: number) => (
-                        <div key={i} className="flex flex-col gap-2 min-w-[200px] bg-white/5 border border-white/10 p-4 rounded-2xl relative group/winner">
-                          <div className="flex items-center gap-3">
+                        <div key={i} className="flex flex-col gap-2 min-w-[240px] bg-white/5 border border-white/10 p-5 rounded-2xl relative group/winner">
+                          <div className="flex items-center gap-4">
                             <div className={cn(
-                              "w-8 h-8 rounded-full flex items-center justify-center font-black text-[10px] border shadow-lg shrink-0",
+                              "w-10 h-10 rounded-full flex items-center justify-center font-black text-xs border shadow-lg shrink-0",
                               i === 0 ? "bg-yellow-500/20 text-yellow-500 border-yellow-500/50" :
                               i === 1 ? "bg-gray-300/20 text-gray-300 border-gray-300/50" :
                               "bg-amber-600/20 text-amber-600 border-amber-600/50"
@@ -316,22 +316,22 @@ export default function Leaderboard() {
                               #{i + 1}
                             </div>
                             <div className="flex flex-col min-w-0">
-                              <p className="text-xs font-black text-white uppercase italic truncate">{winner.name}</p>
-                              <p className="text-[10px] font-black text-primary uppercase leading-none mt-0.5">{winner.prizeAmount.toLocaleString()} $DROP</p>
+                              <p className="text-sm font-black text-white uppercase italic truncate">{winner.name}</p>
+                              <p className="text-xs font-black text-primary uppercase leading-none mt-1">{winner.prizeAmount.toLocaleString()} $DROP</p>
                             </div>
                           </div>
-                          <Button variant="ghost" size="sm" className="h-7 w-full bg-white/5 hover:bg-white/10 border-white/5 text-[9px] font-black uppercase tracking-tighter" asChild>
+                          <Button variant="ghost" size="sm" className="h-8 w-full bg-white/10 hover:bg-white/20 border-white/10 text-[10px] font-black uppercase tracking-tighter mt-1" asChild>
                             <a href={winner.proofUrl} target="_blank" rel="noreferrer">
-                              <ExternalLinkIcon className="w-2.5 h-2.5 mr-1.5" />
+                              <ExternalLinkIcon className="w-3 h-3 mr-2" />
                               Blockchain Proof
                             </a>
                           </Button>
                         </div>
                       ))}
                     </div>
-                    <div className="w-32 text-right flex flex-col items-end">
-                      <p className="text-2xl font-black font-display text-primary italic">{(week.prize || 0).toLocaleString()}</p>
-                      <p className="text-[10px] font-black text-white/30 tracking-widest uppercase">$DROP POOL</p>
+                    <div className="w-40 text-right flex flex-col items-end shrink-0">
+                      <p className="text-4xl font-black font-display text-primary italic leading-none">{(week.prize || 0).toLocaleString()}</p>
+                      <p className="text-[12px] font-black text-white/30 tracking-widest uppercase mt-1">$DROP POOL</p>
                     </div>
                   </div>
                 ))}
