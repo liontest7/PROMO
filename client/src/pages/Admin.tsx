@@ -226,16 +226,16 @@ export default function AdminDashboard() {
                         onCheckedChange={(checked) => updateSettingsMutation.mutate({ campaignsEnabled: checked })}
                       />
                       <Label htmlFor="campaigns-enabled" className="flex flex-col">
-                        <span className="font-bold uppercase text-[10px] tracking-widest">Global Campaign Status</span>
-                        <span className="text-xs text-muted-foreground">{settings?.campaignsEnabled ? 'Enabled' : 'Disabled'}</span>
+                        <span className="font-bold uppercase text-xs tracking-widest text-white">Global Campaign Status</span>
+                        <span className="text-sm text-white/70">{settings?.campaignsEnabled ? 'Enabled' : 'Disabled'}</span>
                       </Label>
                     </div>
 
                     <div className="flex items-center space-x-4 border-l border-white/10 pl-6">
                       <div className={`h-3 w-3 rounded-full animate-pulse ${settings?.twitterApiStatus === 'active' ? 'bg-green-500' : 'bg-yellow-500'}`} />
                       <div className="flex flex-col">
-                        <span className="font-bold uppercase text-[10px] tracking-widest">Twitter API Status</span>
-                        <span className="text-xs text-muted-foreground uppercase tracking-tighter">
+                        <span className="font-bold uppercase text-xs tracking-widest text-white">Twitter API Status</span>
+                        <span className="text-sm text-white/70 uppercase tracking-tighter">
                           {settings?.twitterApiStatus === 'active' ? 'Connected' : 'Awaiting Integration'}
                         </span>
                       </div>
@@ -244,7 +244,7 @@ export default function AdminDashboard() {
 
                   {/* Individual Campaign Type Toggles */}
                   <div className="space-y-4 p-4 rounded-xl bg-white/5 border border-white/10">
-                    <h3 className="font-bold uppercase text-[10px] tracking-widest text-primary mb-2">Campaign Category Controls</h3>
+                    <h3 className="font-bold uppercase text-xs tracking-widest text-white mb-2">Campaign Category Controls</h3>
                     <div className="grid grid-cols-2 gap-4">
                       <div className="flex items-center space-x-3">
                         <Switch 
@@ -252,7 +252,7 @@ export default function AdminDashboard() {
                           checked={settings?.holderQualificationEnabled ?? true} 
                           onCheckedChange={(checked) => updateSettingsMutation.mutate({ holderQualificationEnabled: checked })}
                         />
-                        <Label htmlFor="holder-enabled" className="text-[10px] uppercase tracking-wider font-bold">Holder Qualification</Label>
+                        <Label htmlFor="holder-enabled" className="text-xs uppercase tracking-wider font-bold text-white">Holder Qualification</Label>
                       </div>
                       <div className="flex items-center space-x-3">
                         <Switch 
@@ -260,7 +260,7 @@ export default function AdminDashboard() {
                           checked={settings?.socialEngagementEnabled ?? true} 
                           onCheckedChange={(checked) => updateSettingsMutation.mutate({ socialEngagementEnabled: checked })}
                         />
-                        <Label htmlFor="social-enabled" className="text-[10px] uppercase tracking-wider font-bold">Social Engagement</Label>
+                        <Label htmlFor="social-enabled" className="text-xs uppercase tracking-wider font-bold text-white">Social Engagement</Label>
                       </div>
                     </div>
                   </div>
@@ -268,22 +268,22 @@ export default function AdminDashboard() {
 
                 <div className="space-y-4 p-4 rounded-xl bg-white/5 border border-white/10">
                   <div className="flex items-center justify-between">
-                    <h3 className="font-bold uppercase text-[10px] tracking-widest text-primary">Weekly Rewards Pool</h3>
-                    <Badge variant="outline" className="text-primary border-primary/20 text-[10px] font-black uppercase">
+                    <h3 className="font-bold uppercase text-xs tracking-widest text-white">Weekly Rewards Pool</h3>
+                    <Badge variant="outline" className="text-white border-white/20 text-xs font-black uppercase">
                       Active Balance
                     </Badge>
                   </div>
                   <div className="flex items-center justify-between gap-4">
                     <div className="flex-1 space-y-1">
-                      <p className="text-2xl font-display font-bold text-white">
-                        {parseFloat(settings?.weeklyRewardsPool || "0").toLocaleString()} <span className="text-xs text-muted-foreground">$DROPY</span>
+                      <p className="text-3xl font-display font-bold text-white">
+                        {parseFloat(settings?.weeklyRewardsPool || "0").toLocaleString()} <span className="text-sm text-white/70">$DROPY</span>
                       </p>
-                      <p className="text-[10px] text-muted-foreground uppercase tracking-wider">Accumulated from creation fees</p>
+                      <p className="text-xs text-white/70 uppercase tracking-wider">Accumulated from creation fees</p>
                     </div>
                     <Button 
                       variant="outline" 
                       size="sm" 
-                      className="h-8 border-primary/20 hover:bg-primary/10 text-primary font-bold text-[10px] uppercase tracking-widest"
+                      className="h-9 border-white/20 hover:bg-white/10 text-white font-bold text-xs uppercase tracking-widest"
                       onClick={() => {
                         toast({ 
                           title: "Coming Soon", 
@@ -298,9 +298,9 @@ export default function AdminDashboard() {
 
                 <div className="space-y-4 p-4 rounded-xl bg-white/5 border border-white/10">
                   <div className="flex items-center justify-between">
-                    <h3 className="font-bold uppercase text-[10px] tracking-widest text-primary">Protocol Parameters</h3>
+                    <h3 className="font-bold uppercase text-xs tracking-widest text-white">Protocol Parameters</h3>
                     <Badge variant="outline" className={cn(
-                      "text-[9px] font-black uppercase",
+                      "text-[10px] font-black uppercase",
                       ((settingsUpdate.burnPercent ?? settings?.burnPercent ?? 0) + 
                        (settingsUpdate.rewardsPercent ?? settings?.rewardsPercent ?? 0) + 
                        (settingsUpdate.systemPercent ?? settings?.systemPercent ?? 0)) === 100 
@@ -314,37 +314,37 @@ export default function AdminDashboard() {
                   </div>
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-1.5">
-                      <Label className="text-[10px] uppercase tracking-wider opacity-70">Creation Fee ($MEME)</Label>
+                      <Label className="text-xs text-white uppercase tracking-wider font-bold">Creation Fee ($MEME)</Label>
                       <Input 
                         type="number" 
-                        className="h-8 bg-black/20 border-white/10 text-xs"
+                        className="h-10 bg-black/20 border-white/10 text-sm text-white"
                         defaultValue={settings?.creationFee} 
                         onChange={(e) => setSettingsUpdate((prev: any) => ({ ...prev, creationFee: parseInt(e.target.value) }))}
                       />
                     </div>
                     <div className="space-y-1.5">
-                      <Label className="text-[10px] uppercase tracking-wider opacity-70">Burn Percent (%)</Label>
+                      <Label className="text-xs text-white uppercase tracking-wider font-bold">Burn Percent (%)</Label>
                       <Input 
                         type="number" 
-                        className="h-8 bg-black/20 border-white/10 text-xs"
+                        className="h-10 bg-black/20 border-white/10 text-sm text-white"
                         value={settingsUpdate.burnPercent ?? settings?.burnPercent ?? 50} 
                         onChange={(e) => setSettingsUpdate((prev: any) => ({ ...prev, burnPercent: parseInt(e.target.value) }))}
                       />
                     </div>
                     <div className="space-y-1.5">
-                      <Label className="text-[10px] uppercase tracking-wider opacity-70">Rewards Percent (%)</Label>
+                      <Label className="text-xs text-white uppercase tracking-wider font-bold">Rewards Percent (%)</Label>
                       <Input 
                         type="number" 
-                        className="h-8 bg-black/20 border-white/10 text-xs"
+                        className="h-10 bg-black/20 border-white/10 text-sm text-white"
                         value={settingsUpdate.rewardsPercent ?? settings?.rewardsPercent ?? 40} 
                         onChange={(e) => setSettingsUpdate((prev: any) => ({ ...prev, rewardsPercent: parseInt(e.target.value) }))}
                       />
                     </div>
                     <div className="space-y-1.5">
-                      <Label className="text-[10px] uppercase tracking-wider opacity-70">System Percent (%)</Label>
+                      <Label className="text-xs text-white uppercase tracking-wider font-bold">System Percent (%)</Label>
                       <Input 
                         type="number" 
-                        className="h-8 bg-black/20 border-white/10 text-xs"
+                        className="h-10 bg-black/20 border-white/10 text-sm text-white"
                         value={settingsUpdate.systemPercent ?? settings?.systemPercent ?? 10} 
                         onChange={(e) => setSettingsUpdate((prev: any) => ({ ...prev, systemPercent: parseInt(e.target.value) }))}
                       />
@@ -352,7 +352,7 @@ export default function AdminDashboard() {
                   </div>
                   <Button 
                     size="sm"
-                    className="w-full h-8 font-black uppercase text-[10px] tracking-widest mt-2" 
+                    className="w-full h-10 font-black uppercase text-xs tracking-widest mt-2 bg-white text-black hover:bg-white/90" 
                     onClick={() => updateSettingsMutation.mutate(settingsUpdate)}
                     disabled={updateSettingsMutation.isPending || Object.keys(settingsUpdate).length === 0}
                   >
@@ -371,26 +371,26 @@ export default function AdminDashboard() {
 
         <Tabs defaultValue="users" className="w-full">
           <div className="flex flex-col md:flex-row items-center justify-between mb-6 gap-4">
-            <TabsList className="bg-white/5 border border-white/10 p-1.5 rounded-xl w-full md:w-auto h-auto">
-              <TabsTrigger value="users" className="flex-1 md:flex-none rounded-lg px-8 py-2 font-black uppercase text-xs tracking-widest data-[state=active]:bg-white data-[state=active]:text-black text-white hover:text-white transition-all">
+            <TabsList className="bg-white/5 border border-white/10 p-1.5 rounded-xl w-full md:w-auto h-auto gap-1">
+              <TabsTrigger value="users" className="flex-1 md:flex-none rounded-lg px-4 py-2 font-black uppercase text-xs tracking-widest data-[state=active]:bg-white data-[state=active]:text-black text-white hover:text-white transition-all">
                 Protocol Users
               </TabsTrigger>
-              <TabsTrigger value="analytics" className="flex-1 md:flex-none rounded-lg px-8 py-2 font-black uppercase text-xs tracking-widest data-[state=active]:bg-white data-[state=active]:text-black text-white hover:text-white transition-all">
+              <TabsTrigger value="analytics" className="flex-1 md:flex-none rounded-lg px-4 py-2 font-black uppercase text-xs tracking-widest data-[state=active]:bg-white data-[state=active]:text-black text-white hover:text-white transition-all">
                 Analytics
               </TabsTrigger>
-              <TabsTrigger value="campaigns" className="flex-1 md:flex-none rounded-lg px-8 py-2 font-black uppercase text-xs tracking-widest data-[state=active]:bg-white data-[state=active]:text-black text-white hover:text-white transition-all">
+              <TabsTrigger value="campaigns" className="flex-1 md:flex-none rounded-lg px-4 py-2 font-black uppercase text-xs tracking-widest data-[state=active]:bg-white data-[state=active]:text-black text-white hover:text-white transition-all">
                 Active Campaigns
               </TabsTrigger>
-              <TabsTrigger value="executions" className="flex-1 md:flex-none rounded-lg px-8 py-2 font-black uppercase text-xs tracking-widest data-[state=active]:bg-white data-[state=active]:text-black text-white hover:text-white transition-all">
+              <TabsTrigger value="executions" className="flex-1 md:flex-none rounded-lg px-4 py-2 font-black uppercase text-xs tracking-widest data-[state=active]:bg-white data-[state=active]:text-black text-white hover:text-white transition-all">
                 Live Feed
               </TabsTrigger>
-              <TabsTrigger value="health" className="flex-1 md:flex-none rounded-lg px-8 py-2 font-black uppercase text-xs tracking-widest data-[state=active]:bg-white data-[state=active]:text-black text-white hover:text-white transition-all">
+              <TabsTrigger value="health" className="flex-1 md:flex-none rounded-lg px-4 py-2 font-black uppercase text-xs tracking-widest data-[state=active]:bg-white data-[state=active]:text-black text-white hover:text-white transition-all">
                 System Health
               </TabsTrigger>
-              <TabsTrigger value="fraud" className="flex-1 md:flex-none rounded-lg px-8 py-2 font-black uppercase text-xs tracking-widest data-[state=active]:bg-red-500 data-[state=active]:text-white text-red-400 hover:text-red-300 transition-all">
+              <TabsTrigger value="fraud" className="flex-1 md:flex-none rounded-lg px-4 py-2 font-black uppercase text-xs tracking-widest data-[state=active]:bg-red-500 data-[state=active]:text-white text-red-400 hover:text-red-300 transition-all">
                 Fraud Shield
               </TabsTrigger>
-              <TabsTrigger value="logs" className="flex-1 md:flex-none rounded-lg px-8 py-2 font-black uppercase text-xs tracking-widest data-[state=active]:bg-primary data-[state=active]:text-primary-foreground text-white hover:text-white transition-all">
+              <TabsTrigger value="logs" className="flex-1 md:flex-none rounded-lg px-4 py-2 font-black uppercase text-xs tracking-widest data-[state=active]:bg-primary data-[state=active]:text-primary-foreground text-white hover:text-white transition-all">
                 System Logs
               </TabsTrigger>
             </TabsList>
