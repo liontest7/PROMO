@@ -50,15 +50,6 @@ export function AdminStats({ stats, campaignsCount }: AdminStatsProps) {
         </div>
         
         <div className="flex flex-col gap-4">
-          <Button 
-            variant="outline" 
-            size="sm" 
-            onClick={handleManualPayout}
-            className="gap-2 font-bold uppercase tracking-widest text-[10px] border-primary/20 hover:bg-primary/10 h-12 px-6 rounded-xl self-end"
-          >
-            <RefreshCcw className="w-3 h-3" />
-            Trigger Weekly Payout
-          </Button>
           <div className="flex items-center gap-4 p-4 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-sm">
             <div className="flex flex-col items-end">
               <span className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-1">Total Protocol Value</span>
