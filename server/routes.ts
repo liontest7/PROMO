@@ -34,6 +34,9 @@ export async function registerRoutes(
       const usersList = await storage.getAllUsers();
       const allExecutions = await storage.getAllExecutions();
 
+      // Filter out users who haven't accepted terms to match global stats
+      const activeUsers = usersList.filter(u => u.acceptedTerms);
+
       // Get creation fee and rewards percent from settings for dynamic prize pool calculation
       const settings = await storage.getSystemSettings();
       const allCampaigns = await storage.getAllCampaigns();
@@ -43,14 +46,11 @@ export async function registerRoutes(
       // Real weekly prize pool: (Total Campaigns * Creation Fee) * Rewards Percent
       const weeklyPrizePool = allCampaigns.length * creationFee * rewardsPercent;
 
-      const leaderboardData = usersList.map((user) => {
-        // Points calculation: 10 points per verified execution, 0 points per pending execution for score, 
-        // but we can still count them for task count visibility.
-        // Protocol Reputation score is already in user.reputationScore.
-        // For weekly/monthly, we count tasks.
+      const leaderboardData = activeUsers.map((user) => {
+        // Points calculation: 10 points per verified execution, 0 points per pending execution for score
         const userExecutions = allExecutions.filter(e => {
           if (e.userId !== user.id) return false;
-          if (e.status !== 'verified') return false; // Only verified count for leaderboard points
+          if (e.status !== 'verified') return false;
           
           if (timeframe === "all_time") return true;
           
@@ -85,7 +85,7 @@ export async function registerRoutes(
           tasks: userExecutions.length,
           id: user.id,
           createdAt: user.createdAt,
-          isEligibleForPrize: points > 0 // Protection: must have points to win
+          isEligibleForPrize: points > 0
         };
       });
 
