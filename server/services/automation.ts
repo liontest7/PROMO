@@ -59,12 +59,13 @@ export class AutomationService {
 
       if (lastWeek) {
         // Check if the current week should be closed (End date is Sunday 23:59:59)
-        if (now < lastWeek.endDate) {
-          log(`Still in week #${lastWeek.weekNumber}. Ends at ${lastWeek.endDate.toISOString()}`, "Automation");
+        const lastEndDate = lastWeek.endDate ? new Date(lastWeek.endDate) : new Date();
+        if (now < lastEndDate) {
+          log(`Still in week #${lastWeek.weekNumber}. Ends at ${lastEndDate.toISOString()}`, "Automation");
           return;
         }
         nextWeekNumber = lastWeek.weekNumber + 1;
-        nextStartDate = new Date(lastWeek.endDate);
+        nextStartDate = new Date(lastEndDate);
         nextStartDate.setMilliseconds(nextStartDate.getMilliseconds() + 1);
       }
 
@@ -77,7 +78,6 @@ export class AutomationService {
 
       // Calculate prizes based on real system settings
       const settings = await storage.getSystemSettings();
-      const allCampaigns = await storage.getAllCampaigns();
       const rewardsPercent = (settings.rewardsPercent || 40) / 100;
       const creationFee = settings.creationFee || 10000;
       const weeklyPrizePool = allCampaigns.length * creationFee * rewardsPercent;
@@ -96,7 +96,9 @@ export class AutomationService {
         return { ...user, weeklyPoints };
       }).sort((a, b) => {
         if (b.weeklyPoints !== a.weeklyPoints) return b.weeklyPoints - a.weeklyPoints;
-        return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
+        const timeA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+        const timeB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+        return timeA - timeB;
       });
 
       const winners = weeklyRankings.slice(0, 3).map((user, index) => {
