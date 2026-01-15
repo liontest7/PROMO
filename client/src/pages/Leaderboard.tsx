@@ -241,7 +241,7 @@ export default function Leaderboard() {
                 <CardContent className="p-0">
                   <div className="divide-y divide-white/10">
                     {paginatedLeaders?.length > 0 ? paginatedLeaders.map((user, idx) => (
-                      <div key={user.rank || idx} className="flex items-center px-12 py-10 hover:bg-white/[0.05] transition-all group relative">
+                      <div key={user.id || idx} className="flex items-center px-12 py-10 hover:bg-white/[0.05] transition-all group relative">
                         <div className="absolute left-0 w-1.5 h-0 bg-primary group-hover:h-full transition-all duration-300" />
                         <span className={cn(
                           "w-20 text-3xl font-black font-display transition-colors",
@@ -255,8 +255,8 @@ export default function Leaderboard() {
                             <AvatarFallback className="text-base font-black bg-white/10">{user.avatar || 'U'}</AvatarFallback>
                           </Avatar>
                           <div className="flex flex-col gap-1">
-                          <span className="font-black text-2xl font-display uppercase italic tracking-tight text-white group-hover:text-primary transition-colors">{user.name}</span>
-                          <span className="text-xs font-mono text-white/40 truncate max-w-[250px]">{user.fullWallet}</span>
+                          <span className="font-black text-2xl font-display uppercase italic tracking-tight text-white group-hover:text-primary transition-colors">{user.name || "Anonymous User"}</span>
+                          <span className="text-xs font-mono text-white/40 truncate max-w-[250px]">{user.fullWallet || "No Wallet"}</span>
                         </div>
                       </div>
                       <div className="w-40 text-right">

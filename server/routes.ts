@@ -70,17 +70,21 @@ export async function registerRoutes(
         const timeframePoints = userExecutions.length * 10;
 
         return {
-          name: user.twitterHandle ? `@${user.twitterHandle}` : `User ${user.walletAddress.slice(0, 4)}...${user.walletAddress.slice(-4)}`,
-          fullWallet: user.walletAddress,
+          name: user.twitterHandle ? `@${user.twitterHandle}` : (user.walletAddress ? `User ${user.walletAddress.slice(0, 4)}...${user.walletAddress.slice(-4)}` : "Anonymous User"),
+          fullWallet: user.walletAddress || "N/A",
           avatar: user.twitterHandle ? user.twitterHandle[0].toUpperCase() : 'U',
           points: timeframe === "all_time" ? (user.reputationScore || 0) : timeframePoints,
           tasks: userExecutions.length,
-          id: user.id
+          id: user.id,
+          createdAt: user.createdAt
         };
       });
 
-      // Sort by points descending
-      leaderboardData.sort((a, b) => b.points - a.points);
+      // Sort by points descending, then by creation date (earlier is better)
+      leaderboardData.sort((a, b) => {
+        if (b.points !== a.points) return b.points - a.points;
+        return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
+      });
 
       // Update ranks
       const rankedData = leaderboardData.map((item, idx) => ({
