@@ -4,7 +4,6 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { PLATFORM_CONFIG } from "@shared/config";
 import { useQuery } from "@tanstack/react-query";
-import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
@@ -26,6 +25,10 @@ export default function Leaderboard() {
     enabled: view === "history",
   });
 
+  const { data: allUsers } = useQuery<any[]>({
+    queryKey: ["/api/leaderboard", "all_time"],
+  });
+
   if (isLoading) {
     return (
       <div className="min-h-screen bg-background text-foreground">
@@ -38,8 +41,8 @@ export default function Leaderboard() {
     );
   }
 
-  const paginatedLeaders = leaders?.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
-  const totalPages = Math.ceil((leaders?.length || 0) / itemsPerPage);
+  const paginatedLeaders = (timeframe === "all_time" ? allUsers : leaders)?.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+  const totalPages = Math.ceil(((timeframe === "all_time" ? allUsers : leaders)?.length || 0) / itemsPerPage);
 
   return (
     <div className="min-h-screen bg-[#050505] text-white">
@@ -98,7 +101,6 @@ export default function Leaderboard() {
                 )}
               </div>
               
-              {/* Character Trophy positioned to the right and lower */}
               <div className="absolute -bottom-8 right-0 md:right-[-40px] transform translate-y-1/2">
                 <div className="relative">
                   <div className="absolute inset-0 bg-primary/20 blur-3xl rounded-full" />
@@ -143,148 +145,196 @@ export default function Leaderboard() {
 
         {view === "ranking" ? (
           <>
-            {/* Podium - Always Top 3 */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16 items-end px-4">
-              {/* Podium content... */}
-
-          {/* Rank 2 */}
-          <Card className="glass-card border-white/10 bg-white/[0.03] rounded-[3rem] overflow-hidden order-2 md:order-1 hover-elevate transition-all duration-500 min-h-[340px]">
-            <CardContent className="p-10 flex flex-col items-center text-center">
-              <div className="relative mb-8">
-                <div className="w-28 h-28 rounded-full bg-[#111] border-2 border-white/20 p-1.5">
-                  <Avatar className="h-full w-full">
-                    <AvatarFallback className="bg-emerald-500/20 text-emerald-500 font-black text-2xl">{leaders?.[1]?.avatar || '?'}</AvatarFallback>
-                  </Avatar>
-                </div>
-                <div className="absolute -top-3 -right-3 w-12 h-12 rounded-full bg-white text-black flex items-center justify-center font-black text-sm shadow-2xl border-4 border-[#050505]">#2</div>
-              </div>
-              <h3 className="text-3xl font-black font-display uppercase italic tracking-tight text-white truncate w-full px-2">{leaders?.[1]?.name || '---'}</h3>
-              <div className="flex items-center gap-3 mt-4 bg-emerald-500/15 px-6 py-2 rounded-full border border-emerald-500/30">
-                <Star className="w-5 h-5 text-emerald-500" />
-                <span className="text-2xl font-black font-display text-emerald-500">{leaders?.[1]?.points?.toLocaleString() || 0}</span>
-              </div>
-              <p className="text-xs font-black text-white/90 uppercase tracking-[0.25em] mt-6 italic leading-tight">{leaders?.[1]?.tasks || 0} TASKS COMPLETED</p>
-            </CardContent>
-          </Card>
-
-          {/* Rank 1 */}
-          <Card className="glass-card border-yellow-500/40 bg-yellow-500/10 rounded-[3.5rem] overflow-hidden order-1 md:order-2 scale-110 relative z-20 shadow-[0_0_60px_rgba(234,179,8,0.25)] hover-elevate transition-all duration-500 min-h-[400px]">
-            <div className="absolute top-0 inset-x-0 h-1.5 bg-gradient-to-r from-transparent via-yellow-500/60 to-transparent" />
-            <CardContent className="p-12 flex flex-col items-center text-center">
-              <div className="relative mb-8">
-                <div className="w-36 h-36 rounded-full bg-[#111] border-4 border-yellow-500/50 p-1.5 shadow-[0_0_40px_rgba(234,179,8,0.4)]">
-                  <Avatar className="h-full w-full">
-                    <AvatarFallback className="bg-primary/20 text-primary font-black text-4xl">{leaders?.[0]?.avatar || '?'}</AvatarFallback>
-                  </Avatar>
-                </div>
-                <div className="absolute -top-4 -right-4 w-14 h-14 rounded-full bg-yellow-500 text-black flex items-center justify-center font-black text-base shadow-2xl border-4 border-[#050505]">#1</div>
-                <Crown className="absolute -top-12 left-1/2 -translate-x-1/2 w-10 h-10 text-yellow-500 drop-shadow-[0_0_15px_rgba(234,179,8,0.6)]" />
-              </div>
-              <h3 className="text-4xl font-black font-display uppercase italic tracking-tighter text-white truncate w-full px-2">
-                {leaders?.[0]?.name || '---'}
-              </h3>
-              <div className="flex items-center gap-3 mt-5 bg-primary/25 px-8 py-3 rounded-full border border-primary/40 shadow-xl">
-                <Star className="w-6 h-6 text-primary" />
-                <span className="text-4xl font-black font-display text-primary">{leaders?.[0]?.points?.toLocaleString() || 0}</span>
-              </div>
-              <p className="text-[13px] font-black text-white uppercase tracking-[0.35em] mt-8 italic leading-tight">{leaders?.[0]?.tasks || 0} TASKS COMPLETED</p>
-            </CardContent>
-          </Card>
-
-          {/* Rank 3 */}
-          <Card className="glass-card border-white/10 bg-white/[0.03] rounded-[3rem] overflow-hidden order-3 hover-elevate transition-all duration-500 min-h-[340px]">
-            <CardContent className="p-10 flex flex-col items-center text-center">
-              <div className="relative mb-8">
-                <div className="w-28 h-28 rounded-full bg-[#111] border-2 border-white/20 p-1.5">
-                  <Avatar className="h-full w-full">
-                    <AvatarFallback className="bg-amber-600/20 text-amber-600 font-black text-2xl">{leaders?.[2]?.avatar || '?'}</AvatarFallback>
-                  </Avatar>
-                </div>
-                <div className="absolute -top-3 -right-3 w-12 h-12 rounded-full bg-amber-600 text-white flex items-center justify-center font-black text-sm shadow-2xl border-4 border-[#050505]">#3</div>
-              </div>
-              <h3 className="text-3xl font-black font-display uppercase italic tracking-tight text-white truncate w-full px-2">{leaders?.[2]?.name || '---'}</h3>
-              <div className="flex items-center gap-3 mt-4 bg-amber-600/15 px-6 py-2 rounded-full border border-amber-600/30">
-                <Star className="w-5 h-5 text-amber-600" />
-                <span className="text-2xl font-black font-display text-amber-600">{leaders?.[2]?.points?.toLocaleString() || 0}</span>
-              </div>
-              <p className="text-xs font-black text-white/90 uppercase tracking-[0.25em] mt-6 italic leading-tight">{leaders?.[2]?.tasks || 0} TASKS COMPLETED</p>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* List Section */}
-        <div className="space-y-8">
-          <Card className="glass-card border-white/10 bg-white/[0.02] rounded-[3rem] overflow-hidden shadow-[0_0_80px_rgba(0,0,0,0.5)] backdrop-blur-xl">
-            <div className="bg-white/[0.05] px-12 py-8 border-b border-white/10 flex items-center text-sm font-black text-white uppercase tracking-[0.5em] italic">
-              <span className="w-20">Rank</span>
-              <span className="flex-1">Contributor</span>
-              <span className="w-40 text-right">Score</span>
-              <span className="w-40 text-right">Tasks</span>
-            </div>
-            <CardContent className="p-0">
-              <div className="divide-y divide-white/10">
-                {paginatedLeaders?.map((user) => (
-                  <div key={user.rank} className="flex items-center px-12 py-10 hover:bg-white/[0.05] transition-all group relative">
-                    <div className="absolute left-0 w-1.5 h-0 bg-primary group-hover:h-full transition-all duration-300" />
-                    <span className={cn(
-                      "w-20 text-3xl font-black font-display transition-colors",
-                      user.rank === 1 ? "text-yellow-500" :
-                      user.rank === 2 ? "text-gray-300" :
-                      user.rank === 3 ? "text-amber-600" :
-                      "text-white/80"
-                    )}>#{user.rank}</span>
-                    <div className="flex-1 flex items-center gap-8">
-                      <Avatar className="h-16 w-16 border-2 border-white/10 group-hover:border-primary/60 transition-all shadow-xl">
-                        <AvatarFallback className="text-base font-black bg-white/10">{user.avatar}</AvatarFallback>
+              <Card className="glass-card border-white/10 bg-white/[0.03] rounded-[3rem] overflow-hidden order-2 md:order-1 hover-elevate transition-all duration-500 min-h-[340px]">
+                <CardContent className="p-10 flex flex-col items-center text-center">
+                  <div className="relative mb-8">
+                    <div className="w-28 h-28 rounded-full bg-[#111] border-2 border-white/20 p-1.5">
+                      <Avatar className="h-full w-full">
+                        <AvatarFallback className="bg-emerald-500/20 text-emerald-500 font-black text-2xl">{leaders?.[1]?.avatar || '?'}</AvatarFallback>
                       </Avatar>
-                      <div className="flex flex-col gap-1">
-                        <span className="font-black text-2xl font-display uppercase italic tracking-tight text-white group-hover:text-primary transition-colors">{user.name}</span>
-                        <span className="text-xs font-mono text-white/40 truncate max-w-[250px]">{user.fullWallet}</span>
+                    </div>
+                    <div className="absolute -top-3 -right-3 w-12 h-12 rounded-full bg-white text-black flex items-center justify-center font-black text-sm shadow-2xl border-4 border-[#050505]">#2</div>
+                  </div>
+                  <h3 className="text-3xl font-black font-display uppercase italic tracking-tight text-white truncate w-full px-2">{leaders?.[1]?.name || '---'}</h3>
+                  <div className="flex items-center gap-3 mt-4 bg-emerald-500/15 px-6 py-2 rounded-full border border-emerald-500/30">
+                    <Star className="w-5 h-5 text-emerald-500" />
+                    <span className="text-2xl font-black font-display text-emerald-500">{leaders?.[1]?.points?.toLocaleString() || 0}</span>
+                  </div>
+                  <p className="text-xs font-black text-white/90 uppercase tracking-[0.25em] mt-6 italic leading-tight">{leaders?.[1]?.tasks || 0} TASKS COMPLETED</p>
+                </CardContent>
+              </Card>
+
+              <Card className="glass-card border-yellow-500/40 bg-yellow-500/10 rounded-[3.5rem] overflow-hidden order-1 md:order-2 scale-110 relative z-20 shadow-[0_0_60px_rgba(234,179,8,0.25)] hover-elevate transition-all duration-500 min-h-[400px]">
+                <div className="absolute top-0 inset-x-0 h-1.5 bg-gradient-to-r from-transparent via-yellow-500/60 to-transparent" />
+                <CardContent className="p-12 flex flex-col items-center text-center">
+                  <div className="relative mb-8">
+                    <div className="w-36 h-36 rounded-full bg-[#111] border-4 border-yellow-500/50 p-1.5 shadow-[0_0_40px_rgba(234,179,8,0.4)]">
+                      <Avatar className="h-full w-full">
+                        <AvatarFallback className="bg-primary/20 text-primary font-black text-4xl">{leaders?.[0]?.avatar || '?'}</AvatarFallback>
+                      </Avatar>
+                    </div>
+                    <div className="absolute -top-4 -right-4 w-14 h-14 rounded-full bg-yellow-500 text-black flex items-center justify-center font-black text-base shadow-2xl border-4 border-[#050505]">#1</div>
+                    <Crown className="absolute -top-12 left-1/2 -translate-x-1/2 w-10 h-10 text-yellow-500 drop-shadow-[0_0_15px_rgba(234,179,8,0.6)]" />
+                  </div>
+                  <h3 className="text-4xl font-black font-display uppercase italic tracking-tighter text-white truncate w-full px-2">
+                    {leaders?.[0]?.name || '---'}
+                  </h3>
+                  <div className="flex items-center gap-3 mt-5 bg-primary/25 px-8 py-3 rounded-full border border-primary/40 shadow-xl">
+                    <Star className="w-6 h-6 text-primary" />
+                    <span className="text-4xl font-black font-display text-primary">{leaders?.[0]?.points?.toLocaleString() || 0}</span>
+                  </div>
+                  <p className="text-[13px] font-black text-white uppercase tracking-[0.35em] mt-8 italic leading-tight">{leaders?.[0]?.tasks || 0} TASKS COMPLETED</p>
+                </CardContent>
+              </Card>
+
+              <Card className="glass-card border-white/10 bg-white/[0.03] rounded-[3rem] overflow-hidden order-3 hover-elevate transition-all duration-500 min-h-[340px]">
+                <CardContent className="p-10 flex flex-col items-center text-center">
+                  <div className="relative mb-8">
+                    <div className="w-28 h-28 rounded-full bg-[#111] border-2 border-white/20 p-1.5">
+                      <Avatar className="h-full w-full">
+                        <AvatarFallback className="bg-amber-600/20 text-amber-600 font-black text-2xl">{leaders?.[2]?.avatar || '?'}</AvatarFallback>
+                      </Avatar>
+                    </div>
+                    <div className="absolute -top-3 -right-3 w-12 h-12 rounded-full bg-amber-600 text-white flex items-center justify-center font-black text-sm shadow-2xl border-4 border-[#050505]">#3</div>
+                  </div>
+                  <h3 className="text-3xl font-black font-display uppercase italic tracking-tight text-white truncate w-full px-2">{leaders?.[2]?.name || '---'}</h3>
+                  <div className="flex items-center gap-3 mt-4 bg-amber-600/15 px-6 py-2 rounded-full border border-amber-600/30">
+                    <Star className="w-5 h-5 text-amber-600" />
+                    <span className="text-2xl font-black font-display text-amber-600">{leaders?.[2]?.points?.toLocaleString() || 0}</span>
+                  </div>
+                  <p className="text-xs font-black text-white/90 uppercase tracking-[0.25em] mt-6 italic leading-tight">{leaders?.[2]?.tasks || 0} TASKS COMPLETED</p>
+                </CardContent>
+              </Card>
+            </div>
+
+            <div className="space-y-8">
+              <Card className="glass-card border-white/10 bg-white/[0.02] rounded-[3rem] overflow-hidden shadow-[0_0_80px_rgba(0,0,0,0.5)] backdrop-blur-xl">
+                <div className="bg-white/[0.05] px-12 py-8 border-b border-white/10 flex items-center text-sm font-black text-white uppercase tracking-[0.5em] italic">
+                  <span className="w-20">Rank</span>
+                  <span className="flex-1">Contributor</span>
+                  <span className="w-40 text-right">Score</span>
+                  <span className="w-40 text-right">Tasks</span>
+                </div>
+                <CardContent className="p-0">
+                  <div className="divide-y divide-white/10">
+                    {paginatedLeaders?.map((user) => (
+                      <div key={user.rank} className="flex items-center px-12 py-10 hover:bg-white/[0.05] transition-all group relative">
+                        <div className="absolute left-0 w-1.5 h-0 bg-primary group-hover:h-full transition-all duration-300" />
+                        <span className={cn(
+                          "w-20 text-3xl font-black font-display transition-colors",
+                          user.rank === 1 ? "text-yellow-500" :
+                          user.rank === 2 ? "text-gray-300" :
+                          user.rank === 3 ? "text-amber-600" :
+                          "text-white/80"
+                        )}>#{user.rank}</span>
+                        <div className="flex-1 flex items-center gap-8">
+                          <Avatar className="h-16 w-16 border-2 border-white/10 group-hover:border-primary/60 transition-all shadow-xl">
+                            <AvatarFallback className="text-base font-black bg-white/10">{user.avatar}</AvatarFallback>
+                          </Avatar>
+                          <div className="flex flex-col gap-1">
+                          <span className="font-black text-2xl font-display uppercase italic tracking-tight text-white group-hover:text-primary transition-colors">{user.name}</span>
+                          <span className="text-xs font-mono text-white/40 truncate max-w-[250px]">{user.fullWallet}</span>
+                        </div>
+                      </div>
+                      <div className="w-40 text-right">
+                        <p className="text-3xl font-black font-display text-primary drop-shadow-[0_0_15px_rgba(34,197,94,0.4)]">{user.points.toLocaleString()}</p>
+                      </div>
+                      <div className="w-40 text-right">
+                        <p className="text-2xl font-black font-display text-white/50">{user.tasks}</p>
                       </div>
                     </div>
-                    <div className="w-40 text-right">
-                      <p className="text-3xl font-black font-display text-primary drop-shadow-[0_0_15px_rgba(34,197,94,0.4)]">{user.points.toLocaleString()}</p>
-                    </div>
-                    <div className="w-40 text-right">
-                      <p className="text-2xl font-black font-display text-white/50">{user.tasks}</p>
-                    </div>
-                  </div>
-                ))}
-                
-                {(!leaders || leaders.length === 0) && (
-                  <div className="p-32 text-center">
-                    <p className="text-white/30 text-xl uppercase font-black tracking-[0.4em] italic animate-pulse">Neural Ranking Data Missing</p>
-                  </div>
-                )}
-              </div>
-            </CardContent>
-          </Card>
+                  ))}
 
-          {/* Pagination */}
-          {totalPages > 1 && (
-            <div className="flex justify-center items-center gap-4 mt-8">
-              <Button
-                variant="outline"
-                disabled={currentPage === 1}
-                onClick={() => setCurrentPage(p => p - 1)}
-                className="bg-white/5 border-white/10 text-white font-black uppercase tracking-widest text-[10px] rounded-xl h-10 px-6"
-              >
-                Previous
-              </Button>
-              <span className="text-xs font-black text-white/60 uppercase tracking-widest">
-                Page {currentPage} of {totalPages}
-              </span>
-              <Button
-                variant="outline"
-                disabled={currentPage === totalPages}
-                onClick={() => setCurrentPage(p => p + 1)}
-                className="bg-white/5 border-white/10 text-white font-black uppercase tracking-widest text-[10px] rounded-xl h-10 px-6"
-              >
-                Next
-              </Button>
+                  {(!paginatedLeaders || paginatedLeaders.length === 0) && (
+                    <div className="p-32 text-center">
+                      <p className="text-white/30 text-xl uppercase font-black tracking-[0.4em] italic animate-pulse">Neural Ranking Data Missing</p>
+                    </div>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Pagination */}
+                <div className="flex justify-center items-center gap-4 mt-8">
+                  <Button
+                    variant="outline"
+                    disabled={currentPage === 1}
+                    onClick={() => setCurrentPage(p => p - 1)}
+                    className="bg-white/5 border-white/10 text-white font-black uppercase tracking-widest text-[10px] rounded-xl h-10 px-6"
+                  >
+                    Previous
+                  </Button>
+                  <span className="text-xs font-black text-white/60 uppercase tracking-widest">
+                    Page {currentPage} of {totalPages}
+                  </span>
+                  <Button
+                    variant="outline"
+                    disabled={currentPage === totalPages}
+                    onClick={() => setCurrentPage(p => p + 1)}
+                    className="bg-white/5 border-white/10 text-white font-black uppercase tracking-widest text-[10px] rounded-xl h-10 px-6"
+                  >
+                    Next
+                  </Button>
+                </div>
+              )}
             </div>
-          )}
-        </div>
+          </>
+        ) : (
+          <div className="space-y-6">
+            <Card className="glass-card border-white/10 bg-white/[0.02] rounded-[3rem] overflow-hidden shadow-2xl backdrop-blur-xl">
+              <div className="bg-white/[0.05] px-12 py-8 border-b border-white/10 flex items-center text-sm font-black text-white uppercase tracking-[0.5em] italic">
+                <span className="w-40">Period</span>
+                <span className="flex-1">Weekly Champions</span>
+                <span className="w-48 text-right">Prize Distributed</span>
+                <span className="w-32 text-right">Proof</span>
+              </div>
+              <CardContent className="p-0">
+                <div className="divide-y divide-white/10">
+                  {history?.map((week, idx) => (
+                    <div key={idx} className="flex items-center px-12 py-8 hover:bg-white/[0.03] transition-all group">
+                      <div className="w-40">
+                        <p className="text-xl font-black font-display text-white/90 italic uppercase">{week.period}</p>
+                        <p className="text-[10px] font-black text-white/30 tracking-widest">{week.dates}</p>
+                      </div>
+                      <div className="flex-1 flex items-center gap-4">
+                        <div className="flex -space-x-4">
+                          {week.winners.map((winner: any, i: number) => (
+                            <Avatar key={i} className="h-10 w-10 border-2 border-[#050505] shadow-lg ring-2 ring-white/5">
+                              <AvatarFallback className="text-[10px] font-black bg-white/10">{winner.avatar}</AvatarFallback>
+                            </Avatar>
+                          ))}
+                        </div>
+                        <div className="flex flex-col">
+                          <p className="text-sm font-black text-white/80 italic uppercase">
+                            {week.winners[0].name} <span className="text-[10px] text-white/30 lowercase not-italic">& 2 others</span>
+                          </p>
+                          <p className="text-[10px] font-black text-primary tracking-widest">{week.totalPoints.toLocaleString()} TOTAL POINTS</p>
+                        </div>
+                      </div>
+                      <div className="w-48 text-right">
+                        <p className="text-2xl font-black font-display text-primary">{week.prize.toLocaleString()} $DROP</p>
+                      </div>
+                      <div className="w-32 text-right">
+                        <Button variant="ghost" size="icon" className="h-10 w-10 rounded-xl bg-white/5 border border-white/10 hover:bg-primary/20 hover:text-primary transition-all" asChild>
+                          <a href={week.proofUrl} target="_blank" rel="noreferrer">
+                            <ExternalLinkIcon className="w-4 h-4" />
+                          </a>
+                        </Button>
+                      </div>
+                    </div>
+                  ))}
+                  
+                  {(!history || history.length === 0) && (
+                    <div className="p-32 text-center">
+                      <p className="text-white/30 text-xl uppercase font-black tracking-[0.4em] italic animate-pulse">Neural History Data Pending First Reward Cycle</p>
+                    </div>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        )}
       </main>
     </div>
   );
