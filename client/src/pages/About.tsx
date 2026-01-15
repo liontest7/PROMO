@@ -154,7 +154,7 @@ export default function About() {
                   <div className={`w-3 h-3 rounded-full ${step.status === 'active' ? 'bg-primary animate-pulse' : 'bg-muted'}`} />
                 </div>
                 <div className="phase-card p-6 glass-card border-white/5 bg-white/[0.02] rounded-2xl">
-                  <phase-tag className="text-primary font-bold text-sm uppercase tracking-wider mb-2 block">Phase 1: Foundation</phase-tag>
+                  <span className="text-primary font-bold text-sm uppercase tracking-wider mb-2 block">Phase 1: Foundation</span>
                   <h3 className="text-xl font-bold mb-4">Launch & Stability</h3>
                   <ul className="space-y-2">
                     <li className="text-sm text-muted-foreground flex items-center gap-2"><div className="w-1 h-1 rounded-full bg-primary/50" />Secure Platform Launch & UI/UX Audit</li>
