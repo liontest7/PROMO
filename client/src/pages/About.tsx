@@ -94,8 +94,8 @@ export default function About() {
                     <ShieldCheck className="w-6 h-6 text-primary" />
                   </div>
                   <div>
-                    <h4 className="text-xl font-bold mb-2">For Projects & Developers</h4>
-                    <p className="text-muted-foreground">Gain massive exposure and build trust. By requiring holder qualification, you ensure your community is composed of real stakeholders, not bots.</p>
+                    <h4 className="text-xl font-bold mb-2 text-white">For Projects & Developers</h4>
+                    <p className="text-lg text-white/80 leading-relaxed">Gain massive exposure and build trust. By requiring holder qualification, you ensure your community is composed of real stakeholders, not bots.</p>
                   </div>
                 </div>
                 <div className="flex gap-6">
@@ -103,8 +103,8 @@ export default function About() {
                     <Coins className="w-6 h-6 text-secondary" />
                   </div>
                   <div>
-                    <h4 className="text-xl font-bold mb-2">For Investors</h4>
-                    <p className="text-muted-foreground">Sustainable growth through ${PLATFORM_CONFIG.TOKEN_SYMBOL} burns. Every new campaign increases scarcity, rewarding long-term believers in the {PLATFORM_CONFIG.TOKEN_SYMBOL} vision.</p>
+                    <h4 className="text-xl font-bold mb-2 text-white">For Investors</h4>
+                    <p className="text-lg text-white/80 leading-relaxed">Sustainable growth through ${PLATFORM_CONFIG.TOKEN_SYMBOL} burns. Every new campaign increases scarcity, rewarding long-term believers in the {PLATFORM_CONFIG.TOKEN_SYMBOL} vision.</p>
                   </div>
                 </div>
                 <div className="flex gap-6">
@@ -112,8 +112,8 @@ export default function About() {
                     <Users className="w-6 h-6 text-primary" />
                   </div>
                   <div>
-                    <h4 className="text-xl font-bold mb-2">For Users & Earners</h4>
-                    <p className="text-muted-foreground">Turn your time and holdings into tokens. Earn rewards from the most promising projects on Solana through verified participation.</p>
+                    <h4 className="text-xl font-bold mb-2 text-white">For Users & Earners</h4>
+                    <p className="text-lg text-white/80 leading-relaxed">Turn your time and holdings into tokens. Earn rewards from the most promising projects on Solana through verified participation.</p>
                   </div>
                 </div>
               </div>
@@ -138,15 +138,15 @@ export default function About() {
                   "Verified On-chain Holder Qualification",
                   "Anti-Bot Protection (Cloudflare Turnstile)",
                   "Dynamic Gas Optimization System",
-                  "Deflationary 50/40/10 Tokenomics Model"
+                  "Deflationary 50/40/10 Tokenomics Model",
+                  "Social Media API Direct Verification"
                 ],
                 status: "completed"
               },
               { 
-                phase: "Next Steps", 
+                phase: "In Progress", 
                 title: "Growth & Ecosystem Expansion", 
                 items: [
-                  "Social Media API Direct Verification",
                   "DEX Liquidity Boosting Rewards",
                   "Premium Airdrop Tiers for High-Reputation Users",
                   "Advertiser Dashboard & Advanced Analytics",
@@ -168,22 +168,22 @@ export default function About() {
               }
             ].map((step, i) => (
               <div key={i} className={`relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group`}>
-                <div className={`flex items-center justify-center w-12 h-12 rounded-full border-2 bg-background shadow-xl shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 z-10 transition-transform group-hover:scale-110 ${
+                <div className={`flex items-center justify-center w-14 h-14 rounded-full border-2 bg-background shadow-xl shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 z-10 transition-transform group-hover:scale-110 ${
                   step.status === 'completed' ? 'border-primary shadow-primary/20' : 
                   step.status === 'in_progress' ? 'border-primary animate-pulse shadow-primary/40' : 
                   'border-orange-500 shadow-orange-500/20'
                 }`}>
-                  <div className={`w-4 h-4 rounded-full ${
+                  <div className={`w-5 h-5 rounded-full ${
                     step.status === 'completed' || step.status === 'in_progress' ? 'bg-primary' : 'bg-orange-500'
                   }`} />
                 </div>
-                <div className={`w-[calc(100%-4rem)] md:w-[calc(50%-3rem)] p-8 rounded-[2rem] border backdrop-blur-md transition-all duration-500 hover:shadow-2xl ${
+                <div className={`w-[calc(100%-4rem)] md:w-[calc(50%-3rem)] p-10 rounded-[2.5rem] border backdrop-blur-md transition-all duration-500 hover:shadow-2xl ${
                   step.status === 'completed' ? 'bg-primary/5 border-primary/20 hover:border-primary/40' : 
                   step.status === 'in_progress' ? 'bg-primary/10 border-primary/30 hover:border-primary/50' : 
                   'bg-orange-500/5 border-orange-500/20 hover:border-orange-500/40'
                 }`}>
-                  <div className="flex items-center justify-between mb-4">
-                    <span className={`font-black text-[10px] uppercase tracking-[0.2em] px-3 py-1 rounded-full border ${
+                  <div className="flex items-center justify-between mb-6">
+                    <span className={`font-black text-xs uppercase tracking-[0.2em] px-4 py-1.5 rounded-full border ${
                       step.status === 'completed' ? 'text-primary border-primary/20 bg-primary/10' : 
                       step.status === 'in_progress' ? 'text-primary border-primary/30 bg-primary/20' : 
                       'text-orange-500 border-orange-500/20 bg-orange-500/10'
@@ -191,11 +191,11 @@ export default function About() {
                       {step.phase}
                     </span>
                   </div>
-                  <h3 className="text-2xl font-black mb-6 uppercase italic tracking-tight text-white">{step.title}</h3>
+                  <h3 className="text-3xl font-black mb-6 uppercase italic tracking-tight text-white leading-tight">{step.title}</h3>
                   <ul className="space-y-4">
                     {step.items.map((item, j) => (
-                      <li key={j} className="text-sm text-white/70 flex items-start gap-4 font-medium">
-                        <div className={`w-2 h-2 rounded-full mt-1.5 shrink-0 ${
+                      <li key={j} className="text-base text-white/90 flex items-start gap-4 font-bold">
+                        <div className={`w-2.5 h-2.5 rounded-full mt-2 shrink-0 ${
                           step.status === 'completed' || step.status === 'in_progress' ? 'bg-primary' : 'bg-orange-500'
                         }`} />
                         <span className="leading-relaxed">{item}</span>
@@ -212,8 +212,8 @@ export default function About() {
         <section className="py-20 border-t border-white/5">
           <div className="flex flex-col md:flex-row items-center justify-center gap-6 mb-16">
             <div className="text-center md:text-left">
-              <h2 className="text-4xl font-display font-bold mb-4 italic uppercase tracking-tighter">The <span className="text-primary">Dropy</span> Ecosystem</h2>
-              <p className="text-muted-foreground">Powering the Dropy economy with real utility.</p>
+              <h2 className="text-5xl font-display font-black mb-4 italic uppercase tracking-tighter text-white">The <span className="text-primary">Dropy</span> Ecosystem</h2>
+              <p className="text-xl text-white/80 font-medium">Powering the Dropy economy with real utility.</p>
             </div>
             <div className="w-32 h-32 shrink-0">
               <img 
