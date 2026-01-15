@@ -539,7 +539,9 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getPrizeHistory(): Promise<(typeof prizeHistory.$inferSelect)[]> {
-    return await db.select().from(prizeHistory).orderBy(desc(prizeHistory.endDate));
+    return await db.select().from(prizeHistory)
+      .where(eq(prizeHistory.status, 'completed'))
+      .orderBy(desc(prizeHistory.endDate));
   }
 
   async createPrizeHistory(entry: any): Promise<typeof prizeHistory.$inferSelect> {

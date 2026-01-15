@@ -20,7 +20,7 @@ export default function Leaderboard() {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
 
-  const { data: leaders, isLoading } = useQuery<any[]>({
+  const { data: leaderboardRes, isLoading } = useQuery<any>({
     queryKey: ["/api/leaderboard", timeframe],
     refetchInterval: 300000,
     staleTime: 60000,
@@ -28,10 +28,6 @@ export default function Leaderboard() {
 
   const { data: history } = useQuery<any[]>({
     queryKey: ["/api/leaderboard/history"],
-  });
-
-  const { data: allUsers } = useQuery<any[]>({
-    queryKey: ["/api/leaderboard", "all_time"],
   });
 
   if (isLoading) {
@@ -46,7 +42,8 @@ export default function Leaderboard() {
     );
   }
 
-  const activeLeaders = (timeframe === "all_time" ? allUsers : leaders) || [];
+  const activeLeaders = leaderboardRes?.ranking || [];
+  const weeklyPrizePool = leaderboardRes?.weeklyPrizePool || 0;
   const paginatedLeaders = activeLeaders.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
   
   // Prize history pagination (5 weeks per page)
@@ -104,9 +101,9 @@ export default function Leaderboard() {
                   <div className="mt-8 flex flex-col items-center gap-1">
                     <div className="bg-primary/10 border border-primary/20 px-10 py-6 rounded-[2.5rem] backdrop-blur-md shadow-[0_0_50px_rgba(34,197,94,0.2)] group hover:border-primary/40 transition-all duration-500 min-w-[320px]">
                       <p className="text-xs text-primary font-black uppercase tracking-[0.4em] mb-3 opacity-100 text-center drop-shadow-[0_0_10px_rgba(34,197,94,0.5)]">Weekly Prize Pool</p>
-                      <div className="flex items-center justify-center gap-4">
+                    <div className="flex items-center justify-center gap-4">
                         <span className="text-5xl md:text-6xl font-black text-white leading-none">
-                          {(PLATFORM_CONFIG.TOKENOMICS.CREATION_FEE * 0.4).toLocaleString()}
+                          {weeklyPrizePool?.toLocaleString() || "0"}
                         </span>
                         <span className="text-xl text-primary font-black uppercase tracking-widest">$DROPY</span>
                       </div>
@@ -177,17 +174,17 @@ export default function Leaderboard() {
                   <div className="relative mb-8">
                     <div className="w-28 h-28 rounded-full bg-[#111] border-2 border-white/20 p-1.5 relative">
                       <Avatar className="h-full w-full">
-                        <AvatarFallback className="bg-emerald-500/20 text-emerald-500 font-black text-2xl">{leaders?.[1]?.avatar || '?'}</AvatarFallback>
+                        <AvatarFallback className="bg-emerald-500/20 text-emerald-500 font-black text-2xl">{activeLeaders?.[1]?.avatar || '?'}</AvatarFallback>
                       </Avatar>
                       <div className="absolute -top-4 -right-4 w-12 h-12 rounded-2xl bg-white text-black flex items-center justify-center font-black text-lg border-2 border-[#050505] shadow-2xl transform rotate-12 transition-transform group-hover:scale-110 group-hover:rotate-0">#2</div>
                     </div>
                   </div>
-                  <h3 className="text-3xl font-black font-display uppercase italic tracking-tight text-white truncate w-full px-2">{leaders?.[1]?.name || '---'}</h3>
+                  <h3 className="text-3xl font-black font-display uppercase italic tracking-tight text-white truncate w-full px-2">{activeLeaders?.[1]?.name || '---'}</h3>
                   <div className="flex items-center gap-3 mt-4 bg-emerald-500/15 px-6 py-2 rounded-full border border-emerald-500/30">
                     <Star className="w-5 h-5 text-emerald-500" />
-                    <span className="text-2xl font-black font-display text-emerald-500">{leaders?.[1]?.points?.toLocaleString() || 0}</span>
+                    <span className="text-2xl font-black font-display text-emerald-500">{activeLeaders?.[1]?.points?.toLocaleString() || 0}</span>
                   </div>
-                  <p className="text-xs font-black text-white/90 uppercase tracking-[0.25em] mt-6 italic leading-tight">{leaders?.[1]?.tasks || 0} TASKS COMPLETED</p>
+                  <p className="text-xs font-black text-white/90 uppercase tracking-[0.25em] mt-6 italic leading-tight">{activeLeaders?.[1]?.tasks || 0} TASKS COMPLETED</p>
                 </CardContent>
               </Card>
 
@@ -196,20 +193,20 @@ export default function Leaderboard() {
                   <div className="relative mb-8">
                     <div className="w-36 h-36 rounded-full bg-[#111] border-4 border-yellow-500/50 p-1.5 shadow-[0_0_40px_rgba(234,179,8,0.4)] relative">
                       <Avatar className="h-full w-full">
-                        <AvatarFallback className="bg-primary/20 text-primary font-black text-4xl">{leaders?.[0]?.avatar || '?'}</AvatarFallback>
+                        <AvatarFallback className="bg-primary/20 text-primary font-black text-4xl">{activeLeaders?.[0]?.avatar || '?'}</AvatarFallback>
                       </Avatar>
                       <div className="absolute -top-4 -right-4 w-14 h-14 rounded-2xl bg-yellow-500 text-black flex items-center justify-center font-black text-xl border-2 border-[#050505] shadow-2xl transform rotate-12 transition-transform group-hover:scale-110 group-hover:rotate-0">#1</div>
                       <Crown className="absolute -top-12 left-1/2 -translate-x-1/2 w-10 h-10 text-yellow-500 drop-shadow-[0_0_15px_rgba(234,179,8,0.6)]" />
                     </div>
                   </div>
                   <h3 className="text-4xl font-black font-display uppercase italic tracking-tighter text-white truncate w-full px-2">
-                    {leaders?.[0]?.name || '---'}
+                    {activeLeaders?.[0]?.name || '---'}
                   </h3>
                   <div className="flex items-center gap-3 mt-5 bg-primary/25 px-8 py-3 rounded-full border border-primary/40 shadow-xl">
                     <Star className="w-6 h-6 text-primary" />
-                    <span className="text-4xl font-black font-display text-primary">{leaders?.[0]?.points?.toLocaleString() || 0}</span>
+                    <span className="text-4xl font-black font-display text-primary">{activeLeaders?.[0]?.points?.toLocaleString() || 0}</span>
                   </div>
-                  <p className="text-[13px] font-black text-white uppercase tracking-[0.35em] mt-8 italic leading-tight">{leaders?.[0]?.tasks || 0} TASKS COMPLETED</p>
+                  <p className="text-[13px] font-black text-white uppercase tracking-[0.35em] mt-8 italic leading-tight">{activeLeaders?.[0]?.tasks || 0} TASKS COMPLETED</p>
                 </CardContent>
               </Card>
 
@@ -218,17 +215,17 @@ export default function Leaderboard() {
                   <div className="relative mb-8">
                     <div className="w-28 h-28 rounded-full bg-[#111] border-2 border-white/20 p-1.5 relative">
                       <Avatar className="h-full w-full">
-                        <AvatarFallback className="bg-amber-600/20 text-amber-600 font-black text-2xl">{leaders?.[2]?.avatar || '?'}</AvatarFallback>
+                        <AvatarFallback className="bg-amber-600/20 text-amber-600 font-black text-2xl">{activeLeaders?.[2]?.avatar || '?'}</AvatarFallback>
                       </Avatar>
                       <div className="absolute -top-4 -right-4 w-12 h-12 rounded-2xl bg-amber-600 text-white flex items-center justify-center font-black text-lg border-2 border-[#050505] shadow-2xl transform rotate-12 transition-transform group-hover:scale-110 group-hover:rotate-0">#3</div>
                     </div>
                   </div>
-                  <h3 className="text-3xl font-black font-display uppercase italic tracking-tight text-white truncate w-full px-2">{leaders?.[2]?.name || '---'}</h3>
+                  <h3 className="text-3xl font-black font-display uppercase italic tracking-tight text-white truncate w-full px-2">{activeLeaders?.[2]?.name || '---'}</h3>
                   <div className="flex items-center gap-3 mt-4 bg-amber-600/15 px-6 py-2 rounded-full border border-amber-600/30">
                     <Star className="w-5 h-5 text-amber-600" />
-                    <span className="text-2xl font-black font-display text-amber-600">{leaders?.[2]?.points?.toLocaleString() || 0}</span>
+                    <span className="text-2xl font-black font-display text-amber-600">{activeLeaders?.[2]?.points?.toLocaleString() || 0}</span>
                   </div>
-                  <p className="text-xs font-black text-white/90 uppercase tracking-[0.25em] mt-6 italic leading-tight">{leaders?.[2]?.tasks || 0} TASKS COMPLETED</p>
+                  <p className="text-xs font-black text-white/90 uppercase tracking-[0.25em] mt-6 italic leading-tight">{activeLeaders?.[2]?.tasks || 0} TASKS COMPLETED</p>
                 </CardContent>
               </Card>
             </div>

@@ -12,7 +12,7 @@ import { PublicKey } from "@solana/web3.js";
 import { getSolanaConnection } from "./services/solana";
 import { checkIpFraud, verifyTurnstile } from "./services/security";
 import { db } from "./db";
-import { eq, and, sql } from "drizzle-orm";
+import { eq, and, sql, desc, asc } from "drizzle-orm";
 import { followerTracking, prizeHistory } from "@shared/schema";
 
 export async function registerRoutes(
@@ -33,6 +33,15 @@ export async function registerRoutes(
       const timeframe = req.query.timeframe as string || "all_time";
       const usersList = await storage.getLeaderboard();
       const allExecutions = await storage.getAllExecutions();
+
+      // Get creation fee and rewards percent from settings for dynamic prize pool calculation
+      const settings = await storage.getSystemSettings();
+      const allCampaigns = await storage.getAllCampaigns();
+      const rewardsPercent = (settings.rewardsPercent || 40) / 100;
+      const creationFee = settings.creationFee || PLATFORM_CONFIG.TOKENOMICS.CREATION_FEE;
+      
+      // Real weekly prize pool: (Total Campaigns * Creation Fee) * Rewards Percent
+      const weeklyPrizePool = allCampaigns.length * creationFee * rewardsPercent;
 
       const leaderboardData = usersList.map((user) => {
         // Filter executions based on timeframe
@@ -79,7 +88,10 @@ export async function registerRoutes(
         rank: idx + 1
       }));
 
-      res.json(rankedData);
+      res.json({
+        ranking: rankedData,
+        weeklyPrizePool
+      });
     } catch (err) {
       console.error("Leaderboard API error:", err);
       res.status(500).json({ message: "Error fetching leaderboard data" });
