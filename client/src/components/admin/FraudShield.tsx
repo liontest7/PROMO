@@ -44,7 +44,7 @@ export function FraudShield({ users, campaigns, onUpdateStatus }: FraudShieldPro
             <UserX className="h-5 w-5" />
             Suspicious Wallets
           </CardTitle>
-          <CardDescription>High-balance accounts or unusual reputation scores.</CardDescription>
+          <CardDescription className="text-sm font-bold text-red-200/80">High-balance accounts or unusual reputation scores.</CardDescription>
         </CardHeader>
         <CardContent className="p-0">
           <ScrollArea className="h-[400px]">
@@ -59,7 +59,7 @@ export function FraudShield({ users, campaigns, onUpdateStatus }: FraudShieldPro
               <TableBody>
                 {suspiciousUsers.map((user: any) => (
                   <TableRow key={user.id} className="border-red-500/10 hover:bg-red-500/10 transition-colors">
-                    <TableCell className="font-mono text-[11px] font-bold py-4">
+                    <TableCell className="font-mono text-[11px] font-black py-4 text-white">
                       {user.walletAddress.slice(0, 4)}...{user.walletAddress.slice(-4)}
                     </TableCell>
                     <TableCell>
@@ -93,8 +93,8 @@ export function FraudShield({ users, campaigns, onUpdateStatus }: FraudShieldPro
                 {suspiciousUsers.length === 0 && (
                   <TableRow>
                     <TableCell colSpan={3} className="text-center py-10">
-                      <ShieldCheck className="w-8 h-8 mx-auto mb-2 opacity-20" />
-                      <p className="text-[10px] uppercase font-black tracking-widest opacity-30">Clean Protocol</p>
+                      <ShieldCheck className="w-8 h-8 mx-auto mb-2 opacity-50 text-white" />
+                      <p className="text-[10px] uppercase font-black tracking-widest text-white">Clean Protocol</p>
                     </TableCell>
                   </TableRow>
                 )}
@@ -110,7 +110,7 @@ export function FraudShield({ users, campaigns, onUpdateStatus }: FraudShieldPro
             <AlertTriangle className="h-5 w-5" />
             Campaign Alerts
           </CardTitle>
-          <CardDescription>Budget anomalies or manual suspensions.</CardDescription>
+          <CardDescription className="text-sm font-bold text-yellow-200/80">Budget anomalies or manual suspensions.</CardDescription>
         </CardHeader>
         <CardContent className="p-0">
           <ScrollArea className="h-[400px]">
@@ -135,8 +135,8 @@ export function FraudShield({ users, campaigns, onUpdateStatus }: FraudShieldPro
                 {suspiciousCampaigns.length === 0 && (
                   <TableRow>
                     <TableCell colSpan={3} className="text-center py-10">
-                      <ShieldCheck className="w-8 h-8 mx-auto mb-2 opacity-20" />
-                      <p className="text-[10px] uppercase font-black tracking-widest opacity-30">Healthy Campaigns</p>
+                      <ShieldCheck className="w-8 h-8 mx-auto mb-2 opacity-50 text-white" />
+                      <p className="text-[10px] uppercase font-black tracking-widest text-white">Healthy Campaigns</p>
                     </TableCell>
                   </TableRow>
                 )}

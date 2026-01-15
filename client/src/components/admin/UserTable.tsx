@@ -44,7 +44,7 @@ export function UserTable({
       <TableBody>
         {(!users || users.length === 0) && (
           <TableRow>
-            <TableCell colSpan={6} className="text-center py-10 text-muted-foreground text-xs uppercase font-bold tracking-widest italic">
+            <TableCell colSpan={6} className="text-center py-10 text-white text-xs uppercase font-black tracking-widest italic">
               No protocol users found.
             </TableCell>
           </TableRow>
@@ -92,7 +92,7 @@ export function UserTable({
                 </div>
               </div>
             </TableCell>
-            <TableCell className="text-xs text-muted-foreground font-medium">
+            <TableCell className="text-sm text-white font-bold">
               {user.createdAt ? format(new Date(user.createdAt), 'MMM d, yyyy') : 'Genesis'}
             </TableCell>
             <TableCell className="text-right pr-8">

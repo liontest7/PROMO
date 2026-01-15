@@ -35,49 +35,49 @@ export function AdminAnalytics() {
       <div className="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-5 gap-4">
         <Card className="glass-card border-white/10 bg-white/[0.01]">
           <CardHeader className="pb-2">
-            <CardTitle className="text-[10px] font-black uppercase text-muted-foreground flex items-center gap-2">
+            <CardTitle className="text-[10px] font-black uppercase text-white flex items-center gap-2">
               <Users className="w-3 h-3 text-blue-400" /> Total Users
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-black font-display">{stats.totalUsers.toLocaleString()}</div>
+            <div className="text-2xl font-black font-display text-white">{stats.totalUsers.toLocaleString()}</div>
           </CardContent>
         </Card>
 
         <Card className="glass-card border-white/10 bg-white/[0.01]">
           <CardHeader className="pb-2">
-            <CardTitle className="text-[10px] font-black uppercase text-muted-foreground flex items-center gap-2">
+            <CardTitle className="text-[10px] font-black uppercase text-white flex items-center gap-2">
               <Megaphone className="w-3 h-3 text-primary" /> Campaigns
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-black font-display">{stats.totalCampaigns}</div>
+            <div className="text-2xl font-black font-display text-white">{stats.totalCampaigns}</div>
             <p className="text-[9px] text-green-400 mt-1 uppercase font-bold">{stats.activeCampaigns} Active Now</p>
           </CardContent>
         </Card>
 
         <Card className="glass-card border-white/10 bg-white/[0.01]">
           <CardHeader className="pb-2">
-            <CardTitle className="text-[10px] font-black uppercase text-muted-foreground flex items-center gap-2">
+            <CardTitle className="text-[10px] font-black uppercase text-white flex items-center gap-2">
               <CheckCircle2 className="w-3 h-3 text-green-400" /> Task Verified
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-black font-display">{stats.taskVerified.toLocaleString()}</div>
+            <div className="text-2xl font-black font-display text-white">{stats.taskVerified.toLocaleString()}</div>
           </CardContent>
         </Card>
 
         <Card className="glass-card border-white/10 bg-white/[0.01]">
           <CardHeader className="pb-2">
-            <CardTitle className="text-[10px] font-black uppercase text-muted-foreground flex items-center gap-2">
+            <CardTitle className="text-[10px] font-black uppercase text-white flex items-center gap-2">
               <TrendingUp className="w-3 h-3 text-purple-400" /> Conversion
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-black font-display">
+            <div className="text-2xl font-black font-display text-white">
               {stats.conversionRate}x
             </div>
-            <p className="text-[9px] text-muted-foreground mt-1 uppercase font-bold">Tasks per user</p>
+            <p className="text-[9px] text-white mt-1 uppercase font-bold">Tasks per user</p>
           </CardContent>
         </Card>
 
@@ -99,8 +99,8 @@ export function AdminAnalytics() {
       <Card className="glass-card border-white/10 bg-white/[0.01] p-6">
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h3 className="text-lg font-bold">Protocol Activity</h3>
-            <p className="text-xs text-muted-foreground uppercase tracking-widest font-bold">Verified tasks (7 Day Trend)</p>
+            <h3 className="text-lg font-bold text-white">Protocol Activity</h3>
+            <p className="text-xs text-white uppercase tracking-widest font-black">Verified tasks (7 Day Trend)</p>
           </div>
           <Activity className="w-5 h-5 text-primary animate-pulse" />
         </div>

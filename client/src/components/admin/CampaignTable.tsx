@@ -37,7 +37,7 @@ export function CampaignTable({ campaigns, onAudit }: CampaignTableProps) {
   return (
     <div className="space-y-4">
       <div className="flex justify-end px-4">
-        <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">Manage All Protocol Campaigns</p>
+        <p className="text-[10px] font-black text-white uppercase tracking-widest">Manage All Protocol Campaigns</p>
       </div>
       <Table>
         <TableHeader className="bg-white/[0.02]">
@@ -63,14 +63,14 @@ export function CampaignTable({ campaigns, onAudit }: CampaignTableProps) {
               <TableCell>
                 <div className="flex flex-col">
                   <span className="text-xs font-black text-primary uppercase">${campaign.tokenName}</span>
-                  <span className="text-[10px] font-mono text-muted-foreground">{campaign.tokenAddress?.slice(0, 4)}...{campaign.tokenAddress?.slice(-4)}</span>
+                  <span className="text-[10px] font-mono text-white font-bold opacity-80">{campaign.tokenAddress?.slice(0, 4)}...{campaign.tokenAddress?.slice(-4)}</span>
                 </div>
               </TableCell>
               <TableCell>
                 <div className="flex flex-col gap-1 w-32">
-                  <div className="flex justify-between text-[10px] font-bold">
+                  <div className="flex justify-between text-[10px] font-black text-white">
                     <span>{campaign.remainingBudget}</span>
-                    <span className="text-muted-foreground">/ {campaign.totalBudget}</span>
+                    <span className="opacity-50">/ {campaign.totalBudget}</span>
                   </div>
                   <div className="w-full h-1.5 rounded-full bg-white/5 overflow-hidden">
                     <div 

@@ -60,10 +60,10 @@ export function ExecutionLogTable({ executions }: ExecutionLogTableProps) {
         <TableBody>
           {(!executions || executions.length === 0) && (
             <TableRow>
-              <TableCell colSpan={4} className="h-32 text-center text-muted-foreground">
-                <div className="flex flex-col items-center justify-center gap-2 opacity-30">
-                  <Clock className="w-8 h-8" />
-                  <p className="text-[10px] font-black uppercase tracking-widest">Waiting for protocol events...</p>
+              <TableCell colSpan={4} className="h-32 text-center text-white">
+                <div className="flex flex-col items-center justify-center gap-2">
+                  <Clock className="w-8 h-8 opacity-50" />
+                  <p className="text-xs font-black uppercase tracking-widest">Waiting for protocol events...</p>
                 </div>
               </TableCell>
             </TableRow>
@@ -92,7 +92,7 @@ export function ExecutionLogTable({ executions }: ExecutionLogTableProps) {
               </TableCell>
               <TableCell className="text-right py-4 pr-8">
                 <div className="flex flex-col items-end gap-1">
-                  <span className="text-[10px] font-medium text-muted-foreground">
+                  <span className="text-xs font-bold text-white">
                     {execution.createdAt ? format(new Date(execution.createdAt), 'HH:mm:ss') : 'Unknown'}
                   </span>
                   {execution.transactionSignature ? (

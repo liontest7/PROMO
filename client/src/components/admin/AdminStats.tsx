@@ -46,13 +46,13 @@ export function AdminStats({ stats, campaignsCount }: AdminStatsProps) {
           <h1 className="text-5xl font-display font-black tracking-tighter uppercase italic leading-none text-white">
             Admin <span className="text-primary">Terminal</span>
           </h1>
-          <p className="text-white/70 mt-3 font-medium text-sm">Real-time ecosystem management and protocol oversight.</p>
+          <p className="text-white font-bold mt-3 text-base">Real-time ecosystem management and protocol oversight.</p>
         </div>
         
         <div className="flex flex-col gap-4">
           <div className="flex items-center gap-4 p-4 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-sm">
             <div className="flex flex-col items-end">
-              <span className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-1">Total Protocol Value</span>
+              <span className="text-[10px] font-black text-white uppercase tracking-widest mb-1">Total Protocol Value</span>
               <span className="text-2xl font-black font-display text-primary">{(totalRewardsPaid * 0.42).toFixed(2)} SOL</span>
             </div>
             <div className="w-12 h-12 rounded-xl bg-primary/20 flex items-center justify-center">
@@ -65,21 +65,21 @@ export function AdminStats({ stats, campaignsCount }: AdminStatsProps) {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <Card className="glass-card border-white/5 bg-white/[0.02] hover-elevate transition-all rounded-2xl">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-[11px] font-black uppercase tracking-widest text-muted-foreground">Admin Stats</CardTitle>
+            <CardTitle className="text-[11px] font-black uppercase tracking-widest text-white">Admin Stats</CardTitle>
             <div className="p-2 rounded-lg bg-purple-500/10">
               <ShieldAlert className="h-4 w-4 text-purple-400" />
             </div>
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-black font-display">{totalUsersCount}</div>
+            <div className="text-3xl font-black font-display text-white">{totalUsersCount}</div>
             <div className="flex flex-col gap-1 mt-2">
               <div className="flex items-center justify-between text-[10px] font-bold">
-                <span className="text-muted-foreground uppercase">Users</span>
-                <span>{totalUsersCount}</span>
+                <span className="text-white uppercase">Users</span>
+                <span className="text-white">{totalUsersCount}</span>
               </div>
               <div className="flex items-center justify-between text-[10px] font-bold">
-                <span className="text-muted-foreground uppercase">Campaigns</span>
-                <span>{campaignsCount}</span>
+                <span className="text-white uppercase">Campaigns</span>
+                <span className="text-white">{campaignsCount}</span>
               </div>
             </div>
           </CardContent>
@@ -87,31 +87,31 @@ export function AdminStats({ stats, campaignsCount }: AdminStatsProps) {
 
         <Card className="glass-card border-white/5 bg-white/[0.02] hover-elevate transition-all rounded-2xl">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-[11px] font-black uppercase tracking-widest text-muted-foreground">Campaigns</CardTitle>
+            <CardTitle className="text-[11px] font-black uppercase tracking-widest text-white">Campaigns</CardTitle>
             <div className="p-2 rounded-lg bg-orange-500/10">
               <Megaphone className="h-4 w-4 text-orange-400" />
             </div>
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-black font-display">{campaignsCount}</div>
+            <div className="text-3xl font-black font-display text-white">{campaignsCount}</div>
             <div className="flex items-center gap-2 mt-2">
-              <span className="text-[10px] text-muted-foreground font-bold uppercase">{activeCampaignsCount} ACTIVE MANAGED</span>
+              <span className="text-[10px] text-white font-black uppercase tracking-widest">{activeCampaignsCount} ACTIVE MANAGED</span>
             </div>
           </CardContent>
         </Card>
 
         <Card className="glass-card border-white/5 bg-white/[0.02] hover-elevate transition-all rounded-2xl">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-[11px] font-black uppercase tracking-widest text-muted-foreground">Total Task Load</CardTitle>
+            <CardTitle className="text-[11px] font-black uppercase tracking-widest text-white">Total Task Load</CardTitle>
             <div className="p-2 rounded-lg bg-green-500/10">
               <CheckCircle className="h-4 w-4 text-green-400" />
             </div>
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-black font-display">{totalExecutionsCount}</div>
+            <div className="text-3xl font-black font-display text-white">{totalExecutionsCount}</div>
             <div className="flex items-center gap-2 mt-2">
               <span className="flex h-2 w-2 rounded-full bg-green-500 animate-pulse" />
-              <span className="text-[10px] text-muted-foreground font-bold uppercase">REAL-TIME VERIFIED</span>
+              <span className="text-[10px] text-white font-black uppercase tracking-widest">REAL-TIME VERIFIED</span>
             </div>
           </CardContent>
         </Card>

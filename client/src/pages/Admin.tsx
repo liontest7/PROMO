@@ -208,7 +208,7 @@ export default function AdminDashboard() {
           >
             <div>
               <CardTitle className="text-xl text-white">System Controls</CardTitle>
-              <CardDescription className="text-sm font-medium text-white/70">Global protocol parameters and feature toggles.</CardDescription>
+              <CardDescription className="text-base font-bold text-white">Global protocol parameters and feature toggles.</CardDescription>
             </div>
             <div className="text-white">
               {isControlsExpanded ? <ChevronUp className="w-5 h-5 transition-transform" /> : <ChevronDown className="w-5 h-5 transition-transform" />}
@@ -409,8 +409,8 @@ export default function AdminDashboard() {
           <TabsContent value="users">
             <Card className="glass-card border-white/10 bg-white/[0.01] rounded-2xl overflow-hidden">
               <CardHeader className="border-b border-white/5 bg-white/[0.02]">
-                <CardTitle className="text-xl">Protocol Users</CardTitle>
-                <CardDescription>Monitor wallet activity and manage access control.</CardDescription>
+                <CardTitle className="text-xl text-white font-black">Protocol Users</CardTitle>
+                <CardDescription className="text-base font-bold text-white">Monitor wallet activity and manage access control.</CardDescription>
               </CardHeader>
               <CardContent className="p-0">
                 <UserTable 
@@ -429,8 +429,8 @@ export default function AdminDashboard() {
           <TabsContent value="campaigns">
             <Card className="glass-card border-white/10 bg-white/[0.01] rounded-2xl overflow-hidden">
               <CardHeader className="border-b border-white/5 bg-white/[0.02]">
-                <CardTitle className="text-xl">Protocol Campaigns</CardTitle>
-                <CardDescription>Oversight of all active and historical project listings.</CardDescription>
+                <CardTitle className="text-xl text-white font-black">Protocol Campaigns</CardTitle>
+                <CardDescription className="text-base font-bold text-white">Oversight of all active and historical project listings.</CardDescription>
               </CardHeader>
               <CardContent className="p-0">
                 <CampaignTable 
@@ -456,8 +456,8 @@ export default function AdminDashboard() {
           <TabsContent value="executions">
             <Card className="glass-card border-white/10 bg-white/[0.01] rounded-2xl overflow-hidden">
               <CardHeader className="border-b border-white/5 bg-white/[0.02]">
-                <CardTitle className="text-xl">Protocol Event Log</CardTitle>
-                <CardDescription>Real-time audit trail of all task verifications and payouts.</CardDescription>
+                <CardTitle className="text-xl text-white font-black">Protocol Event Log</CardTitle>
+                <CardDescription className="text-base font-bold text-white">Real-time audit trail of all task verifications and payouts.</CardDescription>
               </CardHeader>
               <CardContent className="p-0">
                 <ExecutionLogTable executions={filteredExecutions} />
