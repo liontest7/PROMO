@@ -302,7 +302,7 @@ export default function Leaderboard() {
                   <div key={idx} className="flex items-center px-12 py-10 hover:bg-white/[0.03] transition-all group">
                     <div className="w-40">
                       <p className="text-3xl font-black font-display text-white italic uppercase leading-none">#WEEK {idx + 1}</p>
-                      <p className="text-[10px] font-black text-white/40 tracking-widest mt-2">{week.dates}</p>
+                      <p className="text-[11px] font-black text-white/90 tracking-widest mt-3 whitespace-nowrap">{week.dates}</p>
                     </div>
                     <div className="flex-1 flex items-center justify-between gap-6 overflow-visible py-6 px-4">
                       {week.winners.map((winner: any, i: number) => (
@@ -356,7 +356,7 @@ export default function Leaderboard() {
                     </div>
                     <div className="w-32 text-right flex flex-col items-end shrink-0 ml-4">
                       <p className="text-5xl font-black font-display text-primary italic leading-none">{(week.prize || 0).toLocaleString()}</p>
-                      <p className="text-[10px] font-black text-primary/60 tracking-widest uppercase mt-2">$DROPY POOL</p>
+                      <p className="text-xs font-black text-primary tracking-[0.2em] uppercase mt-3">$DROPY POOL</p>
                     </div>
                   </div>
                 ))}
