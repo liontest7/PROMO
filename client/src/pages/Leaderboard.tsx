@@ -73,7 +73,7 @@ export default function Leaderboard() {
                         onClick={() => setView("ranking")}
                         className={cn(
                           "rounded-xl font-black uppercase tracking-widest text-sm px-10 h-12 transition-all",
-                          view === "ranking" ? "bg-primary text-white shadow-[0_0_20px_rgba(34,197,94,0.3)]" : "text-white/60 hover:text-white hover:bg-white/5"
+                          view === "ranking" ? "bg-primary text-white shadow-[0_0_20px_rgba(34,197,94,0.3)]" : "text-white/90 hover:text-white hover:bg-white/10"
                         )}
                       >
                         <Trophy className="w-5 h-5 mr-2" />
@@ -84,7 +84,7 @@ export default function Leaderboard() {
                         onClick={() => setView("history")}
                         className={cn(
                           "rounded-xl font-black uppercase tracking-widest text-sm px-10 h-12 transition-all",
-                          view === "history" ? "bg-primary text-white shadow-[0_0_20px_rgba(34,197,94,0.3)]" : "text-white/60 hover:text-white hover:bg-white/5"
+                          view === "history" ? "bg-primary text-white shadow-[0_0_20px_rgba(34,197,94,0.3)]" : "text-white/90 hover:text-white hover:bg-white/10"
                         )}
                       >
                         <History className="w-5 h-5 mr-2" />
@@ -291,7 +291,7 @@ export default function Leaderboard() {
       ) : (
         <div className="space-y-6 relative">
           <Card className="glass-card border-white/10 bg-white/[0.02] rounded-[3rem] overflow-hidden shadow-2xl backdrop-blur-xl">
-            <div className="bg-white/[0.05] px-12 py-8 border-b border-white/10 flex items-center text-sm font-black text-white uppercase tracking-[0.5em] italic">
+            <div className="bg-white/[0.05] px-12 py-10 border-b border-white/10 flex items-center text-lg font-black text-white uppercase tracking-[0.5em] italic">
               <span className="w-40">Period</span>
               <span className="flex-1">Winners Summary</span>
               <span className="w-32 text-right">Prize Pool</span>
