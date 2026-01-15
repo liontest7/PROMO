@@ -127,33 +127,33 @@ export default function Earn() {
             <h1 className="text-4xl font-display font-bold mb-2">Explore Campaigns</h1>
             <p className="text-xl text-white/80 font-medium">Complete tasks and earn crypto rewards instantly.</p>
             
-            <div className="flex gap-4 mt-6">
+            <div className="flex gap-4 mt-8">
               <Button 
                 variant={activeTab === "active" ? "default" : "outline"}
                 onClick={() => setActiveTab("active")}
-                className="rounded-xl font-bold"
+                className="rounded-xl font-black text-base px-8 h-12 shadow-xl transition-all"
               >
                 Active
               </Button>
               <Button 
                 variant={activeTab === "closed" ? "default" : "outline"}
                 onClick={() => setActiveTab("closed")}
-                className="rounded-xl font-bold"
+                className="rounded-xl font-black text-base px-8 h-12 shadow-xl transition-all"
               >
                 Closed
               </Button>
             </div>
           </div>
           
-          <div className="flex flex-col sm:flex-row w-full md:w-auto gap-3">
+          <div className="flex flex-col sm:flex-row w-full md:w-auto gap-4">
             <CreateCampaignDialog open={isCreateOpen} onOpenChange={setIsCreateOpen} />
 
-            <div className="flex gap-2 w-full sm:w-auto">
-              <div className="relative flex-1 md:w-64">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+            <div className="flex gap-3 w-full sm:w-auto">
+              <div className="relative flex-1 md:w-80">
+                <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-white/40" />
                 <Input 
                   placeholder="Search projects..." 
-                  className="pl-10 bg-white/5 border-white/10 focus:border-primary/50"
+                  className="pl-12 h-12 bg-white/5 border-white/10 focus:border-primary/50 text-base rounded-xl"
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                 />
@@ -161,10 +161,10 @@ export default function Earn() {
               
               <Popover>
                 <PopoverTrigger asChild>
-                  <Button variant="outline" className="gap-2 border-white/10 bg-white/5 hover:bg-white/10">
-                    <Filter className="w-4 h-4" />
+                  <Button variant="outline" className="h-12 w-12 border-white/10 bg-white/5 hover:bg-white/10 rounded-xl p-0">
+                    <Filter className="w-5 h-5" />
                     {activeFilters.length > 0 && (
-                      <span className="flex h-4 w-4 items-center justify-center rounded-full bg-primary text-[10px] text-primary-foreground font-bold">
+                      <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-[10px] text-primary-foreground font-black border-2 border-background">
                         {activeFilters.length}
                       </span>
                     )}

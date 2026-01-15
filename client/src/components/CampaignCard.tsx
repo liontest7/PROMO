@@ -168,7 +168,7 @@ export function CampaignCard({ campaign, onActionClick, isOwner }: CampaignCardP
                   {campaign.title}
                 </CardTitle>
               </Link>
-              <Badge variant="outline" className="border-primary/20 text-primary bg-primary/5 text-[10px] py-0 font-bold tracking-widest">
+              <Badge variant="outline" className="border-primary/20 text-primary bg-primary/5 text-xs py-1 px-3 font-bold tracking-widest mt-1">
                 ${campaign.tokenName}
               </Badge>
             </div>
@@ -196,13 +196,13 @@ export function CampaignCard({ campaign, onActionClick, isOwner }: CampaignCardP
           )}
 
           <div className="bg-secondary/20 p-3 rounded-2xl border border-secondary/10 flex items-center justify-between">
-            <span className="text-[11px] font-black text-white/60 uppercase tracking-widest">REWARD PER USER</span>
+            <span className="text-[11px] font-black text-white/80 uppercase tracking-widest">REWARD PER USER</span>
             <span className="text-base font-black text-white">{campaign.rewardPerWallet || '0'} ${campaign.tokenName}</span>
           </div>
 
           <div className="space-y-2">
             <div className="flex justify-between text-[11px] font-black uppercase tracking-widest mb-1">
-              <span className="text-white/60">PROGRESS ({percentComplete.toFixed(0)}%)</span>
+              <span className="text-white/80">PROGRESS ({percentComplete.toFixed(0)}%)</span>
               <span className="text-primary">{remainingBudgetNum.toLocaleString()} / {totalBudgetNum.toLocaleString()} ${campaign.tokenName}</span>
             </div>
             <Progress value={percentComplete} className="h-2 bg-white/5 rounded-full" />
@@ -224,7 +224,7 @@ export function CampaignCard({ campaign, onActionClick, isOwner }: CampaignCardP
               <div className="flex items-center gap-2">
                 <div className="w-1.5 h-1.5 rounded-full bg-primary/40 animate-pulse" />
                 <div className="flex flex-col">
-                  <span className="text-[10px] font-black text-white/60 uppercase tracking-widest leading-none">Growth</span>
+                  <span className="text-[10px] font-black text-white/80 uppercase tracking-widest leading-none">Growth</span>
                   <span className="text-sm font-black text-white mt-0.5">{formatMC(currentMC)}</span>
                 </div>
               </div>
@@ -237,12 +237,12 @@ export function CampaignCard({ campaign, onActionClick, isOwner }: CampaignCardP
               </div>
             </div>
           )}
-          <div className="flex items-center justify-center w-full gap-2 opacity-60">
-            <div className="h-[1px] flex-1 bg-gradient-to-r from-transparent to-white/40" />
-            <p className="text-[9px] font-black text-white uppercase tracking-[0.2em] whitespace-nowrap">
+          <div className="flex items-center justify-center w-full gap-2 opacity-80">
+            <div className="h-[1px] flex-1 bg-gradient-to-r from-transparent to-white/60" />
+            <p className="text-[10px] font-black text-white uppercase tracking-[0.2em] whitespace-nowrap">
               {formatDistanceToNow(new Date(campaign.createdAt || Date.now()), { addSuffix: true })}
             </p>
-            <div className="h-[1px] flex-1 bg-gradient-to-l from-transparent to-white/40" />
+            <div className="h-[1px] flex-1 bg-gradient-to-l from-transparent to-white/60" />
           </div>
         </CardFooter>
       </Card>
