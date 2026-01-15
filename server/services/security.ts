@@ -14,12 +14,16 @@ export async function verifyTurnstile(token: string) {
 }
 
 export async function checkIpFraud(ip: string, walletAddress: string) {
+  // Ignore local/unknown IPs
   if (!ip || ip === '::1' || ip === '127.0.0.1' || ip === 'unknown') return true; 
   
   const associatedWallets = await storage.getWalletsByIp(ip);
   
-  // Strict limit: Max 5 wallets per IP to prevent sybil attacks (adjusted from 3 for better UX on shared IPs)
-  if (associatedWallets.length >= 5 && !associatedWallets.includes(walletAddress)) {
+  // Strict limit: Max 5 wallets per IP to prevent sybil attacks
+  // Optimization: Early exit if wallet is already associated
+  if (associatedWallets.includes(walletAddress)) return true;
+
+  if (associatedWallets.length >= 5) {
     console.warn(`[Anti-Fraud] Blocked wallet ${walletAddress} from IP ${ip} (Already has ${associatedWallets.length} wallets)`);
     return false;
   }
