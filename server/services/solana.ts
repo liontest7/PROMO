@@ -38,10 +38,17 @@ export async function transferTokens(
       SystemProgram.transfer({
         fromPubkey: fromKeypair.publicKey,
         toPubkey: toPublicKey,
-        lamports: amount * 1e9,
+        lamports: Math.round(amount * 1e9),
       })
     );
-    return await sendAndConfirmTransaction(connection, transaction, [fromKeypair]);
+    const { blockhash } = await connection.getLatestBlockhash('confirmed');
+    transaction.recentBlockhash = blockhash;
+    transaction.feePayer = fromKeypair.publicKey;
+    
+    return await sendAndConfirmTransaction(connection, transaction, [fromKeypair], {
+      commitment: 'confirmed',
+      preflightCommitment: 'confirmed'
+    });
   } else {
     // SPL Token transfer
     const fromTokenAccount = await getOrCreateAssociatedTokenAccount(
@@ -63,12 +70,20 @@ export async function transferTokens(
         fromTokenAccount.address,
         toTokenAccount.address,
         fromKeypair.publicKey,
-        amount * Math.pow(10, 6), // Assuming 6 decimals for common SPL tokens, should be dynamic in prod
+        amount * Math.pow(10, 6), // Assuming 6 decimals for common SPL tokens
         [],
         TOKEN_PROGRAM_ID
       )
     );
 
-    return await sendAndConfirmTransaction(connection, transaction, [fromKeypair]);
+    // Set recent blockhash for reliable transaction
+    const { blockhash } = await connection.getLatestBlockhash('confirmed');
+    transaction.recentBlockhash = blockhash;
+    transaction.feePayer = fromKeypair.publicKey;
+
+    return await sendAndConfirmTransaction(connection, transaction, [fromKeypair], {
+      commitment: 'confirmed',
+      preflightCommitment: 'confirmed'
+    });
   }
 }

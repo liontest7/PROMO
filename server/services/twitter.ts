@@ -1,22 +1,26 @@
 import fetch from "node-fetch";
 
+// Optimized Twitter verification service with reusable ID fetching
+async function getUserId(accessToken: string, username?: string): Promise<string | null> {
+  const url = username 
+    ? `https://api.twitter.com/2/users/by/username/${username}`
+    : "https://api.twitter.com/2/users/me";
+  
+  const res = await fetch(url, {
+    headers: { Authorization: `Bearer ${accessToken}` }
+  });
+  const data: any = await res.json();
+  return data.data?.id || null;
+}
+
 export async function verifyTwitterFollow(accessToken: string, targetUsername: string): Promise<boolean> {
   try {
-    // 1. Get user ID from username
-    const userRes = await fetch(`https://api.twitter.com/2/users/by/username/${targetUsername}`, {
-      headers: { Authorization: `Bearer ${accessToken}` }
-    });
-    const userData: any = await userRes.json();
-    if (!userData.data) return false;
-    const targetUserId = userData.data.id;
+    const [targetUserId, myUserId] = await Promise.all([
+      getUserId(accessToken, targetUsername),
+      getUserId(accessToken)
+    ]);
 
-    // 2. Check if following
-    const meRes = await fetch("https://api.twitter.com/2/users/me", {
-      headers: { Authorization: `Bearer ${accessToken}` }
-    });
-    const meData: any = await meRes.json();
-    if (!meData.data) return false;
-    const myUserId = meData.data.id;
+    if (!targetUserId || !myUserId) return false;
 
     const followRes = await fetch(`https://api.twitter.com/2/users/${myUserId}/following`, {
       headers: { Authorization: `Bearer ${accessToken}` }
@@ -32,12 +36,8 @@ export async function verifyTwitterFollow(accessToken: string, targetUsername: s
 
 export async function verifyTwitterRetweet(accessToken: string, tweetId: string): Promise<boolean> {
   try {
-    const meRes = await fetch("https://api.twitter.com/2/users/me", {
-      headers: { Authorization: `Bearer ${accessToken}` }
-    });
-    const meData: any = await meRes.json();
-    if (!meData.data) return false;
-    const myUserId = meData.data.id;
+    const myUserId = await getUserId(accessToken);
+    if (!myUserId) return false;
 
     const retweetRes = await fetch(`https://api.twitter.com/2/tweets/${tweetId}/retweeted_by`, {
       headers: { Authorization: `Bearer ${accessToken}` }
