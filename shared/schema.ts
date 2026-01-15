@@ -82,6 +82,9 @@ export const campaigns = pgTable("campaigns", {
     minWalletAgeDays?: number;
     minProjectTokenHolding?: number;
     projectTokenAddress?: string;
+    minXAccountAgeDays?: number;
+    minXFollowers?: number;
+    minFollowDurationDays?: number;
     multiDaySolHolding?: {
       amount: number;
       days: number;
@@ -98,6 +101,14 @@ export const holderState = pgTable("holder_state", {
   campaignId: integer("campaign_id").references(() => campaigns.id).notNull(),
   holdStartTimestamp: timestamp("hold_start_timestamp").defaultNow().notNull(),
   claimed: boolean("claimed").default(false).notNull(),
+});
+
+export const followerTracking = pgTable("follower_tracking", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").references(() => users.id).notNull(),
+  campaignId: integer("campaign_id").references(() => campaigns.id).notNull(),
+  followStartTimestamp: timestamp("follow_start_timestamp").defaultNow().notNull(),
+  lastVerifiedAt: timestamp("last_verified_at").defaultNow(),
 });
 
 export const actions = pgTable("actions", {
@@ -139,6 +150,7 @@ export const campaignsRelations = relations(campaigns, ({ one, many }) => ({
   actions: many(actions),
   executions: many(executions),
   holderStates: many(holderState),
+  followerTrackings: many(followerTracking),
 }));
 
 export const holderStateRelations = relations(holderState, ({ one }) => ({
@@ -148,6 +160,17 @@ export const holderStateRelations = relations(holderState, ({ one }) => ({
   }),
   campaign: one(campaigns, {
     fields: [holderState.campaignId],
+    references: [campaigns.id],
+  }),
+}));
+
+export const followerTrackingRelations = relations(followerTracking, ({ one }) => ({
+  user: one(users, {
+    fields: [followerTracking.userId],
+    references: [users.id],
+  }),
+  campaign: one(campaigns, {
+    fields: [followerTracking.campaignId],
     references: [campaigns.id],
   }),
 }));
@@ -213,6 +236,10 @@ export type InsertExecution = z.infer<typeof insertExecutionSchema>;
 export const insertHolderStateSchema = createInsertSchema(holderState).omit({ id: true });
 export type HolderState = typeof holderState.$inferSelect;
 export type InsertHolderState = z.infer<typeof insertHolderStateSchema>;
+
+export const insertFollowerTrackingSchema = createInsertSchema(followerTracking).omit({ id: true });
+export type FollowerTracking = typeof followerTracking.$inferSelect;
+export type InsertFollowerTracking = z.infer<typeof insertFollowerTrackingSchema>;
 
 // Request Types
 export type CreateCampaignRequest = InsertCampaign & {
