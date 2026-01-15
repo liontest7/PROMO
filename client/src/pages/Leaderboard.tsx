@@ -65,30 +65,32 @@ export default function Leaderboard() {
                 </h1>
                 <p className="text-white uppercase tracking-[0.5em] text-sm md:text-base font-black italic">Top Ecosystem Contributors • Real-time Sync</p>
                 
-                <div className="flex flex-col items-center gap-4 mt-[120px] mb-12 relative z-50">
-                  <div className="flex bg-white/5 p-1.5 rounded-2xl border border-white/10 shadow-2xl backdrop-blur-xl">
-                    <Button 
-                      variant="ghost" 
-                      onClick={() => setView("ranking")}
-                      className={cn(
-                        "rounded-xl font-black uppercase tracking-widest text-xs px-8 h-11 transition-all",
-                        view === "ranking" ? "bg-primary text-white shadow-[0_0_20px_rgba(34,197,94,0.3)]" : "text-white/60 hover:text-white hover:bg-white/5"
-                      )}
-                    >
-                      <Trophy className="w-4 h-4 mr-2" />
-                      Live Ranking
-                    </Button>
-                    <Button 
-                      variant="ghost" 
-                      onClick={() => setView("history")}
-                      className={cn(
-                        "rounded-xl font-black uppercase tracking-widest text-xs px-8 h-11 transition-all",
-                        view === "history" ? "bg-primary text-white shadow-[0_0_20px_rgba(34,197,94,0.3)]" : "text-white/60 hover:text-white hover:bg-white/5"
-                      )}
-                    >
-                      <History className="w-4 h-4 mr-2" />
-                      Prize History
-                    </Button>
+                <div className="pt-24 pb-12">
+                  <div className="flex flex-col items-center gap-4">
+                    <div className="flex bg-white/5 p-1.5 rounded-2xl border border-white/10 shadow-2xl backdrop-blur-xl">
+                      <Button 
+                        variant="ghost" 
+                        onClick={() => setView("ranking")}
+                        className={cn(
+                          "rounded-xl font-black uppercase tracking-widest text-xs px-8 h-11 transition-all",
+                          view === "ranking" ? "bg-primary text-white shadow-[0_0_20px_rgba(34,197,94,0.3)]" : "text-white/60 hover:text-white hover:bg-white/5"
+                        )}
+                      >
+                        <Trophy className="w-4 h-4 mr-2" />
+                        Live Ranking
+                      </Button>
+                      <Button 
+                        variant="ghost" 
+                        onClick={() => setView("history")}
+                        className={cn(
+                          "rounded-xl font-black uppercase tracking-widest text-xs px-8 h-11 transition-all",
+                          view === "history" ? "bg-primary text-white shadow-[0_0_20px_rgba(34,197,94,0.3)]" : "text-white/60 hover:text-white hover:bg-white/5"
+                        )}
+                      >
+                        <History className="w-4 h-4 mr-2" />
+                        Prize History
+                      </Button>
+                    </div>
                   </div>
                 </div>
 
