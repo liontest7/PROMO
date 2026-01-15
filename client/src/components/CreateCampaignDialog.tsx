@@ -185,10 +185,11 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
     
   const dynamicGasFee = baseGasFee + (totalExecutions * perRewardGasFee);
   const gasFeeSol = Number(dynamicGasFee.toFixed(4));
-
-  const totalProjectTokenCost = (watchedType === "holder_qualification" 
+  const airdropBudget = watchedType === "holder_qualification" 
     ? (Number(form.watch("rewardPerWallet")) * Number(form.watch("maxClaims")) || 0)
-    : totalCalculatedCost) + platformFee;
+    : totalCalculatedCost;
+
+  const totalProjectTokenCost = airdropBudget + platformFee;
 
   useEffect(() => {
     if (watchedType === "holder_qualification") {
@@ -727,21 +728,24 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
                         </div>
 
                         <div className="flex justify-between items-end pt-2">
-                          <div>
-                            <p className="text-[10px] text-muted-foreground uppercase tracking-widest mb-1">Total to Pay</p>
-                            <p className="text-2xl font-black text-primary leading-none">
-                              {totalProjectTokenCost.toLocaleString(undefined, { maximumFractionDigits: 6 })} 
-                              <span className="text-xs ml-1 font-bold text-primary/70">{form.watch("tokenName") || "Tokens"}</span>
-                            </p>
-                            <p className="text-[10px] text-emerald-500 font-bold mt-1">+ {gasFeeSol} SOL GAS FEE</p>
+                          <div className="space-y-1">
+                            <p className="text-[10px] text-muted-foreground uppercase tracking-widest">Total to Pay</p>
+                            <div className="space-y-1">
+                              <p className="text-xl font-black text-white leading-none">
+                                {airdropBudget.toLocaleString(undefined, { maximumFractionDigits: 6 })} 
+                                <span className="text-xs ml-1 font-bold text-white/70">{form.watch("tokenName") || "Tokens"}</span>
+                              </p>
+                              <p className="text-xl font-black text-primary leading-none">
+                                {platformFee.toLocaleString()} 
+                                <span className="text-xs ml-1 font-bold text-primary/70">{PLATFORM_CONFIG.TOKEN_SYMBOL}</span>
+                              </p>
+                              <p className="text-xs text-emerald-500 font-bold">+ {gasFeeSol} SOL GAS FEE</p>
+                            </div>
                           </div>
                           <div className="text-right">
                             <p className="text-[10px] text-muted-foreground uppercase tracking-widest mb-1">Total Slots</p>
                             <p className="text-xl font-bold">
-                              {form.watch("campaignType") === "holder_qualification" 
-                                ? form.watch("maxClaims") || 0 
-                                : (watchedActions || []).reduce((acc, a) => acc + (Number(a.maxExecutions) || 0), 0)
-                              }
+                              {totalExecutions}
                             </p>
                           </div>
                         </div>
