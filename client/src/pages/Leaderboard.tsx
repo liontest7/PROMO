@@ -47,6 +47,8 @@ export default function Leaderboard() {
 
   const activeLeaders = leaderboardRes?.ranking || [];
   const weeklyPrizePool = leaderboardRes?.weeklyPrizePool || 0;
+  
+  // No filtering here, use the ranking from API directly
   const paginatedLeaders = activeLeaders.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
   
   // Prize history pagination (5 weeks per page)

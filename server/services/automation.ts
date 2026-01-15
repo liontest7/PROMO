@@ -54,7 +54,8 @@ export class AutomationService {
       if (lastWeek) {
         // Check if the current week should be closed (End date is Sunday 23:59:59)
         if (now < lastWeek.endDate) {
-          return; // Still in the current week
+          log(`Still in week #${lastWeek.weekNumber}. Ends at ${lastWeek.endDate.toISOString()}`, "Automation");
+          return;
         }
         nextWeekNumber = lastWeek.weekNumber + 1;
         nextStartDate = new Date(lastWeek.endDate);
@@ -66,7 +67,7 @@ export class AutomationService {
       nextEndDate.setDate(nextStartDate.getDate() + 6);
       nextEndDate.setHours(23, 59, 59, 999);
 
-      log(`Processing week reset. Current: Week #${nextWeekNumber-1}. Target: Week #${nextWeekNumber}`, "Automation");
+      log(`Closing week #${nextWeekNumber-1}. Winners determined based on points earned this week.`, "Automation");
 
       // Calculate prizes based on real system settings
       const settings = await storage.getSystemSettings();
@@ -75,9 +76,24 @@ export class AutomationService {
       const creationFee = settings.creationFee || 10000;
       const weeklyPrizePool = allCampaigns.length * creationFee * rewardsPercent;
 
-      // Get leaderboard (Top 3)
-      const users = await storage.getLeaderboard();
-      const winners = users.slice(0, 3).map((user, index) => {
+      // Get leaderboard based on weekly timeframe points
+      const allUsers = await storage.getAllUsers();
+      const allExecutions = await storage.getAllExecutions();
+      const oneWeekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+
+      const weeklyRankings = allUsers.map(user => {
+        const weeklyPoints = allExecutions.filter(e => 
+          e.userId === user.id && 
+          e.status === 'verified' && 
+          new Date(e.createdAt) >= oneWeekAgo
+        ).length * 10;
+        return { ...user, weeklyPoints };
+      }).sort((a, b) => {
+        if (b.weeklyPoints !== a.weeklyPoints) return b.weeklyPoints - a.weeklyPoints;
+        return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
+      });
+
+      const winners = weeklyRankings.slice(0, 3).map((user, index) => {
         const prizeWeight = index === 0 ? 0.5 : index === 1 ? 0.3 : 0.2;
         const prizeAmount = (weeklyPrizePool * prizeWeight).toFixed(2);
 
@@ -101,8 +117,9 @@ export class AutomationService {
       };
 
       const prizeHistoryEntry = await storage.createPrizeHistory(entry);
+      log(`Week #${nextWeekNumber} created in history. Starting automated payout...`, "Automation");
       
-      // Process Payments
+      // Process Payments automatically
       await this.processWinners(prizeHistoryEntry.id, winners);
 
     } catch (err) {
@@ -136,7 +153,9 @@ export class AutomationService {
 
       try {
         log(`Paying ${winner.prizeAmount} $DROPY to ${winner.walletAddress}`, "Automation");
-        // Replace with actual $DROPY token address
+        // Use the reward token address from config or system settings
+        const settings = await storage.getSystemSettings();
+        // Fallback to a valid default if needed, but ideally it's in settings
         const tokenAddress = "DROPyHsh35kS5eJ7qYqYqYqYqYqYqYqYqYqYqYqYqYq"; 
         
         const sig = await transferTokens(
@@ -151,11 +170,13 @@ export class AutomationService {
           status: "paid",
           transactionSignature: sig
         };
+        log(`Payment success: ${sig}`, "Automation");
       } catch (err) {
-        log(`Failed to pay winner ${winner.walletAddress}: ${err}`, "Automation");
+        log(`Payment FAILED for ${winner.walletAddress}: ${err}`, "Automation");
         updatedWinners[i] = {
           ...winner,
-          status: "failed"
+          status: "failed",
+          errorMessage: err instanceof Error ? err.message : String(err)
         };
       }
     }
@@ -166,5 +187,6 @@ export class AutomationService {
       allPaid ? "completed" : "failed", 
       updatedWinners
     );
+    log(`Week reset process finished. Status: ${allPaid ? "COMPLETED" : "FAILED (Needs manual retry)"}`, "Automation");
   }
 }

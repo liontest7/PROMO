@@ -68,12 +68,13 @@ export async function registerRoutes(
 
         // Points calculation: 10 points per verified execution in the given timeframe
         const timeframePoints = userExecutions.length * 10;
+        const totalPoints = allExecutions.filter(e => e.userId === user.id && e.status === 'verified').length * 10;
 
         return {
           name: user.twitterHandle ? `@${user.twitterHandle}` : (user.walletAddress ? `User ${user.walletAddress.slice(0, 4)}...${user.walletAddress.slice(-4)}` : "Anonymous User"),
           fullWallet: user.walletAddress || "N/A",
           avatar: user.twitterHandle ? user.twitterHandle[0].toUpperCase() : 'U',
-          points: timeframe === "all_time" ? (user.reputationScore || 0) : timeframePoints,
+          points: timeframe === "all_time" ? totalPoints : timeframePoints,
           tasks: userExecutions.length,
           id: user.id,
           createdAt: user.createdAt
