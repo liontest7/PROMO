@@ -38,12 +38,38 @@ export async function registerRoutes(
       const activeUsers = users.filter(u => u.walletAddress);
 
       const leaderboardData = activeUsers.map((user) => {
-        const userExecutions = allExecutions.filter(e => e.userId === user.id && e.status === 'verified');
+        // Filter executions based on timeframe
+        const userExecutions = allExecutions.filter(e => {
+          if (e.userId !== user.id || e.status !== 'verified') return false;
+          
+          if (timeframe === "all_time") return true;
+          
+          const executionDate = new Date(e.createdAt);
+          const now = new Date();
+          
+          if (timeframe === "weekly") {
+            const oneWeekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+            return executionDate >= oneWeekAgo;
+          }
+          
+          if (timeframe === "monthly") {
+            const oneMonthAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+            return executionDate >= oneMonthAgo;
+          }
+          
+          return true;
+        });
+
+        // Points should also be calculated based on timeframe if we want a true dynamic leaderboard
+        // However, for now we use reputationScore which is all-time. 
+        // Let's calculate temporary points based on verified tasks for the timeframe to make it dynamic.
+        const timeframePoints = userExecutions.length * 10;
+
         return {
           name: user.twitterHandle ? `@${user.twitterHandle}` : (user.walletAddress ? `User ${user.walletAddress.slice(0, 4)}...${user.walletAddress.slice(-4)}` : 'Anonymous'),
           fullWallet: user.walletAddress || '---',
           avatar: user.twitterHandle ? user.twitterHandle[0].toUpperCase() : 'U',
-          points: user.reputationScore || 0,
+          points: timeframe === "all_time" ? (user.reputationScore || 0) : timeframePoints,
           tasks: userExecutions.length,
           id: user.id
         };

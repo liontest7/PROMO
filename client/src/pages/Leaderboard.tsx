@@ -101,14 +101,14 @@ export default function Leaderboard() {
                 </div>
 
                 {view === "ranking" && (
-                  <div className="mt-16 flex flex-col items-center gap-1">
-                    <div className="bg-primary/10 border border-primary/20 px-6 py-2 rounded-2xl backdrop-blur-md">
-                      <p className="text-[10px] text-primary font-black uppercase tracking-[0.2em] mb-0.5">Weekly Prize Pool</p>
-                      <p className="text-2xl md:text-3xl font-black text-white flex items-baseline gap-2">
-                        {(PLATFORM_CONFIG.TOKENOMICS.CREATION_FEE * 0.4).toLocaleString()} <span className="text-sm text-primary font-black">$DROPY</span>
+                  <div className="mt-8 flex flex-col items-center gap-1">
+                    <div className="bg-primary/10 border border-primary/20 px-10 py-4 rounded-[2rem] backdrop-blur-md shadow-[0_0_40px_rgba(34,197,94,0.15)] group hover:border-primary/40 transition-all duration-500">
+                      <p className="text-[11px] text-primary font-black uppercase tracking-[0.3em] mb-1.5 opacity-80">Weekly Prize Pool</p>
+                      <p className="text-4xl md:text-5xl font-black text-white flex items-baseline gap-3">
+                        {(PLATFORM_CONFIG.TOKENOMICS.CREATION_FEE * 0.4).toLocaleString()} <span className="text-lg text-primary font-black">$DROPY</span>
                       </p>
                     </div>
-                    <p className="text-[10px] md:text-xs text-white/80 uppercase tracking-[0.1em] font-black italic mt-4">
+                    <p className="text-[11px] md:text-xs text-white/60 uppercase tracking-[0.15em] font-black italic mt-5">
                       40% of all campaign fees distributed weekly to Top 3
                     </p>
                   </div>
@@ -130,7 +130,7 @@ export default function Leaderboard() {
           </div>
 
           {view === "ranking" && (
-            <div className="flex justify-center gap-6 mt-6 mb-4 relative z-10">
+            <div className="flex justify-center gap-6 mt-2 mb-2 relative z-10">
               {[
                 { id: "weekly", label: "Weekly", icon: Clock },
                 { id: "monthly", label: "Monthly", icon: Calendar },
@@ -160,7 +160,7 @@ export default function Leaderboard() {
 
         {view === "ranking" ? (
           <>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16 pt-24 items-end px-4 overflow-visible">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16 pt-12 items-end px-4 overflow-visible">
               <Card className="glass-card border-white/10 bg-white/[0.03] rounded-[3rem] overflow-hidden order-2 md:order-1 hover-elevate transition-all duration-500 min-h-[340px]">
                 <CardContent className="p-10 flex flex-col items-center text-center">
                   <div className="relative mb-8">
