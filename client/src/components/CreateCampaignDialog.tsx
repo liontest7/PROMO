@@ -360,7 +360,6 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
           });
         });
         setCreatedCampaign(data);
-        setShowSuccessCard(true);
         window.dispatchEvent(new CustomEvent('campaign-created', { detail: data }));
       },
       onError: (error: any) => {

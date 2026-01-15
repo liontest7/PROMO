@@ -85,12 +85,8 @@ export function setupCampaignRoutes(app: Express) {
 
         console.log(`[Fee System] Processing ${feeAmount} $Dropy fee: ${burnAmount} burn, ${rewardsAmount} rewards, ${systemAmount} system`);
         
-        // Update weekly rewards pool
-        const currentPool = parseFloat(settings.weeklyRewardsPool || "0");
-        await storage.updateSystemSettings({
-          weeklyRewardsPool: (currentPool + rewardsAmount).toString()
-        });
-
+        // Update weekly rewards pool - Removed as it was deprecated in schema
+        
         // Log auditing for fee distribution
         await db.insert(auditLogs).values({
           adminId: campaign.creatorId,
