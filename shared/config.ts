@@ -6,14 +6,14 @@ export const PLATFORM_CONFIG = {
     "https://mainnet.helius-rpc.com/?api-key=d2e5b128-da30-4ef0-84ea-d7afaf76c596",
     "https://mainnet.helius-rpc.com/?api-key=dd4d0f55-719e-4f2e-b8b8-2f686bc7d2bf",
     "https://api.mainnet-beta.solana.com",
-    "https://solana-mainnet.rpc.extrnode.com"
+    "https://solana-mainnet.rpc.extrnode.com",
   ],
   TOKENOMICS: {
     CREATION_FEE: 10000, // Total fee in project tokens
     BURN_PERCENT: 50,
     REWARDS_PERCENT: 40,
     SYSTEM_PERCENT: 10,
-    SYSTEM_WALLET: "DajB37qp74UzwND3N1rVWtLdxr55nhvuK2D4x476zmns"
+    SYSTEM_WALLET: "DajB37qp74UzwND3N1rVWtLdxr55nhvuK2D4x476zmns",
   },
   SOCIAL_LINKS: {
     TELEGRAM: "https://t.me/Dropy_Sol",
