@@ -102,27 +102,38 @@ export default function Leaderboard() {
 
                 {view === "ranking" && (
                   <div className="mt-8 flex flex-col items-center gap-1">
-                    <div className="bg-primary/10 border border-primary/20 px-10 py-4 rounded-[2rem] backdrop-blur-md shadow-[0_0_40px_rgba(34,197,94,0.15)] group hover:border-primary/40 transition-all duration-500">
-                      <p className="text-[11px] text-primary font-black uppercase tracking-[0.3em] mb-1.5 opacity-80">Weekly Prize Pool</p>
-                      <p className="text-4xl md:text-5xl font-black text-white flex items-baseline gap-3">
-                        {(PLATFORM_CONFIG.TOKENOMICS.CREATION_FEE * 0.4).toLocaleString()} <span className="text-lg text-primary font-black">$DROPY</span>
-                      </p>
+                    <div className="bg-primary/10 border border-primary/20 px-10 py-6 rounded-[2.5rem] backdrop-blur-md shadow-[0_0_50px_rgba(34,197,94,0.2)] group hover:border-primary/40 transition-all duration-500 min-w-[320px]">
+                      <p className="text-xs text-primary font-black uppercase tracking-[0.4em] mb-3 opacity-100 text-center drop-shadow-[0_0_10px_rgba(34,197,94,0.5)]">Weekly Prize Pool</p>
+                      <div className="flex items-center justify-center gap-4">
+                        <span className="text-5xl md:text-6xl font-black text-white leading-none">
+                          {(PLATFORM_CONFIG.TOKENOMICS.CREATION_FEE * 0.4).toLocaleString()}
+                        </span>
+                        <span className="text-xl text-primary font-black uppercase tracking-widest">$DROPY</span>
+                      </div>
                     </div>
-                    <p className="text-[11px] md:text-xs text-white/60 uppercase tracking-[0.15em] font-black italic mt-5">
+                    <p className="text-[11px] md:text-xs text-white/50 uppercase tracking-[0.15em] font-black italic mt-6">
                       40% of all campaign fees distributed weekly to Top 3
                     </p>
                   </div>
                 )}
               </div>
               
-              {/* Floating Character - Improved scale and positioning to avoid text overlap */}
-              <div className="absolute top-[45%] md:top-[50%] right-[-10px] md:right-[-40px] transform z-50 pointer-events-none">
+              {/* Floating Character - Different positioning for Ranking vs History */}
+              <div className={cn(
+                "absolute transform z-50 pointer-events-none transition-all duration-500",
+                view === "ranking" 
+                  ? "top-[40%] md:top-[42%] right-[-20px] md:right-[-60px] scale-110" 
+                  : "top-[45%] md:top-[50%] right-[-10px] md:right-[-40px]"
+              )}>
                 <div className="relative">
-                  <div className="absolute inset-0 bg-primary/20 blur-[100px] rounded-full" />
+                  <div className="absolute inset-0 bg-primary/20 blur-[120px] rounded-full" />
                   <img 
                     src="https://i.ibb.co/5Xd708DM/20260110-2035-Dropy-Wins-Trophy-remix-01kemjzex0f9xvh2emrc9tk4jy.png" 
                     alt="Dropy Trophy" 
-                    className="w-40 h-40 md:w-[280px] md:h-[280px] object-contain relative z-10 drop-shadow-[0_0_40px_rgba(34,197,94,0.5)] scale-x-[-1]"
+                    className={cn(
+                      "object-contain relative z-10 drop-shadow-[0_0_50px_rgba(34,197,94,0.6)] scale-x-[-1] transition-all duration-500",
+                      view === "ranking" ? "w-56 h-56 md:w-[380px] md:h-[380px]" : "w-40 h-40 md:w-[280px] md:h-[280px]"
+                    )}
                   />
                 </div>
               </div>
@@ -181,7 +192,6 @@ export default function Leaderboard() {
               </Card>
 
               <Card className="glass-card border-yellow-500/40 bg-yellow-500/10 rounded-[3.5rem] overflow-visible order-1 md:order-2 scale-110 relative z-20 shadow-[0_0_60px_rgba(234,179,8,0.25)] hover-elevate transition-all duration-500 min-h-[400px]">
-                <div className="absolute top-0 inset-x-0 h-1.5 bg-gradient-to-r from-transparent via-yellow-500/60 to-transparent" />
                 <CardContent className="p-12 flex flex-col items-center text-center">
                   <div className="relative mb-8">
                     <div className="w-36 h-36 rounded-full bg-[#111] border-4 border-yellow-500/50 p-1.5 shadow-[0_0_40px_rgba(234,179,8,0.4)] relative">
