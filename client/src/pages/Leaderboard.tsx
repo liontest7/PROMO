@@ -118,11 +118,11 @@ export default function Leaderboard() {
                 )}
               </div>
               
-              {/* Floating Character - Different positioning for Ranking vs History */}
+              {/* Floating Character - Static positioning for Ranking vs History */}
               <div className={cn(
-                "absolute transform z-50 pointer-events-none transition-all duration-500",
+                "absolute transform z-50 pointer-events-none",
                 view === "ranking" 
-                  ? "top-[40%] md:top-[42%] right-[-20px] md:right-[-60px] scale-110" 
+                  ? "top-[40%] md:top-[42%] right-[-60px] md:right-[-120px] scale-110" 
                   : "top-[45%] md:top-[50%] right-[-10px] md:right-[-40px]"
               )}>
                 <div className="relative">
@@ -131,7 +131,7 @@ export default function Leaderboard() {
                     src="https://i.ibb.co/5Xd708DM/20260110-2035-Dropy-Wins-Trophy-remix-01kemjzex0f9xvh2emrc9tk4jy.png" 
                     alt="Dropy Trophy" 
                     className={cn(
-                      "object-contain relative z-10 drop-shadow-[0_0_50px_rgba(34,197,94,0.6)] scale-x-[-1] transition-all duration-500",
+                      "object-contain relative z-10 drop-shadow-[0_0_50px_rgba(34,197,94,0.6)] scale-x-[-1]",
                       view === "ranking" ? "w-56 h-56 md:w-[380px] md:h-[380px]" : "w-40 h-40 md:w-[280px] md:h-[280px]"
                     )}
                   />
