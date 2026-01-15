@@ -314,15 +314,6 @@ export function VerifyActionDialog({ action, campaign, open, onOpenChange, onSuc
               </div>
             </div>
           ) : (
-
-              <div className="flex items-start gap-3 p-4 bg-white/[0.02] rounded-2xl border border-white/5 mt-4">
-                <Info className="w-4 h-4 text-white mt-0.5" />
-                <p className="text-[10px] leading-relaxed text-white font-medium">
-                  Holding requirement ensures authentic community participation. Verification is checked directly on the Solana blockchain.
-                </p>
-              </div>
-            </div>
-          ) : (
             <div className="space-y-6">
               {step === "perform" && (
                 <div className="space-y-4">
