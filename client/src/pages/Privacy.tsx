@@ -55,6 +55,7 @@ export default function PrivacyPolicy() {
                       "Social media handles and Oauth profiles for verification",
                       "Anti-bot verification data (Cloudflare Turnstile)",
                       "IP-Wallet association tracking for fraud prevention",
+                      "Escrow-based token distribution data",
                       "Protocol Reputation and XP progress data",
                       "Anonymous session analytics",
                       "On-chain transaction history"

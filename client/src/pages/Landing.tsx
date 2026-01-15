@@ -120,8 +120,8 @@ export default function Landing() {
                 <span className="text-primary neon-text italic">Drive Real Growth</span>
               </h1>
               <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto mb-12 leading-relaxed font-medium">
-                Dropy is Solana's premier Pay-Per-Action platform. Connect with high-conviction users through verified on-chain holder qualification, social identity sync, and advanced engagement tasks. 
-                Built for projects that demand authentic community growth and bot-free engagement.
+                Dropy is Solana's premier Pay-Per-Action platform. Drive authentic growth with verified on-chain holder qualification, bot-free task verification, and automated token distribution. 
+                Built for projects that demand real engagement and a deflationary ecosystem.
               </p>
 
               <div className="flex flex-col sm:flex-row gap-4 justify-center mb-16">

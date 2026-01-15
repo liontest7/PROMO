@@ -153,20 +153,16 @@ export default function About() {
                 <div className="flex items-center justify-center w-10 h-10 rounded-full border border-primary/50 bg-background shadow shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 z-10">
                   <div className={`w-3 h-3 rounded-full ${step.status === 'active' ? 'bg-primary animate-pulse' : 'bg-muted'}`} />
                 </div>
-                <Card className="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] glass-card border-white/5 bg-white/[0.02] p-6">
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-primary font-bold text-sm uppercase tracking-wider">{step.phase}</span>
-                  </div>
-                  <h3 className="text-xl font-bold mb-4">{step.title}</h3>
+                <div className="phase-card p-6 glass-card border-white/5 bg-white/[0.02] rounded-2xl">
+                  <phase-tag className="text-primary font-bold text-sm uppercase tracking-wider mb-2 block">Phase 1: Foundation</phase-tag>
+                  <h3 className="text-xl font-bold mb-4">Launch & Stability</h3>
                   <ul className="space-y-2">
-                    {step.items.map((item, j) => (
-                      <li key={j} className="text-sm text-muted-foreground flex items-center gap-2">
-                        <div className="w-1 h-1 rounded-full bg-primary/50" />
-                        {item}
-                      </li>
-                    ))}
+                    <li className="text-sm text-muted-foreground flex items-center gap-2"><div className="w-1 h-1 rounded-full bg-primary/50" />Secure Platform Launch & UI/UX Audit</li>
+                    <li className="text-sm text-muted-foreground flex items-center gap-2"><div className="w-1 h-1 rounded-full bg-primary/50" />Dynamic Gas Optimization (Live)</li>
+                    <li className="text-sm text-muted-foreground flex items-center gap-2"><div className="w-1 h-1 rounded-full bg-primary/50" />Verified On-chain Holder Model (Live)</li>
+                    <li className="text-sm text-muted-foreground flex items-center gap-2"><div className="w-1 h-1 rounded-full bg-primary/50" />50/40/10 Fee Tokenomics (Live)</li>
                   </ul>
-                </Card>
+                </div>
               </div>
             ))}
           </div>
