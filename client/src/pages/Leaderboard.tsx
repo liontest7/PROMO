@@ -107,14 +107,14 @@ export default function Leaderboard() {
                 )}
               </div>
               
-              {/* Floating Character - Positioned from top-3 card area up to header area */}
-              <div className="absolute top-[20%] md:top-[15%] right-[-20px] md:right-[-60px] transform z-50 pointer-events-none">
+              {/* Floating Character - Positioned smaller and adjusted right/bottom */}
+              <div className="absolute top-[30%] md:top-[35%] right-[-10px] md:right-[-30px] transform z-50 pointer-events-none">
                 <div className="relative">
-                  <div className="absolute inset-0 bg-primary/20 blur-[120px] rounded-full" />
+                  <div className="absolute inset-0 bg-primary/20 blur-[100px] rounded-full" />
                   <img 
                     src="https://i.ibb.co/5Xd708DM/20260110-2035-Dropy-Wins-Trophy-remix-01kemjzex0f9xvh2emrc9tk4jy.png" 
                     alt="Dropy Trophy" 
-                    className="w-64 h-64 md:w-[500px] md:h-[500px] object-contain relative z-10 drop-shadow-[0_0_60px_rgba(34,197,94,0.6)] scale-x-[-1]"
+                    className="w-48 h-48 md:w-[320px] md:h-[320px] object-contain relative z-10 drop-shadow-[0_0_40px_rgba(34,197,94,0.5)] scale-x-[-1]"
                   />
                 </div>
               </div>
@@ -288,17 +288,6 @@ export default function Leaderboard() {
         </>
       ) : (
         <div className="space-y-6 relative">
-          {/* History Page Floating Character - Adjusted to be higher up */}
-          <div className="absolute -top-64 right-0 md:right-4 z-50 pointer-events-none">
-            <div className="relative">
-              <div className="absolute inset-0 bg-primary/20 blur-[80px] rounded-full" />
-              <img 
-                src="https://i.ibb.co/5Xd708DM/20260110-2035-Dropy-Wins-Trophy-remix-01kemjzex0f9xvh2emrc9tk4jy.png" 
-                alt="Dropy Trophy" 
-                className="w-48 h-48 md:w-64 md:h-64 object-contain relative z-10 drop-shadow-[0_0_40px_rgba(34,197,94,0.4)] scale-x-[-1]"
-              />
-            </div>
-          </div>
           <Card className="glass-card border-white/10 bg-white/[0.02] rounded-[3rem] overflow-hidden shadow-2xl backdrop-blur-xl">
             <div className="bg-white/[0.05] px-12 py-8 border-b border-white/10 flex items-center text-sm font-black text-white uppercase tracking-[0.5em] italic">
               <span className="w-40">Period</span>
