@@ -154,7 +154,7 @@ export default function CampaignDetails() {
       action: { 
         id: 0, 
         campaignId: campaign.id, 
-        type: 'website', // Temporary type for holder
+        type: 'holder_verification', // Use specific type
         title: 'Holder Verification', 
         rewardAmount: campaign.rewardPerWallet || '0',
         url: '',

@@ -69,7 +69,7 @@ export function VerifyActionDialog({ action, campaign, open, onOpenChange, onSuc
     }
   }, [open]);
 
-  const isHolderCampaign = campaign?.campaignType === 'holder_qualification';
+  const isHolderCampaign = campaign?.campaignType === 'holder_qualification' || action?.type === 'holder_verification';
 
   const { data: user } = useQuery({
     queryKey: [`/api/users/${walletAddress}`],
@@ -170,7 +170,6 @@ export function VerifyActionDialog({ action, campaign, open, onOpenChange, onSuc
       }
 
       const isWebsiteAction = action.type === "website";
-      const isTwitterAction = action.type === 'twitter' || action.type.startsWith('twitter_');
       let proofData: any = { 
         proofText: isTwitterAction ? (user?.twitterHandle || proof) : proof, 
         socialVerified: action.type === 'twitter' 
