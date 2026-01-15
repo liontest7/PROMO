@@ -31,13 +31,10 @@ export async function registerRoutes(
   app.get("/api/leaderboard", async (req, res) => {
     try {
       const timeframe = req.query.timeframe as string || "all_time";
-      const users = await storage.getAllUsers();
+      const usersList = await storage.getLeaderboard();
       const allExecutions = await storage.getAllExecutions();
 
-      // Filter for active users
-      const activeUsers = users.filter(u => u.walletAddress);
-
-      const leaderboardData = activeUsers.map((user) => {
+      const leaderboardData = usersList.map((user) => {
         // Filter executions based on timeframe
         const userExecutions = allExecutions.filter(e => {
           if (e.userId !== user.id || e.status !== 'verified') return false;
@@ -60,20 +57,34 @@ export async function registerRoutes(
           return true;
         });
 
-        // Points should also be calculated based on timeframe if we want a true dynamic leaderboard
-        // However, for now we use reputationScore which is all-time. 
-        // Let's calculate temporary points based on verified tasks for the timeframe to make it dynamic.
+        // Points calculation
         const timeframePoints = userExecutions.length * 10;
 
         return {
-          name: user.twitterHandle ? `@${user.twitterHandle}` : (user.walletAddress ? `User ${user.walletAddress.slice(0, 4)}...${user.walletAddress.slice(-4)}` : 'Anonymous'),
-          fullWallet: user.walletAddress || '---',
+          name: user.twitterHandle ? `@${user.twitterHandle}` : `User ${user.walletAddress.slice(0, 4)}...${user.walletAddress.slice(-4)}`,
+          fullWallet: user.walletAddress,
           avatar: user.twitterHandle ? user.twitterHandle[0].toUpperCase() : 'U',
           points: timeframe === "all_time" ? (user.reputationScore || 0) : timeframePoints,
           tasks: userExecutions.length,
           id: user.id
         };
       });
+
+      // Sort by points descending
+      leaderboardData.sort((a, b) => b.points - a.points);
+
+      // Update ranks
+      const rankedData = leaderboardData.map((item, idx) => ({
+        ...item,
+        rank: idx + 1
+      }));
+
+      res.json(rankedData);
+    } catch (err) {
+      console.error("Leaderboard API error:", err);
+      res.status(500).json({ message: "Error fetching leaderboard data" });
+    }
+  });
 
       // Sort by points descending, then by tasks descending, then by join date (id)
       leaderboardData.sort((a, b) => {
