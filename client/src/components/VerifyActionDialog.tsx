@@ -111,6 +111,7 @@ export function VerifyActionDialog({ action, campaign, open, onOpenChange, onSuc
                 currentBalance: data.currentBalance,
                 requiredBalance: data.requiredBalance,
                 holdDuration: data.holdDuration,
+                followProgress: data.followProgress,
                 error: data.error
               });
 
@@ -142,7 +143,7 @@ export function VerifyActionDialog({ action, campaign, open, onOpenChange, onSuc
 
       const isTwitterAction = action.type === 'twitter' || action.type.startsWith('twitter_');
       
-      // Strict Twitter Check
+      // Strict X Account Check
       if (isTwitterAction && !user?.twitterHandle) {
         toast({
           title: "X Account Required",
@@ -152,40 +153,21 @@ export function VerifyActionDialog({ action, campaign, open, onOpenChange, onSuc
         return;
       }
       
-      // Twitter API Verification
-      if (action.type === 'twitter') {
-        setIsVerifying(true);
-        try {
-          const verifyRes = await fetch("/api/twitter/verify", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              actionId: action.id,
-              userWallet: walletAddress,
-              handle: user?.twitterHandle || proof
-            })
-          });
-          const verifyData = await verifyRes.json();
-          if (!verifyData.success) {
-            throw new Error(verifyData.message || "Twitter verification failed. Make sure you followed/retweeted.");
-          }
-        } finally {
-          setIsVerifying(false);
-        }
-      }
+      setIsVerifying(true);
 
       const isWebsiteAction = action.type === "website";
       let proofData: any = { 
         proofText: isTwitterAction ? (user?.twitterHandle || proof) : proof, 
-        socialVerified: action.type === 'twitter' 
+        socialVerified: isTwitterAction,
+        isAutoFetch: !!isAutoFetch
       };
 
-      if (!isWebsiteAction) {
-        if (!isTwitterAction && (!proof || proof.length < 3)) {
+      if (!isWebsiteAction && !isTwitterAction) {
+        if (!proof || proof.length < 3) {
           throw new Error("Please provide valid proof.");
         }
         
-        const message = `Confirm task ${action.id}\nProof: ${isTwitterAction ? (user?.twitterHandle || proof) : proof}`;
+        const message = `Confirm task ${action.id}\nProof: ${proof}`;
         const encodedMessage = new TextEncoder().encode(message);
         const solanaInstance = (window as any).phantom?.solana || (window as any).solana;
         
@@ -196,7 +178,7 @@ export function VerifyActionDialog({ action, campaign, open, onOpenChange, onSuc
         } else {
           throw new Error("Wallet signing not supported");
         }
-      } else {
+      } else if (isWebsiteAction) {
         proofData.isWebsiteClick = true;
         proofData.signature = "click-verified"; 
       }
@@ -211,6 +193,19 @@ export function VerifyActionDialog({ action, campaign, open, onOpenChange, onSuc
         },
         {
           onSuccess: (data: any) => {
+            if (data.status === "tracking") {
+              setHoldingStatus(prev => ({
+                ...prev,
+                status: "tracking",
+                followProgress: data.followProgress
+              }));
+              toast({
+                title: "Tracking Started",
+                description: data.message,
+              });
+              return;
+            }
+
             if (data.error) {
               toast({
                 title: "Protection Check Failed",
@@ -232,6 +227,8 @@ export function VerifyActionDialog({ action, campaign, open, onOpenChange, onSuc
         description: err.message,
         variant: "destructive"
       });
+    } finally {
+      setIsVerifying(false);
     }
   };
 

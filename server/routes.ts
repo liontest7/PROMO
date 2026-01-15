@@ -325,6 +325,16 @@ export async function registerRoutes(
             }
           }
         }
+
+        // Verification logic...
+        await storage.createExecution({
+          actionId: action.id,
+          campaignId: action.campaignId,
+          userId: user.id,
+          status: "verified"
+        } as any);
+        
+        return res.json({ success: true, status: "verified", message: "Action verified!" });
       }
 
       // Twitter API Verification Integration
@@ -335,10 +345,6 @@ export async function registerRoutes(
 
         const accessToken = (req.session as any).twitterAccessToken;
         if (!accessToken) {
-          // Fallback for manual verification or if session is missing but handle exists
-          // In a production app, we'd strictly require the token, but for UX we might allow 
-          // a "pending" state if the token is missing.
-          // For now, let's keep it strict but informative.
           return res.status(401).json({ message: "X (Twitter) session expired. Please re-link your account from the dashboard." });
         }
 
@@ -367,7 +373,7 @@ export async function registerRoutes(
         }
       }
 
-      // Verification logic...
+      // Verification logic for non-Twitter actions
       await storage.createExecution({
         actionId: action.id,
         campaignId: action.campaignId,
@@ -377,6 +383,7 @@ export async function registerRoutes(
       
       res.json({ success: true, status: "verified", message: "Action verified!" });
     } catch (err) {
+      console.error("Verification error:", err);
       res.status(400).json({ message: "Invalid request" });
     }
   });
