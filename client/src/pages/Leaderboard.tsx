@@ -65,7 +65,7 @@ export default function Leaderboard() {
                 </h1>
                 <p className="text-white uppercase tracking-[0.5em] text-sm md:text-base font-black italic">Top Ecosystem Contributors • Real-time Sync</p>
                 
-                <div className="pt-24 pb-12">
+                <div className="pt-12 pb-12">
                   <div className="flex flex-col items-center gap-4">
                     <div className="flex bg-white/5 p-1.5 rounded-2xl border border-white/10 shadow-2xl backdrop-blur-xl">
                       <Button 
@@ -110,7 +110,7 @@ export default function Leaderboard() {
               </div>
               
               {/* Floating Character - Improved scale and positioning to avoid text overlap */}
-              <div className="absolute top-[35%] md:top-[40%] right-[-10px] md:right-[-40px] transform z-50 pointer-events-none">
+              <div className="absolute top-[45%] md:top-[50%] right-[-10px] md:right-[-40px] transform z-50 pointer-events-none">
                 <div className="relative">
                   <div className="absolute inset-0 bg-primary/20 blur-[100px] rounded-full" />
                   <img 
