@@ -65,14 +65,14 @@ export function LeaderboardHeader({ view, setView }: LeaderboardHeaderProps) {
           
           <div className={cn(
             "absolute right-0 md:right-[-100px] transform transition-all duration-500",
-            view === "ranking" ? "-bottom-48 md:-bottom-64" : "-bottom-20 md:-bottom-24 scale-75 opacity-50 pointer-events-none"
+            view === "ranking" ? "-bottom-64 md:-bottom-80" : "-bottom-24 md:-bottom-28 scale-50 opacity-20 pointer-events-none"
           )}>
             <div className="relative">
               <div className="absolute inset-0 bg-primary/20 blur-[120px] rounded-full" />
               <img 
                 src="https://i.ibb.co/5Xd708DM/20260110-2035-Dropy-Wins-Trophy-remix-01kemjzex0f9xvh2emrc9tk4jy.png" 
                 alt="Dropy Trophy" 
-                className="w-64 h-64 md:w-96 md:h-96 object-contain relative z-10 drop-shadow-[0_0_60px_rgba(34,197,94,0.6)] scale-x-[-1]"
+                className="w-64 h-64 md:w-[450px] md:h-[450px] object-contain relative z-10 drop-shadow-[0_0_60px_rgba(34,197,94,0.6)] scale-x-[-1]"
               />
             </div>
           </div>

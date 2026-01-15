@@ -35,7 +35,7 @@ export async function registerRoutes(
       const allExecutions = await storage.getAllExecutions();
 
       // Filter for active users
-      const activeUsers = users.filter(u => u.role === 'user' || u.role === 'admin');
+      const activeUsers = users.filter(u => u.walletAddress);
 
       const leaderboardData = activeUsers.map((user) => {
         const userExecutions = allExecutions.filter(e => e.userId === user.id && e.status === 'verified');
