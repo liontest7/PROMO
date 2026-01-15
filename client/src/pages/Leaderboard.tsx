@@ -184,7 +184,12 @@ export default function Leaderboard() {
                       <div className="absolute -top-4 -right-4 w-12 h-12 rounded-2xl bg-white text-black flex items-center justify-center font-black text-lg border-2 border-[#050505] shadow-2xl transform rotate-12 transition-transform group-hover:scale-110 group-hover:rotate-0">#2</div>
                     </div>
                   </div>
-                  <h3 className="text-3xl font-black font-display uppercase italic tracking-tight text-white truncate w-full px-2">{activeLeaders?.[1]?.name || '---'}</h3>
+                  <h3 className="text-3xl font-black font-display uppercase italic tracking-tight text-white truncate w-full px-2">
+                    {activeLeaders?.[1]?.name || '---'}
+                    {activeLeaders?.[1] && activeLeaders[1].points === 0 && (
+                      <span className="block text-[8px] text-red-400 not-italic mt-1">NOT ELIGIBLE</span>
+                    )}
+                  </h3>
                   <div className="flex items-center gap-3 mt-4 bg-emerald-500/15 px-6 py-2 rounded-full border border-emerald-500/30">
                     <Star className="w-5 h-5 text-emerald-500" />
                     <span className="text-2xl font-black font-display text-emerald-500">{activeLeaders?.[1]?.points?.toLocaleString() || 0}</span>
@@ -206,6 +211,9 @@ export default function Leaderboard() {
                   </div>
                   <h3 className="text-4xl font-black font-display uppercase italic tracking-tighter text-white truncate w-full px-2">
                     {activeLeaders?.[0]?.name || '---'}
+                    {activeLeaders?.[0] && activeLeaders[0].points === 0 && (
+                      <span className="block text-[10px] text-red-400 not-italic mt-1">NOT ELIGIBLE</span>
+                    )}
                   </h3>
                   <div className="flex items-center gap-3 mt-5 bg-primary/25 px-8 py-3 rounded-full border border-primary/40 shadow-xl">
                     <Star className="w-6 h-6 text-primary" />
@@ -225,7 +233,12 @@ export default function Leaderboard() {
                       <div className="absolute -top-4 -right-4 w-12 h-12 rounded-2xl bg-amber-600 text-white flex items-center justify-center font-black text-lg border-2 border-[#050505] shadow-2xl transform rotate-12 transition-transform group-hover:scale-110 group-hover:rotate-0">#3</div>
                     </div>
                   </div>
-                  <h3 className="text-3xl font-black font-display uppercase italic tracking-tight text-white truncate w-full px-2">{activeLeaders?.[2]?.name || '---'}</h3>
+                  <h3 className="text-3xl font-black font-display uppercase italic tracking-tight text-white truncate w-full px-2">
+                    {activeLeaders?.[2]?.name || '---'}
+                    {activeLeaders?.[2] && activeLeaders[2].points === 0 && (
+                      <span className="block text-[8px] text-red-400 not-italic mt-1">NOT ELIGIBLE</span>
+                    )}
+                  </h3>
                   <div className="flex items-center gap-3 mt-4 bg-amber-600/15 px-6 py-2 rounded-full border border-amber-600/30">
                     <Star className="w-5 h-5 text-amber-600" />
                     <span className="text-2xl font-black font-display text-amber-600">{activeLeaders?.[2]?.points?.toLocaleString() || 0}</span>

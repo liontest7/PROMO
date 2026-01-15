@@ -44,12 +44,13 @@ export async function registerRoutes(
       const weeklyPrizePool = allCampaigns.length * creationFee * rewardsPercent;
 
       const leaderboardData = usersList.map((user) => {
-        // Filter executions based on timeframe
-        // Include BOTH verified and pending for leaderboard visibility, but maybe weigh them differently if needed.
-        // For now, let's just count all attempted tasks to show activity.
+        // Points calculation: 10 points per verified execution, 0 points per pending execution for score, 
+        // but we can still count them for task count visibility.
+        // Protocol Reputation score is already in user.reputationScore.
+        // For weekly/monthly, we count tasks.
         const userExecutions = allExecutions.filter(e => {
           if (e.userId !== user.id) return false;
-          if (e.status !== 'verified' && e.status !== 'pending') return false;
+          if (e.status !== 'verified') return false; // Only verified count for leaderboard points
           
           if (timeframe === "all_time") return true;
           
@@ -69,20 +70,22 @@ export async function registerRoutes(
           return true;
         });
 
-        // Points calculation: 10 points per verified execution, 2 points per pending execution
-        const timeframePoints = userExecutions.reduce((sum, e) => sum + (e.status === 'verified' ? 10 : 2), 0);
-        const totalPoints = allExecutions
-          .filter(e => e.userId === user.id && (e.status === 'verified' || e.status === 'pending'))
-          .reduce((sum, e) => sum + (e.status === 'verified' ? 10 : 2), 0);
+        // Current reputation score from user record
+        const protocolReputation = user.reputationScore || 0;
+        
+        // For all_time, we use the protocol reputation score
+        // For weekly/monthly, we use points from tasks in that period
+        const points = timeframe === "all_time" ? protocolReputation : userExecutions.length * 10;
 
         return {
           name: user.twitterHandle ? `@${user.twitterHandle}` : (user.walletAddress ? `User ${user.walletAddress.slice(0, 4)}...${user.walletAddress.slice(-4)}` : "Anonymous User"),
           fullWallet: user.walletAddress || "N/A",
           avatar: user.twitterHandle ? user.twitterHandle[0].toUpperCase() : 'U',
-          points: timeframe === "all_time" ? totalPoints : timeframePoints,
+          points: points,
           tasks: userExecutions.length,
           id: user.id,
-          createdAt: user.createdAt
+          createdAt: user.createdAt,
+          isEligibleForPrize: points > 0 // Protection: must have points to win
         };
       });
 
