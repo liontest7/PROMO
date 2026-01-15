@@ -20,11 +20,15 @@ export default function Leaderboard() {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
 
-  const { data: leaderboardRes, isLoading } = useQuery<any>({
+  const { data: leaderboardRes, isLoading, error } = useQuery<any>({
     queryKey: ["/api/leaderboard", timeframe],
-    refetchInterval: 300000,
-    staleTime: 60000,
+    refetchInterval: 30000, 
+    staleTime: 5000,
   });
+
+  if (error) {
+    console.error("Leaderboard query error:", error);
+  }
 
   const { data: history } = useQuery<any[]>({
     queryKey: ["/api/leaderboard/history"],

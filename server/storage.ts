@@ -531,11 +531,14 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getLeaderboard(): Promise<User[]> {
-    return await db.select()
+    const allUsers = await db.select()
       .from(users)
       .where(sql`${users.walletAddress} IS NOT NULL`)
       .orderBy(desc(users.reputationScore), desc(users.createdAt))
       .limit(100);
+    
+    console.log(`[Storage] getLeaderboard found ${allUsers.length} users`);
+    return allUsers;
   }
 
   async getPrizeHistory(): Promise<(typeof prizeHistory.$inferSelect)[]> {

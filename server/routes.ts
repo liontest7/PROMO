@@ -66,7 +66,7 @@ export async function registerRoutes(
           return true;
         });
 
-        // Points calculation
+        // Points calculation: 10 points per verified execution in the given timeframe
         const timeframePoints = userExecutions.length * 10;
 
         return {
@@ -80,7 +80,7 @@ export async function registerRoutes(
         };
       });
 
-      // Sort by points descending, then by creation date (earlier is better)
+      // Sort by points descending, then by creation date (earlier users rank higher in ties)
       leaderboardData.sort((a, b) => {
         if (b.points !== a.points) return b.points - a.points;
         return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
