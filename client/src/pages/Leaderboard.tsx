@@ -233,13 +233,13 @@ export default function Leaderboard() {
               </Card>
             </div>
 
-            <div className="space-y-8">
-              <Card className="glass-card border-white/10 bg-white/[0.02] rounded-[3rem] overflow-hidden shadow-[0_0_80px_rgba(0,0,0,0.5)] backdrop-blur-xl">
-                <div className="bg-white/[0.05] px-12 py-8 border-b border-white/10 flex items-center text-sm font-black text-white uppercase tracking-[0.5em] italic">
-                  <span className="w-20">Rank</span>
+            <div className="space-y-8 overflow-x-auto md:overflow-x-visible pb-4">
+              <Card className="glass-card border-white/10 bg-white/[0.02] rounded-[2rem] md:rounded-[3rem] overflow-hidden shadow-[0_0_80px_rgba(0,0,0,0.5)] backdrop-blur-xl min-w-[600px] md:min-w-full">
+                <div className="bg-white/[0.05] px-6 md:px-12 py-6 md:py-8 border-b border-white/10 flex items-center text-[10px] md:text-sm font-black text-white uppercase tracking-[0.3em] md:tracking-[0.5em] italic">
+                  <span className="w-16 md:w-20">Rank</span>
                   <span className="flex-1">Contributor</span>
-                  <span className="w-40 text-right">Score</span>
-                  <span className="w-40 text-right">Tasks</span>
+                  <span className="w-32 md:w-40 text-right">Score</span>
+                  <span className="w-32 md:w-40 text-right">Tasks</span>
                 </div>
                 <CardContent className="p-0">
                   <div className="divide-y divide-white/10">

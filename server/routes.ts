@@ -8,13 +8,12 @@ import { authMiddleware } from "./middleware/auth";
 import { storage } from "./storage";
 import { api } from "@shared/routes";
 import { PLATFORM_CONFIG } from "@shared/config";
-import { prizeHistory } from "@shared/schema";
 import { PublicKey } from "@solana/web3.js";
 import { getSolanaConnection } from "./services/solana";
 import { checkIpFraud, verifyTurnstile } from "./services/security";
 import { db } from "./db";
 import { eq, and, sql } from "drizzle-orm";
-import { followerTracking } from "@shared/schema";
+import { followerTracking, prizeHistory } from "@shared/schema";
 
 export async function registerRoutes(
   httpServer: Server,
