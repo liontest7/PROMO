@@ -192,7 +192,7 @@ export class DatabaseStorage implements IStorage {
   async getSuspiciousUsers(): Promise<User[]> {
     return await db.select()
       .from(users)
-      .where(sql`${users.reputationScore} > 200 OR ${users.balance}::numeric > 50 OR ${users.status} = 'suspended'`)
+      .where(sql`${users.reputationScore} > 200 OR ${users.balance}::numeric > 500 OR ${users.status} = 'suspended'`)
       .orderBy(desc(users.reputationScore));
   }
 

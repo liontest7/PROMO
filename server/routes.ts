@@ -34,12 +34,12 @@ export async function registerRoutes(
       const usersList = await storage.getAllUsers();
       const allExecutions = await storage.getAllExecutions();
 
-      // Filter out users who haven't accepted terms to match global stats
-      const activeUsers = usersList.filter(u => u.acceptedTerms);
+      // Filter out users who haven't accepted terms and ensure they have a wallet
+      const activeUsers = usersList.filter(u => u.acceptedTerms && u.walletAddress);
 
       // Get creation fee and rewards percent from settings for dynamic prize pool calculation
       const settings = await storage.getSystemSettings();
-      const allCampaigns = await storage.getAllCampaigns();
+      const allCampaigns = (await storage.getAllCampaigns()).filter(c => c.creationFeePaid);
       const rewardsPercent = (settings.rewardsPercent || 40) / 100;
       const creationFee = settings.creationFee || PLATFORM_CONFIG.TOKENOMICS.CREATION_FEE;
       
