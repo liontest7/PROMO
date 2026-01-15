@@ -124,28 +124,46 @@ export default function About() {
         {/* Roadmap Section */}
         <section className="py-20 mb-24">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-display font-bold mb-4">{PLATFORM_CONFIG.TOKEN_SYMBOL} Roadmap</h2>
-            <p className="text-muted-foreground">Our journey to revolutionizing Solana marketing.</p>
+            <h2 className="text-4xl font-display font-bold mb-4 italic uppercase tracking-tighter italic text-primary">Strategic Roadmap</h2>
+            <p className="text-muted-foreground">The evolution of Dropy and the ${PLATFORM_CONFIG.TOKEN_SYMBOL} ecosystem.</p>
           </div>
           
           <div className="relative space-y-8 before:absolute before:inset-0 before:ml-5 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-transparent before:via-primary/50 before:to-transparent">
             {[
               { 
-                phase: "Phase 1: Foundation", 
-                title: "Launch & Stability", 
-                items: ["Secure Platform Launch & UI/UX Audit", "RPC Failover System (Live)", "Verified On-chain Holder Model (Live)", "50/40/10 Fee Tokenomics (Live)"],
+                phase: "Completed", 
+                title: "Engine & Core Infrastructure", 
+                items: [
+                  "Secure Platform Launch with Solana Escrow",
+                  "Verified On-chain Holder Qualification",
+                  "Anti-Bot Protection (Cloudflare Turnstile)",
+                  "Dynamic Gas Optimization System",
+                  "Deflationary 50/40/10 Tokenomics Model"
+                ],
                 status: "active"
               },
               { 
-                phase: "Phase 2: Growth", 
-                title: "Engagement & Security", 
-                items: ["Anti-Fraud IP/Wallet Tracking (Live)", "Anti-Bot Protection (Turnstile Live)", "Weekly Rewards Leaderboard (Live)", "Social Media API Verification"],
+                phase: "Next Steps", 
+                title: "Growth & Ecosystem Expansion", 
+                items: [
+                  "Social Media API Direct Verification",
+                  "DEX Liquidity Boosting Rewards",
+                  "Premium Airdrop Tiers for High-Reputation Users",
+                  "Advertiser Dashboard & Advanced Analytics",
+                  "Cross-Chain Social Identity Integration"
+                ],
                 status: "active"
               },
               { 
-                phase: "Phase 3: Ecosystem", 
-                title: "Advanced Tools & Scaling", 
-                items: ["Direct DEX Liquidity Incentives", "Staking Rewards for $MEME Holders", "Permissionless Campaign Factory", "Automated Airdrop Escrow Contracts"],
+                phase: "Future Vision", 
+                title: "Global Scaling & Utility", 
+                items: [
+                  "Small-Tier Exchange (CEX) Listings",
+                  "Automated Permissionless Campaign Factory",
+                  "Staking Rewards for $DROPY Long-term Holders",
+                  "Governance DAO Implementation",
+                  "Strategic Partnerships with Top Solana Protocols"
+                ],
                 status: "pending"
               }
             ].map((step, i) => (
@@ -153,14 +171,18 @@ export default function About() {
                 <div className="flex items-center justify-center w-10 h-10 rounded-full border border-primary/50 bg-background shadow shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 z-10">
                   <div className={`w-3 h-3 rounded-full ${step.status === 'active' ? 'bg-primary animate-pulse' : 'bg-muted'}`} />
                 </div>
-                <div className="phase-card p-6 glass-card border-white/5 bg-white/[0.02] rounded-2xl">
-                  <span className="text-primary font-bold text-sm uppercase tracking-wider mb-2 block">Phase 1: Foundation</span>
-                  <h3 className="text-xl font-bold mb-4">Launch & Stability</h3>
-                  <ul className="space-y-2">
-                    <li className="text-sm text-muted-foreground flex items-center gap-2"><div className="w-1 h-1 rounded-full bg-primary/50" />Secure Platform Launch & UI/UX Audit</li>
-                    <li className="text-sm text-muted-foreground flex items-center gap-2"><div className="w-1 h-1 rounded-full bg-primary/50" />Dynamic Gas Optimization (Live)</li>
-                    <li className="text-sm text-muted-foreground flex items-center gap-2"><div className="w-1 h-1 rounded-full bg-primary/50" />Verified On-chain Holder Model (Live)</li>
-                    <li className="text-sm text-muted-foreground flex items-center gap-2"><div className="w-1 h-1 rounded-full bg-primary/50" />50/40/10 Fee Tokenomics (Live)</li>
+                <div className="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] glass-card border-white/5 bg-white/[0.02] p-6 rounded-2xl hover:border-primary/30 transition-all">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-primary font-bold text-xs uppercase tracking-widest">{step.phase}</span>
+                  </div>
+                  <h3 className="text-xl font-black mb-4 uppercase italic tracking-tight">{step.title}</h3>
+                  <ul className="space-y-3">
+                    {step.items.map((item, j) => (
+                      <li key={j} className="text-sm text-muted-foreground flex items-start gap-3">
+                        <div className="w-1.5 h-1.5 rounded-full bg-primary/50 mt-1.5 shrink-0" />
+                        <span className="leading-tight">{item}</span>
+                      </li>
+                    ))}
                   </ul>
                 </div>
               </div>
