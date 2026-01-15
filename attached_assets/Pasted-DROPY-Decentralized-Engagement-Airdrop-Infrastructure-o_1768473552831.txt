@@ -1,0 +1,311 @@
+DROPY
+
+Decentralized Engagement & Airdrop Infrastructure on Solana
+
+1. זהות המערכת (Brand + Vision)
+שם המערכת
+
+DROPY
+
+דמות (Mascot)
+
+דמות ירוקה חמודה (“Dropy”)
+
+מזוהה עם:
+
+Airdrop
+
+Rewards
+
+Web3 Gamified Engagement
+
+משמשת:
+
+אתר
+
+באנרים
+
+NFT עתידי
+
+סטיקרים / אנימציות
+
+Brand Recall
+
+קונספט מרכזי
+
+משתמשים מרוויחים קריפטו על פעולות אמיתיות,
+פרויקטים מקבלים חשיפה איכותית ללא בוטים.
+
+2. מה DROPY בעצם?
+
+DROPY היא פלטפורמת Pay-Per-Action מבוזרת על רשת Solana:
+
+פרויקטים יוצרים קמפיינים
+
+משתמשים מבצעים פעולות (Follow, Join, Hold, Vote וכו’)
+
+המערכת מאמתת
+
+תגמול מחולק אוטומטית
+
+❗ DROPY אינה:
+
+לא השקעה
+
+לא ייעוץ פיננסי
+
+לא הבטחת רווח
+
+3. משתמשים במערכת
+1. Earners (Users)
+
+מחברים ארנק Solana
+
+מבצעים משימות
+
+מקבלים תגמולים
+
+2. Projects / Developers
+
+יוצרים קמפיינים
+
+מפקידים תקציב
+
+בוחרים פעולות ואימותים
+
+3. Token Holders
+
+נהנים מ:
+
+Burns
+
+Utility
+
+גישה לפיצ’רים
+
+4. זרימת מערכת (Core Flow)
+A. חיבור
+
+Wallet Connect (Solana)
+
+אין אימייל
+
+אין סיסמאות
+
+אין מפתחות פרטיים
+
+B. יצירת קמפיין
+
+Project בוחר:
+
+סוג פעולה:
+
+X Follow
+
+Telegram Join
+
+Hold Token
+
+On-chain Action
+
+סכום תגמול
+
+כמות משתתפים
+
+דרישות Holder (אופציונלי)
+
+תקציב כולל
+
+התקציב:
+
+ננעל בחוזה
+
+משוחרר רק לפי אימות
+
+C. ביצוע משימה
+
+User:
+
+רואה קמפיין
+
+מבצע פעולה
+
+שולח לאימות
+
+D. אימות
+
+APIs חיצוניים (X, Telegram)
+
+On-chain checks
+
+Anti-Sybil Logic
+
+E. תגמול
+
+חלוקה אוטומטית
+
+On-chain
+
+ללא התערבות ידנית
+
+5. מערכת טוקן – $DROPY
+רשת
+
+Solana (SPL)
+
+תפקיד הטוקן
+
+Utility בלבד:
+
+פתיחת קמפיינים
+
+Premium Exposure
+
+Auto-Promotion
+
+Governance עתידי
+
+Burns מכל פעילות
+
+אין:
+
+הבטחת רווח
+
+Staking APY
+
+התחייבות מחיר
+
+6. חשיפה ופרסום אוטומטי
+Telegram
+
+Bot רשמי
+
+פרסום אוטומטי
+
+חינמי
+
+לכל קמפיין
+
+X (Twitter)
+
+רק לקמפיינים Premium
+
+API בתשלום
+
+Anti-Spam Logic
+
+יתרון מובהק לפרויקטים איכותיים
+
+7. אבטחה והגנות (קריטי)
+Anti-Bot / Anti-Sybil
+
+Wallet age
+
+Balance checks
+
+One-reward-per-wallet
+
+Blacklist חכם
+
+Rate Limits
+
+פרסום
+
+יצירת קמפיינים
+
+פעולות משתמש
+
+Fraud Handling
+
+שלילת תגמולים
+
+חסימה לצמיתות
+
+אין ערעור אוטומטי
+
+8. Smart Contracts (High-Level)
+Contracts עיקריים
+
+Campaign Vault
+
+Reward Distributor
+
+Verification Registry
+
+Treasury + Burn Logic
+
+עקרונות
+
+Funds locked מראש
+
+אין Withdraw ידני
+
+הכל Event-based
+
+Upgradeable בזהירות
+
+9. Legal & Compliance (כיסוי מלא)
+DROPY היא:
+
+Platform
+
+Interface
+
+Technology Layer
+
+DROPY אינה:
+
+חברה רשומה
+
+גוף פיננסי
+
+ספק ייעוץ
+
+אחריות:
+
+המשתמש בלבד
+
+הכל On-chain
+
+Public & Transparent
+
+10. תקנון – עקרונות (כבר מוכן לאתר)
+
+חיבור ארנק = הסכמה
+
+שימוש על אחריות המשתמש
+
+איסור בוטים / זיופים
+
+אין אחריות לנפילות רשת / APIs
+
+אין שמירת מפתחות
+
+אין התחייבות תגמול עתידי
+
+11. למה DROPY חכמה וגדילה?
+
+✔ שם כללי → לא נתקע במים
+✔ דמות → Brand חזק
+✔ Token Utility אמיתי
+✔ מערכת שאפשר:
+
+להרחיב
+
+להקשיח
+
+למכור
+
+12. סטטוס נוכחי
+
+📦 המערכת:
+
+ברורה
+
+הגיונית
+
+אפשרית טכנית
+
+לא נופלת רגולטורית
+
+מוכנה לבנייה
