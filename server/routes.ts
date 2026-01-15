@@ -86,31 +86,6 @@ export async function registerRoutes(
     }
   });
 
-      // Sort by points descending, then by tasks descending, then by join date (id)
-      leaderboardData.sort((a, b) => {
-        if (b.points !== a.points) return b.points - a.points;
-        if (b.tasks !== a.tasks) return b.tasks - a.tasks;
-        return a.id - b.id; // Earlier users first if tied (registration order)
-      });
-
-      // Update ranks after sorting
-      const rankedData = leaderboardData.map((item, idx) => ({
-        ...item,
-        rank: idx + 1,
-        eligibleForReward: item.points > 0 // Explicit flag for reward eligibility
-      }));
-
-      // If we have few users, the frontend might look empty. 
-      // The user wants to see all users regardless of points.
-      // The current logic already does this as long as they have a walletAddress.
-
-      res.json(rankedData);
-    } catch (err) {
-      console.error("Leaderboard API error:", err);
-      res.status(500).json({ message: "Error fetching leaderboard data" });
-    }
-  });
-
   app.get("/api/leaderboard/history", async (req, res) => {
     try {
       const history = await storage.getPrizeHistory();
