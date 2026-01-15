@@ -28,7 +28,6 @@ export default function Leaderboard() {
 
   const { data: history } = useQuery<any[]>({
     queryKey: ["/api/leaderboard/history"],
-    enabled: view === "history",
   });
 
   const { data: allUsers } = useQuery<any[]>({
@@ -47,8 +46,9 @@ export default function Leaderboard() {
     );
   }
 
-  const paginatedLeaders = (timeframe === "all_time" ? allUsers : leaders)?.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
-  const totalPages = Math.ceil(((timeframe === "all_time" ? allUsers : leaders)?.length || 0) / itemsPerPage);
+  const activeLeaders = (timeframe === "all_time" ? allUsers : leaders) || [];
+  const paginatedLeaders = activeLeaders.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+  const totalPages = Math.ceil(activeLeaders.length / itemsPerPage);
 
   return (
     <div className="min-h-screen bg-[#050505] text-white">
@@ -107,14 +107,14 @@ export default function Leaderboard() {
                 )}
               </div>
               
-              {/* Floating Character - Adjusted positioning */}
-              <div className="absolute -bottom-20 md:-bottom-24 right-0 md:right-[-40px] transform z-50 pointer-events-none">
+              {/* Floating Character - Adjusted positioning to avoid clipping and overlap */}
+              <div className="absolute -bottom-10 md:-bottom-20 right-[-20px] md:right-[-60px] transform z-50 pointer-events-none">
                 <div className="relative">
                   <div className="absolute inset-0 bg-primary/20 blur-[120px] rounded-full" />
                   <img 
                     src="https://i.ibb.co/5Xd708DM/20260110-2035-Dropy-Wins-Trophy-remix-01kemjzex0f9xvh2emrc9tk4jy.png" 
                     alt="Dropy Trophy" 
-                    className="w-48 h-48 md:w-72 md:h-72 object-contain relative z-10 drop-shadow-[0_0_60px_rgba(34,197,94,0.6)] scale-x-[-1]"
+                    className="w-56 h-56 md:w-[450px] md:h-[450px] object-contain relative z-10 drop-shadow-[0_0_60px_rgba(34,197,94,0.6)] scale-x-[-1]"
                   />
                 </div>
               </div>
@@ -172,7 +172,7 @@ export default function Leaderboard() {
                 </CardContent>
               </Card>
 
-              <Card className="glass-card border-yellow-500/40 bg-yellow-500/10 rounded-[3.5rem] overflow-hidden order-1 md:order-2 scale-110 relative z-20 shadow-[0_0_60px_rgba(234,179,8,0.25)] hover-elevate transition-all duration-500 min-h-[400px]">
+              <Card className="glass-card border-yellow-500/40 bg-yellow-500/10 rounded-[3.5rem] overflow-visible order-1 md:order-2 scale-110 relative z-20 shadow-[0_0_60px_rgba(234,179,8,0.25)] hover-elevate transition-all duration-500 min-h-[400px]">
                 <div className="absolute top-0 inset-x-0 h-1.5 bg-gradient-to-r from-transparent via-yellow-500/60 to-transparent" />
                 <CardContent className="p-12 flex flex-col items-center text-center">
                   <div className="relative mb-8">
@@ -290,17 +290,6 @@ export default function Leaderboard() {
         </>
       ) : (
         <div className="space-y-6 relative">
-          {/* History Page Floating Character - Adjusted to be higher and smaller */}
-          <div className="absolute -top-32 right-0 md:right-4 z-50 pointer-events-none">
-            <div className="relative">
-              <div className="absolute inset-0 bg-primary/20 blur-[80px] rounded-full" />
-              <img 
-                src="https://i.ibb.co/5Xd708DM/20260110-2035-Dropy-Wins-Trophy-remix-01kemjzex0f9xvh2emrc9tk4jy.png" 
-                alt="Dropy Trophy" 
-                className="w-32 h-32 md:w-48 md:h-48 object-contain relative z-10 drop-shadow-[0_0_40px_rgba(34,197,94,0.4)] scale-x-[-1]"
-              />
-            </div>
-          </div>
           <Card className="glass-card border-white/10 bg-white/[0.02] rounded-[3rem] overflow-hidden shadow-2xl backdrop-blur-xl">
             <div className="bg-white/[0.05] px-12 py-8 border-b border-white/10 flex items-center text-sm font-black text-white uppercase tracking-[0.5em] italic">
               <span className="w-40">Period</span>
@@ -315,27 +304,27 @@ export default function Leaderboard() {
                       <p className="text-2xl font-black font-display text-white italic uppercase leading-none">{week.period}</p>
                       <p className="text-[10px] font-black text-white/40 tracking-widest mt-2">{week.dates}</p>
                     </div>
-                    <div className="flex-1 flex items-center gap-2 overflow-hidden py-2">
+                    <div className="flex-1 flex items-center justify-between gap-2 overflow-hidden py-2 px-2">
                       {week.winners.map((winner: any, i: number) => (
-                        <div key={i} className="flex flex-col gap-2 min-w-[240px] bg-white/5 border border-white/10 p-5 rounded-2xl relative group/winner">
-                          <div className="flex items-center gap-4">
+                        <div key={i} className="flex flex-col gap-2 flex-1 min-w-0 bg-white/5 border border-white/10 p-4 rounded-2xl relative group/winner">
+                          <div className="flex items-center gap-3">
                             <div className={cn(
-                              "w-10 h-10 rounded-full flex items-center justify-center font-black text-xs border shadow-lg shrink-0",
+                              "w-8 h-8 rounded-full flex items-center justify-center font-black text-[10px] border shadow-lg shrink-0",
                               i === 0 ? "bg-yellow-500/20 text-yellow-500 border-yellow-500/50" :
                               i === 1 ? "bg-gray-300/20 text-gray-300 border-gray-300/50" :
                               "bg-amber-600/20 text-amber-600 border-amber-600/50"
                             )}>
                               #{i + 1}
                             </div>
-                            <div className="flex flex-col min-w-0">
-                              <p className="text-sm font-black text-white uppercase italic truncate">{winner.name}</p>
-                              <p className="text-xs font-black text-primary uppercase leading-none mt-1">{winner.prizeAmount.toLocaleString()} $DROP</p>
+                            <div className="flex flex-col min-w-0 overflow-hidden">
+                              <p className="text-xs font-black text-white uppercase italic truncate">{winner.name}</p>
+                              <p className="text-[10px] font-black text-primary uppercase leading-none mt-0.5">{winner.prizeAmount.toLocaleString()} $DROP</p>
                             </div>
                           </div>
-                          <Button variant="ghost" size="sm" className="h-8 w-full bg-white/10 hover:bg-white/20 border-white/10 text-[10px] font-black uppercase tracking-tighter mt-1" asChild>
+                          <Button variant="ghost" size="sm" className="h-7 w-full bg-white/10 hover:bg-white/20 border-white/10 text-[9px] font-black uppercase tracking-tighter mt-1" asChild>
                             <a href={winner.proofUrl} target="_blank" rel="noreferrer">
-                              <ExternalLinkIcon className="w-3 h-3 mr-2" />
-                              Blockchain Proof
+                              <ExternalLinkIcon className="w-2.5 h-2.5 mr-1" />
+                              Proof
                             </a>
                           </Button>
                         </div>
