@@ -65,29 +65,29 @@ export default function Leaderboard() {
                 </h1>
                 <p className="text-white uppercase tracking-[0.5em] text-sm md:text-base font-black italic">Top Ecosystem Contributors • Real-time Sync</p>
                 
-                <div className="pt-12 pb-12">
+                <div className="pt-10 pb-10">
                   <div className="flex flex-col items-center gap-4">
-                    <div className="flex bg-white/5 p-1.5 rounded-2xl border border-white/10 shadow-2xl backdrop-blur-xl">
+                    <div className="flex bg-white/5 p-2 rounded-2xl border border-white/10 shadow-2xl backdrop-blur-xl">
                       <Button 
                         variant="ghost" 
                         onClick={() => setView("ranking")}
                         className={cn(
-                          "rounded-xl font-black uppercase tracking-widest text-xs px-8 h-11 transition-all",
+                          "rounded-xl font-black uppercase tracking-widest text-sm px-10 h-12 transition-all",
                           view === "ranking" ? "bg-primary text-white shadow-[0_0_20px_rgba(34,197,94,0.3)]" : "text-white/60 hover:text-white hover:bg-white/5"
                         )}
                       >
-                        <Trophy className="w-4 h-4 mr-2" />
+                        <Trophy className="w-5 h-5 mr-2" />
                         Live Ranking
                       </Button>
                       <Button 
                         variant="ghost" 
                         onClick={() => setView("history")}
                         className={cn(
-                          "rounded-xl font-black uppercase tracking-widest text-xs px-8 h-11 transition-all",
+                          "rounded-xl font-black uppercase tracking-widest text-sm px-10 h-12 transition-all",
                           view === "history" ? "bg-primary text-white shadow-[0_0_20px_rgba(34,197,94,0.3)]" : "text-white/60 hover:text-white hover:bg-white/5"
                         )}
                       >
-                        <History className="w-4 h-4 mr-2" />
+                        <History className="w-5 h-5 mr-2" />
                         Prize History
                       </Button>
                     </div>
@@ -99,7 +99,7 @@ export default function Leaderboard() {
                     <div className="bg-primary/10 border border-primary/20 px-6 py-2 rounded-2xl backdrop-blur-md">
                       <p className="text-[10px] text-primary font-black uppercase tracking-[0.2em] mb-0.5">Weekly Prize Pool</p>
                       <p className="text-2xl md:text-3xl font-black text-white flex items-baseline gap-2">
-                        {(PLATFORM_CONFIG.TOKENOMICS.CREATION_FEE * 0.4).toLocaleString()} <span className="text-sm text-primary font-black">$DROP</span>
+                        {(PLATFORM_CONFIG.TOKENOMICS.CREATION_FEE * 0.4).toLocaleString()} <span className="text-sm text-primary font-black">$DROPY</span>
                       </p>
                     </div>
                     <p className="text-[10px] md:text-xs text-white/80 uppercase tracking-[0.1em] font-black italic mt-4">
@@ -322,16 +322,16 @@ export default function Leaderboard() {
                             #{i + 1}
                           </div>
 
-                          <div className="flex flex-col min-w-0">
-                            <p className="text-lg font-black text-white uppercase italic truncate tracking-tight">{winner.name}</p>
-                            <div className="flex items-baseline gap-1 mt-1">
+                          <div className="flex flex-col items-center text-center min-w-0">
+                            <p className="text-xl font-black text-white uppercase italic truncate tracking-tight w-full">{winner.name}</p>
+                            <div className="flex items-baseline justify-center gap-1.5 mt-1.5">
                               <span className={cn(
                                 "text-2xl font-black uppercase leading-none",
                                 i === 0 ? "text-yellow-500" : i === 1 ? "text-white" : "text-amber-500"
                               )}>
                                 {winner.prizeAmount.toLocaleString()}
                               </span>
-                              <span className="text-[10px] font-black opacity-50 text-white">$DROP</span>
+                              <span className="text-xs font-black opacity-60 text-white">$DROPY</span>
                             </div>
                           </div>
 
@@ -356,7 +356,7 @@ export default function Leaderboard() {
                     </div>
                     <div className="w-32 text-right flex flex-col items-end shrink-0 ml-4">
                       <p className="text-5xl font-black font-display text-primary italic leading-none">{(week.prize || 0).toLocaleString()}</p>
-                      <p className="text-[10px] font-black text-primary/60 tracking-widest uppercase mt-2">$DROP POOL</p>
+                      <p className="text-[10px] font-black text-primary/60 tracking-widest uppercase mt-2">$DROPY POOL</p>
                     </div>
                   </div>
                 ))}
