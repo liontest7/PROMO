@@ -45,40 +45,57 @@ export class AutomationService {
       
       let nextWeekNumber = 1;
       let nextStartDate = new Date(now);
+      // Start of current week (Monday 00:00:00)
+      const day = nextStartDate.getDay();
+      const diff = nextStartDate.getDate() - day + (day === 0 ? -6 : 1);
+      nextStartDate.setDate(diff);
       nextStartDate.setHours(0, 0, 0, 0);
 
       if (lastWeek) {
-        // Check if the current week should be closed
+        // Check if the current week should be closed (End date is Sunday 23:59:59)
         if (now < lastWeek.endDate) {
           return; // Still in the current week
         }
         nextWeekNumber = lastWeek.weekNumber + 1;
         nextStartDate = new Date(lastWeek.endDate);
+        nextStartDate.setMilliseconds(nextStartDate.getMilliseconds() + 1);
       }
 
-      // Calculate next end date (next Sunday at midnight)
+      // Calculate end date (Next Sunday 23:59:59)
       const nextEndDate = new Date(nextStartDate);
-      nextEndDate.setDate(nextStartDate.getDate() + (7 - nextStartDate.getDay()) % 7 || 7);
+      nextEndDate.setDate(nextStartDate.getDate() + 6);
       nextEndDate.setHours(23, 59, 59, 999);
 
-      log(`Closing week #${nextWeekNumber-1} and starting week #${nextWeekNumber}`, "Automation");
+      log(`Processing week reset. Current: Week #${nextWeekNumber-1}. Target: Week #${nextWeekNumber}`, "Automation");
 
-      // Get leaderboard for the period
+      // Calculate prizes based on real system settings
+      const settings = await storage.getSystemSettings();
+      const allCampaigns = await storage.getAllCampaigns();
+      const rewardsPercent = (settings.rewardsPercent || 40) / 100;
+      const creationFee = settings.creationFee || 10000;
+      const weeklyPrizePool = allCampaigns.length * creationFee * rewardsPercent;
+
+      // Get leaderboard (Top 3)
       const users = await storage.getLeaderboard();
-      const winners = users.slice(0, 3).map((user, index) => ({
-        userId: user.id,
-        rank: index + 1,
-        prizeAmount: this.calculatePrize(index + 1),
-        walletAddress: user.walletAddress,
-        twitterHandle: user.twitterHandle || undefined,
-        status: "pending" as const
-      }));
+      const winners = users.slice(0, 3).map((user, index) => {
+        const prizeWeight = index === 0 ? 0.5 : index === 1 ? 0.3 : 0.2;
+        const prizeAmount = (weeklyPrizePool * prizeWeight).toFixed(2);
+
+        return {
+          userId: user.id,
+          rank: index + 1,
+          prizeAmount,
+          walletAddress: user.walletAddress,
+          twitterHandle: user.twitterHandle || undefined,
+          status: "pending" as const
+        };
+      });
 
       const entry = {
         weekNumber: nextWeekNumber,
         startDate: nextStartDate,
         endDate: nextEndDate,
-        totalPrizePool: winners.reduce((sum, w) => sum + parseFloat(w.prizeAmount), 0).toString(),
+        totalPrizePool: weeklyPrizePool.toString(),
         winners,
         status: "processing" as const
       };

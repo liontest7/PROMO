@@ -2,6 +2,7 @@ import type { Express } from "express";
 import { storage } from "../storage";
 import { PLATFORM_CONFIG } from "@shared/config";
 import os from "os";
+import { AutomationService } from "../services/automation";
 
 export function setupAdminRoutes(app: Express) {
   // Fraud Monitoring
@@ -48,6 +49,18 @@ export function setupAdminRoutes(app: Express) {
     } catch (err) {
       console.error("Admin stats error:", err);
       res.status(500).json({ message: "Error fetching admin stats" });
+    }
+  });
+
+  app.post("/api/admin/trigger-week-reset", async (req, res) => {
+    try {
+      const automation = AutomationService.getInstance();
+      // @ts-ignore - Reaching into private method for manual trigger
+      await automation.checkAndCloseWeek();
+      res.json({ success: true, message: "Week reset triggered" });
+    } catch (err) {
+      console.error("Manual reset error:", err);
+      res.status(500).json({ message: "Failed to trigger reset" });
     }
   });
 

@@ -94,11 +94,18 @@ export default function TermsOfService() {
               <section className="relative pl-12">
                 <div className="absolute left-0 top-1 text-primary/40 font-black text-2xl italic tracking-tighter">05</div>
                 <h2 className="text-white font-black text-xl mb-4 uppercase tracking-tight">5. Leaderboard & Rewards</h2>
-                <p className="text-white/90 leading-relaxed font-medium">
-                  The Leaderboard rewards are calculated weekly. A "week" starts on Monday at 00:00 UTC and ends on Sunday at 23:59 UTC.
-                  Prizes are distributed automatically to the top 3 users based on their Reputation Score earned during the week.
-                  Any attempt to use bots, multiple accounts, or fraudulent engagement will result in immediate disqualification and a permanent ban from the platform.
-                </p>
+                <div className="space-y-4 text-white/90 leading-relaxed font-medium">
+                  <p>
+                    The Leaderboard rewards are calculated weekly. A "week" starts on Monday at 00:00 UTC and ends on Sunday at 23:59 UTC.
+                    Prizes are distributed automatically to the top 3 users based on their Reputation Score earned during the week.
+                  </p>
+                  <p>
+                    In the event that multiple users have the same score, the user who reached the score first (based on registration date or task completion timestamp) will be ranked higher.
+                  </p>
+                  <p className="text-sm font-bold text-primary uppercase tracking-widest pt-2">
+                    Anti-Fraud Policy: Any attempt to use bots, multiple accounts, or fraudulent engagement will result in immediate disqualification, permanent blacklisting, and forfeiture of all pending rewards.
+                  </p>
+                </div>
               </section>
 
               <section className="relative pl-12">

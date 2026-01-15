@@ -1,5 +1,8 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ShieldAlert, Megaphone, CheckCircle, ArrowUpRight, TrendingUp } from "lucide-react";
+import { ShieldAlert, Megaphone, CheckCircle, ArrowUpRight, TrendingUp, RefreshCcw } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { useToast } from "@/hooks/use-toast";
+import { apiRequest, queryClient } from "@/lib/queryClient";
 
 interface AdminStatsProps {
   stats: {
@@ -13,10 +16,28 @@ interface AdminStatsProps {
 }
 
 export function AdminStats({ stats, campaignsCount }: AdminStatsProps) {
+  const { toast } = useToast();
   const totalRewardsPaid = stats?.totalRewardsPaid || 0;
   const activeCampaignsCount = stats?.activeCampaigns || 0;
   const totalUsersCount = stats?.totalUsers || 0;
   const totalExecutionsCount = stats?.totalExecutions || 0;
+
+  const handleManualPayout = async () => {
+    try {
+      await apiRequest("POST", "/api/admin/trigger-week-reset", {});
+      toast({
+        title: "Success",
+        description: "Weekly reset and payout triggered successfully.",
+      });
+      queryClient.invalidateQueries({ queryKey: ["/api/leaderboard/history"] });
+    } catch (error) {
+      toast({
+        title: "Error",
+        variant: "destructive",
+        description: "Failed to trigger manual payout.",
+      });
+    }
+  };
 
   return (
     <>
@@ -28,13 +49,24 @@ export function AdminStats({ stats, campaignsCount }: AdminStatsProps) {
           <p className="text-muted-foreground mt-3 font-medium text-sm">Real-time ecosystem management and protocol oversight.</p>
         </div>
         
-        <div className="flex items-center gap-4 p-4 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-sm">
-          <div className="flex flex-col items-end">
-            <span className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-1">Total Protocol Value</span>
-            <span className="text-2xl font-black font-display text-primary">{(totalRewardsPaid * 0.42).toFixed(2)} SOL</span>
-          </div>
-          <div className="w-12 h-12 rounded-xl bg-primary/20 flex items-center justify-center">
-            <TrendingUp className="w-6 h-6 text-primary" />
+        <div className="flex flex-col gap-4">
+          <Button 
+            variant="outline" 
+            size="sm" 
+            onClick={handleManualPayout}
+            className="gap-2 font-bold uppercase tracking-widest text-[10px] border-primary/20 hover:bg-primary/10 h-12 px-6 rounded-xl self-end"
+          >
+            <RefreshCcw className="w-3 h-3" />
+            Trigger Weekly Payout
+          </Button>
+          <div className="flex items-center gap-4 p-4 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-sm">
+            <div className="flex flex-col items-end">
+              <span className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-1">Total Protocol Value</span>
+              <span className="text-2xl font-black font-display text-primary">{(totalRewardsPaid * 0.42).toFixed(2)} SOL</span>
+            </div>
+            <div className="w-12 h-12 rounded-xl bg-primary/20 flex items-center justify-center">
+              <TrendingUp className="w-6 h-6 text-primary" />
+            </div>
           </div>
         </div>
       </div>

@@ -534,10 +534,9 @@ export class DatabaseStorage implements IStorage {
     const allUsers = await db.select()
       .from(users)
       .where(sql`${users.walletAddress} IS NOT NULL`)
-      .orderBy(desc(users.reputationScore), desc(users.createdAt))
+      .orderBy(desc(users.reputationScore), asc(users.createdAt))
       .limit(100);
     
-    console.log(`[Storage] getLeaderboard found ${allUsers.length} users`);
     return allUsers;
   }
 
