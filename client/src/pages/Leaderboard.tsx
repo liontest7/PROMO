@@ -1,5 +1,5 @@
 import { Navigation } from "@/components/Navigation";
-import { Trophy, Star, Medal, Crown, Calendar, Globe, Clock, Loader2 } from "lucide-react";
+import { Trophy, Star, Medal, Crown, Calendar, Globe, Clock, Loader2, History, ExternalLink as ExternalLinkIcon } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { PLATFORM_CONFIG } from "@shared/config";
@@ -10,6 +10,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 
 export default function Leaderboard() {
+  const [view, setView] = useState<"ranking" | "history">("ranking");
   const [timeframe, setTimeframe] = useState<"all_time" | "monthly" | "weekly">("weekly");
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
@@ -18,6 +19,11 @@ export default function Leaderboard() {
     queryKey: ["/api/leaderboard", timeframe],
     refetchInterval: 300000,
     staleTime: 60000,
+  });
+
+  const { data: history } = useQuery<any[]>({
+    queryKey: ["/api/leaderboard/history"],
+    enabled: view === "history",
   });
 
   if (isLoading) {
@@ -39,72 +45,108 @@ export default function Leaderboard() {
     <div className="min-h-screen bg-[#050505] text-white">
       <Navigation />
       <main className="max-w-6xl mx-auto px-4 py-8">
-        <div className="text-center mb-12 relative">
+        <div className="text-center mb-8 relative">
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-primary/10 blur-[100px] rounded-full" />
           
           <div className="relative z-10 max-w-4xl mx-auto">
-            <div className="flex flex-col items-center justify-center relative py-12">
-              <div className="text-center space-y-6">
+            <div className="flex flex-col items-center justify-center relative py-6">
+              <div className="text-center space-y-4">
                 <h1 className="text-7xl md:text-9xl font-display font-black uppercase italic tracking-tighter leading-none text-white drop-shadow-[0_0_30px_rgba(255,255,255,0.2)]">
                   Hall <span className="text-primary">of Fame</span>
                 </h1>
                 <p className="text-white uppercase tracking-[0.5em] text-sm md:text-base font-black italic">Top Ecosystem Contributors • Real-time Sync</p>
-                <div className="mt-2 flex flex-col items-center gap-1">
-                  <div className="bg-primary/10 border border-primary/20 px-6 py-2 rounded-2xl backdrop-blur-md">
-                    <p className="text-[10px] text-primary font-black uppercase tracking-[0.2em] mb-0.5">Weekly Prize Pool</p>
-                    <p className="text-2xl md:text-3xl font-black text-white flex items-baseline gap-2">
-                      {(PLATFORM_CONFIG.TOKENOMICS.CREATION_FEE * 0.4).toLocaleString()} <span className="text-sm text-primary font-black">$DROP</span>
+                
+                <div className="flex flex-col items-center gap-4 mt-6">
+                  <div className="flex bg-white/5 p-1 rounded-2xl border border-white/10">
+                    <Button 
+                      variant="ghost" 
+                      onClick={() => setView("ranking")}
+                      className={cn(
+                        "rounded-xl font-black uppercase tracking-widest text-xs px-6 h-10 transition-all",
+                        view === "ranking" ? "bg-primary text-white shadow-lg" : "text-white/60 hover:text-white"
+                      )}
+                    >
+                      <Trophy className="w-4 h-4 mr-2" />
+                      Live Ranking
+                    </Button>
+                    <Button 
+                      variant="ghost" 
+                      onClick={() => setView("history")}
+                      className={cn(
+                        "rounded-xl font-black uppercase tracking-widest text-xs px-6 h-10 transition-all",
+                        view === "history" ? "bg-primary text-white shadow-lg" : "text-white/60 hover:text-white"
+                      )}
+                    >
+                      <History className="w-4 h-4 mr-2" />
+                      Prize History
+                    </Button>
+                  </div>
+                </div>
+
+                {view === "ranking" && (
+                  <div className="mt-2 flex flex-col items-center gap-1">
+                    <div className="bg-primary/10 border border-primary/20 px-6 py-2 rounded-2xl backdrop-blur-md">
+                      <p className="text-[10px] text-primary font-black uppercase tracking-[0.2em] mb-0.5">Weekly Prize Pool</p>
+                      <p className="text-2xl md:text-3xl font-black text-white flex items-baseline gap-2">
+                        {(PLATFORM_CONFIG.TOKENOMICS.CREATION_FEE * 0.4).toLocaleString()} <span className="text-sm text-primary font-black">$DROP</span>
+                      </p>
+                    </div>
+                    <p className="text-[10px] md:text-xs text-white/80 uppercase tracking-[0.1em] font-black italic">
+                      40% of all campaign fees distributed weekly to Top 3
                     </p>
                   </div>
-                  <p className="text-[10px] md:text-xs text-white/80 uppercase tracking-[0.1em] font-black italic">
-                    40% of all campaign fees distributed weekly to Top 3
-                  </p>
-                </div>
+                )}
               </div>
               
               {/* Character Trophy positioned to the right and lower */}
-              <div className="absolute -bottom-12 right-0 md:right-[-60px] transform translate-y-1/2">
+              <div className="absolute -bottom-8 right-0 md:right-[-40px] transform translate-y-1/2">
                 <div className="relative">
                   <div className="absolute inset-0 bg-primary/20 blur-3xl rounded-full" />
                   <img 
                     src="https://i.ibb.co/5Xd708DM/20260110-2035-Dropy-Wins-Trophy-remix-01kemjzex0f9xvh2emrc9tk4jy.png" 
                     alt="Dropy Trophy" 
-                    className="w-40 h-40 md:w-52 md:h-52 object-contain relative z-10 drop-shadow-[0_0_40px_rgba(34,197,94,0.5)] scale-x-[-1]"
+                    className="w-32 h-32 md:w-44 md:h-44 object-contain relative z-10 drop-shadow-[0_0_40px_rgba(34,197,94,0.5)] scale-x-[-1]"
                   />
                 </div>
               </div>
             </div>
           </div>
 
-          <div className="flex justify-center gap-3 mt-4 relative z-10">
-            {[
-              { id: "weekly", label: "Weekly", icon: Clock },
-              { id: "monthly", label: "Monthly", icon: Calendar },
-              { id: "all_time", label: "All-time", icon: Globe },
-            ].map((t) => (
-              <Button
-                key={t.id}
-                variant={timeframe === t.id ? "default" : "outline"}
-                onClick={() => {
-                  setTimeframe(t.id as any);
-                  setCurrentPage(1);
-                }}
-                className={cn(
-                  "rounded-2xl font-black uppercase tracking-[0.2em] text-xs h-12 px-8 transition-all",
-                  timeframe === t.id 
-                    ? "bg-primary text-white shadow-[0_0_30px_rgba(34,197,94,0.5)] border-primary scale-105" 
-                    : "bg-white/5 border-white/10 text-white hover:text-white hover:bg-white/10"
-                )}
-              >
-                <t.icon className="w-4 h-4 mr-2" />
-                {t.label}
-              </Button>
-            ))}
-          </div>
+          {view === "ranking" && (
+            <div className="flex justify-center gap-3 mt-2 relative z-10">
+              {[
+                { id: "weekly", label: "Weekly", icon: Clock },
+                { id: "monthly", label: "Monthly", icon: Calendar },
+                { id: "all_time", label: "All-time", icon: Globe },
+              ].map((t) => (
+                <Button
+                  key={t.id}
+                  variant={timeframe === t.id ? "default" : "outline"}
+                  onClick={() => {
+                    setTimeframe(t.id as any);
+                    setCurrentPage(1);
+                  }}
+                  className={cn(
+                    "rounded-2xl font-black uppercase tracking-[0.2em] text-xs h-12 px-8 transition-all",
+                    timeframe === t.id 
+                      ? "bg-primary text-white shadow-[0_0_30px_rgba(34,197,94,0.5)] border-primary scale-105" 
+                      : "bg-white/5 border-white/10 text-white hover:text-white hover:bg-white/10"
+                  )}
+                >
+                  <t.icon className="w-4 h-4 mr-2" />
+                  {t.label}
+                </Button>
+              ))}
+            </div>
+          )}
         </div>
 
-        {/* Podium - Always Top 3 */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16 items-end px-4">
+        {view === "ranking" ? (
+          <>
+            {/* Podium - Always Top 3 */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16 items-end px-4">
+              {/* Podium content... */}
+
           {/* Rank 2 */}
           <Card className="glass-card border-white/10 bg-white/[0.03] rounded-[3rem] overflow-hidden order-2 md:order-1 hover-elevate transition-all duration-500 min-h-[340px]">
             <CardContent className="p-10 flex flex-col items-center text-center">

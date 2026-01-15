@@ -68,6 +68,30 @@ export async function registerRoutes(
     }
   });
 
+  app.get("/api/leaderboard/history", async (req, res) => {
+    try {
+      // Mock history for now since we don't have a history table yet
+      // In a real scenario, this would come from a 'prize_history' table
+      const mockHistory = [
+        {
+          period: "Week #1",
+          dates: "Jan 01 - Jan 07, 2026",
+          winners: [
+            { name: "@DropyAlpha", avatar: "D" },
+            { name: "@SolanaKing", avatar: "S" },
+            { name: "@CryptoWhale", avatar: "C" }
+          ],
+          totalPoints: 125400,
+          prize: 4000,
+          proofUrl: "https://solscan.io"
+        }
+      ];
+      res.json(mockHistory);
+    } catch (err) {
+      res.status(500).json({ message: "Error fetching prize history" });
+    }
+  });
+
   app.get("/api/stats/global", async (req, res) => {
     try {
       const allUsers = await storage.getAllUsers();
