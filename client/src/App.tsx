@@ -1,6 +1,6 @@
 import { HelmetProvider, Helmet } from 'react-helmet-async';
 import { Switch, Route, Redirect, useLocation } from "wouter";
-import { useEffect } from "react";
+import { lazy, Suspense, useEffect } from "react";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
@@ -9,6 +9,33 @@ import { WalletProvider, useWallet } from "@/hooks/use-wallet";
 import { motion, AnimatePresence } from "framer-motion";
 import { Footer } from "@/components/Footer";
 import { ErrorBoundary } from "react-error-boundary";
+
+// Lazy Loaded Pages
+const Landing = lazy(() => import("@/pages/Landing"));
+const Earn = lazy(() => import("@/pages/Earn"));
+const Dashboard = lazy(() => import("@/pages/Dashboard"));
+const AdvertiserDashboard = lazy(() => import("@/pages/AdvertiserDashboard"));
+const About = lazy(() => import("@/pages/About"));
+const Leaderboard = lazy(() => import("@/pages/Leaderboard"));
+const CampaignDetails = lazy(() => import("@/pages/CampaignDetails"));
+const Admin = lazy(() => import("@/pages/Admin"));
+const AdminPayouts = lazy(() => import("@/pages/AdminPayouts"));
+const NotFound = lazy(() => import("@/pages/not-found"));
+const Terms = lazy(() => import("@/pages/Terms"));
+const Privacy = lazy(() => import("@/pages/Privacy"));
+
+function LoadingSpinner() {
+  return (
+    <div className="min-h-screen bg-background flex flex-col items-center justify-center text-primary gap-4">
+      <motion.div 
+        animate={{ rotate: 360 }}
+        transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+        className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full"
+      />
+      <p className="font-display font-bold animate-pulse uppercase tracking-widest">Loading...</p>
+    </div>
+  );
+}
 
 function ErrorFallback({ error, resetErrorBoundary }: { error: Error; resetErrorBoundary: () => void }) {
   return (
@@ -24,17 +51,6 @@ function ErrorFallback({ error, resetErrorBoundary }: { error: Error; resetError
     </div>
   );
 }
-
-import Landing from "@/pages/Landing";
-import Earn from "@/pages/Earn";
-import Dashboard from "@/pages/Dashboard";
-import AdvertiserDashboard from "@/pages/AdvertiserDashboard";
-import About from "@/pages/About";
-import Leaderboard from "@/pages/Leaderboard";
-import CampaignDetails from "@/pages/CampaignDetails";
-import Admin from "@/pages/Admin";
-import AdminPayouts from "@/pages/AdminPayouts";
-import NotFound from "@/pages/not-found";
 
 function ProtectedRoute({ component: Component, allowedRole }: { component: any, allowedRole?: string }) {
   const { isConnected, role, isLoading } = useWallet();
@@ -68,8 +84,6 @@ const PageWrapper = ({ children }: { children: React.ReactNode }) => (
   </motion.div>
 );
 
-import Terms from "@/pages/Terms";
-import Privacy from "@/pages/Privacy";
 import { TermsModal } from "@/components/TermsModal";
 
 function Router() {
@@ -81,55 +95,57 @@ function Router() {
 
   return (
     <AnimatePresence mode="wait">
-      <Switch>
-        <Route path="/">
-          <PageWrapper><Landing /></PageWrapper>
-        </Route>
-        <Route path="/about">
-          <PageWrapper><About /></PageWrapper>
-        </Route>
-        <Route path="/leaderboard">
-          <PageWrapper><Leaderboard /></PageWrapper>
-        </Route>
-        <Route path="/earn">
-          <PageWrapper><Earn /></PageWrapper>
-        </Route>
-        <Route path="/terms">
-          <PageWrapper><Terms /></PageWrapper>
-        </Route>
-        <Route path="/privacy">
-          <PageWrapper><Privacy /></PageWrapper>
-        </Route>
-        
-        {/* User Routes */}
-        <Route path="/dashboard">
-          <ProtectedRoute component={Dashboard} />
-        </Route>
+      <Suspense fallback={<LoadingSpinner />}>
+        <Switch>
+          <Route path="/">
+            <PageWrapper><Landing /></PageWrapper>
+          </Route>
+          <Route path="/about">
+            <PageWrapper><About /></PageWrapper>
+          </Route>
+          <Route path="/leaderboard">
+            <PageWrapper><Leaderboard /></PageWrapper>
+          </Route>
+          <Route path="/earn">
+            <PageWrapper><Earn /></PageWrapper>
+          </Route>
+          <Route path="/terms">
+            <PageWrapper><Terms /></PageWrapper>
+          </Route>
+          <Route path="/privacy">
+            <PageWrapper><Privacy /></PageWrapper>
+          </Route>
+          
+          {/* User Routes */}
+          <Route path="/dashboard">
+            <ProtectedRoute component={Dashboard} />
+          </Route>
 
-        {/* Advertiser Routes */}
-        <Route path="/advertiser">
-          <ProtectedRoute component={AdvertiserDashboard} allowedRole="advertiser" />
-        </Route>
-        <Route path="/campaign/:id">
-          <PageWrapper><CampaignDetails /></PageWrapper>
-        </Route>
-        <Route path="/api/campaigns/:id">
-          <PageWrapper><CampaignDetails /></PageWrapper>
-        </Route>
-        <Route path="/c/:symbol">
-          <PageWrapper><CampaignDetails /></PageWrapper>
-        </Route>
-        <Route path="/admin">
-          <ProtectedRoute component={Admin} allowedRole="admin" />
-        </Route>
-        <Route path="/admin/prizes">
-          <ProtectedRoute component={AdminPayouts} allowedRole="admin" />
-        </Route>
+          {/* Advertiser Routes */}
+          <Route path="/advertiser">
+            <ProtectedRoute component={AdvertiserDashboard} allowedRole="advertiser" />
+          </Route>
+          <Route path="/campaign/:id">
+            <PageWrapper><CampaignDetails /></PageWrapper>
+          </Route>
+          <Route path="/api/campaigns/:id">
+            <PageWrapper><CampaignDetails /></PageWrapper>
+          </Route>
+          <Route path="/c/:symbol">
+            <PageWrapper><CampaignDetails /></PageWrapper>
+          </Route>
+          <Route path="/admin">
+            <ProtectedRoute component={Admin} allowedRole="admin" />
+          </Route>
+          <Route path="/admin/prizes">
+            <ProtectedRoute component={AdminPayouts} allowedRole="admin" />
+          </Route>
 
-        <Route>
-          <PageWrapper><NotFound /></PageWrapper>
-        </Route>
-      </Switch>
+          <Route>
+            <PageWrapper><NotFound /></PageWrapper>
+          </Route>
+        </Switch>
+      </Suspense>
     </AnimatePresence>
   );
 }

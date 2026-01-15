@@ -99,7 +99,14 @@ export default function AdminPayouts() {
                           {winner.status === 'paid' ? (
                             <CheckCircle2 className="w-4 h-4 text-primary" />
                           ) : winner.status === 'failed' ? (
-                            <AlertCircle className="w-4 h-4 text-destructive" />
+                            <div className="group relative">
+                              <AlertCircle className="w-4 h-4 text-destructive cursor-help" />
+                              {winner.errorMessage && (
+                                <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 bg-black text-white text-[10px] rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-50">
+                                  {winner.errorMessage}
+                                </div>
+                              )}
+                            </div>
                           ) : (
                             <Loader2 className="w-4 h-4 animate-spin" />
                           )}

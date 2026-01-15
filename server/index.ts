@@ -10,24 +10,26 @@ import { db } from "./db";
 const app = express();
 const httpServer = createServer(app);
 
-// Rate limiting
+// Advanced Rate limiting
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // Limit each IP to 100 requests per windowMs
+  max: 100,
   message: { message: "Too many requests from this IP, please try again later." },
   standardHeaders: true,
   legacyHeaders: false,
+  skip: (req) => req.path.startsWith('/api/public'), // Skip public routes if needed
 });
 
-const authLimiter = rateLimit({
+const strictLimiter = rateLimit({
   windowMs: 60 * 60 * 1000, // 1 hour
-  max: 10, // Limit each IP to 10 auth attempts per hour
-  message: { message: "Too many authentication attempts, please try again in an hour." },
+  max: 5, // Very strict for sensitive ops
+  message: { message: "Too many attempts, please try again in an hour." },
   standardHeaders: true,
   legacyHeaders: false,
 });
 
-app.use("/api/auth", authLimiter);
+app.use("/api/auth", strictLimiter);
+app.use("/api/rewards/claim", strictLimiter);
 app.use("/api", limiter);
 
 // Setup Session Store

@@ -55,6 +55,7 @@ export interface IStorage {
   getAllExecutions(): Promise<(Execution & { user: User, campaign: Campaign, action: Action })[]>;
   getLeaderboard(): Promise<User[]>;
   getLeaderboardData(timeframe: string): Promise<any[]>;
+  getPrizeHistoryEntry(id: number): Promise<any>;
   // Prize History
   getPrizeHistory(): Promise<(typeof prizeHistory.$inferSelect)[]>;
   createPrizeHistory(entry: any): Promise<typeof prizeHistory.$inferSelect>;

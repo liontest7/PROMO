@@ -151,11 +151,19 @@ export class AutomationService {
     const systemKeypairString = process.env.SYSTEM_WALLET_PRIVATE_KEY;
     if (!systemKeypairString) {
       log("System wallet not configured. Payments skipped.", "Automation");
-      await storage.updatePrizeHistoryStatus(historyId, "failed", winners.map(w => ({ ...w, status: "failed" })));
+      await storage.updatePrizeHistoryStatus(historyId, "failed", winners.map(w => ({ ...w, status: "failed", errorMessage: "System wallet not configured" })));
       return;
     }
 
-    const fromKeypair = Keypair.fromSecretKey(bs58.decode(systemKeypairString));
+    let fromKeypair: Keypair;
+    try {
+      fromKeypair = Keypair.fromSecretKey(bs58.decode(systemKeypairString.trim()));
+    } catch (err) {
+      log("Invalid system wallet key format. Payments skipped.", "Automation");
+      await storage.updatePrizeHistoryStatus(historyId, "failed", winners.map(w => ({ ...w, status: "failed", errorMessage: "Invalid system wallet key format" })));
+      return;
+    }
+
     const updatedWinners = [...winners];
 
     for (let i = 0; i < updatedWinners.length; i++) {
