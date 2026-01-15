@@ -28,6 +28,31 @@ export async function registerRoutes(
   setupCampaignRoutes(app);
   setupAdminRoutes(app);
 
+  app.get("/api/leaderboard", async (req, res) => {
+    try {
+      const timeframe = req.query.timeframe as string || "all_time";
+      const users = await storage.getLeaderboard();
+      const allExecutions = await storage.getAllExecutions();
+
+      const leaderboardData = users.map((user, index) => {
+        const userExecutions = allExecutions.filter(e => e.userId === user.id && e.status === 'verified');
+        return {
+          rank: index + 1,
+          name: user.twitterHandle ? `@${user.twitterHandle}` : `User ${user.walletAddress.slice(0, 4)}...${user.walletAddress.slice(-4)}`,
+          fullWallet: user.walletAddress,
+          avatar: user.twitterHandle ? user.twitterHandle[0].toUpperCase() : 'U',
+          points: user.reputationScore || 0,
+          tasks: userExecutions.length,
+        };
+      });
+
+      res.json(leaderboardData);
+    } catch (err) {
+      console.error("Leaderboard API error:", err);
+      res.status(500).json({ message: "Error fetching leaderboard data" });
+    }
+  });
+
   app.get("/api/stats/global", async (req, res) => {
     try {
       const allUsers = await storage.getAllUsers();

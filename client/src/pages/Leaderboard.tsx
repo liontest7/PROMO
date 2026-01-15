@@ -43,40 +43,40 @@ export default function Leaderboard() {
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-primary/10 blur-[100px] rounded-full" />
           
           <div className="relative z-10 max-w-4xl mx-auto">
-            <div className="flex flex-col items-center justify-center relative py-6">
-              <div className="text-center space-y-4">
-                <h1 className="text-7xl md:text-8xl font-display font-black uppercase italic tracking-tighter leading-none text-white drop-shadow-[0_0_30px_rgba(255,255,255,0.1)]">
+            <div className="flex flex-col items-center justify-center relative py-12">
+              <div className="text-center space-y-6">
+                <h1 className="text-7xl md:text-9xl font-display font-black uppercase italic tracking-tighter leading-none text-white drop-shadow-[0_0_30px_rgba(255,255,255,0.2)]">
                   Hall <span className="text-primary">of Fame</span>
                 </h1>
-                <p className="text-white uppercase tracking-[0.5em] text-xs md:text-sm font-black italic">Top Ecosystem Contributors • Real-time Sync</p>
-                <div className="mt-6 flex flex-col items-center gap-2">
-                  <div className="bg-primary/10 border border-primary/20 px-6 py-3 rounded-2xl backdrop-blur-md">
-                    <p className="text-[10px] text-primary font-black uppercase tracking-[0.2em] mb-1">Weekly Prize Pool</p>
-                    <p className="text-2xl font-black text-white flex items-baseline gap-2">
-                      {(PLATFORM_CONFIG.TOKENOMICS.CREATION_FEE * 0.4).toLocaleString()} <span className="text-xs text-primary">$DROP</span>
+                <p className="text-white uppercase tracking-[0.5em] text-sm md:text-base font-black italic">Top Ecosystem Contributors • Real-time Sync</p>
+                <div className="mt-8 flex flex-col items-center gap-4">
+                  <div className="bg-primary/10 border border-primary/20 px-10 py-6 rounded-3xl backdrop-blur-md">
+                    <p className="text-xs text-primary font-black uppercase tracking-[0.25em] mb-2">Weekly Prize Pool</p>
+                    <p className="text-4xl md:text-5xl font-black text-white flex items-baseline gap-3">
+                      {(PLATFORM_CONFIG.TOKENOMICS.CREATION_FEE * 0.4).toLocaleString()} <span className="text-xl text-primary font-black">$DROP</span>
                     </p>
                   </div>
-                  <p className="text-[9px] text-muted-foreground uppercase tracking-widest font-bold">
+                  <p className="text-sm md:text-base text-white/90 uppercase tracking-[0.15em] font-black italic">
                     40% of all campaign fees distributed weekly to Top 3
                   </p>
                 </div>
               </div>
               
               {/* Character Trophy positioned to the right and lower */}
-              <div className="absolute -bottom-12 right-0 md:right-[-100px] transform translate-y-1/2">
+              <div className="absolute -bottom-20 right-0 md:right-[-120px] transform translate-y-1/2">
                 <div className="relative">
-                  <div className="absolute inset-0 bg-primary/10 blur-3xl rounded-full" />
+                  <div className="absolute inset-0 bg-primary/20 blur-3xl rounded-full" />
                   <img 
                     src="https://i.ibb.co/5Xd708DM/20260110-2035-Dropy-Wins-Trophy-remix-01kemjzex0f9xvh2emrc9tk4jy.png" 
                     alt="Dropy Trophy" 
-                    className="w-48 h-48 md:w-64 md:h-64 object-contain relative z-10 drop-shadow-[0_0_40px_rgba(34,197,94,0.4)] scale-x-[-1]"
+                    className="w-56 h-56 md:w-72 md:h-72 object-contain relative z-10 drop-shadow-[0_0_50px_rgba(34,197,94,0.5)] scale-x-[-1]"
                   />
                 </div>
               </div>
             </div>
           </div>
 
-          <div className="flex justify-center gap-3 mt-12 relative z-10">
+          <div className="flex justify-center gap-4 mt-20 relative z-10">
             {[
               { id: "weekly", label: "Weekly", icon: Clock },
               { id: "monthly", label: "Monthly", icon: Calendar },
@@ -90,13 +90,13 @@ export default function Leaderboard() {
                   setCurrentPage(1);
                 }}
                 className={cn(
-                  "rounded-2xl font-black uppercase tracking-[0.15em] text-[11px] h-10 px-8 transition-all",
+                  "rounded-2xl font-black uppercase tracking-[0.2em] text-xs md:text-sm h-14 px-10 transition-all",
                   timeframe === t.id 
-                    ? "bg-primary text-white shadow-[0_0_20px_rgba(34,197,94,0.4)] border-primary" 
+                    ? "bg-primary text-white shadow-[0_0_30px_rgba(34,197,94,0.5)] border-primary scale-105" 
                     : "bg-white/5 border-white/10 text-white hover:text-white hover:bg-white/10"
                 )}
               >
-                <t.icon className="w-4 h-4 mr-2" />
+                <t.icon className="w-5 h-5 mr-3" />
                 {t.label}
               </Button>
             ))}
@@ -104,114 +104,114 @@ export default function Leaderboard() {
         </div>
 
         {/* Podium - Always Top 3 */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-20 items-end px-4">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-10 mb-28 items-end px-4">
           {/* Rank 2 */}
-          <Card className="glass-card border-white/5 bg-white/[0.02] rounded-[2.5rem] overflow-hidden order-2 md:order-1 hover-elevate transition-all duration-500 min-h-[300px]">
+          <Card className="glass-card border-white/10 bg-white/[0.03] rounded-[3rem] overflow-hidden order-2 md:order-1 hover-elevate transition-all duration-500 min-h-[340px]">
             <CardContent className="p-10 flex flex-col items-center text-center">
-              <div className="relative mb-6">
-                <div className="w-24 h-24 rounded-full bg-[#111] border-2 border-white/10 p-1">
+              <div className="relative mb-8">
+                <div className="w-28 h-28 rounded-full bg-[#111] border-2 border-white/20 p-1.5">
                   <Avatar className="h-full w-full">
-                    <AvatarFallback className="bg-emerald-500/20 text-emerald-500 font-black text-xl">{leaders?.[1]?.avatar || '?'}</AvatarFallback>
+                    <AvatarFallback className="bg-emerald-500/20 text-emerald-500 font-black text-2xl">{leaders?.[1]?.avatar || '?'}</AvatarFallback>
                   </Avatar>
                 </div>
-                <div className="absolute -top-2 -right-2 w-10 h-10 rounded-full bg-white text-black flex items-center justify-center font-black text-xs shadow-xl border-4 border-[#050505]">#2</div>
+                <div className="absolute -top-3 -right-3 w-12 h-12 rounded-full bg-white text-black flex items-center justify-center font-black text-sm shadow-2xl border-4 border-[#050505]">#2</div>
               </div>
-              <h3 className="text-2xl font-black font-display uppercase italic tracking-tight text-white/90 truncate w-full px-2">{leaders?.[1]?.name || '---'}</h3>
-              <div className="flex items-center gap-2 mt-3 bg-emerald-500/10 px-4 py-1.5 rounded-full border border-emerald-500/20">
-                <Star className="w-4 h-4 text-emerald-500" />
-                <span className="text-xl font-black font-display text-emerald-500">{leaders?.[1]?.points?.toLocaleString() || 0}</span>
+              <h3 className="text-3xl font-black font-display uppercase italic tracking-tight text-white truncate w-full px-2">{leaders?.[1]?.name || '---'}</h3>
+              <div className="flex items-center gap-3 mt-4 bg-emerald-500/15 px-6 py-2 rounded-full border border-emerald-500/30">
+                <Star className="w-5 h-5 text-emerald-500" />
+                <span className="text-2xl font-black font-display text-emerald-500">{leaders?.[1]?.points?.toLocaleString() || 0}</span>
               </div>
-              <p className="text-[10px] font-black text-white uppercase tracking-[0.2em] mt-4 italic leading-tight">{leaders?.[1]?.tasks || 0} TASKS COMPLETED</p>
+              <p className="text-xs font-black text-white/90 uppercase tracking-[0.25em] mt-6 italic leading-tight">{leaders?.[1]?.tasks || 0} TASKS COMPLETED</p>
             </CardContent>
           </Card>
 
           {/* Rank 1 */}
-          <Card className="glass-card border-yellow-500/30 bg-yellow-500/5 rounded-[3rem] overflow-hidden order-1 md:order-2 scale-110 relative z-20 shadow-[0_0_50px_rgba(234,179,8,0.15)] hover-elevate transition-all duration-500 min-h-[350px]">
-            <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-transparent via-yellow-500/50 to-transparent" />
+          <Card className="glass-card border-yellow-500/40 bg-yellow-500/10 rounded-[3.5rem] overflow-hidden order-1 md:order-2 scale-110 relative z-20 shadow-[0_0_60px_rgba(234,179,8,0.25)] hover-elevate transition-all duration-500 min-h-[400px]">
+            <div className="absolute top-0 inset-x-0 h-1.5 bg-gradient-to-r from-transparent via-yellow-500/60 to-transparent" />
             <CardContent className="p-12 flex flex-col items-center text-center">
-              <div className="relative mb-6">
-                <div className="w-32 h-32 rounded-full bg-[#111] border-4 border-yellow-500/40 p-1 shadow-[0_0_30px_rgba(234,179,8,0.3)]">
+              <div className="relative mb-8">
+                <div className="w-36 h-36 rounded-full bg-[#111] border-4 border-yellow-500/50 p-1.5 shadow-[0_0_40px_rgba(234,179,8,0.4)]">
                   <Avatar className="h-full w-full">
-                    <AvatarFallback className="bg-primary/20 text-primary font-black text-3xl">{leaders?.[0]?.avatar || '?'}</AvatarFallback>
+                    <AvatarFallback className="bg-primary/20 text-primary font-black text-4xl">{leaders?.[0]?.avatar || '?'}</AvatarFallback>
                   </Avatar>
                 </div>
-                <div className="absolute -top-3 -right-3 w-12 h-12 rounded-full bg-yellow-500 text-black flex items-center justify-center font-black text-sm shadow-xl border-4 border-[#050505]">#1</div>
-                <Crown className="absolute -top-10 left-1/2 -translate-x-1/2 w-8 h-8 text-yellow-500 drop-shadow-[0_0_10px_rgba(234,179,8,0.5)]" />
+                <div className="absolute -top-4 -right-4 w-14 h-14 rounded-full bg-yellow-500 text-black flex items-center justify-center font-black text-base shadow-2xl border-4 border-[#050505]">#1</div>
+                <Crown className="absolute -top-12 left-1/2 -translate-x-1/2 w-10 h-10 text-yellow-500 drop-shadow-[0_0_15px_rgba(234,179,8,0.6)]" />
               </div>
-              <h3 className="text-3xl font-black font-display uppercase italic tracking-tighter text-white truncate w-full px-2">
+              <h3 className="text-4xl font-black font-display uppercase italic tracking-tighter text-white truncate w-full px-2">
                 {leaders?.[0]?.name || '---'}
               </h3>
-              <div className="flex items-center gap-2 mt-4 bg-primary/20 px-6 py-2 rounded-full border border-primary/30 shadow-lg">
-                <Star className="w-5 h-5 text-primary" />
-                <span className="text-3xl font-black font-display text-primary">{leaders?.[0]?.points?.toLocaleString() || 0}</span>
+              <div className="flex items-center gap-3 mt-5 bg-primary/25 px-8 py-3 rounded-full border border-primary/40 shadow-xl">
+                <Star className="w-6 h-6 text-primary" />
+                <span className="text-4xl font-black font-display text-primary">{leaders?.[0]?.points?.toLocaleString() || 0}</span>
               </div>
-              <p className="text-[11px] font-black text-white uppercase tracking-[0.3em] mt-6 italic leading-tight">{leaders?.[0]?.tasks || 0} TASKS COMPLETED</p>
+              <p className="text-[13px] font-black text-white uppercase tracking-[0.35em] mt-8 italic leading-tight">{leaders?.[0]?.tasks || 0} TASKS COMPLETED</p>
             </CardContent>
           </Card>
 
           {/* Rank 3 */}
-          <Card className="glass-card border-white/5 bg-white/[0.02] rounded-[2.5rem] overflow-hidden order-3 hover-elevate transition-all duration-500 min-h-[300px]">
+          <Card className="glass-card border-white/10 bg-white/[0.03] rounded-[3rem] overflow-hidden order-3 hover-elevate transition-all duration-500 min-h-[340px]">
             <CardContent className="p-10 flex flex-col items-center text-center">
-              <div className="relative mb-6">
-                <div className="w-24 h-24 rounded-full bg-[#111] border-2 border-white/10 p-1">
+              <div className="relative mb-8">
+                <div className="w-28 h-28 rounded-full bg-[#111] border-2 border-white/20 p-1.5">
                   <Avatar className="h-full w-full">
-                    <AvatarFallback className="bg-amber-600/20 text-amber-600 font-black text-xl">{leaders?.[2]?.avatar || '?'}</AvatarFallback>
+                    <AvatarFallback className="bg-amber-600/20 text-amber-600 font-black text-2xl">{leaders?.[2]?.avatar || '?'}</AvatarFallback>
                   </Avatar>
                 </div>
-                <div className="absolute -top-2 -right-2 w-10 h-10 rounded-full bg-amber-600 text-white flex items-center justify-center font-black text-xs shadow-xl border-4 border-[#050505]">#3</div>
+                <div className="absolute -top-3 -right-3 w-12 h-12 rounded-full bg-amber-600 text-white flex items-center justify-center font-black text-sm shadow-2xl border-4 border-[#050505]">#3</div>
               </div>
-              <h3 className="text-2xl font-black font-display uppercase italic tracking-tight text-white/90 truncate w-full px-2">{leaders?.[2]?.name || '---'}</h3>
-              <div className="flex items-center gap-2 mt-3 bg-amber-600/10 px-4 py-1.5 rounded-full border border-amber-600/20">
-                <Star className="w-4 h-4 text-amber-600" />
-                <span className="text-xl font-black font-display text-amber-600">{leaders?.[2]?.points?.toLocaleString() || 0}</span>
+              <h3 className="text-3xl font-black font-display uppercase italic tracking-tight text-white truncate w-full px-2">{leaders?.[2]?.name || '---'}</h3>
+              <div className="flex items-center gap-3 mt-4 bg-amber-600/15 px-6 py-2 rounded-full border border-amber-600/30">
+                <Star className="w-5 h-5 text-amber-600" />
+                <span className="text-2xl font-black font-display text-amber-600">{leaders?.[2]?.points?.toLocaleString() || 0}</span>
               </div>
-              <p className="text-[10px] font-black text-white uppercase tracking-[0.2em] mt-4 italic leading-tight">{leaders?.[2]?.tasks || 0} TASKS COMPLETED</p>
+              <p className="text-xs font-black text-white/90 uppercase tracking-[0.25em] mt-6 italic leading-tight">{leaders?.[2]?.tasks || 0} TASKS COMPLETED</p>
             </CardContent>
           </Card>
         </div>
 
         {/* List Section */}
-        <div className="space-y-6">
-          <Card className="glass-card border-white/5 bg-white/[0.01] rounded-[2.5rem] overflow-hidden shadow-2xl backdrop-blur-md">
-            <div className="bg-white/[0.03] px-10 py-5 border-b border-white/5 flex items-center text-xs font-black text-white uppercase tracking-[0.4em] italic">
-              <span className="w-16">Rank</span>
+        <div className="space-y-8">
+          <Card className="glass-card border-white/10 bg-white/[0.02] rounded-[3rem] overflow-hidden shadow-[0_0_80px_rgba(0,0,0,0.5)] backdrop-blur-xl">
+            <div className="bg-white/[0.05] px-12 py-8 border-b border-white/10 flex items-center text-sm font-black text-white uppercase tracking-[0.5em] italic">
+              <span className="w-20">Rank</span>
               <span className="flex-1">Contributor</span>
-              <span className="w-32 text-right">Score</span>
-              <span className="w-32 text-right">Tasks</span>
+              <span className="w-40 text-right">Score</span>
+              <span className="w-40 text-right">Tasks</span>
             </div>
             <CardContent className="p-0">
-              <div className="divide-y divide-white/5">
+              <div className="divide-y divide-white/10">
                 {paginatedLeaders?.map((user) => (
-                  <div key={user.rank} className="flex items-center px-10 py-8 hover:bg-white/[0.03] transition-all group relative">
-                    <div className="absolute left-0 w-1 h-0 bg-primary group-hover:h-full transition-all duration-300" />
+                  <div key={user.rank} className="flex items-center px-12 py-10 hover:bg-white/[0.05] transition-all group relative">
+                    <div className="absolute left-0 w-1.5 h-0 bg-primary group-hover:h-full transition-all duration-300" />
                     <span className={cn(
-                      "w-16 text-2xl font-black font-display transition-colors",
+                      "w-20 text-3xl font-black font-display transition-colors",
                       user.rank === 1 ? "text-yellow-500" :
                       user.rank === 2 ? "text-gray-300" :
                       user.rank === 3 ? "text-amber-600" :
-                      "text-white"
+                      "text-white/80"
                     )}>#{user.rank}</span>
-                    <div className="flex-1 flex items-center gap-6">
-                      <Avatar className="h-12 w-12 border border-white/10 group-hover:border-primary/50 transition-all">
-                        <AvatarFallback className="text-xs font-black bg-white/5">{user.avatar}</AvatarFallback>
+                    <div className="flex-1 flex items-center gap-8">
+                      <Avatar className="h-16 w-16 border-2 border-white/10 group-hover:border-primary/60 transition-all shadow-xl">
+                        <AvatarFallback className="text-base font-black bg-white/10">{user.avatar}</AvatarFallback>
                       </Avatar>
-                      <div className="flex flex-col">
-                        <span className="font-black text-xl font-display uppercase italic tracking-tight">{user.name}</span>
-                        <span className="text-[10px] font-mono text-white/30 truncate max-w-[200px]">{user.fullWallet}</span>
+                      <div className="flex flex-col gap-1">
+                        <span className="font-black text-2xl font-display uppercase italic tracking-tight text-white group-hover:text-primary transition-colors">{user.name}</span>
+                        <span className="text-xs font-mono text-white/40 truncate max-w-[250px]">{user.fullWallet}</span>
                       </div>
                     </div>
-                    <div className="w-32 text-right">
-                      <p className="text-2xl font-black font-display text-primary drop-shadow-[0_0_10px_rgba(34,197,94,0.3)]">{user.points.toLocaleString()}</p>
+                    <div className="w-40 text-right">
+                      <p className="text-3xl font-black font-display text-primary drop-shadow-[0_0_15px_rgba(34,197,94,0.4)]">{user.points.toLocaleString()}</p>
                     </div>
-                    <div className="w-32 text-right">
-                      <p className="text-xl font-black font-display text-white/40">{user.tasks}</p>
+                    <div className="w-40 text-right">
+                      <p className="text-2xl font-black font-display text-white/50">{user.tasks}</p>
                     </div>
                   </div>
                 ))}
                 
                 {(!leaders || leaders.length === 0) && (
-                  <div className="p-20 text-center">
-                    <p className="text-white/20 uppercase font-black tracking-[0.3em] italic">Neural Ranking Data Missing</p>
+                  <div className="p-32 text-center">
+                    <p className="text-white/30 text-xl uppercase font-black tracking-[0.4em] italic animate-pulse">Neural Ranking Data Missing</p>
                   </div>
                 )}
               </div>
