@@ -256,86 +256,87 @@ export default function Leaderboard() {
             </Card>
 
             {/* Pagination */}
-                <div className="flex justify-center items-center gap-4 mt-8">
-                  <Button
-                    variant="outline"
-                    disabled={currentPage === 1}
-                    onClick={() => setCurrentPage(p => p - 1)}
-                    className="bg-white/5 border-white/10 text-white font-black uppercase tracking-widest text-[10px] rounded-xl h-10 px-6"
-                  >
-                    Previous
-                  </Button>
-                  <span className="text-xs font-black text-white/60 uppercase tracking-widest">
-                    Page {currentPage} of {totalPages}
-                  </span>
-                  <Button
-                    variant="outline"
-                    disabled={currentPage === totalPages}
-                    onClick={() => setCurrentPage(p => p + 1)}
-                    className="bg-white/5 border-white/10 text-white font-black uppercase tracking-widest text-[10px] rounded-xl h-10 px-6"
-                  >
-                    Next
-                  </Button>
-                </div>
-              )}
-            </div>
-          </>
-        ) : (
-          <div className="space-y-6">
-            <Card className="glass-card border-white/10 bg-white/[0.02] rounded-[3rem] overflow-hidden shadow-2xl backdrop-blur-xl">
-              <div className="bg-white/[0.05] px-12 py-8 border-b border-white/10 flex items-center text-sm font-black text-white uppercase tracking-[0.5em] italic">
-                <span className="w-40">Period</span>
-                <span className="flex-1">Weekly Champions</span>
-                <span className="w-48 text-right">Prize Distributed</span>
-                <span className="w-32 text-right">Proof</span>
+            {totalPages > 1 && (
+              <div className="flex justify-center items-center gap-4 mt-8">
+                <Button
+                  variant="outline"
+                  disabled={currentPage === 1}
+                  onClick={() => setCurrentPage(p => p - 1)}
+                  className="bg-white/5 border-white/10 text-white font-black uppercase tracking-widest text-[10px] rounded-xl h-10 px-6"
+                >
+                  Previous
+                </Button>
+                <span className="text-xs font-black text-white/60 uppercase tracking-widest">
+                  Page {currentPage} of {totalPages}
+                </span>
+                <Button
+                  variant="outline"
+                  disabled={currentPage === totalPages}
+                  onClick={() => setCurrentPage(p => p + 1)}
+                  className="bg-white/5 border-white/10 text-white font-black uppercase tracking-widest text-[10px] rounded-xl h-10 px-6"
+                >
+                  Next
+                </Button>
               </div>
-              <CardContent className="p-0">
-                <div className="divide-y divide-white/10">
-                  {history?.map((week, idx) => (
-                    <div key={idx} className="flex items-center px-12 py-8 hover:bg-white/[0.03] transition-all group">
-                      <div className="w-40">
-                        <p className="text-xl font-black font-display text-white/90 italic uppercase">{week.period}</p>
-                        <p className="text-[10px] font-black text-white/30 tracking-widest">{week.dates}</p>
-                      </div>
-                      <div className="flex-1 flex items-center gap-4">
-                        <div className="flex -space-x-4">
-                          {week.winners.map((winner: any, i: number) => (
-                            <Avatar key={i} className="h-10 w-10 border-2 border-[#050505] shadow-lg ring-2 ring-white/5">
-                              <AvatarFallback className="text-[10px] font-black bg-white/10">{winner.avatar}</AvatarFallback>
-                            </Avatar>
-                          ))}
-                        </div>
-                        <div className="flex flex-col">
-                          <p className="text-sm font-black text-white/80 italic uppercase">
-                            {week.winners[0].name} <span className="text-[10px] text-white/30 lowercase not-italic">& 2 others</span>
-                          </p>
-                          <p className="text-[10px] font-black text-primary tracking-widest">{week.totalPoints.toLocaleString()} TOTAL POINTS</p>
-                        </div>
-                      </div>
-                      <div className="w-48 text-right">
-                        <p className="text-2xl font-black font-display text-primary">{week.prize.toLocaleString()} $DROP</p>
-                      </div>
-                      <div className="w-32 text-right">
-                        <Button variant="ghost" size="icon" className="h-10 w-10 rounded-xl bg-white/5 border border-white/10 hover:bg-primary/20 hover:text-primary transition-all" asChild>
-                          <a href={week.proofUrl} target="_blank" rel="noreferrer">
-                            <ExternalLinkIcon className="w-4 h-4" />
-                          </a>
-                        </Button>
-                      </div>
-                    </div>
-                  ))}
-                  
-                  {(!history || history.length === 0) && (
-                    <div className="p-32 text-center">
-                      <p className="text-white/30 text-xl uppercase font-black tracking-[0.4em] italic animate-pulse">Neural History Data Pending First Reward Cycle</p>
-                    </div>
-                  )}
-                </div>
-              </CardContent>
-            </Card>
+            )}
           </div>
-        )}
-      </main>
-    </div>
-  );
+        </>
+      ) : (
+        <div className="space-y-6">
+          <Card className="glass-card border-white/10 bg-white/[0.02] rounded-[3rem] overflow-hidden shadow-2xl backdrop-blur-xl">
+            <div className="bg-white/[0.05] px-12 py-8 border-b border-white/10 flex items-center text-sm font-black text-white uppercase tracking-[0.5em] italic">
+              <span className="w-40">Period</span>
+              <span className="flex-1">Weekly Champions</span>
+              <span className="w-48 text-right">Prize Distributed</span>
+              <span className="w-32 text-right">Proof</span>
+            </div>
+            <CardContent className="p-0">
+              <div className="divide-y divide-white/10">
+                {history?.map((week, idx) => (
+                  <div key={idx} className="flex items-center px-12 py-8 hover:bg-white/[0.03] transition-all group">
+                    <div className="w-40">
+                      <p className="text-xl font-black font-display text-white/90 italic uppercase">{week.period}</p>
+                      <p className="text-[10px] font-black text-white/30 tracking-widest">{week.dates}</p>
+                    </div>
+                    <div className="flex-1 flex items-center gap-4">
+                      <div className="flex -space-x-4">
+                        {week.winners.map((winner: any, i: number) => (
+                          <Avatar key={i} className="h-10 w-10 border-2 border-[#050505] shadow-lg ring-2 ring-white/5">
+                            <AvatarFallback className="text-[10px] font-black bg-white/10">{winner.avatar}</AvatarFallback>
+                          </Avatar>
+                        ))}
+                      </div>
+                      <div className="flex flex-col">
+                        <p className="text-sm font-black text-white/80 italic uppercase">
+                          {week.winners[0].name} <span className="text-[10px] text-white/30 lowercase not-italic">& 2 others</span>
+                        </p>
+                        <p className="text-[10px] font-black text-primary tracking-widest">{week.totalPoints.toLocaleString()} TOTAL POINTS</p>
+                      </div>
+                    </div>
+                    <div className="w-48 text-right">
+                      <p className="text-2xl font-black font-display text-primary">{week.prize.toLocaleString()} $DROP</p>
+                    </div>
+                    <div className="w-32 text-right">
+                      <Button variant="ghost" size="icon" className="h-10 w-10 rounded-xl bg-white/5 border border-white/10 hover:bg-primary/20 hover:text-primary transition-all" asChild>
+                        <a href={week.proofUrl} target="_blank" rel="noreferrer">
+                          <ExternalLinkIcon className="w-4 h-4" />
+                        </a>
+                      </Button>
+                    </div>
+                  </div>
+                ))}
+                
+                {(!history || history.length === 0) && (
+                  <div className="p-32 text-center">
+                    <p className="text-white/30 text-xl uppercase font-black tracking-[0.4em] italic animate-pulse">Neural History Data Pending First Reward Cycle</p>
+                  </div>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      )}
+    </main>
+  </div>
+);
 }
