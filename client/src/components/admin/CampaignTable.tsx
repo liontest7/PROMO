@@ -42,11 +42,11 @@ export function CampaignTable({ campaigns, onAudit }: CampaignTableProps) {
       <Table>
         <TableHeader className="bg-white/[0.02]">
           <TableRow className="border-white/5 hover:bg-transparent">
-            <TableHead className="text-[10px] font-black uppercase text-muted-foreground tracking-widest">Project</TableHead>
-            <TableHead className="text-[10px] font-black uppercase text-muted-foreground tracking-widest">Token Info</TableHead>
-            <TableHead className="text-[10px] font-black uppercase text-muted-foreground tracking-widest">Budget Utilization</TableHead>
-            <TableHead className="text-[10px] font-black uppercase text-muted-foreground tracking-widest">Status</TableHead>
-            <TableHead className="text-right text-[10px] font-black uppercase text-muted-foreground tracking-widest pr-8">Actions</TableHead>
+            <TableHead className="text-[10px] font-black uppercase text-white tracking-widest">Project</TableHead>
+            <TableHead className="text-[10px] font-black uppercase text-white tracking-widest">Token Info</TableHead>
+            <TableHead className="text-[10px] font-black uppercase text-white tracking-widest">Budget Utilization</TableHead>
+            <TableHead className="text-[10px] font-black uppercase text-white tracking-widest">Status</TableHead>
+            <TableHead className="text-right text-[10px] font-black uppercase text-white tracking-widest pr-8">Actions</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>

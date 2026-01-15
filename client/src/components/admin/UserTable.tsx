@@ -33,12 +33,12 @@ export function UserTable({
     <Table>
       <TableHeader className="bg-white/[0.02]">
         <TableRow className="border-white/5 hover:bg-transparent">
-          <TableHead className="text-[10px] font-black uppercase text-muted-foreground tracking-widest">Wallet Identifier</TableHead>
-          <TableHead className="text-[10px] font-black uppercase text-muted-foreground tracking-widest">Permission Level</TableHead>
-          <TableHead className="text-[10px] font-black uppercase text-muted-foreground tracking-widest">Balance</TableHead>
-          <TableHead className="text-[10px] font-black uppercase text-muted-foreground tracking-widest">Trust Score</TableHead>
-          <TableHead className="text-[10px] font-black uppercase text-muted-foreground tracking-widest">Joined Protocol</TableHead>
-          <TableHead className="text-right text-[10px] font-black uppercase text-muted-foreground tracking-widest pr-8">Actions</TableHead>
+          <TableHead className="text-[10px] font-black uppercase text-white tracking-widest">Wallet Identifier</TableHead>
+          <TableHead className="text-[10px] font-black uppercase text-white tracking-widest">Permission Level</TableHead>
+          <TableHead className="text-[10px] font-black uppercase text-white tracking-widest">Balance</TableHead>
+          <TableHead className="text-[10px] font-black uppercase text-white tracking-widest">Trust Score</TableHead>
+          <TableHead className="text-[10px] font-black uppercase text-white tracking-widest">Joined Protocol</TableHead>
+          <TableHead className="text-right text-[10px] font-black uppercase text-white tracking-widest pr-8">Actions</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
@@ -51,7 +51,7 @@ export function UserTable({
         )}
         {users?.map((user: any) => (
           <TableRow key={user.id} className="border-white/5 hover:bg-white/[0.02] transition-colors">
-            <TableCell className="font-mono text-[11px] font-bold py-4">
+            <TableCell className="font-mono text-[11px] font-bold py-4 text-white">
               <span className="text-primary mr-1 opacity-50">#</span>
               {user.walletAddress}
             </TableCell>

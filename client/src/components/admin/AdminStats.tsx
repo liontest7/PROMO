@@ -43,10 +43,10 @@ export function AdminStats({ stats, campaignsCount }: AdminStatsProps) {
     <>
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
         <div>
-          <h1 className="text-5xl font-display font-black tracking-tighter uppercase italic leading-none">
+          <h1 className="text-5xl font-display font-black tracking-tighter uppercase italic leading-none text-white">
             Admin <span className="text-primary">Terminal</span>
           </h1>
-          <p className="text-muted-foreground mt-3 font-medium text-sm">Real-time ecosystem management and protocol oversight.</p>
+          <p className="text-white/70 mt-3 font-medium text-sm">Real-time ecosystem management and protocol oversight.</p>
         </div>
         
         <div className="flex flex-col gap-4">

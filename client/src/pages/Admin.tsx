@@ -207,10 +207,10 @@ export default function AdminDashboard() {
             onClick={() => setIsControlsExpanded(!isControlsExpanded)}
           >
             <div>
-              <CardTitle className="text-xl">System Controls</CardTitle>
-              <CardDescription>Global protocol parameters and feature toggles.</CardDescription>
+              <CardTitle className="text-xl text-white">System Controls</CardTitle>
+              <CardDescription className="text-sm font-medium text-white/70">Global protocol parameters and feature toggles.</CardDescription>
             </div>
-            <div className="text-muted-foreground">
+            <div className="text-white">
               {isControlsExpanded ? <ChevronUp className="w-5 h-5 transition-transform" /> : <ChevronDown className="w-5 h-5 transition-transform" />}
             </div>
           </CardHeader>
@@ -372,26 +372,26 @@ export default function AdminDashboard() {
         <Tabs defaultValue="users" className="w-full">
           <div className="flex flex-col md:flex-row items-center justify-between mb-6 gap-4">
             <TabsList className="bg-white/5 border border-white/10 p-1 rounded-xl w-full md:w-auto">
-              <TabsTrigger value="users" className="flex-1 md:flex-none rounded-lg px-6 font-bold uppercase text-[10px] tracking-widest data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+              <TabsTrigger value="users" className="flex-1 md:flex-none rounded-lg px-6 font-bold uppercase text-[10px] tracking-widest data-[state=active]:bg-white data-[state=active]:text-black text-white hover:text-white">
                 Protocol Users
               </TabsTrigger>
-              <TabsTrigger value="analytics" className="flex-1 md:flex-none rounded-lg px-6 font-bold uppercase text-[10px] tracking-widest data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+              <TabsTrigger value="analytics" className="flex-1 md:flex-none rounded-lg px-6 font-bold uppercase text-[10px] tracking-widest data-[state=active]:bg-white data-[state=active]:text-black text-white hover:text-white">
                 Analytics
               </TabsTrigger>
-              <TabsTrigger value="campaigns" className="flex-1 md:flex-none rounded-lg px-6 font-bold uppercase text-[10px] tracking-widest data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+              <TabsTrigger value="campaigns" className="flex-1 md:flex-none rounded-lg px-6 font-bold uppercase text-[10px] tracking-widest data-[state=active]:bg-white data-[state=active]:text-black text-white hover:text-white">
                 Active Campaigns
               </TabsTrigger>
-              <TabsTrigger value="executions" className="flex-1 md:flex-none rounded-lg px-6 font-bold uppercase text-[10px] tracking-widest data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+              <TabsTrigger value="executions" className="flex-1 md:flex-none rounded-lg px-6 font-bold uppercase text-[10px] tracking-widest data-[state=active]:bg-white data-[state=active]:text-black text-white hover:text-white">
                 Live Feed
               </TabsTrigger>
-              <TabsTrigger value="health" className="flex-1 md:flex-none rounded-lg px-6 font-bold uppercase text-[10px] tracking-widest data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+              <TabsTrigger value="health" className="flex-1 md:flex-none rounded-lg px-6 font-bold uppercase text-[10px] tracking-widest data-[state=active]:bg-white data-[state=active]:text-black text-white hover:text-white">
                 System Health
               </TabsTrigger>
-              <TabsTrigger value="fraud" className="flex-1 md:flex-none rounded-lg px-6 font-bold uppercase text-[10px] tracking-widest data-[state=active]:bg-primary data-[state=active]:text-primary-foreground text-red-400">
+              <TabsTrigger value="fraud" className="flex-1 md:flex-none rounded-lg px-6 font-bold uppercase text-[10px] tracking-widest data-[state=active]:bg-red-500 data-[state=active]:text-white text-red-400 hover:text-red-300">
                 Fraud Shield
               </TabsTrigger>
-              <TabsTrigger value="logs" className="flex-1 md:flex-none rounded-lg px-6 font-bold uppercase text-[10px] tracking-widest data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
-                Live Terminal
+              <TabsTrigger value="logs" className="flex-1 md:flex-none rounded-lg px-6 font-bold uppercase text-[10px] tracking-widest data-[state=active]:bg-primary data-[state=active]:text-primary-foreground text-white hover:text-white">
+                System Logs
               </TabsTrigger>
             </TabsList>
 

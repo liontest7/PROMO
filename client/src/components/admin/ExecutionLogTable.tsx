@@ -51,10 +51,10 @@ export function ExecutionLogTable({ executions }: ExecutionLogTableProps) {
       <Table>
         <TableHeader className="bg-white/[0.02]">
           <TableRow className="border-white/5 hover:bg-transparent">
-            <TableHead className="text-[10px] font-black uppercase text-muted-foreground tracking-widest py-4">Protocol User</TableHead>
-            <TableHead className="text-[10px] font-black uppercase text-muted-foreground tracking-widest py-4">Operation</TableHead>
-            <TableHead className="text-[10px] font-black uppercase text-muted-foreground tracking-widest py-4">Status</TableHead>
-            <TableHead className="text-[10px] font-black uppercase text-muted-foreground tracking-widest text-right pr-8 py-4">Timestamp</TableHead>
+            <TableHead className="text-[10px] font-black uppercase text-white tracking-widest py-4">Protocol User</TableHead>
+            <TableHead className="text-[10px] font-black uppercase text-white tracking-widest py-4">Operation</TableHead>
+            <TableHead className="text-[10px] font-black uppercase text-white tracking-widest py-4">Status</TableHead>
+            <TableHead className="text-[10px] font-black uppercase text-white tracking-widest text-right pr-8 py-4">Timestamp</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
