@@ -14,6 +14,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { Loader2, CheckCircle, ExternalLink, Info } from "lucide-react";
 import { Turnstile } from "@marsidev/react-turnstile";
@@ -153,7 +154,7 @@ export function VerifyActionDialog({ action, campaign, open, onOpenChange, onSuc
             body: JSON.stringify({
               actionId: action.id,
               userWallet: walletAddress,
-              handle: proof
+              handle: user?.twitterHandle || proof
             })
           });
           const verifyData = await verifyRes.json();
@@ -166,14 +167,18 @@ export function VerifyActionDialog({ action, campaign, open, onOpenChange, onSuc
       }
 
       const isWebsiteAction = action.type === "website";
-      let proofData: any = { proofText: proof, socialVerified: action.type === 'twitter' };
+      const isTwitterAction = action.type === 'twitter' || action.type.startsWith('twitter_');
+      let proofData: any = { 
+        proofText: isTwitterAction ? (user?.twitterHandle || proof) : proof, 
+        socialVerified: action.type === 'twitter' 
+      };
 
       if (!isWebsiteAction) {
-        if (!proof || proof.length < 3) {
+        if (!isTwitterAction && (!proof || proof.length < 3)) {
           throw new Error("Please provide valid proof.");
         }
         
-        const message = `Confirm task ${action.id}\nProof: ${proof}`;
+        const message = `Confirm task ${action.id}\nProof: ${isTwitterAction ? (user?.twitterHandle || proof) : proof}`;
         const encodedMessage = new TextEncoder().encode(message);
         const solanaInstance = (window as any).phantom?.solana || (window as any).solana;
         
@@ -329,9 +334,35 @@ export function VerifyActionDialog({ action, campaign, open, onOpenChange, onSuc
               {step === "verify" && (
                 <div className="space-y-6">
                   {action?.type !== "website" && (
-                    <div className="space-y-2">
-                      <Label className="text-[10px] uppercase font-black text-white/40 tracking-widest">PROOF (USERNAME)</Label>
-                      <Input placeholder="@username" value={proof} onChange={(e) => setProof(e.target.value)} className="bg-[#141414] border-white/10 h-14 rounded-xl" />
+                    <div className="space-y-4">
+                      {action?.type === 'twitter' || action?.type.startsWith('twitter_') ? (
+                        <div className="bg-white/5 p-6 rounded-2xl border border-white/10 space-y-3">
+                          <p className="text-[10px] uppercase font-black text-white/40 tracking-widest">Linked X Account</p>
+                          <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center border border-primary/20">
+                              <span className="text-primary font-black">X</span>
+                            </div>
+                            <div>
+                              <p className="text-sm font-black text-white">{user?.twitterHandle ? `@${user.twitterHandle}` : "Not Linked"}</p>
+                              <p className="text-[10px] font-bold text-white/40 uppercase tracking-widest">Identity Verified</p>
+                            </div>
+                          </div>
+                          {!user?.twitterHandle && (
+                            <Button 
+                              variant="outline" 
+                              className="w-full border-primary/30 text-primary hover:bg-primary/10 font-black uppercase text-[10px] tracking-widest h-10"
+                              onClick={() => window.location.href = '/dashboard'}
+                            >
+                              Connect X in Dashboard
+                            </Button>
+                          )}
+                        </div>
+                      ) : (
+                        <div className="space-y-2">
+                          <Label className="text-[10px] uppercase font-black text-white/40 tracking-widest">PROOF (USERNAME)</Label>
+                          <Input placeholder="@username" value={proof} onChange={(e) => setProof(e.target.value)} className="bg-[#141414] border-white/10 h-14 rounded-xl" />
+                        </div>
+                      )}
                     </div>
                   )}
                   
