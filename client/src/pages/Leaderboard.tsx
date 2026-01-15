@@ -21,8 +21,13 @@ export default function Leaderboard() {
   const itemsPerPage = 10;
 
   const { data: leaderboardRes, isLoading, error } = useQuery<any>({
-    queryKey: ["/api/leaderboard", { timeframe }],
-    staleTime: 30000, // Keep data fresh for 30s but don't force refresh
+    queryKey: ["/api/leaderboard", timeframe],
+    queryFn: async () => {
+      const response = await fetch(`/api/leaderboard?timeframe=${timeframe}`);
+      if (!response.ok) throw new Error("Failed to fetch leaderboard");
+      return response.json();
+    },
+    staleTime: 30000,
   });
 
   if (error) {
