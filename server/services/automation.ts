@@ -94,6 +94,7 @@ export class AutomationService {
         const weeklyPoints = allExecutions.filter(e => 
           e.userId === user.id && 
           e.status === 'verified' && 
+          e.createdAt && 
           new Date(e.createdAt) >= oneWeekAgo
         ).length * 10;
         return { ...user, weeklyPoints };
