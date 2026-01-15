@@ -93,7 +93,17 @@ export default function TermsOfService() {
 
               <section className="relative pl-12">
                 <div className="absolute left-0 top-1 text-primary/40 font-black text-2xl italic tracking-tighter">05</div>
-                <h2 className="text-white font-black text-xl mb-4 uppercase tracking-tight">5. Verification & Third-Party Dependencies</h2>
+                <h2 className="text-white font-black text-xl mb-4 uppercase tracking-tight">5. Leaderboard & Rewards</h2>
+                <p className="text-white/90 leading-relaxed font-medium">
+                  The Leaderboard rewards are calculated weekly. A "week" starts on Monday at 00:00 UTC and ends on Sunday at 23:59 UTC.
+                  Prizes are distributed automatically to the top 3 users based on their Reputation Score earned during the week.
+                  Any attempt to use bots, multiple accounts, or fraudulent engagement will result in immediate disqualification and a permanent ban from the platform.
+                </p>
+              </section>
+
+              <section className="relative pl-12">
+                <div className="absolute left-0 top-1 text-primary/40 font-black text-2xl italic tracking-tighter">06</div>
+                <h2 className="text-white font-black text-xl mb-4 uppercase tracking-tight">6. Verification & Third-Party Dependencies</h2>
                 <p className="text-white/90 leading-relaxed font-medium">
                   Action verification (e.g. Twitter, Telegram, on-chain events) relies on third-party APIs and external services. The Platform is not responsible for verification errors, data inaccuracies, service outages, delays, or Solana network congestion.
                 </p>

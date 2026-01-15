@@ -187,4 +187,37 @@ export function setupAdminRoutes(app: Express) {
       res.status(500).json({ message: "Error fetching analytics" });
     }
   });
+
+  // Prize History Payout Management
+  app.get("/api/admin/prizes", async (req, res) => {
+    try {
+      const history = await storage.getPrizeHistory();
+      res.json(history);
+    } catch (err) {
+      res.status(500).json({ message: "Error fetching prize history" });
+    }
+  });
+
+  app.post("/api/admin/prizes/:id/retry", async (req, res) => {
+    try {
+      const history = await storage.getPrizeHistory();
+      const entry = history.find(h => h.id === parseInt(req.params.id));
+      if (!entry) return res.status(404).json({ message: "Entry not found" });
+
+      const { AutomationService } = await import("../services/automation");
+      const automation = AutomationService.getInstance();
+      
+      // Update status to processing before retrying
+      await storage.updatePrizeHistoryStatus(entry.id, "processing", entry.winners);
+      
+      // Run async
+      automation.processWinners(entry.id, entry.winners).catch(err => {
+        console.error(`Manual retry failed: ${err}`);
+      });
+
+      res.json({ message: "Retry initiated" });
+    } catch (err) {
+      res.status(500).json({ message: "Error retrying payouts" });
+    }
+  });
 }

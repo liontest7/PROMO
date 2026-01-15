@@ -1,7 +1,7 @@
 import { db } from "./db";
 import { eq, desc, sql } from "drizzle-orm";
 import {
-  users, campaigns, actions, executions, holderState, systemSettings,
+  users, campaigns, actions, executions, holderState, systemSettings, prizeHistory,
   type User, type InsertUser,
   type Campaign, type InsertCampaign,
   type Action, type InsertAction,

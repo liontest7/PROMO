@@ -121,6 +121,9 @@ function Router() {
         <Route path="/admin">
           <ProtectedRoute component={Admin} allowedRole="admin" />
         </Route>
+        <Route path="/admin/prizes">
+          <ProtectedRoute component={AdminPayouts} allowedRole="admin" />
+        </Route>
 
         <Route>
           <PageWrapper><NotFound /></PageWrapper>
