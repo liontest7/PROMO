@@ -82,7 +82,7 @@ export default function CampaignDetails() {
     return () => clearInterval(interval);
   }, [campaign?.tokenAddress]);
 
-  const initialMC = campaign?.initialMarketCap ? Number(campaign.initialMarketCap) : null;
+  const initialMC = (campaign as any)?.initialMarketCap ? Number((campaign as any).initialMarketCap) : null;
   const mcChange = (initialMC && currentMC) ? ((currentMC - initialMC) / initialMC) * 100 : null;
 
   const formatMC = (val: number) => {
@@ -489,7 +489,7 @@ export default function CampaignDetails() {
               </div>
 
               <div className="grid gap-3">
-                {participantsLoading ? (
+                {participants === undefined ? (
                   <div className="col-span-full py-20 flex flex-col items-center justify-center gap-4 bg-white/[0.02] rounded-3xl border border-dashed border-white/10">
                     <Loader2 className="w-8 h-8 animate-spin text-primary" />
                     <p className="text-xs font-black text-white/20 uppercase tracking-[0.2em]">Verifying Blockchain Data...</p>
