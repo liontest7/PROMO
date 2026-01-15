@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { Navigation } from "@/components/Navigation";
-import { ShieldCheck, Rocket, Coins, Users, Zap, Globe, Target, BarChart3, Search } from "lucide-react";
+import { ShieldCheck, Rocket, Coins, Users, Zap, Globe, Target, BarChart3, Search, Flame } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { useQuery } from "@tanstack/react-query";
 import { PLATFORM_CONFIG } from "@shared/config";
@@ -23,7 +23,7 @@ export default function About() {
     { label: "Community Members", value: stats?.totalUsers || "0", icon: Users },
     { label: "Verified Projects", value: stats?.totalVerifiedProjects || "0", icon: ShieldCheck },
     { label: "Rewards Paid", value: stats?.totalPaid || "0", icon: Coins },
-    { label: "Tokens Burned", value: stats?.totalBurned || "0", icon: Zap, isBurn: true },
+    { label: "Tokens Burned", value: stats?.totalBurned || "0", icon: Flame, isBurn: true },
   ];
 
   const { data: settings } = useQuery<any>({
@@ -63,9 +63,9 @@ export default function About() {
           {statsItems.map((stat, i) => (
             <Card key={i} className={`glass-card border-white/5 bg-white/[0.02] group transition-all ${stat.isBurn ? 'border-orange-500/20 bg-orange-500/5 hover:border-orange-500/50' : 'hover:border-primary/30'}`}>
               <CardContent className="p-6 text-center">
-                <stat.icon className={`w-8 h-8 opacity-50 group-hover:opacity-100 transition-opacity mx-auto mb-4 ${stat.isBurn ? 'text-orange-500' : 'text-primary'}`} />
-                <h3 className={`text-2xl font-display font-black mb-1 ${stat.isBurn ? 'text-orange-500' : ''}`}>{stat.value}</h3>
-                <p className="text-[10px] text-muted-foreground uppercase tracking-widest font-black">{stat.label}</p>
+                <stat.icon className={`w-10 h-10 opacity-60 group-hover:opacity-100 transition-opacity mx-auto mb-4 ${stat.isBurn ? 'text-orange-500' : 'text-primary'}`} />
+                <h3 className={`text-3xl font-display font-black mb-1 ${stat.isBurn ? 'text-orange-500' : 'text-white'}`}>{stat.value}</h3>
+                <p className="text-[11px] text-white/70 uppercase tracking-widest font-black">{stat.label}</p>
               </CardContent>
             </Card>
           ))}
@@ -125,13 +125,13 @@ export default function About() {
         <section className="py-20 mb-24">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-display font-bold mb-4 italic uppercase tracking-tighter italic text-primary">Strategic Roadmap</h2>
-            <p className="text-muted-foreground">The evolution of Dropy and the ${PLATFORM_CONFIG.TOKEN_SYMBOL} ecosystem.</p>
+            <p className="text-xl text-white/80 font-medium">The evolution of Dropy and the ${PLATFORM_CONFIG.TOKEN_SYMBOL} ecosystem.</p>
           </div>
           
           <div className="relative space-y-12 before:absolute before:inset-0 before:ml-5 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-1 before:bg-gradient-to-b before:from-transparent before:via-primary/30 before:to-transparent">
             {[
               { 
-                phase: "Completed", 
+                phase: "Phase 1: Foundation", 
                 title: "Engine & Core Infrastructure", 
                 items: [
                   "Secure Platform Launch with Solana Escrow",
@@ -144,8 +144,8 @@ export default function About() {
                 status: "completed"
               },
               { 
-                phase: "In Progress", 
-                title: "Growth & Ecosystem Expansion", 
+                phase: "Phase 2: Growth", 
+                title: "Engagement & Ecosystem Expansion", 
                 items: [
                   "DEX Liquidity Boosting Rewards",
                   "Premium Airdrop Tiers for High-Reputation Users",
@@ -155,7 +155,7 @@ export default function About() {
                 status: "in_progress"
               },
               { 
-                phase: "Future Vision", 
+                phase: "Phase 3: Ecosystem", 
                 title: "Global Scaling & Utility", 
                 items: [
                   "Small-Tier Exchange (CEX) Listings",
@@ -170,23 +170,23 @@ export default function About() {
               <div key={i} className={`relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group`}>
                 <div className={`flex items-center justify-center w-14 h-14 rounded-full border-2 bg-background shadow-xl shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 z-10 transition-transform group-hover:scale-110 ${
                   step.status === 'completed' ? 'border-primary shadow-primary/20' : 
-                  step.status === 'in_progress' ? 'border-primary animate-pulse shadow-primary/40' : 
-                  'border-orange-500 shadow-orange-500/20'
+                  step.status === 'in_progress' ? 'border-orange-500 animate-pulse shadow-orange-500/40' : 
+                  'border-orange-500/30 shadow-orange-500/10'
                 }`}>
                   <div className={`w-5 h-5 rounded-full ${
-                    step.status === 'completed' || step.status === 'in_progress' ? 'bg-primary' : 'bg-orange-500'
+                    step.status === 'completed' ? 'bg-primary' : 'bg-orange-500'
                   }`} />
                 </div>
                 <div className={`w-[calc(100%-4rem)] md:w-[calc(50%-3rem)] p-10 rounded-[2.5rem] border backdrop-blur-md transition-all duration-500 hover:shadow-2xl ${
                   step.status === 'completed' ? 'bg-primary/5 border-primary/20 hover:border-primary/40' : 
-                  step.status === 'in_progress' ? 'bg-primary/10 border-primary/30 hover:border-primary/50' : 
-                  'bg-orange-500/5 border-orange-500/20 hover:border-orange-500/40'
+                  step.status === 'in_progress' ? 'bg-orange-500/10 border-orange-500/40 hover:border-orange-500/60' : 
+                  'bg-white/5 border-white/10 hover:border-white/20'
                 }`}>
                   <div className="flex items-center justify-between mb-6">
                     <span className={`font-black text-xs uppercase tracking-[0.2em] px-4 py-1.5 rounded-full border ${
                       step.status === 'completed' ? 'text-primary border-primary/20 bg-primary/10' : 
-                      step.status === 'in_progress' ? 'text-primary border-primary/30 bg-primary/20' : 
-                      'text-orange-500 border-orange-500/20 bg-orange-500/10'
+                      step.status === 'in_progress' ? 'text-orange-500 border-orange-500/30 bg-orange-500/20' : 
+                      'text-white/40 border-white/10 bg-white/5'
                     }`}>
                       {step.phase}
                     </span>
@@ -196,7 +196,7 @@ export default function About() {
                     {step.items.map((item, j) => (
                       <li key={j} className="text-base text-white/90 flex items-start gap-4 font-bold">
                         <div className={`w-2.5 h-2.5 rounded-full mt-2 shrink-0 ${
-                          step.status === 'completed' || step.status === 'in_progress' ? 'bg-primary' : 'bg-orange-500'
+                          step.status === 'completed' ? 'bg-primary' : 'bg-orange-500'
                         }`} />
                         <span className="leading-relaxed">{item}</span>
                       </li>
