@@ -14,12 +14,12 @@ export async function verifyTurnstile(token: string) {
 }
 
 export async function checkIpFraud(ip: string, walletAddress: string) {
-  if (!ip || ip === '::1' || ip === '127.0.0.1') return true; // Skip local for testing
+  if (!ip || ip === '::1' || ip === '127.0.0.1' || ip === 'unknown') return true; 
   
   const associatedWallets = await storage.getWalletsByIp(ip);
   
-  // Strict limit: Max 3 wallets per IP to prevent sybil attacks
-  if (associatedWallets.length >= 3 && !associatedWallets.includes(walletAddress)) {
+  // Strict limit: Max 5 wallets per IP to prevent sybil attacks (adjusted from 3 for better UX on shared IPs)
+  if (associatedWallets.length >= 5 && !associatedWallets.includes(walletAddress)) {
     console.warn(`[Anti-Fraud] Blocked wallet ${walletAddress} from IP ${ip} (Already has ${associatedWallets.length} wallets)`);
     return false;
   }

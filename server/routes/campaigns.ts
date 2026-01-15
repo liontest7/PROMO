@@ -8,8 +8,13 @@ import { eq, and, sql } from "drizzle-orm";
 
 export function setupCampaignRoutes(app: Express) {
   app.get(api.campaigns.list.path, async (req, res) => {
-    const campaigns = await storage.getCampaigns();
-    res.json(campaigns);
+    try {
+      const campaigns = await storage.getCampaigns();
+      // Only show campaigns that have paid the creation fee for the main list
+      res.json(campaigns.filter(c => c.creationFeePaid || c.status === 'active'));
+    } catch (err) {
+      res.status(500).json({ message: "Failed to fetch campaigns" });
+    }
   });
 
   app.get(api.campaigns.get.path, async (req, res) => {

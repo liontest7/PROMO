@@ -20,13 +20,12 @@ export async function authMiddleware(req: Request, res: Response, next: NextFunc
 
     // IP-Wallet association for anti-fraud
     const clientIp = (req.headers['x-forwarded-for'] as string || req.ip || req.socket.remoteAddress || "unknown").split(',')[0].trim();
-    if (walletAddress && typeof clientIp === 'string' && clientIp !== "unknown") {
+    if (walletAddress && typeof clientIp === 'string' && clientIp !== "unknown" && clientIp !== "::1" && clientIp !== "127.0.0.1") {
       await storage.logIpWalletAssociation(clientIp, walletAddress);
       
       const walletsOnIp = await storage.getWalletsByIp(clientIp);
-      if (walletsOnIp.length > 3) {
+      if (walletsOnIp.length > 5) { // Increased threshold slightly for busy networks, but still protective
         console.warn(`[Anti-Fraud] IP ${clientIp} has ${walletsOnIp.length} wallets associated:`, walletsOnIp);
-        // Optional: Auto-flag or suspend if it exceeds a threshold
       }
     }
 
