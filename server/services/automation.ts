@@ -43,6 +43,12 @@ export class AutomationService {
       // Find the last week entry
       const lastWeek = history[0]; // Ordered by endDate desc
       
+      const allCampaigns = await storage.getAllCampaigns();
+      if (allCampaigns.length === 0 && !lastWeek) {
+        log("No campaigns found and no history exists. Skipping week creation.", "Automation");
+        return;
+      }
+
       let nextWeekNumber = 1;
       let nextStartDate = new Date(now);
       // Start of current week (Monday 00:00:00)
