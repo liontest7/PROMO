@@ -83,24 +83,21 @@ export async function registerRoutes(
     try {
       const allUsers = await storage.getAllUsers();
       const allCampaigns = await storage.getAllCampaigns();
-      const allExecutions = await storage.getAllExecutions();
       
+      // Filter for verified/active status
       const activeCampaigns = allCampaigns.filter(c => c.status === 'active').length;
       const totalUsers = allUsers.filter(u => u.status === 'active' && u.acceptedTerms).length;
       const totalVerifiedProjects = Array.from(new Set(allCampaigns.map(c => c.creatorId))).length;
       
-      // Calculate total paid rewards
-      let totalPaid = 0;
-      allExecutions.forEach(e => {
-        if (e.status === 'paid' && e.action) {
-          totalPaid += parseFloat(e.action.rewardAmount) || 0;
-        }
-      });
+      // Calculate total rewards and burned amount using optimized logic
+      const executions = await storage.getAllExecutions();
+      const totalPaid = executions
+        .filter(e => e.status === 'paid')
+        .reduce((sum, e) => sum + (parseFloat(e.action.rewardAmount) || 0), 0);
 
-      // Calculate burned amount
-      // Formula: (Total Campaigns * Creation Fee) * Burn Percent
-      const creationFee = PLATFORM_CONFIG.TOKENOMICS.CREATION_FEE;
-      const burnPercent = PLATFORM_CONFIG.TOKENOMICS.BURN_PERCENT / 100;
+      const settings = await storage.getSystemSettings();
+      const creationFee = settings.creationFee || PLATFORM_CONFIG.TOKENOMICS.CREATION_FEE;
+      const burnPercent = (settings.burnPercent || 50) / 100;
       const calculatedBurned = allCampaigns.length * creationFee * burnPercent;
 
       res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');

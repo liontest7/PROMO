@@ -129,45 +129,41 @@ export class DatabaseStorage implements IStorage {
 
   async updateUserSocials(id: number, socials: { twitterHandle?: string; telegramHandle?: string; profileImageUrl?: string }): Promise<User> {
     const [user] = await db.select().from(users).where(eq(users.id, id));
+    if (!user) throw new Error("User not found");
+
     const [updatedUser] = await db.update(users)
       .set(socials)
       .where(eq(users.id, id))
       .returning();
     
-    // Award reputation for first-time social link
-    if (user && !user.twitterHandle && socials.twitterHandle) {
-      const hasAlreadyEarnedXBonus = (user as any).earnedXBonus || false;
-      if (!hasAlreadyEarnedXBonus) {
-        await db.update(users)
-          .set({ 
-            reputationScore: (user.reputationScore || 0) + 25,
-            // @ts-ignore
-            earnedXBonus: true 
-          })
-          .where(eq(users.id, id));
+    // Efficiency: Combine reputation updates
+    let reputationBonus = 0;
+    const updates: any = {};
+
+    if (!user.twitterHandle && socials.twitterHandle) {
+      if (!user.earnedXBonus) {
+        reputationBonus += 25;
+        updates.earnedXBonus = true;
       }
-    } else if (user && user.twitterHandle && socials.twitterHandle === null) {
-      // Deduct reputation when unlinking Twitter
-      await db.update(users)
-        .set({ reputationScore: Math.max(0, (user.reputationScore || 0) - 25) })
-        .where(eq(users.id, id));
+    } else if (user.twitterHandle && socials.twitterHandle === null) {
+      reputationBonus -= 25;
     }
 
-    if (user && !user.telegramHandle && socials.telegramHandle) {
-      const hasAlreadyEarnedTGBonus = (user as any).earnedTGBonus || false;
-      if (!hasAlreadyEarnedTGBonus) {
-        await db.update(users)
-          .set({ 
-            reputationScore: (user.reputationScore || 0) + 25,
-            // @ts-ignore
-            earnedTGBonus: true 
-          })
-          .where(eq(users.id, id));
+    if (!user.telegramHandle && socials.telegramHandle) {
+      if (!user.earnedTGBonus) {
+        reputationBonus += 25;
+        updates.earnedTGBonus = true;
       }
-    } else if (user && user.telegramHandle && socials.telegramHandle === null) {
-      // Deduct reputation when unlinking Telegram
+    } else if (user.telegramHandle && socials.telegramHandle === null) {
+      reputationBonus -= 25;
+    }
+
+    if (reputationBonus !== 0 || Object.keys(updates).length > 0) {
       await db.update(users)
-        .set({ reputationScore: Math.max(0, (user.reputationScore || 0) - 25) })
+        .set({ 
+          ...updates,
+          reputationScore: Math.max(0, (user.reputationScore || 0) + reputationBonus) 
+        })
         .where(eq(users.id, id));
     }
 
@@ -448,19 +444,6 @@ export class DatabaseStorage implements IStorage {
       return acc;
     }, {} as Record<number, number>);
 
-    // Update user balance once
-    const totalReward = rewards.reduce((sum, r) => sum + parseFloat(r.rewardAmount), 0);
-    const [user] = await db.select().from(users).where(eq(users.id, userId));
-    if (user) {
-      const newBalance = (parseFloat(user.balance) + totalReward).toFixed(6);
-      await db.update(users)
-        .set({ 
-          balance: newBalance,
-          reputationScore: (user.reputationScore || 0) + (rewards.length * 10)
-        })
-        .where(eq(users.id, userId));
-    }
-
     // Update individual campaign budgets
     for (const [campaignId, amount] of Object.entries(campaignRewards)) {
       const [campaign] = await db.select().from(campaigns).where(eq(campaigns.id, parseInt(campaignId)));
@@ -470,6 +453,18 @@ export class DatabaseStorage implements IStorage {
           .set({ remainingBudget: newRemaining })
           .where(eq(campaigns.id, parseInt(campaignId)));
       }
+    }
+
+    // Final balance and reputation update for user
+    const totalReward = rewards.reduce((sum, r) => sum + parseFloat(r.rewardAmount), 0);
+    const [user] = await db.select().from(users).where(eq(users.id, userId));
+    if (user) {
+      await db.update(users)
+        .set({ 
+          balance: (parseFloat(user.balance) + totalReward).toFixed(6),
+          reputationScore: (user.reputationScore || 0) + (rewards.length * 10)
+        })
+        .where(eq(users.id, userId));
     }
   }
 
