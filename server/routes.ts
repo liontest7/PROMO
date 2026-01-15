@@ -48,10 +48,10 @@ export async function registerRoutes(
 
       const leaderboardData = activeUsers.map((user) => {
         // Points calculation: 10 points per verified execution, 0 points per pending execution for score
-        const userExecutions = allExecutions.filter(e => {
-          if (e.userId !== user.id) return false;
-          if (e.status !== 'verified') return false;
-          
+        // Optimization: Pre-filter executions for this user
+        const userExecutions = allExecutions.filter(e => e.userId === user.id && e.status === 'verified');
+        
+        const filteredExecutions = userExecutions.filter(e => {
           if (timeframe === "all_time") return true;
           
           const executionDate = e.createdAt ? new Date(e.createdAt) : new Date();
@@ -75,14 +75,14 @@ export async function registerRoutes(
         
         // For all_time, we use the protocol reputation score
         // For weekly/monthly, we use points from tasks in that period
-        const points = timeframe === "all_time" ? protocolReputation : userExecutions.length * 10;
+        const points = timeframe === "all_time" ? protocolReputation : filteredExecutions.length * 10;
 
         return {
           name: user.twitterHandle ? `@${user.twitterHandle}` : (user.walletAddress ? `User ${user.walletAddress.slice(0, 4)}...${user.walletAddress.slice(-4)}` : "Anonymous User"),
           fullWallet: user.walletAddress || "N/A",
           avatar: user.twitterHandle ? user.twitterHandle[0].toUpperCase() : 'U',
           points: points,
-          tasks: userExecutions.length,
+          tasks: filteredExecutions.length,
           id: user.id,
           createdAt: user.createdAt,
           isEligibleForPrize: points > 0
