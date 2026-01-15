@@ -65,14 +65,14 @@ export default function Leaderboard() {
                 </h1>
                 <p className="text-white uppercase tracking-[0.5em] text-sm md:text-base font-black italic">Top Ecosystem Contributors • Real-time Sync</p>
                 
-                <div className="flex flex-col items-center gap-4 mt-6">
-                  <div className="flex bg-white/5 p-1 rounded-2xl border border-white/10">
+                <div className="flex flex-col items-center gap-4 mt-12 mb-16">
+                  <div className="flex bg-white/5 p-1.5 rounded-2xl border border-white/10 shadow-2xl backdrop-blur-xl">
                     <Button 
                       variant="ghost" 
                       onClick={() => setView("ranking")}
                       className={cn(
-                        "rounded-xl font-black uppercase tracking-widest text-xs px-6 h-10 transition-all",
-                        view === "ranking" ? "bg-primary text-white shadow-lg" : "text-white/60 hover:text-white"
+                        "rounded-xl font-black uppercase tracking-widest text-xs px-8 h-11 transition-all",
+                        view === "ranking" ? "bg-primary text-white shadow-[0_0_20px_rgba(34,197,94,0.3)]" : "text-white/60 hover:text-white hover:bg-white/5"
                       )}
                     >
                       <Trophy className="w-4 h-4 mr-2" />
@@ -82,8 +82,8 @@ export default function Leaderboard() {
                       variant="ghost" 
                       onClick={() => setView("history")}
                       className={cn(
-                        "rounded-xl font-black uppercase tracking-widest text-xs px-6 h-10 transition-all",
-                        view === "history" ? "bg-primary text-white shadow-lg" : "text-white/60 hover:text-white"
+                        "rounded-xl font-black uppercase tracking-widest text-xs px-8 h-11 transition-all",
+                        view === "history" ? "bg-primary text-white shadow-[0_0_20px_rgba(34,197,94,0.3)]" : "text-white/60 hover:text-white hover:bg-white/5"
                       )}
                     >
                       <History className="w-4 h-4 mr-2" />
@@ -107,14 +107,14 @@ export default function Leaderboard() {
                 )}
               </div>
               
-              {/* Floating Character - Positioned smaller and adjusted right/bottom */}
-              <div className="absolute top-[30%] md:top-[35%] right-[-10px] md:right-[-30px] transform z-50 pointer-events-none">
+              {/* Floating Character - Improved scale and positioning to avoid text overlap */}
+              <div className="absolute top-[35%] md:top-[40%] right-[-10px] md:right-[-40px] transform z-50 pointer-events-none">
                 <div className="relative">
                   <div className="absolute inset-0 bg-primary/20 blur-[100px] rounded-full" />
                   <img 
                     src="https://i.ibb.co/5Xd708DM/20260110-2035-Dropy-Wins-Trophy-remix-01kemjzex0f9xvh2emrc9tk4jy.png" 
                     alt="Dropy Trophy" 
-                    className="w-48 h-48 md:w-[320px] md:h-[320px] object-contain relative z-10 drop-shadow-[0_0_40px_rgba(34,197,94,0.5)] scale-x-[-1]"
+                    className="w-40 h-40 md:w-[280px] md:h-[280px] object-contain relative z-10 drop-shadow-[0_0_40px_rgba(34,197,94,0.5)] scale-x-[-1]"
                   />
                 </div>
               </div>
@@ -302,27 +302,47 @@ export default function Leaderboard() {
                       <p className="text-2xl font-black font-display text-white italic uppercase leading-none">{week.period}</p>
                       <p className="text-[10px] font-black text-white/40 tracking-widest mt-2">{week.dates}</p>
                     </div>
-                    <div className="flex-1 flex items-center justify-between gap-2 overflow-hidden py-2 px-2">
+                    <div className="flex-1 flex items-center justify-between gap-4 overflow-hidden py-4 px-6">
                       {week.winners.map((winner: any, i: number) => (
-                        <div key={i} className="flex flex-col gap-2 flex-1 min-w-0 bg-white/5 border border-white/10 p-4 rounded-2xl relative group/winner">
-                          <div className="flex items-center gap-3">
+                        <div key={i} className={cn(
+                          "flex flex-col gap-3 flex-1 min-w-0 p-5 rounded-3xl relative group/winner transition-all duration-300",
+                          i === 0 ? "bg-yellow-500/10 border border-yellow-500/30 shadow-[0_0_20px_rgba(234,179,8,0.1)]" :
+                          i === 1 ? "bg-white/10 border border-white/20" :
+                          "bg-amber-600/10 border border-amber-600/30 shadow-[0_0_20px_rgba(217,119,6,0.1)]"
+                        )}>
+                          <div className="flex items-center gap-4">
                             <div className={cn(
-                              "w-8 h-8 rounded-full flex items-center justify-center font-black text-[10px] border shadow-lg shrink-0",
-                              i === 0 ? "bg-yellow-500/20 text-yellow-500 border-yellow-500/50" :
-                              i === 1 ? "bg-gray-300/20 text-gray-300 border-gray-300/50" :
-                              "bg-amber-600/20 text-amber-600 border-amber-600/50"
+                              "w-12 h-12 rounded-full flex items-center justify-center font-black text-sm border shadow-xl shrink-0 transition-transform group-hover/winner:scale-110",
+                              i === 0 ? "bg-yellow-500 text-black border-yellow-400" :
+                              i === 1 ? "bg-gray-300 text-black border-white" :
+                              "bg-amber-600 text-white border-amber-500"
                             )}>
                               #{i + 1}
                             </div>
                             <div className="flex flex-col min-w-0 overflow-hidden">
-                              <p className="text-xs font-black text-white uppercase italic truncate">{winner.name}</p>
-                              <p className="text-[10px] font-black text-primary uppercase leading-none mt-0.5">{winner.prizeAmount.toLocaleString()} $DROP</p>
+                              <p className="text-sm font-black text-white uppercase italic truncate tracking-tight">{winner.name}</p>
+                              <p className={cn(
+                                "text-xs font-black uppercase leading-none mt-1",
+                                i === 0 ? "text-yellow-500" : i === 1 ? "text-white" : "text-amber-500"
+                              )}>
+                                {winner.prizeAmount.toLocaleString()} <span className="text-[10px] opacity-70">$DROP</span>
+                              </p>
                             </div>
                           </div>
-                          <Button variant="ghost" size="sm" className="h-7 w-full bg-white/10 hover:bg-white/20 border-white/10 text-[9px] font-black uppercase tracking-tighter mt-1" asChild>
+                          <Button 
+                            variant="ghost" 
+                            size="sm" 
+                            className={cn(
+                              "h-9 w-full font-black uppercase tracking-tighter text-[10px] rounded-xl transition-all",
+                              i === 0 ? "bg-yellow-500/20 hover:bg-yellow-500/30 text-yellow-500" :
+                              i === 1 ? "bg-white/10 hover:bg-white/20 text-white" :
+                              "bg-amber-600/20 hover:bg-amber-600/30 text-amber-500"
+                            )} 
+                            asChild
+                          >
                             <a href={winner.proofUrl} target="_blank" rel="noreferrer">
-                              <ExternalLinkIcon className="w-2.5 h-2.5 mr-1" />
-                              Proof
+                              <ExternalLinkIcon className="w-3.5 h-3.5 mr-2" />
+                              Blockchain Proof
                             </a>
                           </Button>
                         </div>
