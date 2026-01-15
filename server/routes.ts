@@ -31,7 +31,7 @@ export async function registerRoutes(
   app.get("/api/leaderboard", async (req, res) => {
     try {
       const timeframe = req.query.timeframe as string || "all_time";
-      const usersList = await storage.getLeaderboard();
+      const usersList = await storage.getAllUsers();
       const allExecutions = await storage.getAllExecutions();
 
       // Get creation fee and rewards percent from settings for dynamic prize pool calculation
