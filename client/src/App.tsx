@@ -33,6 +33,7 @@ import About from "@/pages/About";
 import Leaderboard from "@/pages/Leaderboard";
 import CampaignDetails from "@/pages/CampaignDetails";
 import Admin from "@/pages/Admin";
+import AdminPayouts from "@/pages/AdminPayouts";
 import NotFound from "@/pages/not-found";
 
 function ProtectedRoute({ component: Component, allowedRole }: { component: any, allowedRole?: string }) {

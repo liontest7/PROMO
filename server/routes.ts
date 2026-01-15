@@ -8,6 +8,7 @@ import { authMiddleware } from "./middleware/auth";
 import { storage } from "./storage";
 import { api } from "@shared/routes";
 import { PLATFORM_CONFIG } from "@shared/config";
+import { prizeHistory } from "@shared/schema";
 import { PublicKey } from "@solana/web3.js";
 import { getSolanaConnection } from "./services/solana";
 import { checkIpFraud, verifyTurnstile } from "./services/security";
