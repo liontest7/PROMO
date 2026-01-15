@@ -31,11 +31,9 @@ export async function registerRoutes(
   app.get("/api/leaderboard", async (req, res) => {
     try {
       const timeframe = (req.query.timeframe as string) || "all_time";
-      const usersList = await storage.getAllUsers();
-      const allExecutions = await storage.getAllExecutions();
-
-      // Filter out users who haven't accepted terms and ensure they have a wallet
-      const activeUsers = usersList.filter(u => u.acceptedTerms && u.walletAddress);
+      
+      // Optimization: Using dedicated storage method for efficiency
+      const leaderboardData = await storage.getLeaderboardData(timeframe);
 
       // Get creation fee and rewards percent from settings for dynamic prize pool calculation
       const settings = await storage.getSystemSettings();
@@ -46,64 +44,8 @@ export async function registerRoutes(
       // Real weekly prize pool: (Total Campaigns * Creation Fee) * Rewards Percent
       const weeklyPrizePool = allCampaigns.length * creationFee * rewardsPercent;
 
-      const leaderboardData = activeUsers.map((user) => {
-        // Points calculation: 10 points per verified execution, 0 points per pending execution for score
-        // Optimization: Pre-filter executions for this user
-        const userExecutions = allExecutions.filter(e => e.userId === user.id && e.status === 'verified');
-        
-        const filteredExecutions = userExecutions.filter(e => {
-          if (timeframe === "all_time") return true;
-          
-          const executionDate = e.createdAt ? new Date(e.createdAt) : new Date();
-          const now = new Date();
-          
-          if (timeframe === "weekly") {
-            const oneWeekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
-            return executionDate >= oneWeekAgo;
-          }
-          
-          if (timeframe === "monthly") {
-            const oneMonthAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
-            return executionDate >= oneMonthAgo;
-          }
-          
-          return true;
-        });
-
-        // Current reputation score from user record
-        const protocolReputation = user.reputationScore || 0;
-        
-        // For all_time, we use the protocol reputation score
-        // For weekly/monthly, we use points from tasks in that period
-        const points = timeframe === "all_time" ? protocolReputation : filteredExecutions.length * 10;
-
-        return {
-          name: user.twitterHandle ? `@${user.twitterHandle}` : (user.walletAddress ? `User ${user.walletAddress.slice(0, 4)}...${user.walletAddress.slice(-4)}` : "Anonymous User"),
-          fullWallet: user.walletAddress || "N/A",
-          avatar: user.twitterHandle ? user.twitterHandle[0].toUpperCase() : 'U',
-          points: points,
-          tasks: filteredExecutions.length,
-          id: user.id,
-          createdAt: user.createdAt,
-          isEligibleForPrize: points > 0
-        };
-      });
-
-      leaderboardData.sort((a, b) => {
-        if (b.points !== a.points) return b.points - a.points;
-        const dateA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
-        const dateB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
-        return dateA - dateB;
-      });
-
-      // Update ranks
-      const rankedData = leaderboardData.map((item, idx) => ({
-        ...item,
-        rank: idx + 1
-      }));
-
       res.json({
-        ranking: rankedData,
+        ranking: leaderboardData,
         weeklyPrizePool
       });
     } catch (err) {

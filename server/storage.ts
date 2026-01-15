@@ -54,6 +54,7 @@ export interface IStorage {
   getAllCampaigns(): Promise<(Campaign & { actions: Action[] })[]>;
   getAllExecutions(): Promise<(Execution & { user: User, campaign: Campaign, action: Action })[]>;
   getLeaderboard(): Promise<User[]>;
+  getLeaderboardData(timeframe: string): Promise<any[]>;
   // Prize History
   getPrizeHistory(): Promise<(typeof prizeHistory.$inferSelect)[]>;
   createPrizeHistory(entry: any): Promise<typeof prizeHistory.$inferSelect>;
@@ -534,6 +535,62 @@ export class DatabaseStorage implements IStorage {
       user: r.user,
       campaign: r.campaign,
       action: r.action
+    }));
+  }
+
+  async getLeaderboardData(timeframe: string): Promise<any[]> {
+    const usersList = await this.getAllUsers();
+    const allExecutions = await db.select().from(executions).where(eq(executions.status, 'verified'));
+
+    const activeUsers = usersList.filter(u => u.acceptedTerms && u.walletAddress);
+
+    const leaderboardData = activeUsers.map((user) => {
+      const userExecutions = allExecutions.filter(e => e.userId === user.id);
+      
+      const filteredExecutions = userExecutions.filter(e => {
+        if (timeframe === "all_time") return true;
+        
+        const executionDate = e.createdAt ? new Date(e.createdAt) : new Date();
+        const now = new Date();
+        
+        if (timeframe === "weekly") {
+          const oneWeekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+          return executionDate >= oneWeekAgo;
+        }
+        
+        if (timeframe === "monthly") {
+          const oneMonthAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+          return executionDate >= oneMonthAgo;
+        }
+        
+        return true;
+      });
+
+      const protocolReputation = user.reputationScore || 0;
+      const points = timeframe === "all_time" ? protocolReputation : filteredExecutions.length * 10;
+
+      return {
+        name: user.twitterHandle ? `@${user.twitterHandle}` : (user.walletAddress ? `User ${user.walletAddress.slice(0, 4)}...${user.walletAddress.slice(-4)}` : "Anonymous User"),
+        fullWallet: user.walletAddress || "N/A",
+        avatar: user.twitterHandle ? user.twitterHandle[0].toUpperCase() : 'U',
+        points: points,
+        tasks: filteredExecutions.length,
+        id: user.id,
+        createdAt: user.createdAt,
+        isEligibleForPrize: points > 0
+      };
+    });
+
+    leaderboardData.sort((a, b) => {
+      if (b.points !== a.points) return b.points - a.points;
+      const dateA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+      const dateB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+      return dateA - dateB;
+    });
+
+    return leaderboardData.map((item, idx) => ({
+      ...item,
+      rank: idx + 1
     }));
   }
 
