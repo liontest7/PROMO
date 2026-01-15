@@ -713,7 +713,7 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
                           </div>
                           <div className="flex justify-between text-sm">
                             <span className="text-muted-foreground italic">Platform Fee (Burn/Rewards/System)</span>
-                            <span className="font-bold">{platformFee.toLocaleString()} {form.watch("tokenName") || "Tokens"}</span>
+                            <span className="font-bold">{platformFee.toLocaleString()} {PLATFORM_CONFIG.TOKEN_SYMBOL}</span>
                           </div>
                           <div className="flex justify-between text-sm">
                             <span className="text-muted-foreground italic">Network Gas (SOL)</span>
