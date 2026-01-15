@@ -128,7 +128,7 @@ export default function About() {
             <p className="text-muted-foreground">The evolution of Dropy and the ${PLATFORM_CONFIG.TOKEN_SYMBOL} ecosystem.</p>
           </div>
           
-          <div className="relative space-y-8 before:absolute before:inset-0 before:ml-5 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-transparent before:via-primary/50 before:to-transparent">
+          <div className="relative space-y-12 before:absolute before:inset-0 before:ml-5 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-1 before:bg-gradient-to-b before:from-transparent before:via-primary/30 before:to-transparent">
             {[
               { 
                 phase: "Completed", 
@@ -140,7 +140,7 @@ export default function About() {
                   "Dynamic Gas Optimization System",
                   "Deflationary 50/40/10 Tokenomics Model"
                 ],
-                status: "active"
+                status: "completed"
               },
               { 
                 phase: "Next Steps", 
@@ -152,7 +152,7 @@ export default function About() {
                   "Advertiser Dashboard & Advanced Analytics",
                   "Cross-Chain Social Identity Integration"
                 ],
-                status: "active"
+                status: "in_progress"
               },
               { 
                 phase: "Future Vision", 
@@ -167,20 +167,38 @@ export default function About() {
                 status: "pending"
               }
             ].map((step, i) => (
-              <div key={i} className={`relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active`}>
-                <div className="flex items-center justify-center w-10 h-10 rounded-full border border-primary/50 bg-background shadow shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 z-10">
-                  <div className={`w-3 h-3 rounded-full ${step.status === 'active' ? 'bg-primary animate-pulse' : 'bg-muted'}`} />
+              <div key={i} className={`relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group`}>
+                <div className={`flex items-center justify-center w-12 h-12 rounded-full border-2 bg-background shadow-xl shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 z-10 transition-transform group-hover:scale-110 ${
+                  step.status === 'completed' ? 'border-primary shadow-primary/20' : 
+                  step.status === 'in_progress' ? 'border-primary animate-pulse shadow-primary/40' : 
+                  'border-orange-500 shadow-orange-500/20'
+                }`}>
+                  <div className={`w-4 h-4 rounded-full ${
+                    step.status === 'completed' || step.status === 'in_progress' ? 'bg-primary' : 'bg-orange-500'
+                  }`} />
                 </div>
-                <div className="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] glass-card border-white/5 bg-white/[0.02] p-6 rounded-2xl hover:border-primary/30 transition-all">
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-primary font-bold text-xs uppercase tracking-widest">{step.phase}</span>
+                <div className={`w-[calc(100%-4rem)] md:w-[calc(50%-3rem)] p-8 rounded-[2rem] border backdrop-blur-md transition-all duration-500 hover:shadow-2xl ${
+                  step.status === 'completed' ? 'bg-primary/5 border-primary/20 hover:border-primary/40' : 
+                  step.status === 'in_progress' ? 'bg-primary/10 border-primary/30 hover:border-primary/50' : 
+                  'bg-orange-500/5 border-orange-500/20 hover:border-orange-500/40'
+                }`}>
+                  <div className="flex items-center justify-between mb-4">
+                    <span className={`font-black text-[10px] uppercase tracking-[0.2em] px-3 py-1 rounded-full border ${
+                      step.status === 'completed' ? 'text-primary border-primary/20 bg-primary/10' : 
+                      step.status === 'in_progress' ? 'text-primary border-primary/30 bg-primary/20' : 
+                      'text-orange-500 border-orange-500/20 bg-orange-500/10'
+                    }`}>
+                      {step.phase}
+                    </span>
                   </div>
-                  <h3 className="text-xl font-black mb-4 uppercase italic tracking-tight">{step.title}</h3>
-                  <ul className="space-y-3">
+                  <h3 className="text-2xl font-black mb-6 uppercase italic tracking-tight text-white">{step.title}</h3>
+                  <ul className="space-y-4">
                     {step.items.map((item, j) => (
-                      <li key={j} className="text-sm text-muted-foreground flex items-start gap-3">
-                        <div className="w-1.5 h-1.5 rounded-full bg-primary/50 mt-1.5 shrink-0" />
-                        <span className="leading-tight">{item}</span>
+                      <li key={j} className="text-sm text-white/70 flex items-start gap-4 font-medium">
+                        <div className={`w-2 h-2 rounded-full mt-1.5 shrink-0 ${
+                          step.status === 'completed' || step.status === 'in_progress' ? 'bg-primary' : 'bg-orange-500'
+                        }`} />
+                        <span className="leading-relaxed">{item}</span>
                       </li>
                     ))}
                   </ul>
