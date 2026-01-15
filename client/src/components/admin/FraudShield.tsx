@@ -49,13 +49,13 @@ export function FraudShield({ users, campaigns, onUpdateStatus }: FraudShieldPro
         <CardContent className="p-0">
           <ScrollArea className="h-[400px]">
             <Table>
-              <TableHeader>
-                <TableRow className="border-red-500/10 hover:bg-transparent">
-                  <TableHead className="text-[10px] font-black uppercase text-red-400 tracking-widest">Wallet</TableHead>
-                  <TableHead className="text-[10px] font-black uppercase text-red-400 tracking-widest">Rep/Bal</TableHead>
-                  <TableHead className="text-right text-[10px] font-black uppercase text-red-400 tracking-widest pr-4">Action</TableHead>
-                </TableRow>
-              </TableHeader>
+                  <TableHeader>
+                    <TableRow className="border-red-500/10 hover:bg-transparent">
+                      <TableHead className="text-xs font-black uppercase text-red-400 tracking-widest">Wallet</TableHead>
+                      <TableHead className="text-xs font-black uppercase text-red-400 tracking-widest">Rep/Bal</TableHead>
+                      <TableHead className="text-right text-xs font-black uppercase text-red-400 tracking-widest pr-4">Action</TableHead>
+                    </TableRow>
+                  </TableHeader>
               <TableBody>
                 {suspiciousUsers.map((user: any) => (
                   <TableRow key={user.id} className="border-red-500/10 hover:bg-red-500/10 transition-colors">
@@ -64,14 +64,14 @@ export function FraudShield({ users, campaigns, onUpdateStatus }: FraudShieldPro
                     </TableCell>
                     <TableCell>
                       <div className="flex flex-col gap-1">
-                        <Badge variant="outline" className="text-[9px] w-fit font-black">R:{user.reputationScore}</Badge>
-                        <Badge variant="outline" className="text-[9px] w-fit font-black text-red-400">B:{user.balance}</Badge>
+                        <Badge variant="outline" className="text-[10px] w-fit font-black text-white">R:{user.reputationScore}</Badge>
+                        <Badge variant="outline" className="text-[10px] w-fit font-black text-red-400">B:{user.balance}</Badge>
                       </div>
                     </TableCell>
                     <TableCell className="text-right pr-4">
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
-                          <Button size="sm" variant="destructive" className="h-7 px-2 font-bold text-[9px] uppercase">
+                          <Button size="sm" variant="destructive" className="h-7 px-3 font-black text-[10px] uppercase tracking-widest">
                             MANAGE
                           </Button>
                         </DropdownMenuTrigger>
@@ -115,20 +115,20 @@ export function FraudShield({ users, campaigns, onUpdateStatus }: FraudShieldPro
         <CardContent className="p-0">
           <ScrollArea className="h-[400px]">
             <Table>
-              <TableHeader>
-                <TableRow className="border-yellow-500/10 hover:bg-transparent">
-                  <TableHead className="text-[10px] font-black uppercase text-yellow-400 tracking-widest">Project</TableHead>
-                  <TableHead className="text-[10px] font-black uppercase text-yellow-400 tracking-widest">State</TableHead>
-                  <TableHead className="text-right text-[10px] font-black uppercase text-yellow-400 tracking-widest pr-4">Status</TableHead>
-                </TableRow>
-              </TableHeader>
+                  <TableHeader>
+                    <TableRow className="border-yellow-500/10 hover:bg-transparent">
+                      <TableHead className="text-xs font-black uppercase text-yellow-400 tracking-widest">Project</TableHead>
+                      <TableHead className="text-xs font-black uppercase text-yellow-400 tracking-widest">State</TableHead>
+                      <TableHead className="text-right text-xs font-black uppercase text-yellow-400 tracking-widest pr-4">Status</TableHead>
+                    </TableRow>
+                  </TableHeader>
               <TableBody>
                 {suspiciousCampaigns.map((campaign: any) => (
                   <TableRow key={campaign.id} className="border-yellow-500/10 hover:bg-yellow-500/10 transition-colors">
-                    <TableCell className="font-bold py-4 text-xs">{campaign.title}</TableCell>
-                    <TableCell className="font-mono text-[9px] text-yellow-400">{campaign.remainingBudget} / {campaign.totalBudget}</TableCell>
+                    <TableCell className="font-bold py-4 text-sm text-white">{campaign.title}</TableCell>
+                    <TableCell className="font-mono text-xs text-yellow-400 font-black">{campaign.remainingBudget} / {campaign.totalBudget}</TableCell>
                     <TableCell className="text-right pr-4">
-                      <Badge variant="outline" className="text-[9px] font-black uppercase border-yellow-500/30 text-yellow-400">{campaign.status}</Badge>
+                      <Badge variant="outline" className="text-[10px] font-black uppercase border-yellow-500/30 text-yellow-400 tracking-widest">{campaign.status}</Badge>
                     </TableCell>
                   </TableRow>
                 ))}

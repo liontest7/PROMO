@@ -39,28 +39,28 @@ export function LiveTerminal({ errorLogs, executions }: LiveTerminalProps) {
             <Terminal className="h-5 w-5 text-primary" />
             Live Terminal Logs
           </CardTitle>
-          <CardDescription className="text-sm font-medium text-white/70">Real-time system events, payouts, and security alerts.</CardDescription>
+          <CardDescription className="text-base font-bold text-white">Real-time system events, payouts, and security alerts.</CardDescription>
         </div>
         <div className="flex items-center gap-2 bg-primary/10 px-3 py-1.5 rounded-full border border-primary/20">
           <Activity className="w-3 h-3 text-primary animate-pulse" />
-          <span className="text-[10px] font-black text-primary uppercase tracking-widest">Engine Active</span>
+          <span className="text-xs font-black text-primary uppercase tracking-widest">Engine Active</span>
         </div>
       </CardHeader>
       <CardContent className="p-4 h-[500px] overflow-y-auto space-y-2 flex flex-col-reverse">
         {terminalLogs.length === 0 && (
-          <div className="text-[11px] text-muted-foreground opacity-50 italic">
+          <div className="text-sm text-white font-black uppercase tracking-widest italic flex items-center justify-center h-full opacity-50">
             Waiting for protocol events...
           </div>
         )}
         {terminalLogs.map((log: any, i: number) => (
-          <div key={i} className="text-[11px] leading-relaxed flex gap-3 group">
-            <span className="text-muted-foreground opacity-50">[{format(new Date(log.timestamp), 'HH:mm:ss')}]</span>
+          <div key={i} className="text-xs leading-relaxed flex gap-3 group">
+            <span className="text-white/40 font-bold">[{format(new Date(log.timestamp), 'HH:mm:ss')}]</span>
             <span className={cn(
-              "font-black uppercase tracking-tighter",
+              "font-black uppercase tracking-tighter text-[10px]",
               log.source === 'EXECUTION' ? 'text-green-400' : 
               log.source === 'AUTOMATION' ? 'text-blue-400' : 'text-primary'
             )}>[{log.source}]</span>
-            <span className="text-white/80 group-hover:text-white transition-colors">{log.message}</span>
+            <span className="text-white font-medium group-hover:text-primary transition-colors">{log.message}</span>
           </div>
         ))}
       </CardContent>

@@ -51,10 +51,10 @@ export function ExecutionLogTable({ executions }: ExecutionLogTableProps) {
       <Table>
         <TableHeader className="bg-white/[0.02]">
           <TableRow className="border-white/5 hover:bg-transparent">
-            <TableHead className="text-[10px] font-black uppercase text-white tracking-widest py-4">Protocol User</TableHead>
-            <TableHead className="text-[10px] font-black uppercase text-white tracking-widest py-4">Operation</TableHead>
-            <TableHead className="text-[10px] font-black uppercase text-white tracking-widest py-4">Status</TableHead>
-            <TableHead className="text-[10px] font-black uppercase text-white tracking-widest text-right pr-8 py-4">Timestamp</TableHead>
+            <TableHead className="text-[12px] font-black uppercase text-white tracking-widest py-4">Protocol User</TableHead>
+            <TableHead className="text-[12px] font-black uppercase text-white tracking-widest py-4">Operation</TableHead>
+            <TableHead className="text-[12px] font-black uppercase text-white tracking-widest py-4">Status</TableHead>
+            <TableHead className="text-[12px] font-black uppercase text-white tracking-widest text-right pr-8 py-4">Timestamp</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -72,20 +72,20 @@ export function ExecutionLogTable({ executions }: ExecutionLogTableProps) {
             <TableRow key={execution.id} className="border-white/5 hover:bg-white/[0.02] transition-colors">
               <TableCell className="font-mono text-[10px] py-4">
                 <div className="flex flex-col">
-                  <span className="font-bold text-primary">{execution.user?.walletAddress?.slice(0, 6)}...{execution.user?.walletAddress?.slice(-4)}</span>
-                  <span className="text-muted-foreground opacity-50">USER_ID: {execution.userId}</span>
+                  <span className="font-bold text-primary text-xs">{execution.user?.walletAddress?.slice(0, 6)}...{execution.user?.walletAddress?.slice(-4)}</span>
+                  <span className="text-white opacity-50 text-[10px] font-bold">USER_ID: {execution.userId}</span>
                 </div>
               </TableCell>
               <TableCell>
                 <div className="flex flex-col">
-                  <span className="text-xs font-bold">{execution.campaign?.title}</span>
-                  <span className="text-[10px] uppercase text-muted-foreground">{execution.action?.type}</span>
+                  <span className="text-sm font-bold text-white">{execution.campaign?.title}</span>
+                  <span className="text-xs uppercase text-white font-black tracking-tighter">{execution.action?.type}</span>
                 </div>
               </TableCell>
               <TableCell className="py-4">
                 <div className="flex items-center gap-2">
                   {getStatusIcon(execution.status)}
-                  <span className={cn("text-[10px] font-black uppercase tracking-wider", getStatusColor(execution.status))}>
+                  <span className={cn("text-xs font-black uppercase tracking-widest", getStatusColor(execution.status))}>
                     {execution.status}
                   </span>
                 </div>

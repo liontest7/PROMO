@@ -42,11 +42,11 @@ export function CampaignTable({ campaigns, onAudit }: CampaignTableProps) {
       <Table>
         <TableHeader className="bg-white/[0.02]">
           <TableRow className="border-white/5 hover:bg-transparent">
-            <TableHead className="text-[10px] font-black uppercase text-white tracking-widest">Project</TableHead>
-            <TableHead className="text-[10px] font-black uppercase text-white tracking-widest">Token Info</TableHead>
-            <TableHead className="text-[10px] font-black uppercase text-white tracking-widest">Budget Utilization</TableHead>
-            <TableHead className="text-[10px] font-black uppercase text-white tracking-widest">Status</TableHead>
-            <TableHead className="text-right text-[10px] font-black uppercase text-white tracking-widest pr-8">Actions</TableHead>
+            <TableHead className="text-[12px] font-black uppercase text-white tracking-widest">Project</TableHead>
+            <TableHead className="text-[12px] font-black uppercase text-white tracking-widest">Token Info</TableHead>
+            <TableHead className="text-[12px] font-black uppercase text-white tracking-widest">Budget Utilization</TableHead>
+            <TableHead className="text-[12px] font-black uppercase text-white tracking-widest">Status</TableHead>
+            <TableHead className="text-right text-[12px] font-black uppercase text-white tracking-widest pr-8">Actions</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -95,14 +95,14 @@ export function CampaignTable({ campaigns, onAudit }: CampaignTableProps) {
                   <Button 
                     size="sm" 
                     variant="outline" 
-                    className="h-8 text-[10px] font-bold uppercase border-white/10 hover:bg-primary/10 hover:text-primary transition-all" 
+                    className="h-8 text-xs font-black uppercase border-white/10 hover:bg-primary/10 hover:text-primary transition-all tracking-widest" 
                     onClick={() => exportToCSV(campaign)}
                     title="Export Participants CSV"
                   >
-                    <Download className="w-3 h-3" />
+                    <Download className="w-4 h-4" />
                   </Button>
-                  <Button size="sm" variant="outline" className="h-8 text-[10px] font-bold uppercase border-white/10" onClick={() => onAudit(campaign)}>
-                    <Clock className="w-3 h-3 mr-1" /> Audit
+                  <Button size="sm" variant="outline" className="h-8 text-xs font-black uppercase border-white/10 tracking-widest" onClick={() => onAudit(campaign)}>
+                    <Clock className="w-4 h-4 mr-2" /> Audit
                   </Button>
                   <Button size="sm" variant="ghost" className="h-8 w-8 p-0" asChild>
                     <a href={`/campaign/${campaign.id}`} target="_blank">
