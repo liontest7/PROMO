@@ -200,6 +200,29 @@ export const executionsRelations = relations(executions, ({ one }) => ({
 
 // === BASE SCHEMAS ===
 
+export const prizeHistory = pgTable("prize_history", {
+  id: serial("id").primaryKey(),
+  weekNumber: integer("week_number").notNull(),
+  startDate: timestamp("start_date").notNull(),
+  endDate: timestamp("end_date").notNull(),
+  totalPrizePool: numeric("total_prize_pool").notNull(),
+  winners: jsonb("winners").$type<{
+    userId: number;
+    rank: number;
+    prizeAmount: string;
+    walletAddress: string;
+    twitterHandle?: string;
+    transactionSignature?: string;
+    status: "pending" | "paid" | "failed";
+  }[]>().notNull(),
+  status: text("status", { enum: ["processing", "completed", "failed"] }).default("completed").notNull(),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const prizeHistoryRelations = relations(prizeHistory, ({ many }) => ({
+  // Relations if needed in the future
+}));
+
 export const insertUserSchema = createInsertSchema(users).omit({ id: true, createdAt: true, reputationScore: true }).extend({
   twitterHandle: z.string().optional().or(z.literal("")),
   telegramHandle: z.string().optional().or(z.literal(""))

@@ -102,24 +102,25 @@ export async function registerRoutes(
 
   app.get("/api/leaderboard/history", async (req, res) => {
     try {
-      // Mock history for now since we don't have a history table yet
-      // In a real scenario, this would come from a 'prize_history' table
-      const mockHistory = [
-        {
-          period: "Week #1",
-          dates: "Jan 01 - Jan 07, 2026",
-          winners: [
-            { name: "@DropyAlpha", avatar: "D", prizeAmount: 2000, proofUrl: "https://solscan.io" },
-            { name: "@SolanaKing", avatar: "S", prizeAmount: 1200, proofUrl: "https://solscan.io" },
-            { name: "@CryptoWhale", avatar: "C", prizeAmount: 800, proofUrl: "https://solscan.io" }
-          ],
-          totalPoints: 125400,
-          prize: 4000,
-          proofUrl: "https://solscan.io"
-        }
-      ];
-      res.json(mockHistory);
+      const history = await storage.getPrizeHistory();
+      
+      // Format for frontend
+      const formattedHistory = history.map(h => ({
+        period: `Week #${h.weekNumber}`,
+        dates: `${new Date(h.startDate).toLocaleDateString('en-US', { month: 'short', day: '2-digit' })} - ${new Date(h.endDate).toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' })}`,
+        winners: h.winners.map(w => ({
+          name: w.twitterHandle ? `@${w.twitterHandle}` : `User ${w.walletAddress.slice(0, 4)}...${w.walletAddress.slice(-4)}`,
+          avatar: w.twitterHandle ? w.twitterHandle[0].toUpperCase() : 'U',
+          prizeAmount: parseFloat(w.prizeAmount),
+          proofUrl: w.transactionSignature ? `https://solscan.io/tx/${w.transactionSignature}` : "#"
+        })),
+        prize: parseFloat(h.totalPrizePool),
+        proofUrl: "#" // Overview link if needed
+      }));
+
+      res.json(formattedHistory);
     } catch (err) {
+      console.error("Prize history error:", err);
       res.status(500).json({ message: "Error fetching prize history" });
     }
   });

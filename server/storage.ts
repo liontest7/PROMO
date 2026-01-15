@@ -54,6 +54,11 @@ export interface IStorage {
   getAllCampaigns(): Promise<(Campaign & { actions: Action[] })[]>;
   getAllExecutions(): Promise<(Execution & { user: User, campaign: Campaign, action: Action })[]>;
   getLeaderboard(): Promise<User[]>;
+  // Prize History
+  getPrizeHistory(): Promise<(typeof prizeHistory.$inferSelect)[]>;
+  createPrizeHistory(entry: any): Promise<typeof prizeHistory.$inferSelect>;
+  updatePrizeHistoryStatus(id: number, status: string, winners: any[]): Promise<void>;
+
   // System Settings
   getSystemSettings(): Promise<typeof systemSettings.$inferSelect>;
   updateSystemSettings(settings: Partial<typeof systemSettings.$inferSelect>): Promise<typeof systemSettings.$inferSelect>;
@@ -531,6 +536,21 @@ export class DatabaseStorage implements IStorage {
       .where(sql`${users.role} = 'user' AND ${users.acceptedTerms} = true`)
       .orderBy(desc(users.reputationScore), desc(users.createdAt))
       .limit(100);
+  }
+
+  async getPrizeHistory(): Promise<(typeof prizeHistory.$inferSelect)[]> {
+    return await db.select().from(prizeHistory).orderBy(desc(prizeHistory.endDate));
+  }
+
+  async createPrizeHistory(entry: any): Promise<typeof prizeHistory.$inferSelect> {
+    const [inserted] = await db.insert(prizeHistory).values(entry).returning();
+    return inserted;
+  }
+
+  async updatePrizeHistoryStatus(id: number, status: "processing" | "completed" | "failed", winners: any[]): Promise<void> {
+    await db.update(prizeHistory)
+      .set({ status, winners, createdAt: new Date() })
+      .where(eq(prizeHistory.id, id));
   }
 
   async getSystemSettings(): Promise<typeof systemSettings.$inferSelect> {

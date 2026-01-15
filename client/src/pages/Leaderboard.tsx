@@ -317,7 +317,7 @@ export default function Leaderboard() {
                 {paginatedHistory?.map((week, idx) => (
                   <div key={idx} className="flex items-center px-12 py-10 hover:bg-white/[0.03] transition-all group">
                     <div className="w-40">
-                      <p className="text-3xl font-black font-display text-white italic uppercase leading-none">#WEEK {idx + 1}</p>
+                      <p className="text-3xl font-black font-display text-white italic uppercase leading-none">{week.period}</p>
                       <p className="text-[11px] font-black text-white/90 tracking-widest mt-3 whitespace-nowrap">{week.dates}</p>
                     </div>
                     <div className="flex-1 flex items-center justify-between gap-6 overflow-visible py-6 px-4">
