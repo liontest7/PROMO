@@ -1,6 +1,7 @@
 import { storage } from "../storage";
 import { Keypair } from "@solana/web3.js";
 import { transferTokens } from "./solana";
+import { PLATFORM_CONFIG } from "@shared/config";
 import bs58 from "bs58";
 
 // Utility for logging
@@ -44,42 +45,43 @@ export class AutomationService {
       const lastWeek = history[0]; // Ordered by endDate desc
       
       const allCampaigns = await storage.getAllCampaigns();
-      if (allCampaigns.length === 0 && !lastWeek) {
-        log("No campaigns found and no history exists. Skipping week creation.", "Automation");
+      const fundedCampaigns = allCampaigns.filter(c => c.status === 'active' && c.creationFeePaid);
+      
+      if (fundedCampaigns.length === 0 && !lastWeek) {
+        log("Waiting for the first funded campaign to start the weekly cycle.", "Automation");
         return;
       }
 
       let nextWeekNumber = 1;
       let nextStartDate = new Date(now);
-      // Start of current week (Monday 00:00:00)
-    const day = nextStartDate.getDay();
-    const diff = nextStartDate.getDate() - day + (day === 0 ? -6 : 1);
-    nextStartDate.setDate(diff);
-    nextStartDate.setHours(0, 0, 0, 0);
 
-    const nowUTC = new Date();
-    if (lastWeek) {
-      // Check if the current week should be closed (End date is Sunday 23:59:59)
-      const lastEndDate = lastWeek.endDate ? new Date(lastWeek.endDate) : new Date();
-      if (nowUTC < lastEndDate) {
-        log(`Still in week #${lastWeek.weekNumber}. Ends at ${lastEndDate.toISOString()}`, "Automation");
+      if (!lastWeek) {
+        // Initial activation: Start now, and end on the coming Sunday.
+        nextWeekNumber = 1;
+        nextStartDate = new Date(now);
+      } else {
+        // Check if the current week should be closed (End date is Sunday 23:59:59)
+        const lastEndDate = lastWeek.endDate ? new Date(lastWeek.endDate) : new Date();
+        if (now < lastEndDate) {
+          log(`Still in week #${lastWeek.weekNumber}. Ends at ${lastEndDate.toISOString()}`, "Automation");
+          return;
+        }
+        nextWeekNumber = lastWeek.weekNumber + 1;
+        nextStartDate = new Date(lastEndDate);
+        nextStartDate.setMilliseconds(nextStartDate.getMilliseconds() + 1);
+      }
+
+      const nowUTC = new Date();
+      // Safety check to prevent rapid duplicate week creation
+      const recentHistory = await storage.getPrizeHistory();
+      const tooRecent = recentHistory.some(h => {
+        const hEnd = new Date(h.endDate);
+        return Math.abs(nowUTC.getTime() - hEnd.getTime()) < 1000 * 60 * 5; // 5 minutes
+      });
+      if (tooRecent && lastWeek) {
+        log("A week was closed very recently. Skipping to avoid duplicates.", "Automation");
         return;
       }
-      nextWeekNumber = lastWeek.weekNumber + 1;
-      nextStartDate = new Date(lastEndDate);
-      nextStartDate.setMilliseconds(nextStartDate.getMilliseconds() + 1);
-    }
-    
-    // Safety check to prevent rapid duplicate week creation
-    const recentHistory = await storage.getPrizeHistory();
-    const tooRecent = recentHistory.some(h => {
-      const hEnd = new Date(h.endDate);
-      return Math.abs(nowUTC.getTime() - hEnd.getTime()) < 1000 * 60 * 5; // 5 minutes
-    });
-    if (tooRecent && lastWeek) {
-      log("A week was closed very recently. Skipping to avoid duplicates.", "Automation");
-      return;
-    }
 
       // Calculate end date (Next Sunday 23:59:59)
       const nextEndDate = new Date(nextStartDate);

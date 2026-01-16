@@ -90,6 +90,47 @@ export default function Leaderboard() {
     return <Minus className="w-4 h-4 text-white/20" />;
   };
 
+  const [timeLeft, setTimeLeft] = useState<{days: number, hours: number, minutes: number, seconds: number} | null>(null);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      const now = new Date();
+      const nextSunday = new Date();
+      nextSunday.setDate(now.getDate() + (7 - now.getDay()) % 7);
+      nextSunday.setHours(23, 59, 59, 999);
+      
+      const diff = nextSunday.getTime() - now.getTime();
+      if (diff > 0) {
+        setTimeLeft({
+          days: Math.floor(diff / (1000 * 60 * 60 * 24)),
+          hours: Math.floor((diff / (1000 * 60 * 60)) % 24),
+          minutes: Math.floor((diff / 1000 / 60) % 60),
+          seconds: Math.floor((diff / 1000) % 60)
+        });
+      }
+    }, 1000);
+    return () => clearInterval(timer);
+  }, []);
+
+  const CountdownTimer = () => {
+    if (!timeLeft) return null;
+    return (
+      <div className="flex gap-4 mt-4">
+        {[
+          { label: 'Days', value: timeLeft.days },
+          { label: 'Hours', value: timeLeft.hours },
+          { label: 'Min', value: timeLeft.minutes },
+          { label: 'Sec', value: timeLeft.seconds }
+        ].map((item, i) => (
+          <div key={i} className="flex flex-col items-center bg-white/5 border border-white/10 px-4 py-2 rounded-xl min-w-[70px]">
+            <span className="text-xl font-black font-display text-primary">{item.value.toString().padStart(2, '0')}</span>
+            <span className="text-[8px] font-black text-white/40 uppercase tracking-widest">{item.label}</span>
+          </div>
+        ))}
+      </div>
+    );
+  };
+
   return (
     <div className="min-h-screen bg-[#050505] text-white">
       <Navigation />
@@ -143,6 +184,9 @@ export default function Leaderboard() {
                           {weeklyPrizePool?.toLocaleString() || "0"}
                         </span>
                         <span className="text-xl text-primary font-black uppercase tracking-widest">$DROPY</span>
+                      </div>
+                      <div className="flex justify-center">
+                        <CountdownTimer />
                       </div>
                     </div>
                     <p className="text-[11px] md:text-xs text-white/50 uppercase tracking-[0.15em] font-black italic mt-6">
