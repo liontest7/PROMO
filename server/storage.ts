@@ -635,7 +635,7 @@ export class DatabaseStorage implements IStorage {
         id: 1,
         campaignsEnabled: true,
         holderQualificationEnabled: true,
-        socialEngagementEnabled: true, // Allow by default, API check is for verification
+        socialEngagementEnabled: true,
         twitterApiStatus: currentTwitterStatus,
         burnPercent: 50,
         rewardsPercent: 40,
@@ -648,9 +648,17 @@ export class DatabaseStorage implements IStorage {
         [settings] = await db.select().from(systemSettings).where(eq(systemSettings.id, 1));
       }
     } else {
+      let needsUpdate = false;
+      const updates: any = {};
+
       if (settings.twitterApiStatus !== currentTwitterStatus) {
+        updates.twitterApiStatus = currentTwitterStatus;
+        needsUpdate = true;
+      }
+
+      if (needsUpdate) {
         [settings] = await db.update(systemSettings)
-          .set({ twitterApiStatus: currentTwitterStatus })
+          .set(updates)
           .where(eq(systemSettings.id, settings.id))
           .returning();
       }
