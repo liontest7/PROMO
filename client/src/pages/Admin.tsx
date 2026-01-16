@@ -470,6 +470,7 @@ export default function AdminDashboard() {
               <CardContent className="p-0">
                 <UserTable 
                   users={filteredUsers}
+                  onUpdateRole={(userId, role) => updateRoleMutation.mutate({ userId, role })}
                   onUpdateStatus={(userId, status) => updateStatusMutation.mutate({ userId, status })}
                   onUpdateRole={(userId, role) => updateRoleMutation.mutate({ userId, role })}
                 />
