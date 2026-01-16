@@ -102,8 +102,8 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
   const { toast } = useToast();
 
   const { data: settings, isLoading: loadingSettings } = useQuery<any>({
-    queryKey: ["/api/admin/settings"],
-    staleTime: 60000,
+    queryKey: ["/api/public/settings"],
+    staleTime: 30000, // Cache for 30s
   });
 
   const handleOpenClick = (e: React.MouseEvent) => {

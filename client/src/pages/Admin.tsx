@@ -240,6 +240,7 @@ export default function AdminDashboard() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/admin/settings"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/public/settings"] });
       setSettingsUpdate({});
       toast({ title: "Success", description: "Protocol parameters updated" });
     }

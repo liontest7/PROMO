@@ -28,6 +28,23 @@ export async function registerRoutes(
   setupCampaignRoutes(app);
   setupAdminRoutes(app);
 
+  // Public settings endpoint for frontend feature toggles
+  app.get("/api/public/settings", async (_req, res) => {
+    try {
+      const settings = await storage.getSystemSettings();
+      // Only expose necessary UI flags
+      res.json({
+        campaignsEnabled: settings.campaignsEnabled,
+        holderQualificationEnabled: settings.holderQualificationEnabled,
+        socialEngagementEnabled: settings.socialEngagementEnabled,
+        twitterApiStatus: settings.twitterApiStatus,
+      });
+    } catch (err) {
+      console.error("Public settings error:", err);
+      res.status(500).json({ message: "Failed to fetch public settings" });
+    }
+  });
+
   app.get("/api/leaderboard", async (req, res) => {
     try {
       const timeframe = (req.query.timeframe as string) || "all_time";
