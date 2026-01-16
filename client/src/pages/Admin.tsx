@@ -32,6 +32,11 @@ export default function AdminDashboard() {
   
   const { data: settings, isLoading: loadingSettings } = useQuery<any>({
     queryKey: ["/api/admin/settings"],
+    meta: {
+      headers: {
+        'x-wallet-address': localStorage.getItem('walletAddress') || ''
+      }
+    }
   });
 
   const updateSettingsMutation = useMutation({
@@ -84,14 +89,29 @@ export default function AdminDashboard() {
 
   const { data: users, isLoading: loadingUsers } = useQuery<any[]>({
     queryKey: ["/api/admin/users"],
+    meta: {
+      headers: {
+        'x-wallet-address': localStorage.getItem('walletAddress') || ''
+      }
+    }
   });
 
   const { data: campaigns, isLoading: loadingCampaigns } = useQuery<any[]>({
     queryKey: ["/api/admin/campaigns"],
+    meta: {
+      headers: {
+        'x-wallet-address': localStorage.getItem('walletAddress') || ''
+      }
+    }
   });
 
   const { data: executions, isLoading: loadingExecutions } = useQuery<any[]>({
     queryKey: ["/api/admin/executions"],
+    meta: {
+      headers: {
+        'x-wallet-address': localStorage.getItem('walletAddress') || ''
+      }
+    }
   });
 
   const { data: systemHealth, isLoading: loadingHealth } = useQuery<{
@@ -103,7 +123,12 @@ export default function AdminDashboard() {
     errorLogs: any[];
   }>({
     queryKey: ["/api/admin/system-health"],
-    refetchInterval: 10000 
+    refetchInterval: 10000,
+    meta: {
+      headers: {
+        'x-wallet-address': localStorage.getItem('walletAddress') || ''
+      }
+    }
   });
 
   const { data: adminStats, isLoading: loadingStats } = useQuery<{
@@ -116,6 +141,11 @@ export default function AdminDashboard() {
     suspiciousUsers?: number;
   }>({
     queryKey: ["/api/admin/stats"],
+    meta: {
+      headers: {
+        'x-wallet-address': localStorage.getItem('walletAddress') || ''
+      }
+    }
   });
 
   const filteredUsers = (users || []).filter(u => 
@@ -262,8 +292,8 @@ export default function AdminDashboard() {
                       <div className={`h-3 w-3 rounded-full animate-pulse ${settings?.twitterApiStatus === 'active' ? 'bg-green-500' : 'bg-yellow-500'}`} />
                       <div className="flex flex-col">
                         <span className="font-bold uppercase text-xs tracking-widest text-white">Twitter API Status</span>
-                        <span className="text-sm text-white/70 uppercase tracking-tighter">
-                          {settings?.twitterApiStatus === 'active' ? 'Connected' : 'Awaiting Integration'}
+                        <span className="text-sm text-white/70">
+                          {settings?.twitterApiStatus === 'active' ? 'Connected' : 'Disconnected'}
                         </span>
                       </div>
                     </div>
