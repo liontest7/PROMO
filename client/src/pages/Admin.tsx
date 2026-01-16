@@ -37,30 +37,40 @@ export default function AdminDashboard() {
   const { data: users, isLoading: loadingUsers } = useQuery<any[]>({
     queryKey: ["/api/admin/users"],
     staleTime: 300000,
+    refetchInterval: false,
+    refetchOnWindowFocus: false,
     enabled: !!currentWallet
   });
 
   const { data: campaigns, isLoading: loadingCampaigns } = useQuery<any[]>({
     queryKey: ["/api/admin/campaigns"],
     staleTime: 300000,
+    refetchInterval: false,
+    refetchOnWindowFocus: false,
     enabled: !!currentWallet
   });
 
   const { data: executions, isLoading: loadingExecutions } = useQuery<any[]>({
     queryKey: ["/api/admin/executions"],
     staleTime: 300000,
+    refetchInterval: false,
+    refetchOnWindowFocus: false,
     enabled: !!currentWallet
   });
 
   const { data: settings, isLoading: loadingSettings } = useQuery<any>({
     queryKey: ["/api/admin/settings"],
     staleTime: 600000,
+    refetchInterval: false,
+    refetchOnWindowFocus: false,
     enabled: !!currentWallet
   });
 
   const { data: adminStats, isLoading: loadingStats } = useQuery<any>({
     queryKey: ["/api/admin/stats"],
     staleTime: 300000,
+    refetchInterval: false,
+    refetchOnWindowFocus: false,
     enabled: !!currentWallet
   });
 

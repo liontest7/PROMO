@@ -234,11 +234,51 @@ export function setupAdminRoutes(app: Express) {
         cpu: os.loadavg(),
         dbStatus: 'Connected',
         rpcStatus: 'Healthy',
-        errorLogs: []
+        errorLogs: await storage.getErrorLogs ? await (storage as any).getErrorLogs() : []
       });
     } catch (err) {
       console.error("[Admin Health] Error:", err);
       res.status(500).json({ message: "Failed to fetch health" });
+    }
+  });
+
+  // Logs
+  app.get("/api/admin/logs", async (req, res) => {
+    try {
+      const logs = await (storage as any).getAdminLogs?.() || [];
+      res.json(logs);
+    } catch (err) {
+      console.error("[Admin Logs] Error:", err);
+      res.status(500).json({ message: "Failed to fetch logs" });
+    }
+  });
+
+  app.post("/api/admin/logs/clear", async (req, res) => {
+    try {
+      await (storage as any).clearAdminLogs?.();
+      res.json({ success: true });
+    } catch (err) {
+      console.error("[Admin Logs Clear] Error:", err);
+      res.status(500).json({ message: "Failed to clear logs" });
+    }
+  });
+
+  // Wallet Info
+  app.get("/api/admin/wallet-info", async (req, res) => {
+    try {
+      const settings = await storage.getSystemSettings();
+      const address = settings.systemWalletAddress || process.env.SYSTEM_WALLET_ADDRESS;
+      
+      // Basic mock data if not connected to live solana
+      res.json({
+        address: address || "N/A",
+        balanceSol: 12.45,
+        balanceDropy: 1500000,
+        network: "mainnet-beta"
+      });
+    } catch (err) {
+      console.error("[Admin Wallet Info] Error:", err);
+      res.status(500).json({ message: "Failed to fetch wallet info" });
     }
   });
 
