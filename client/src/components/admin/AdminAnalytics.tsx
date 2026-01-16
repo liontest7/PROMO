@@ -134,9 +134,13 @@ export function AdminAnalytics() {
                   stroke="rgba(255,255,255,0.3)" 
                   fontSize={10} 
                   tickFormatter={(val) => {
-                    if (!val || typeof val !== 'string') return val;
-                    if (val.includes('-')) return val.split('-').slice(1).join('/');
-                    return val;
+                    if (!val) return "";
+                    try {
+                      const d = new Date(val);
+                      return `${d.getMonth() + 1}/${d.getDate()}`;
+                    } catch (e) {
+                      return val;
+                    }
                   }}
                 />
                 <YAxis stroke="rgba(255,255,255,0.3)" fontSize={10} />

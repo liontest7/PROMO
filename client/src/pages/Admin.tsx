@@ -331,7 +331,7 @@ export default function AdminDashboard() {
         </Card>
 
         <Tabs defaultValue="users" className="w-full">
-          <div className="flex flex-col md:flex-row items-center justify-between mb-2 gap-4">
+          <div className="flex flex-col md:flex-row items-center justify-between mb-4 gap-4">
             <TabsList className="bg-white/5 border border-white/10 p-1 rounded-xl w-full md:w-auto h-auto gap-1">
               <TabsTrigger value="users" className="flex-1 md:flex-none rounded-lg px-4 py-2 font-black uppercase text-[13px] tracking-widest data-[state=active]:bg-white data-[state=active]:text-black text-white hover:text-white transition-all">USERS</TabsTrigger>
               <TabsTrigger value="analytics" className="flex-1 md:flex-none rounded-lg px-4 py-2 font-black uppercase text-[13px] tracking-widest data-[state=active]:bg-white data-[state=active]:text-black text-white hover:text-white transition-all">ANALYTICS</TabsTrigger>
