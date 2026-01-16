@@ -32,6 +32,7 @@ import { Plus, Trash2, Rocket, Eye, CheckCircle2, Globe, Twitter, Send, Loader2,
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
+import { CampaignSuccessCard } from "./CampaignSuccessCard";
 import { SuccessCard } from "./SuccessCard";
 
 // Form Schema
@@ -865,16 +866,13 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
         </DialogContent>
       </Dialog>
 
-      <SuccessCard 
-        isOpen={showSuccessCard} 
+      <CampaignSuccessCard
+        campaign={createdCampaign}
+        open={showSuccessCard}
         onClose={() => {
           setShowSuccessCard(false);
           setCreatedCampaign(null);
         }}
-        campaignTitle={createdCampaign?.title || "Campaign"}
-        rewardAmount={createdCampaign?.totalBudget || "0"}
-        tokenName={createdCampaign?.tokenName || "DROPY"}
-        actionTitle="Campaign Launched"
       />
     </>
   );

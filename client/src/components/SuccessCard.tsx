@@ -102,11 +102,7 @@ export function SuccessCard({
               </div>
 
               <h2 className="text-3xl font-display font-black text-white mb-2 uppercase italic tracking-tighter">
-                {actionTitle === "Campaign Launched" ? (
-                  <>Campaign <span className="text-primary">Launched!</span></>
-                ) : (
-                  <>Reward <span className="text-primary">Claimed!</span></>
-                )}
+                Reward <span className="text-primary">Claimed!</span>
               </h2>
               
               <div className="w-full h-px bg-gradient-to-r from-transparent via-white/10 to-transparent my-6" />
