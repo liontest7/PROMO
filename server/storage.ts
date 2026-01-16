@@ -626,11 +626,13 @@ export class DatabaseStorage implements IStorage {
     const hasTwitterKeys = !!(process.env.X_CONSUMER_KEY && process.env.X_CONSUMER_SECRET && process.env.X_BEARER_TOKEN);
     const currentTwitterStatus = hasTwitterKeys ? "active" : "error";
 
-    // Always fetch the first record
-    let [settings] = await db.select().from(systemSettings).orderBy(asc(systemSettings.id)).limit(1);
+    // Always fetch the first record by ID 1 to ensure consistency
+    let [settings] = await db.select().from(systemSettings).where(eq(systemSettings.id, 1));
 
     if (!settings) {
+      // Create default settings if they don't exist
       [settings] = await db.insert(systemSettings).values({
+        id: 1,
         campaignsEnabled: true,
         holderQualificationEnabled: true,
         socialEngagementEnabled: hasTwitterKeys,
@@ -639,7 +641,12 @@ export class DatabaseStorage implements IStorage {
         rewardsPercent: 40,
         systemPercent: 10,
         creationFee: 10000
-      }).returning();
+      }).onConflictDoNothing().returning();
+      
+      // If onConflictDoNothing returned nothing, fetch it again
+      if (!settings) {
+        [settings] = await db.select().from(systemSettings).where(eq(systemSettings.id, 1));
+      }
     } else {
       let needsUpdate = false;
       const updates: any = {};
@@ -666,25 +673,12 @@ export class DatabaseStorage implements IStorage {
   }
 
   async updateSystemSettings(update: Partial<typeof systemSettings.$inferSelect>): Promise<typeof systemSettings.$inferSelect> {
-    const [settings] = await db.select().from(systemSettings);
+    const current = await this.getSystemSettings();
     const hasTwitterKeys = !!(process.env.X_CONSUMER_KEY && process.env.X_CONSUMER_SECRET && process.env.X_BEARER_TOKEN);
     
-    if (!settings) {
-      const [newSettings] = await db.insert(systemSettings).values({
-        campaignsEnabled: update.campaignsEnabled ?? true,
-        holderQualificationEnabled: update.holderQualificationEnabled ?? true,
-        socialEngagementEnabled: update.socialEngagementEnabled ?? hasTwitterKeys,
-        twitterApiStatus: hasTwitterKeys ? "active" : "error",
-        burnPercent: update.burnPercent ?? 50,
-        rewardsPercent: update.rewardsPercent ?? 40,
-        systemPercent: update.systemPercent ?? 10,
-        creationFee: update.creationFee ?? 10000
-      }).returning();
-      return newSettings;
-    }
-
     const finalUpdate: any = { ...update, updatedAt: new Date() };
     
+    // If campaignsEnabled is explicitly set, we sync sub-features to it
     if (update.campaignsEnabled === true) {
       finalUpdate.holderQualificationEnabled = true;
       finalUpdate.socialEngagementEnabled = hasTwitterKeys;
@@ -695,7 +689,7 @@ export class DatabaseStorage implements IStorage {
 
     const [updated] = await db.update(systemSettings)
       .set(finalUpdate)
-      .where(eq(systemSettings.id, settings.id))
+      .where(eq(systemSettings.id, current.id))
       .returning();
     return updated;
   }

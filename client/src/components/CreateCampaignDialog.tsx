@@ -101,12 +101,19 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
   const { isConnected, userId, connect } = useWallet();
   const { toast } = useToast();
 
-  const { data: settings } = useQuery<any>({
+  const { data: settings, isLoading: loadingSettings } = useQuery<any>({
     queryKey: ["/api/admin/settings"],
+    staleTime: 60000,
   });
 
   const handleOpenClick = (e: React.MouseEvent) => {
-    if (!settings?.campaignsEnabled) {
+    // If settings are still loading, wait
+    if (loadingSettings) {
+      e.preventDefault();
+      return;
+    }
+
+    if (settings && !settings.campaignsEnabled) {
       e.preventDefault();
       toast({
         title: "Maintenance",
@@ -436,10 +443,10 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
                           <Select onValueChange={(value) => { field.onChange(value); if (value === "holder_qualification") { form.setValue("actions", []); } else { form.setValue("actions", [{ type: "website", title: "Visit Website", url: "", rewardAmount: 0.01, maxExecutions: 10 }]); } }} value={field.value}>
                             <FormControl><SelectTrigger><SelectValue placeholder="Select type" /></SelectTrigger></FormControl>
                             <SelectContent>
-                              <SelectItem value="holder_qualification" disabled={isHolderDisabled}>
+                              <SelectItem value="holder_qualification" disabled={isHolderDisabled || loadingSettings}>
                                 Holder Qualification {getCampaignStatusLabel("holder_qualification")}
                               </SelectItem>
-                              <SelectItem value="engagement" disabled={isSocialDisabled}>
+                              <SelectItem value="engagement" disabled={isSocialDisabled || loadingSettings}>
                                 Social Engagement {getCampaignStatusLabel("engagement")} {settings?.twitterApiStatus !== 'active' ? "(Twitter API Disconnected)" : ""}
                               </SelectItem>
                             </SelectContent>

@@ -283,7 +283,6 @@ export default function AdminDashboard() {
                         id="campaigns-enabled" 
                         checked={settings?.campaignsEnabled ?? true} 
                         onCheckedChange={(checked) => {
-                          // Optimistic update for UI feel if needed, but the mutation handles it
                           updateSettingsMutation.mutate({ campaignsEnabled: checked });
                         }}
                       />
@@ -320,14 +319,12 @@ export default function AdminDashboard() {
                         <Label htmlFor="holder-enabled" className="text-xs uppercase tracking-wider font-bold text-white">Holder Qualification</Label>
                       </div>
                       <div className="flex items-center space-x-3">
-                        <div className="flex flex-col">
-                          <Switch 
-                            id="social-enabled" 
-                            checked={settings?.socialEngagementEnabled ?? false} 
-                            disabled={settings?.twitterApiStatus !== 'active'}
-                            onCheckedChange={(checked) => updateSettingsMutation.mutate({ socialEngagementEnabled: checked })}
-                          />
-                        </div>
+                        <Switch 
+                          id="social-enabled" 
+                          checked={settings?.socialEngagementEnabled ?? true} 
+                          disabled={settings?.twitterApiStatus !== 'active'}
+                          onCheckedChange={(checked) => updateSettingsMutation.mutate({ socialEngagementEnabled: checked })}
+                        />
                         <Label htmlFor="social-enabled" className={cn(
                           "text-xs uppercase tracking-wider font-bold",
                           settings?.twitterApiStatus !== 'active' ? "text-white/30" : "text-white"
