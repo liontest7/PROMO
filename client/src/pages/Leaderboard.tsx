@@ -33,8 +33,34 @@ export default function Leaderboard() {
     refetchInterval: 10000, // Refresh data every 10 seconds for "Live" feel
   });
 
+  const { data: history } = useQuery<any[]>({
+    queryKey: ["/api/leaderboard/history"],
+  });
+
+  const [timeLeft, setTimeLeft] = useState<{days: number, hours: number, minutes: number, seconds: number} | null>(null);
+
   // Track rank changes
   const [rankChanges, setRankChanges] = useState<Record<number, 'up' | 'down' | 'same'>>({});
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      const now = new Date();
+      const nextSunday = new Date();
+      nextSunday.setDate(now.getDate() + (7 - now.getDay()) % 7);
+      nextSunday.setHours(23, 59, 59, 999);
+      
+      const diff = nextSunday.getTime() - now.getTime();
+      if (diff > 0) {
+        setTimeLeft({
+          days: Math.floor(diff / (1000 * 60 * 60 * 24)),
+          hours: Math.floor((diff / (1000 * 60 * 60)) % 24),
+          minutes: Math.floor((diff / 1000 / 60) % 60),
+          seconds: Math.floor((diff / 1000) % 60)
+        });
+      }
+    }, 1000);
+    return () => clearInterval(timer);
+  }, []);
 
   useEffect(() => {
     if (leaderboardRes?.ranking) {
@@ -55,10 +81,6 @@ export default function Leaderboard() {
   if (error) {
     console.error("Leaderboard query error:", error);
   }
-
-  const { data: history } = useQuery<any[]>({
-    queryKey: ["/api/leaderboard/history"],
-  });
 
   if (isLoading && !leaderboardRes) {
     return (
@@ -89,28 +111,6 @@ export default function Leaderboard() {
     if (change === 'down') return <ArrowDown className="w-4 h-4 text-red-500 animate-bounce" />;
     return <Minus className="w-4 h-4 text-white/20" />;
   };
-
-  const [timeLeft, setTimeLeft] = useState<{days: number, hours: number, minutes: number, seconds: number} | null>(null);
-
-  useEffect(() => {
-    const timer = setInterval(() => {
-      const now = new Date();
-      const nextSunday = new Date();
-      nextSunday.setDate(now.getDate() + (7 - now.getDay()) % 7);
-      nextSunday.setHours(23, 59, 59, 999);
-      
-      const diff = nextSunday.getTime() - now.getTime();
-      if (diff > 0) {
-        setTimeLeft({
-          days: Math.floor(diff / (1000 * 60 * 60 * 24)),
-          hours: Math.floor((diff / (1000 * 60 * 60)) % 24),
-          minutes: Math.floor((diff / 1000 / 60) % 60),
-          seconds: Math.floor((diff / 1000) % 60)
-        });
-      }
-    }, 1000);
-    return () => clearInterval(timer);
-  }, []);
 
   const CountdownTimer = () => {
     if (!timeLeft) return null;
