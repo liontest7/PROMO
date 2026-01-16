@@ -61,34 +61,28 @@ export default function AdminDashboard() {
     enabled: !!(walletAddress || localStorage.getItem('walletAddress'))
   });
 
-  const { data: users, isLoading: loadingUsers } = useQuery<any[]>({
+  const { data: users } = useQuery<any[]>({
     queryKey: ["/api/admin/users"],
-    staleTime: 60000,
-    refetchInterval: 60000,
-    refetchOnWindowFocus: false,
+    staleTime: 300000,
     queryFn: fetchAdmin,
     enabled: !!(walletAddress || localStorage.getItem('walletAddress'))
   });
 
-  const { data: campaigns, isLoading: loadingCampaigns } = useQuery<any[]>({
+  const { data: campaigns } = useQuery<any[]>({
     queryKey: ["/api/admin/campaigns"],
-    staleTime: 60000,
-    refetchInterval: 60000,
-    refetchOnWindowFocus: false,
+    staleTime: 300000,
     queryFn: fetchAdmin,
     enabled: !!(walletAddress || localStorage.getItem('walletAddress'))
   });
 
-  const { data: executions, isLoading: loadingExecutions } = useQuery<any[]>({
+  const { data: executions } = useQuery<any[]>({
     queryKey: ["/api/admin/executions"],
-    staleTime: 60000,
-    refetchInterval: 60000,
-    refetchOnWindowFocus: false,
+    staleTime: 300000,
     queryFn: fetchAdmin,
     enabled: !!(walletAddress || localStorage.getItem('walletAddress'))
   });
 
-  const { data: systemHealth, isLoading: loadingHealth } = useQuery<{
+  const { data: systemHealth } = useQuery<{
     uptime: number;
     memory: any;
     cpu: any;
@@ -97,9 +91,7 @@ export default function AdminDashboard() {
     errorLogs: any[];
   }>({
     queryKey: ["/api/admin/system-health"],
-    refetchInterval: 60000,
-    staleTime: 60000,
-    refetchOnWindowFocus: false,
+    staleTime: 300000,
     queryFn: fetchAdmin,
     enabled: !!(walletAddress || localStorage.getItem('walletAddress'))
   });
@@ -260,7 +252,7 @@ export default function AdminDashboard() {
     enabled: !!(walletAddress || localStorage.getItem('walletAddress'))
   });
 
-  if (loadingUsers || loadingCampaigns || loadingExecutions || loadingStats || loadingHealth || loadingSettings || loadingLogs || loadingWallet) {
+  if (!users || !campaigns || !executions || !adminStats || !systemHealth || !settings || !logs || !walletInfo) {
     return (
       <div className="flex h-screen items-center justify-center bg-background">
         <div className="flex flex-col items-center gap-4">
