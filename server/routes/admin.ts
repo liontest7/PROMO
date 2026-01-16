@@ -1,9 +1,8 @@
-import type { Express } from "express";
+import { Request, Response, NextFunction, Express } from "express";
 import { storage } from "../storage";
 import { PLATFORM_CONFIG } from "@shared/config";
 import os from "os";
 import { AutomationService } from "../services/automation";
-import { adminMiddleware } from "../middleware/auth";
 
 export function setupAdminRoutes(app: Express) {
   // Use a middleware function that properly extracts the wallet address and attaches the admin user
@@ -15,31 +14,27 @@ export function setupAdminRoutes(app: Express) {
 
     if (!walletAddress) {
       console.warn("[Admin Auth] No wallet address found in headers, query, or body");
-      // Don't block completely if we want to allow testing but for now let's keep it strict
-      // but ensure the frontend is sending it.
       return res.status(403).json({ message: "Forbidden: Wallet address required" });
     }
 
-    const user = await storage.getUserByWallet(walletAddress);
-    if (!user) {
-      // If user doesn't exist but is trying to access admin, maybe it's the first admin?
-      // Or just a typo. Let's check if any user exists at all.
-      const allUsers = await storage.getAllUsers();
-      if (allUsers.length === 0) {
-        // Bootstrap mode: allow first user to be admin? No, too risky.
-        // Just log it.
+    try {
+      const user = await storage.getUserByWallet(walletAddress);
+      if (!user) {
         console.error(`[Admin Auth] No user found for wallet: ${walletAddress}`);
+        return res.status(403).json({ message: "Forbidden: Admin access required" });
       }
-      return res.status(403).json({ message: "Forbidden: Admin access required" });
-    }
 
-    if (user.role !== "admin") {
-      console.error(`[Admin Auth] Wallet ${walletAddress} is not an admin. Role: ${user.role}`);
-      return res.status(403).json({ message: "Forbidden: Admin access required" });
-    }
+      if (user.role !== "admin") {
+        console.error(`[Admin Auth] Wallet ${walletAddress} is not an admin. Role: ${user.role}`);
+        return res.status(403).json({ message: "Forbidden: Admin access required" });
+      }
 
-    (req as any).user = user;
-    next();
+      (req as any).user = user;
+      next();
+    } catch (error) {
+      console.error("[Admin Auth] Database error:", error);
+      return res.status(500).json({ message: "Internal server error during authentication" });
+    }
   };
 
   // Apply the middleware to all /api/admin routes
