@@ -229,6 +229,8 @@ export function setupAdminRoutes(app: Express) {
   app.get("/api/admin/system-health", async (req, res) => {
     try {
       const memory = process.memoryUsage();
+      const rss = Math.round(memory.rss / 1024 / 1024);
+      const memoryPercent = Math.min(100, (memory.rss / (512 * 1024 * 1024)) * 100);
       
       // Get system uptime - persistent from first campaign if possible, or process uptime
       const allCampaigns = await storage.getAllCampaigns();
@@ -242,6 +244,8 @@ export function setupAdminRoutes(app: Express) {
 
       res.json({
         uptime: systemUptime,
+        memoryUsage: `${rss}MB`,
+        memoryPercent: Math.round(memoryPercent),
         memory: {
           heapUsed: memory.heapUsed,
           heapTotal: memory.heapTotal,

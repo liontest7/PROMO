@@ -48,10 +48,10 @@ export function AdminHealthSection() {
           <CardContent>
              <div className="text-sm font-black text-white uppercase tracking-widest mb-2.5 flex justify-between">
                <span>Memory Usage</span>
-               <span className="text-primary font-black">{(health?.memory?.rss ? Math.round(health.memory.rss / 1024 / 1024) : 0)}MB / 512MB</span>
+               <span className="text-primary font-black">{health?.memoryUsage || "0MB"} / 512MB</span>
              </div>
              <div className="h-3 w-full bg-white/5 rounded-full overflow-hidden border border-white/10">
-                <div className="h-full bg-gradient-to-r from-primary/50 to-primary shadow-[0_0_10px_rgba(34,197,94,0.4)] transition-all duration-1000" style={{ width: `${Math.min(100, ((health?.memory?.rss || 0) / (512 * 1024 * 1024)) * 100)}%` }} />
+                <div className="h-full bg-gradient-to-r from-primary/50 to-primary shadow-[0_0_10px_rgba(34,197,94,0.4)] transition-all duration-1000" style={{ width: `${health?.memoryPercent || 0}%` }} />
              </div>
           </CardContent>
         </Card>

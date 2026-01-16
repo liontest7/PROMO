@@ -30,7 +30,7 @@ export function AdminWalletSection() {
           </div>
           <div className="space-y-1">
             <p className="text-[12px] font-black text-primary uppercase tracking-widest">Solana Network Balance</p>
-            <h2 className="text-5xl font-black font-display text-white">{walletInfo?.balanceSol?.toFixed(4) || "0.0000"} SOL</h2>
+            <h2 className="text-4xl font-black font-display text-white">{walletInfo?.balanceSol?.toFixed(4) || "0.0000"} SOL</h2>
           </div>
           <div className="mt-6 p-4 rounded-xl bg-black/20 border border-white/10">
             <p className="text-[12px] font-black text-white uppercase mb-1">Wallet Address</p>
@@ -47,7 +47,7 @@ export function AdminWalletSection() {
           </div>
           <div className="space-y-1">
             <p className="text-[12px] font-black text-white uppercase tracking-widest">$DROPY Supply in Treasury</p>
-            <h2 className="text-5xl font-black font-display text-white">{walletInfo?.balanceDropy?.toLocaleString() || "0"} $DROPY</h2>
+            <h2 className="text-4xl font-black font-display text-white">{walletInfo?.balanceDropy?.toLocaleString() || "0"} $DROPY</h2>
           </div>
           <div className="mt-6 grid grid-cols-2 gap-4">
              <div className="p-3 rounded-xl bg-white/5 border border-white/10">
@@ -70,7 +70,7 @@ export function AdminWalletSection() {
           </div>
           <div className="space-y-1 py-4">
             <p className="text-[12px] font-black text-white uppercase tracking-widest">Weekly Rewards Pool</p>
-            <h2 className="text-5xl font-black font-display text-white">{walletInfo?.weeklyRewardsPool?.toLocaleString() || "0"} $DROPY</h2>
+            <h2 className="text-4xl font-black font-display text-white">{walletInfo?.weeklyRewardsPool?.toLocaleString() || "0"} $DROPY</h2>
             <p className="text-[11px] font-black text-white uppercase">Accumulated from creation fees</p>
           </div>
           <div className="grid grid-cols-2 gap-2 mt-2">

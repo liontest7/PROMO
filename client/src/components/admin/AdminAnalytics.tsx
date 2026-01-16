@@ -135,7 +135,11 @@ export function AdminAnalytics() {
                   dataKey="date" 
                   stroke="rgba(255,255,255,0.3)" 
                   fontSize={10} 
-                  tickFormatter={(val) => val && typeof val === 'string' && val.includes('-') ? val.split('-').slice(1).join('/') : val}
+                  tickFormatter={(val) => {
+                    if (!val || typeof val !== 'string') return val;
+                    if (val.includes('-')) return val.split('-').slice(1).join('/');
+                    return val;
+                  }}
                 />
                 <YAxis stroke="rgba(255,255,255,0.3)" fontSize={10} />
                 <Tooltip 
@@ -144,7 +148,7 @@ export function AdminAnalytics() {
                 />
                 <Area 
                   type="monotone" 
-                  dataKey={growth?.dailyTrend ? "users" : "count"} 
+                  dataKey={growth?.dailyTrend ? "users" : (trend?.[0]?.count !== undefined ? "count" : "users")} 
                   stroke="#22c55e" 
                   strokeWidth={2}
                   fillOpacity={1} 
@@ -164,7 +168,7 @@ export function AdminAnalytics() {
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
                 <Pie
-                  data={engagements?.actionBreakdown || [
+                  data={engagements?.actionBreakdown && engagements.actionBreakdown.length > 0 ? engagements.actionBreakdown : [
                     { type: 'Follow', count: 45 },
                     { type: 'Retweet', count: 25 },
                     { type: 'Website', count: 20 },
@@ -178,7 +182,7 @@ export function AdminAnalytics() {
                   dataKey="count"
                   nameKey="type"
                 >
-                  {(engagements?.actionBreakdown || [
+                  {(engagements?.actionBreakdown && engagements.actionBreakdown.length > 0 ? engagements.actionBreakdown : [
                     { type: 'Follow', count: 45 },
                     { type: 'Retweet', count: 25 },
                     { type: 'Website', count: 20 },
