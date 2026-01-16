@@ -52,22 +52,23 @@ export class AutomationService {
       let nextWeekNumber = 1;
       let nextStartDate = new Date(now);
       // Start of current week (Monday 00:00:00)
-      const day = nextStartDate.getDay();
-      const diff = nextStartDate.getDate() - day + (day === 0 ? -6 : 1);
-      nextStartDate.setDate(diff);
-      nextStartDate.setHours(0, 0, 0, 0);
+    const day = nextStartDate.getDay();
+    const diff = nextStartDate.getDate() - day + (day === 0 ? -6 : 1);
+    nextStartDate.setDate(diff);
+    nextStartDate.setHours(0, 0, 0, 0);
 
-      if (lastWeek) {
-        // Check if the current week should be closed (End date is Sunday 23:59:59)
-        const lastEndDate = lastWeek.endDate ? new Date(lastWeek.endDate) : new Date();
-        if (now < lastEndDate) {
-          log(`Still in week #${lastWeek.weekNumber}. Ends at ${lastEndDate.toISOString()}`, "Automation");
-          return;
-        }
-        nextWeekNumber = lastWeek.weekNumber + 1;
-        nextStartDate = new Date(lastEndDate);
-        nextStartDate.setMilliseconds(nextStartDate.getMilliseconds() + 1);
+    const nowUTC = new Date();
+    if (lastWeek) {
+      // Check if the current week should be closed (End date is Sunday 23:59:59)
+      const lastEndDate = lastWeek.endDate ? new Date(lastWeek.endDate) : new Date();
+      if (nowUTC < lastEndDate) {
+        log(`Still in week #${lastWeek.weekNumber}. Ends at ${lastEndDate.toISOString()}`, "Automation");
+        return;
       }
+      nextWeekNumber = lastWeek.weekNumber + 1;
+      nextStartDate = new Date(lastEndDate);
+      nextStartDate.setMilliseconds(nextStartDate.getMilliseconds() + 1);
+    }
 
       // Calculate end date (Next Sunday 23:59:59)
       const nextEndDate = new Date(nextStartDate);
@@ -175,8 +176,20 @@ export class AutomationService {
         log(`Paying ${winner.prizeAmount} $DROPY to ${winner.walletAddress}`, "Automation");
         
         // Robust wallet address validation
-        if (!winner.walletAddress || winner.walletAddress.length < 32) {
-          throw new Error(`Invalid wallet address format: ${winner.walletAddress}`);
+        const isValidSolanaAddress = (address: string) => {
+          try {
+            if (!address || typeof address !== 'string') return false;
+            const trimmed = address.trim();
+            if (trimmed.length < 32 || trimmed.length > 44) return false;
+            const decoded = bs58.decode(trimmed);
+            return decoded.length === 32;
+          } catch (e) {
+            return false;
+          }
+        };
+
+        if (!isValidSolanaAddress(winner.walletAddress)) {
+          throw new Error(`Invalid or malformed wallet address: ${winner.walletAddress}`);
         }
 
         // Use the reward token address from config or system settings
