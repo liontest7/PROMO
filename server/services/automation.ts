@@ -69,6 +69,17 @@ export class AutomationService {
       nextStartDate = new Date(lastEndDate);
       nextStartDate.setMilliseconds(nextStartDate.getMilliseconds() + 1);
     }
+    
+    // Safety check to prevent rapid duplicate week creation
+    const recentHistory = await storage.getPrizeHistory();
+    const tooRecent = recentHistory.some(h => {
+      const hEnd = new Date(h.endDate);
+      return Math.abs(nowUTC.getTime() - hEnd.getTime()) < 1000 * 60 * 5; // 5 minutes
+    });
+    if (tooRecent && lastWeek) {
+      log("A week was closed very recently. Skipping to avoid duplicates.", "Automation");
+      return;
+    }
 
       // Calculate end date (Next Sunday 23:59:59)
       const nextEndDate = new Date(nextStartDate);

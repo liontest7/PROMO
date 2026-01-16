@@ -42,6 +42,7 @@ export default function CampaignDetails() {
     queryKey: id ? [`/api/campaigns/${id}`] : [`/api/campaigns/symbol/${symbol}`],
     enabled: !!(id || symbol),
     retry: 1,
+    staleTime: 60000,
   });
 
   const [selectedAction, setSelectedAction] = useState<{ action: Action; campaign: Campaign } | null>(null);
@@ -473,10 +474,10 @@ export default function CampaignDetails() {
                       DEXSCREENER
                     </a>
                   </Button>
-                  <Button variant="outline" size="sm" className="h-10 text-xs font-black border-white/10 bg-white/5 hover:bg-[#BEF32C]/20 hover:border-[#BEF32C]/40 transition-all gap-2 text-white rounded-lg group" asChild>
-                    <a href={`${CONFIG.TOKEN_DETAILS.BUY_LINKS.JUPITER}${campaign.tokenAddress}`} target="_blank" rel="noreferrer">
-                      <img src={CONFIG.ui.walletIcons.jupiter} alt="Jupiter" className="w-4 h-4" />
-                      JUPITER
+                  <Button variant="outline" size="sm" className="h-10 text-xs font-black border-white/10 bg-white/5 hover:bg-primary/20 hover:border-primary/40 transition-all gap-2 text-white rounded-lg group" asChild>
+                    <a href={`https://solscan.io/account/${campaign.tokenAddress}`} target="_blank" rel="noreferrer">
+                      <Globe className="w-4 h-4 text-primary" />
+                      SOLSCAN
                     </a>
                   </Button>
                 </div>

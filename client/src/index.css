@@ -21,6 +21,11 @@
   --card: 240 10% 7%;
   --card-foreground: 0 0% 98%;
 
+  /* Status Colors */
+  --success: 142 70% 50%;
+  --warning: 38 92% 50%;
+  --info: 214 95% 50%;
+
   --popover: 240 10% 7%;
   --popover-foreground: 0 0% 98%;
 
