@@ -114,8 +114,8 @@ export default function AdminDashboard() {
     suspiciousUsers?: number;
   }>({
     queryKey: ["/api/admin/stats"],
-    staleTime: 120000,
-    refetchInterval: 120000,
+    staleTime: 300000,
+    refetchInterval: false,
     refetchOnWindowFocus: false,
     queryFn: fetchAdmin,
     enabled: !!(walletAddress || localStorage.getItem('walletAddress'))
@@ -465,11 +465,17 @@ export default function AdminDashboard() {
               <TabsTrigger value="users" className="flex-1 md:flex-none rounded-lg px-4 py-2 font-black uppercase text-xs tracking-widest data-[state=active]:bg-white data-[state=active]:text-black text-white hover:text-white transition-all">
                 USERS
               </TabsTrigger>
+              <TabsTrigger value="analytics" className="flex-1 md:flex-none rounded-lg px-4 py-2 font-black uppercase text-xs tracking-widest data-[state=active]:bg-white data-[state=active]:text-black text-white hover:text-white transition-all">
+                ANALYTICS
+              </TabsTrigger>
               <TabsTrigger value="campaigns" className="flex-1 md:flex-none rounded-lg px-4 py-2 font-black uppercase text-xs tracking-widest data-[state=active]:bg-white data-[state=active]:text-black text-white hover:text-white transition-all">
                 CAMPAIGNS
               </TabsTrigger>
               <TabsTrigger value="executions" className="flex-1 md:flex-none rounded-lg px-4 py-2 font-black uppercase text-xs tracking-widest data-[state=active]:bg-white data-[state=active]:text-black text-white hover:text-white transition-all">
                 LOGS
+              </TabsTrigger>
+              <TabsTrigger value="wallet" className="flex-1 md:flex-none rounded-lg px-4 py-2 font-black uppercase text-xs tracking-widest data-[state=active]:bg-white data-[state=active]:text-black text-white hover:text-white transition-all">
+                WALLET
               </TabsTrigger>
               <TabsTrigger value="health" className="flex-1 md:flex-none rounded-lg px-4 py-2 font-black uppercase text-xs tracking-widest data-[state=active]:bg-white data-[state=active]:text-black text-white hover:text-white transition-all">
                 HEALTH
