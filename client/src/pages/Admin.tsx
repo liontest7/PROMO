@@ -76,6 +76,7 @@ export default function AdminDashboard() {
     queryFn: fetchAdmin,
     enabled: !!currentWallet,
     refetchInterval: 1000,
+    staleTime: Infinity, // Keep the last known state until refetched or invalidated
   });
 
   const { data: adminStats, isLoading: loadingStats } = useQuery<any>({
