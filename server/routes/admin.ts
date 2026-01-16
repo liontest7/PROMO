@@ -149,15 +149,38 @@ export function setupAdminRoutes(app: Express) {
       const allUsers = await storage.getAllUsers();
       const allCampaigns = await storage.getAllCampaigns();
       const allExecutions = await storage.getAllExecutions();
+      const settings = await storage.getSystemSettings();
+
+      // Trend data (last 7 days)
+      const trend = [];
+      const now = new Date();
+      for (let i = 6; i >= 0; i--) {
+        const d = new Date(now);
+        d.setDate(d.getDate() - i);
+        const dateStr = d.toISOString().split('T')[0];
+        const count = allExecutions.filter(e => {
+          const eDate = new Date(e.timestamp || Date.now()).toISOString().split('T')[0];
+          return eDate === dateStr;
+        }).length;
+        trend.push({ date: dateStr, count });
+      }
+
+      const totalUsers = allUsers.length;
+      const taskVerified = allExecutions.filter(e => e.status === 'verified' || e.status === 'paid').length;
+      const totalExecutions = allExecutions.length;
+      
+      const conversionRate = totalUsers > 0 ? (taskVerified / totalUsers).toFixed(1) : "0";
 
       res.json({
         stats: {
-          totalUsers: allUsers.length,
+          totalUsers,
           totalCampaigns: allCampaigns.length,
-          totalExecutions: allExecutions.length,
+          totalExecutions,
           activeCampaigns: allCampaigns.filter(c => c.status === 'active').length,
+          taskVerified,
+          conversionRate
         },
-        trend: []
+        trend
       });
     } catch (err) {
       console.error("[Admin Analytics] Error:", err);
