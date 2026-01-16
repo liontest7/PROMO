@@ -111,6 +111,48 @@ export default function AdminDashboard() {
     e.status?.toLowerCase().includes(searchTerm.toLowerCase())
   ), [executions, searchTerm]);
 
+  const updateRoleMutation = useMutation({
+    mutationFn: async ({ userId, role }: { userId: number, role: string }) => {
+      const currentWallet = walletAddress || localStorage.getItem('walletAddress');
+      const res = await fetch(`/api/admin/users/${userId}/role`, {
+        method: 'POST',
+        headers: { 
+          'Content-Type': 'application/json',
+          'x-wallet-address': currentWallet || '',
+          'wallet-address': currentWallet || ''
+        },
+        body: JSON.stringify({ role })
+      });
+      if (!res.ok) throw new Error('Failed to update role');
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/users"] });
+      toast({ title: "Success", description: "User role updated successfully" });
+    }
+  });
+
+  const updateStatusMutation = useMutation({
+    mutationFn: async ({ userId, status }: { userId: number, status: string }) => {
+      const currentWallet = walletAddress || localStorage.getItem('walletAddress');
+      const res = await fetch(`/api/admin/users/${userId}/status`, {
+        method: 'POST',
+        headers: { 
+          'Content-Type': 'application/json',
+          'x-wallet-address': currentWallet || '',
+          'wallet-address': currentWallet || ''
+        },
+        body: JSON.stringify({ status })
+      });
+      if (!res.ok) throw new Error('Failed to update status');
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/users"] });
+      toast({ title: "Success", description: "User status updated" });
+    }
+  });
+
   const updateSettingsMutation = useMutation({
     mutationFn: async (updates: any) => {
       const res = await fetch("/api/admin/settings", {
@@ -319,7 +361,11 @@ export default function AdminDashboard() {
           </div>
 
           <TabsContent value="users">
-            <UserTable users={filteredUsers} />
+            <UserTable 
+              users={filteredUsers} 
+              onUpdateStatus={(id: number, status: string) => updateStatusMutation.mutate({ userId: id, status })}
+              onUpdateRole={(id: number, role: string) => updateRoleMutation.mutate({ userId: id, role })}
+            />
           </TabsContent>
 
           <TabsContent value="analytics">
@@ -327,7 +373,10 @@ export default function AdminDashboard() {
           </TabsContent>
 
           <TabsContent value="campaigns">
-            <CampaignTable campaigns={filteredCampaigns} onAudit={(campaign) => setSelectedCampaign(campaign)} />
+            <CampaignTable 
+              campaigns={filteredCampaigns} 
+              onAudit={(campaign: any) => setSelectedCampaign(campaign)}
+            />
           </TabsContent>
 
           <TabsContent value="executions">
@@ -343,7 +392,10 @@ export default function AdminDashboard() {
           </TabsContent>
 
           <TabsContent value="fraud">
-            <FraudShield users={filteredUsers} />
+            <FraudShield 
+              users={filteredUsers} 
+              onUpdateStatus={(id: number, status: string) => updateStatusMutation.mutate({ userId: id, status })}
+            />
           </TabsContent>
         </Tabs>
 
