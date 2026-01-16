@@ -339,16 +339,16 @@ export default function AdminDashboard() {
         <Tabs defaultValue="users" className="w-full">
           <div className="flex flex-col md:flex-row items-center justify-between mb-6 gap-4">
             <TabsList className="bg-white/5 border border-white/10 p-1.5 rounded-xl w-full md:w-auto h-auto gap-1">
-              <TabsTrigger value="users" className="flex-1 md:flex-none rounded-lg px-4 py-2 font-black uppercase text-[10px] tracking-widest data-[state=active]:bg-white data-[state=active]:text-black text-white hover:text-white transition-all">USERS</TabsTrigger>
-              <TabsTrigger value="analytics" className="flex-1 md:flex-none rounded-lg px-4 py-2 font-black uppercase text-[10px] tracking-widest data-[state=active]:bg-white data-[state=active]:text-black text-white hover:text-white transition-all">ANALYTICS</TabsTrigger>
-              <TabsTrigger value="campaigns" className="flex-1 md:flex-none rounded-lg px-4 py-2 font-black uppercase text-[10px] tracking-widest data-[state=active]:bg-white data-[state=active]:text-black text-white hover:text-white transition-all">CAMPAIGNS</TabsTrigger>
-              <TabsTrigger value="executions" className="flex-1 md:flex-none rounded-lg px-4 py-2 font-black uppercase text-[10px] tracking-widest data-[state=active]:bg-white data-[state=active]:text-black text-white hover:text-white transition-all">LOGS</TabsTrigger>
-              <TabsTrigger value="wallet" className="flex-1 md:flex-none rounded-lg px-4 py-2 font-black uppercase text-[10px] tracking-widest data-[state=active]:bg-white data-[state=active]:text-black text-white hover:text-white transition-all">WALLET</TabsTrigger>
-              <TabsTrigger value="health" className="flex-1 md:flex-none rounded-lg px-4 py-2 font-black uppercase text-[10px] tracking-widest data-[state=active]:bg-white data-[state=active]:text-black text-white hover:text-white transition-all">HEALTH</TabsTrigger>
-              <TabsTrigger value="fraud" className="flex-1 md:flex-none rounded-lg px-4 py-2 font-black uppercase text-[10px] tracking-widest data-[state=active]:bg-red-500 data-[state=active]:text-white text-red-400 hover:text-red-300 transition-all">FRAUD</TabsTrigger>
+              <TabsTrigger value="users" className="flex-1 md:flex-none rounded-lg px-6 py-2.5 font-black uppercase text-[11px] tracking-widest data-[state=active]:bg-white data-[state=active]:text-black text-white hover:text-white transition-all">USERS</TabsTrigger>
+              <TabsTrigger value="analytics" className="flex-1 md:flex-none rounded-lg px-6 py-2.5 font-black uppercase text-[11px] tracking-widest data-[state=active]:bg-white data-[state=active]:text-black text-white hover:text-white transition-all">ANALYTICS</TabsTrigger>
+              <TabsTrigger value="campaigns" className="flex-1 md:flex-none rounded-lg px-6 py-2.5 font-black uppercase text-[11px] tracking-widest data-[state=active]:bg-white data-[state=active]:text-black text-white hover:text-white transition-all">CAMPAIGNS</TabsTrigger>
+              <TabsTrigger value="executions" className="flex-1 md:flex-none rounded-lg px-6 py-2.5 font-black uppercase text-[11px] tracking-widest data-[state=active]:bg-white data-[state=active]:text-black text-white hover:text-white transition-all">LOGS</TabsTrigger>
+              <TabsTrigger value="wallet" className="flex-1 md:flex-none rounded-lg px-6 py-2.5 font-black uppercase text-[11px] tracking-widest data-[state=active]:bg-white data-[state=active]:text-black text-white hover:text-white transition-all">WALLET</TabsTrigger>
+              <TabsTrigger value="health" className="flex-1 md:flex-none rounded-lg px-6 py-2.5 font-black uppercase text-[11px] tracking-widest data-[state=active]:bg-white data-[state=active]:text-black text-white hover:text-white transition-all">HEALTH</TabsTrigger>
+              <TabsTrigger value="fraud" className="flex-1 md:flex-none rounded-lg px-6 py-2.5 font-black uppercase text-[11px] tracking-widest data-[state=active]:bg-red-500 data-[state=active]:text-white text-red-400 hover:text-red-300 transition-all">FRAUD</TabsTrigger>
             </TabsList>
             
-            <div className="relative w-full md:w-64">
+            <div className="relative w-full md:w-80">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/50" />
               <Input
                 placeholder="GLOBAL SEARCH..."
