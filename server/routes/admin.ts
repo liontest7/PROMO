@@ -7,7 +7,19 @@ import { adminMiddleware } from "../middleware/auth";
 
 export function setupAdminRoutes(app: Express) {
   // Protect all admin routes
-  app.use("/api/admin", adminMiddleware);
+  app.use("/api/admin", async (req, res, next) => {
+    const walletAddress = req.headers['x-wallet-address'] || req.query.walletAddress;
+    if (!walletAddress) {
+      return res.status(403).json({ message: "Forbidden: Wallet address required" });
+    }
+    const user = await storage.getUserByWallet(walletAddress as string);
+    if (!user || user.role !== "admin") {
+      console.error(`Admin access denied for wallet: ${walletAddress}. Role: ${user?.role}`);
+      return res.status(403).json({ message: "Forbidden: Admin access required" });
+    }
+    (req as any).user = user;
+    next();
+  });
 
   // Fraud Monitoring
   app.get("/api/admin/fraud/suspicious-users", async (req, res) => {

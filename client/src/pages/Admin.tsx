@@ -32,6 +32,8 @@ export default function AdminDashboard() {
   
   const { data: settings, isLoading: loadingSettings } = useQuery<any>({
     queryKey: ["/api/admin/settings"],
+    staleTime: 60000,
+    refetchOnWindowFocus: false,
     meta: {
       headers: {
         'x-wallet-address': localStorage.getItem('walletAddress') || ''
@@ -89,6 +91,8 @@ export default function AdminDashboard() {
 
   const { data: users, isLoading: loadingUsers } = useQuery<any[]>({
     queryKey: ["/api/admin/users"],
+    staleTime: 60000,
+    refetchOnWindowFocus: false,
     meta: {
       headers: {
         'x-wallet-address': localStorage.getItem('walletAddress') || ''
@@ -98,6 +102,8 @@ export default function AdminDashboard() {
 
   const { data: campaigns, isLoading: loadingCampaigns } = useQuery<any[]>({
     queryKey: ["/api/admin/campaigns"],
+    staleTime: 60000,
+    refetchOnWindowFocus: false,
     meta: {
       headers: {
         'x-wallet-address': localStorage.getItem('walletAddress') || ''
@@ -107,6 +113,8 @@ export default function AdminDashboard() {
 
   const { data: executions, isLoading: loadingExecutions } = useQuery<any[]>({
     queryKey: ["/api/admin/executions"],
+    staleTime: 60000,
+    refetchOnWindowFocus: false,
     meta: {
       headers: {
         'x-wallet-address': localStorage.getItem('walletAddress') || ''
@@ -123,7 +131,9 @@ export default function AdminDashboard() {
     errorLogs: any[];
   }>({
     queryKey: ["/api/admin/system-health"],
-    refetchInterval: 10000,
+    refetchInterval: 30000, // Reduced from 10000 to reduce noise
+    staleTime: 30000,
+    refetchOnWindowFocus: false,
     meta: {
       headers: {
         'x-wallet-address': localStorage.getItem('walletAddress') || ''
@@ -141,6 +151,8 @@ export default function AdminDashboard() {
     suspiciousUsers?: number;
   }>({
     queryKey: ["/api/admin/stats"],
+    staleTime: 60000,
+    refetchOnWindowFocus: false,
     meta: {
       headers: {
         'x-wallet-address': localStorage.getItem('walletAddress') || ''
