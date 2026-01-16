@@ -624,25 +624,39 @@ export class DatabaseStorage implements IStorage {
 
   async getSystemSettings(): Promise<typeof systemSettings.$inferSelect> {
     let [settings] = await db.select().from(systemSettings);
+    const hasTwitterKeys = !!(process.env.X_CONSUMER_KEY && process.env.X_CONSUMER_SECRET && process.env.X_BEARER_TOKEN);
+    const currentTwitterStatus = hasTwitterKeys ? "active" : "coming_soon";
+
     if (!settings) {
-      const hasTwitterKeys = !!(process.env.X_CONSUMER_KEY && process.env.X_CONSUMER_SECRET && process.env.X_BEARER_TOKEN);
       [settings] = await db.insert(systemSettings).values({
         campaignsEnabled: true,
         holderQualificationEnabled: true,
-        socialEngagementEnabled: true,
-        twitterApiStatus: hasTwitterKeys ? "active" : "coming_soon",
+        socialEngagementEnabled: hasTwitterKeys, // Auto-sync with API presence
+        twitterApiStatus: currentTwitterStatus,
         burnPercent: 50,
         rewardsPercent: 40,
         systemPercent: 10,
         creationFee: 10000
       }).returning();
     } else {
-      // Dynamic check for Twitter API status based on ENV vars
-      const hasTwitterKeys = !!(process.env.X_CONSUMER_KEY && process.env.X_CONSUMER_SECRET && process.env.X_BEARER_TOKEN);
-      const currentStatus = hasTwitterKeys ? "active" : "coming_soon";
-      if (settings.twitterApiStatus !== currentStatus) {
+      // Dynamic check for Twitter API status and auto-disable social if needed
+      let needsUpdate = false;
+      const updates: any = {};
+
+      if (settings.twitterApiStatus !== currentTwitterStatus) {
+        updates.twitterApiStatus = currentTwitterStatus;
+        needsUpdate = true;
+      }
+
+      // If Twitter API is down, we must disable social engagement to prevent broken campaigns
+      if (!hasTwitterKeys && settings.socialEngagementEnabled) {
+        updates.socialEngagementEnabled = false;
+        needsUpdate = true;
+      }
+
+      if (needsUpdate) {
         [settings] = await db.update(systemSettings)
-          .set({ twitterApiStatus: currentStatus })
+          .set(updates)
           .where(eq(systemSettings.id, settings.id))
           .returning();
       }

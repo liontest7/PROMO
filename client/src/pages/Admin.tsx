@@ -320,12 +320,23 @@ export default function AdminDashboard() {
                         <Label htmlFor="holder-enabled" className="text-xs uppercase tracking-wider font-bold text-white">Holder Qualification</Label>
                       </div>
                       <div className="flex items-center space-x-3">
-                        <Switch 
-                          id="social-enabled" 
-                          checked={settings?.socialEngagementEnabled ?? true} 
-                          onCheckedChange={(checked) => updateSettingsMutation.mutate({ socialEngagementEnabled: checked })}
-                        />
-                        <Label htmlFor="social-enabled" className="text-xs uppercase tracking-wider font-bold text-white">Social Engagement</Label>
+                        <div className="flex flex-col">
+                          <Switch 
+                            id="social-enabled" 
+                            checked={settings?.socialEngagementEnabled ?? true} 
+                            disabled={settings?.twitterApiStatus !== 'active'}
+                            onCheckedChange={(checked) => updateSettingsMutation.mutate({ socialEngagementEnabled: checked })}
+                          />
+                        </div>
+                        <Label htmlFor="social-enabled" className={cn(
+                          "text-xs uppercase tracking-wider font-bold",
+                          settings?.twitterApiStatus !== 'active' ? "text-white/30" : "text-white"
+                        )}>
+                          Social Engagement
+                          {settings?.twitterApiStatus !== 'active' && (
+                            <span className="block text-[8px] text-red-400 normal-case font-normal">Disabled: No API Connection</span>
+                          )}
+                        </Label>
                       </div>
                     </div>
                   </div>

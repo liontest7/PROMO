@@ -40,26 +40,21 @@ export function setupCampaignRoutes(app: Express) {
   app.post(api.campaigns.create.path, async (req, res) => {
     try {
       const settings = await storage.getSystemSettings();
-      // The master toggle should only block if it's explicitly turned off in settings
-      // and not just because an API is down.
+      
+      // Global switch check
       if (settings.campaignsEnabled === false) {
         return res.status(503).json({ message: "Campaign creation is temporarily disabled by administrator." });
       }
 
       const body = req.body;
+      
+      // Category specific checks
       if (body.campaignType === "holder_qualification" && settings.holderQualificationEnabled === false) {
         return res.status(403).json({ message: "Holder Qualification campaigns are currently disabled." });
       }
       
-      // Social campaigns are blocked if the social toggle is off
       if (body.campaignType === "engagement" && settings.socialEngagementEnabled === false) {
-        // Only block if there are social actions
-        const hasSocialActions = body.actions?.some((a: any) => 
-          a.type === 'twitter' || a.type.startsWith('twitter_') || a.type.startsWith('telegram_')
-        );
-        if (hasSocialActions) {
-          return res.status(403).json({ message: "Social Engagement campaigns are currently disabled due to API connectivity issues." });
-        }
+        return res.status(403).json({ message: "Social Engagement campaigns are currently disabled (check Twitter API connection)." });
       }
 
       const campaignData = insertCampaignSchema.parse(req.body);
