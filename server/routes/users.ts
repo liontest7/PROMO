@@ -46,42 +46,49 @@ export function setupUserRoutes(app: Express) {
     }
   });
 
-  app.patch("/api/users/:walletAddress/username", async (req, res) => {
+  app.patch("/api/users/:walletAddress/profile", async (req, res) => {
     try {
       const { walletAddress } = req.params;
-      const { username } = req.body;
-
-      if (!username || typeof username !== "string") {
-        return res.status(400).json({ message: "Invalid username" });
-      }
-
-      if (username.length < 3 || username.length > 20) {
-        return res.status(400).json({ message: "Username must be between 3 and 20 characters" });
-      }
-
-      if (badwords.check(username)) {
-        return res.status(400).json({ message: "Username contains restricted content" });
-      }
-
-      // Rate limit: Once every 24 hours
-      const now = Date.now();
-      const lastUpdate = usernameUpdateRateLimit[walletAddress] || 0;
-      const twentyFourHours = 24 * 60 * 60 * 1000;
-
-      if (now - lastUpdate < twentyFourHours) {
-        const remainingHours = Math.ceil((twentyFourHours - (now - lastUpdate)) / (1000 * 60 * 60));
-        return res.status(429).json({ message: `You can update your username again in ${remainingHours} hours` });
-      }
+      const { username, profileImageUrl } = req.body;
 
       const user = await storage.getUserByWallet(walletAddress);
       if (!user) return res.status(404).json({ message: "User not found" });
 
-      const updatedUser = await storage.updateUser(user.id, { username });
-      usernameUpdateRateLimit[walletAddress] = now;
+      const updates: Partial<typeof user> = {};
+
+      if (username !== undefined) {
+        if (typeof username !== "string" || username.length < 3 || username.length > 20) {
+          return res.status(400).json({ message: "Username must be between 3 and 20 characters" });
+        }
+        if (badwords.check(username)) {
+          return res.status(400).json({ message: "Username contains restricted content" });
+        }
+
+        // Rate limit username change: Once every 24 hours
+        const now = Date.now();
+        const lastUpdate = usernameUpdateRateLimit[walletAddress] || 0;
+        const twentyFourHours = 24 * 60 * 60 * 1000;
+
+        if (now - lastUpdate < twentyFourHours) {
+          const remainingHours = Math.ceil((twentyFourHours - (now - lastUpdate)) / (1000 * 60 * 60));
+          return res.status(429).json({ message: `You can update your username again in ${remainingHours} hours` });
+        }
+        updates.username = username;
+        usernameUpdateRateLimit[walletAddress] = now;
+      }
+
+      if (profileImageUrl !== undefined) {
+        if (profileImageUrl && !profileImageUrl.startsWith("http")) {
+          return res.status(400).json({ message: "Invalid image URL" });
+        }
+        updates.profileImageUrl = profileImageUrl;
+      }
+
+      const updatedUser = await storage.updateUser(user.id, updates);
       res.json(updatedUser);
     } catch (err) {
-      console.error("Update username error:", err);
-      res.status(500).json({ message: "Error updating username" });
+      console.error("Update profile error:", err);
+      res.status(500).json({ message: "Error updating profile" });
     }
   });
 

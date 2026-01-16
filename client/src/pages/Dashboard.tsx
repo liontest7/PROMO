@@ -93,6 +93,7 @@ export default function Dashboard() {
         <ProfileHeader 
           walletAddress={walletAddress}
           username={user?.username || undefined}
+          avatarUrl={user?.profileImageUrl || undefined}
           level={level}
           reputationScore={reputationScore}
           rank={rank}

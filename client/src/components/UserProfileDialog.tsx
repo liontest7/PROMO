@@ -29,15 +29,15 @@ export function UserProfileDialog({ walletAddress, isOpen, onOpenChange }: UserP
 
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-4xl max-h-[90vh] p-0 border-white/10 bg-[#050505] overflow-hidden">
-        <DialogHeader className="p-6 border-b border-white/5">
-          <DialogTitle className="text-xl font-black italic uppercase tracking-tighter text-white">
-            User Profile
+      <DialogContent className="max-w-5xl max-h-[95vh] p-0 border-white/10 bg-[#050505] overflow-hidden rounded-[2.5rem] shadow-[0_0_100px_rgba(0,0,0,0.8)]">
+        <DialogHeader className="p-8 border-b border-white/5 flex flex-row items-center justify-between">
+          <DialogTitle className="text-3xl font-black italic uppercase tracking-tighter text-white">
+            USER <span className="text-primary">PROFILE</span>
           </DialogTitle>
         </DialogHeader>
         
-        <ScrollArea className="h-full max-h-[calc(90vh-80px)]">
-          <div className="p-6 space-y-8">
+        <ScrollArea className="h-full max-h-[calc(95vh-100px)]">
+          <div className="p-8 space-y-10 pb-20">
             {isLoading ? (
               <div className="space-y-6">
                 <Skeleton className="h-48 w-full bg-white/5 rounded-[2.5rem]" />
@@ -51,13 +51,15 @@ export function UserProfileDialog({ walletAddress, isOpen, onOpenChange }: UserP
                 <ProfileHeader 
                   walletAddress={walletAddress}
                   username={user.username || undefined}
+                  avatarUrl={user.profileImageUrl || undefined}
                   level={Math.floor((user.reputationScore || 0) / 100) + 1}
                   reputationScore={user.reputationScore || 0}
                   rank={100} // Simplified for preview
                   rankChange="stable"
+                  isPublicView={true}
                 />
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                   <TokenPortfolios tokenBalances={stats?.tokenBalances || []} />
                   <EcosystemContribution 
                     reputationScore={user.reputationScore || 0}
