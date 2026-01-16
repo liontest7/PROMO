@@ -448,25 +448,19 @@ export default function AdminDashboard() {
           <div className="flex flex-col md:flex-row items-center justify-between mb-6 gap-4">
             <TabsList className="bg-white/5 border border-white/10 p-1.5 rounded-xl w-full md:w-auto h-auto gap-1">
               <TabsTrigger value="users" className="flex-1 md:flex-none rounded-lg px-4 py-2 font-black uppercase text-xs tracking-widest data-[state=active]:bg-white data-[state=active]:text-black text-white hover:text-white transition-all">
-                Protocol Users
-              </TabsTrigger>
-              <TabsTrigger value="analytics" className="flex-1 md:flex-none rounded-lg px-4 py-2 font-black uppercase text-xs tracking-widest data-[state=active]:bg-white data-[state=active]:text-black text-white hover:text-white transition-all">
-                Analytics
+                USERS
               </TabsTrigger>
               <TabsTrigger value="campaigns" className="flex-1 md:flex-none rounded-lg px-4 py-2 font-black uppercase text-xs tracking-widest data-[state=active]:bg-white data-[state=active]:text-black text-white hover:text-white transition-all">
-                Active Campaigns
+                CAMPAIGNS
               </TabsTrigger>
               <TabsTrigger value="executions" className="flex-1 md:flex-none rounded-lg px-4 py-2 font-black uppercase text-xs tracking-widest data-[state=active]:bg-white data-[state=active]:text-black text-white hover:text-white transition-all">
-                Live Feed
+                LOGS
               </TabsTrigger>
               <TabsTrigger value="health" className="flex-1 md:flex-none rounded-lg px-4 py-2 font-black uppercase text-xs tracking-widest data-[state=active]:bg-white data-[state=active]:text-black text-white hover:text-white transition-all">
-                System Health
+                HEALTH
               </TabsTrigger>
               <TabsTrigger value="fraud" className="flex-1 md:flex-none rounded-lg px-4 py-2 font-black uppercase text-xs tracking-widest data-[state=active]:bg-red-500 data-[state=active]:text-white text-red-400 hover:text-red-300 transition-all">
-                Fraud Shield
-              </TabsTrigger>
-              <TabsTrigger value="logs" className="flex-1 md:flex-none rounded-lg px-4 py-2 font-black uppercase text-xs tracking-widest data-[state=active]:bg-primary data-[state=active]:text-primary-foreground text-white hover:text-white transition-all">
-                System Logs
+                FRAUD
               </TabsTrigger>
             </TabsList>
 
@@ -516,8 +510,12 @@ export default function AdminDashboard() {
             </Card>
           </TabsContent>
 
-          <TabsContent value="health">
+          <TabsContent value="health" className="space-y-6">
             <SystemHealth health={systemHealth || { uptime: 0, memory: {}, cpu: {}, dbStatus: 'N/A', rpcStatus: 'N/A', errorLogs: [] }} />
+            <LiveTerminal 
+              errorLogs={systemHealth?.errorLogs || []} 
+              executions={executions || []} 
+            />
           </TabsContent>
 
           <TabsContent value="fraud">
@@ -525,25 +523,6 @@ export default function AdminDashboard() {
               users={users || []} 
               campaigns={campaigns || []}
               onUpdateStatus={(userId, status) => updateStatusMutation.mutate({ userId, status })}
-            />
-          </TabsContent>
-
-          <TabsContent value="executions">
-            <Card className="glass-card border-white/10 bg-white/[0.01] rounded-2xl overflow-hidden">
-              <CardHeader className="border-b border-white/5 bg-white/[0.02]">
-                <CardTitle className="text-xl text-white font-black">Protocol Event Log</CardTitle>
-                <CardDescription className="text-base font-bold text-white">Real-time audit trail of all task verifications and payouts.</CardDescription>
-              </CardHeader>
-              <CardContent className="p-0">
-                <ExecutionLogTable executions={filteredExecutions} />
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          <TabsContent value="logs">
-            <LiveTerminal 
-              errorLogs={systemHealth?.errorLogs || []} 
-              executions={executions || []} 
             />
           </TabsContent>
         </Tabs>

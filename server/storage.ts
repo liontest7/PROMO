@@ -626,11 +626,9 @@ export class DatabaseStorage implements IStorage {
     const hasTwitterKeys = !!(process.env.X_CONSUMER_KEY && process.env.X_CONSUMER_SECRET && process.env.X_BEARER_TOKEN);
     const currentTwitterStatus = hasTwitterKeys ? "active" : "error";
 
-    // Always fetch the first record by ID 1 to ensure consistency
     let [settings] = await db.select().from(systemSettings).where(eq(systemSettings.id, 1));
 
     if (!settings) {
-      // Create default settings if they don't exist
       [settings] = await db.insert(systemSettings).values({
         id: 1,
         campaignsEnabled: true,
@@ -640,10 +638,17 @@ export class DatabaseStorage implements IStorage {
         burnPercent: 50,
         rewardsPercent: 40,
         systemPercent: 10,
-        creationFee: 10000
+        creationFee: 10000,
+        twitterApiKeys: {
+          primary: {
+            apiKey: process.env.X_CONSUMER_KEY || "",
+            apiSecret: process.env.X_CONSUMER_SECRET || "",
+            bearerToken: process.env.X_BEARER_TOKEN || ""
+          }
+        },
+        solanaRpcUrls: [process.env.SOLANA_RPC_URL || "https://api.mainnet-beta.solana.com"]
       }).onConflictDoNothing().returning();
       
-      // If onConflictDoNothing returned nothing, fetch it again
       if (!settings) {
         [settings] = await db.select().from(systemSettings).where(eq(systemSettings.id, 1));
       }
@@ -668,15 +673,12 @@ export class DatabaseStorage implements IStorage {
 
   async updateSystemSettings(update: Partial<typeof systemSettings.$inferSelect>): Promise<typeof systemSettings.$inferSelect> {
     const current = await this.getSystemSettings();
-    
     const finalUpdate: any = { ...update, updatedAt: new Date() };
     
-    // Global Campaign Status override
     if (update.campaignsEnabled === false) {
       finalUpdate.holderQualificationEnabled = false;
       finalUpdate.socialEngagementEnabled = false;
     } else if (update.campaignsEnabled === true) {
-      // When enabling global status, we re-enable sub-features
       finalUpdate.holderQualificationEnabled = true;
       finalUpdate.socialEngagementEnabled = true;
     }

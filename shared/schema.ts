@@ -11,6 +11,11 @@ export const systemSettings = pgTable("system_settings", {
   holderQualificationEnabled: boolean("holder_qualification_enabled").default(true).notNull(),
   socialEngagementEnabled: boolean("social_engagement_enabled").default(true).notNull(),
   twitterApiStatus: text("twitter_api_status", { enum: ["active", "coming_soon", "error"] }).default("coming_soon").notNull(),
+  twitterApiKeys: jsonb("twitter_api_keys").$type<{
+    primary: { apiKey: string; apiSecret: string; bearerToken: string };
+    backup?: { apiKey: string; apiSecret: string; bearerToken: string };
+  }>(),
+  solanaRpcUrls: jsonb("solana_rpc_urls").$type<string[]>(),
   burnPercent: integer("burn_percent").default(50).notNull(),
   rewardsPercent: integer("rewards_percent").default(40).notNull(),
   systemPercent: integer("system_percent").default(10).notNull(),
