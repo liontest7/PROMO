@@ -281,7 +281,7 @@ export default function AdminDashboard() {
                     <div className="flex items-center space-x-4">
                       <Switch 
                         id="campaigns-enabled" 
-                        checked={settings?.campaignsEnabled} 
+                        checked={settings?.campaignsEnabled ?? true} 
                         onCheckedChange={(checked) => updateSettingsMutation.mutate({ campaignsEnabled: checked })}
                       />
                       <Label htmlFor="campaigns-enabled" className="flex flex-col">
@@ -422,6 +422,7 @@ export default function AdminDashboard() {
             </CardContent>
           )}
         </Card>
+
 
         <AdminStats 
           stats={adminStats || { totalUsers: 0, activeCampaigns: 0, totalExecutions: 0, totalRewardsPaid: 0, blockedUsers: 0 }} 
