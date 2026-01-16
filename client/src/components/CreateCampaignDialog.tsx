@@ -363,7 +363,7 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
             colors: ['#22c55e', '#16a34a', '#ffffff']
           });
         });
-        setShowSuccessCard(true); // Added this to trigger success card
+        setShowSuccessCard(true);
         window.dispatchEvent(new CustomEvent('campaign-created', { detail: data }));
       },
       onError: (error: any) => {
@@ -867,10 +867,13 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
 
       <SuccessCard 
         isOpen={showSuccessCard} 
-        onClose={() => setShowSuccessCard(false)}
-        campaignTitle={createdCampaign?.title || ""}
+        onClose={() => {
+          setShowSuccessCard(false);
+          setCreatedCampaign(null);
+        }}
+        campaignTitle={createdCampaign?.title || "Campaign"}
         rewardAmount={createdCampaign?.totalBudget || "0"}
-        tokenName={createdCampaign?.tokenName || ""}
+        tokenName={createdCampaign?.tokenName || "DROPY"}
         actionTitle="Campaign Launched"
       />
     </>
