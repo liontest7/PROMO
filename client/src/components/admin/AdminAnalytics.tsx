@@ -59,7 +59,7 @@ export function AdminAnalytics() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="flex items-center gap-1 text-[10px] text-white font-bold uppercase">
+            <div className="flex items-center gap-1 text-[10px] text-white font-black uppercase">
               <TrendingUp className="w-3 h-3" />
               Total $DROPY Distributed
             </div>
@@ -74,7 +74,7 @@ export function AdminAnalytics() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="flex items-center gap-1 text-[10px] text-white font-bold uppercase">
+            <div className="flex items-center gap-1 text-[10px] text-white font-black uppercase">
               <Target className="w-3 h-3" />
               Verified Actions
             </div>
@@ -89,7 +89,7 @@ export function AdminAnalytics() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="flex items-center gap-1 text-[10px] text-white font-bold uppercase">
+            <div className="flex items-center gap-1 text-[10px] text-white font-black uppercase">
               <Users className="w-3 h-3" />
               Unique Wallets
             </div>
@@ -104,7 +104,7 @@ export function AdminAnalytics() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="flex items-center gap-1 text-[10px] text-white font-bold uppercase">
+            <div className="flex items-center gap-1 text-[10px] text-white font-black uppercase">
               <Coins className="w-3 h-3" />
               Total $DROPY Burned
             </div>
