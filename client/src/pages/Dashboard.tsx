@@ -34,8 +34,8 @@ export default function Dashboard() {
     queryKey: ["/api/users", walletAddress],
     enabled: !!walletAddress,
     retry: false,
-    staleTime: 0,
-    refetchInterval: 5000,
+    staleTime: 30000, // Increase staleTime to avoid constant background refreshes
+    refetchOnWindowFocus: false, // Prevent refresh when switching tabs
   });
 
   const { data: executions } = useQuery({

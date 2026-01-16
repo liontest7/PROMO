@@ -127,6 +127,19 @@ export async function setupTwitterRoutes(app: Express) {
       walletAddress,
     };
 
+    // Explicitly save session before redirecting
+    await new Promise<void>((resolve, reject) => {
+      req.session.save((err) => {
+        if (err) {
+          console.error("[Twitter OAuth2] Session save error:", err);
+          reject(err);
+        } else {
+          console.log("[Twitter OAuth2] Session saved successfully, ID:", req.sessionID);
+          resolve();
+        }
+      });
+    });
+
     const authUrl = twitterClient.authorizationUrl({
       scope: "tweet.read users.read offline.access",
       state: stateValue,
@@ -134,14 +147,7 @@ export async function setupTwitterRoutes(app: Express) {
       code_challenge_method: "S256",
     });
 
-    await new Promise((resolve, reject) => {
-      req.session.save((err) => {
-        if (err) reject(err);
-        else resolve(true);
-      });
-    });
-
-    console.log("[Twitter OAuth2] Session saved, redirecting to:", authUrl);
+    console.log("[Twitter OAuth2] Redirecting to:", authUrl);
     return res.redirect(authUrl);
   });
 }

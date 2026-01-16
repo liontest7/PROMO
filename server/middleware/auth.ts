@@ -2,7 +2,13 @@ import { Request, Response, NextFunction } from "express";
 import { storage } from "../storage";
 
 export async function authMiddleware(req: Request, res: Response, next: NextFunction) {
-  const walletAddress = req.headers['x-wallet-address'] || req.body?.walletAddress;
+  let walletAddress = req.headers['x-wallet-address'] || req.body?.walletAddress;
+  
+  // Also check query params for cases like Twitter callback or external redirects
+  if (!walletAddress && req.query?.walletAddress) {
+    walletAddress = req.query.walletAddress;
+  }
+
   if (walletAddress && typeof walletAddress === 'string') {
     const user = await storage.getUserByWallet(walletAddress);
     
