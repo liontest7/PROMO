@@ -32,11 +32,13 @@ export default function AdminDashboard() {
   
   const fetchAdmin = async ({ queryKey }: any) => {
     const walletAddress = localStorage.getItem('walletAddress');
+    console.log(`[Admin] Fetching ${queryKey.join("/")} with wallet: ${walletAddress}`);
     const path = queryKey.join("/");
     const fetchUrl = path.startsWith('/') ? path : `/${path}`;
     const res = await fetch(fetchUrl, {
       headers: {
         'x-wallet-address': walletAddress || '',
+        'wallet-address': walletAddress || '',
         'Content-Type': 'application/json'
       }
     });
