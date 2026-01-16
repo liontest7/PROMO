@@ -656,7 +656,7 @@ export class DatabaseStorage implements IStorage {
         needsUpdate = true;
       }
 
-      // Sync socialEngagementEnabled with actual API status on every read
+      // Sync socialEngagementEnabled with actual API status ONLY if it was active but keys are missing
       if (!hasTwitterKeys && settings.socialEngagementEnabled) {
         updates.socialEngagementEnabled = false;
         needsUpdate = true;
@@ -679,12 +679,14 @@ export class DatabaseStorage implements IStorage {
     const finalUpdate: any = { ...update, updatedAt: new Date() };
     
     // If campaignsEnabled is explicitly set, we sync sub-features to it
-    if (update.campaignsEnabled === true) {
-      finalUpdate.holderQualificationEnabled = true;
-      finalUpdate.socialEngagementEnabled = hasTwitterKeys;
-    } else if (update.campaignsEnabled === false) {
+    // But we don't force sub-features to stay true if campaignsEnabled is already true
+    if (update.campaignsEnabled === false) {
       finalUpdate.holderQualificationEnabled = false;
       finalUpdate.socialEngagementEnabled = false;
+    } else if (update.campaignsEnabled === true) {
+      // Only enable if they weren't explicitly disabled or we are turning the system back on
+      finalUpdate.holderQualificationEnabled = true;
+      finalUpdate.socialEngagementEnabled = hasTwitterKeys;
     }
 
     const [updated] = await db.update(systemSettings)

@@ -293,7 +293,7 @@ export default function AdminDashboard() {
                     </div>
 
                     <div className="flex items-center space-x-4 border-l border-white/10 pl-6">
-                      <div className={`h-3 w-3 rounded-full ${settings?.twitterApiStatus === 'active' ? 'bg-green-500 animate-pulse' : 'bg-red-500'} transition-colors duration-500`} />
+                      <div className={`h-3 w-3 rounded-full ${settings?.twitterApiStatus === 'active' ? 'bg-green-500 shadow-[0_0_10px_rgba(34,197,94,0.5)] animate-pulse' : 'bg-red-500 shadow-[0_0_10px_rgba(239,68,68,0.5)]'} transition-colors duration-500`} />
                       <div className="flex flex-col">
                         <span className="font-bold uppercase text-[10px] tracking-widest text-white/50">Twitter API</span>
                         <span className={cn(
