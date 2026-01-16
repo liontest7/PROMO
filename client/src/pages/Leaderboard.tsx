@@ -16,12 +16,21 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 
+import { UserProfileDialog } from "@/components/UserProfileDialog";
+
 export default function Leaderboard() {
   const [view, setView] = useState<"ranking" | "history">("ranking");
   const [timeframe, setTimeframe] = useState<"all_time" | "monthly" | "weekly">("weekly");
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
   const previousRanksRef = useRef<Record<number, number>>({});
+  const [selectedWallet, setSelectedWallet] = useState<string | null>(null);
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
+
+  const handleUserClick = (wallet: string) => {
+    setSelectedWallet(wallet);
+    setIsProfileOpen(true);
+  };
 
   const { data: leaderboardRes, isLoading, error } = useQuery<any>({
     queryKey: ["/api/leaderboard", timeframe],
@@ -250,7 +259,10 @@ export default function Leaderboard() {
         {view === "ranking" ? (
           <>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16 pt-12 items-end px-4 overflow-visible">
-              <Card className="glass-card border-white/10 bg-white/[0.03] rounded-[3rem] overflow-hidden order-2 md:order-1 hover-elevate transition-all duration-500 min-h-[280px]">
+              <Card 
+                className="glass-card border-white/10 bg-white/[0.03] rounded-[3rem] overflow-hidden order-2 md:order-1 hover-elevate transition-all duration-500 min-h-[280px] cursor-pointer"
+                onClick={() => activeLeaders?.[1]?.walletAddress && handleUserClick(activeLeaders[1].walletAddress)}
+              >
                 <CardContent className="p-8 flex flex-col items-center text-center">
                   <div className="relative mb-6">
                     <div className="w-24 h-24 rounded-full bg-[#111] border-2 border-white/20 p-1.5 relative">
@@ -273,7 +285,10 @@ export default function Leaderboard() {
                 </CardContent>
               </Card>
 
-              <Card className="glass-card border-yellow-500/40 bg-yellow-500/10 rounded-[3.5rem] overflow-visible order-1 md:order-2 scale-105 relative z-20 shadow-[0_0_60px_rgba(234,179,8,0.25)] hover-elevate transition-all duration-500 min-h-[340px]">
+              <Card 
+                className="glass-card border-yellow-500/40 bg-yellow-500/10 rounded-[3.5rem] overflow-visible order-1 md:order-2 scale-105 relative z-20 shadow-[0_0_60px_rgba(234,179,8,0.25)] hover-elevate transition-all duration-500 min-h-[340px] cursor-pointer"
+                onClick={() => activeLeaders?.[0]?.walletAddress && handleUserClick(activeLeaders[0].walletAddress)}
+              >
                 <CardContent className="p-10 flex flex-col items-center text-center">
                   <div className="relative mb-6">
                     <div className="w-32 h-32 rounded-full bg-[#111] border-4 border-yellow-500/50 p-1.5 shadow-[0_0_40px_rgba(234,179,8,0.4)] relative">
@@ -297,7 +312,10 @@ export default function Leaderboard() {
                 </CardContent>
               </Card>
 
-              <Card className="glass-card border-white/10 bg-white/[0.03] rounded-[3rem] overflow-hidden order-3 hover-elevate transition-all duration-500 min-h-[280px]">
+              <Card 
+                className="glass-card border-white/10 bg-white/[0.03] rounded-[3rem] overflow-hidden order-3 hover-elevate transition-all duration-500 min-h-[280px] cursor-pointer"
+                onClick={() => activeLeaders?.[2]?.walletAddress && handleUserClick(activeLeaders[2].walletAddress)}
+              >
                 <CardContent className="p-8 flex flex-col items-center text-center">
                   <div className="relative mb-6">
                     <div className="w-24 h-24 rounded-full bg-[#111] border-2 border-white/20 p-1.5 relative">
@@ -340,7 +358,8 @@ export default function Leaderboard() {
                         exit={{ opacity: 0, x: 20 }}
                         transition={{ duration: 0.5, type: "spring", stiffness: 100 }}
                         key={user.id} 
-                        className="flex items-center px-12 py-10 hover:bg-white/[0.05] transition-all group relative"
+                        className="flex items-center px-12 py-10 hover:bg-white/[0.05] transition-all group relative cursor-pointer"
+                        onClick={() => handleUserClick(user.fullWallet)}
                       >
                         <div className="absolute left-0 w-1.5 h-0 bg-primary group-hover:h-full transition-all duration-300" />
                         <div className="w-20 flex items-center gap-2">
@@ -419,6 +438,12 @@ export default function Leaderboard() {
               </div>
             )}
           </div>
+          
+          <UserProfileDialog 
+            walletAddress={selectedWallet}
+            isOpen={isProfileOpen}
+            onOpenChange={setIsProfileOpen}
+          />
         </>
       ) : (
         <div className="space-y-6 relative">

@@ -41,6 +41,24 @@ export function setupUserRoutes(app: Express) {
     }
   });
 
+  app.patch("/api/users/:walletAddress/username", async (req, res) => {
+    try {
+      const user = await storage.getUserByWallet(req.params.walletAddress);
+      if (!user) return res.status(404).json({ message: "User not found" });
+      
+      const { username } = req.body;
+      if (typeof username !== "string") {
+        return res.status(400).json({ message: "Invalid username" });
+      }
+
+      const updatedUser = await storage.updateUser(user.id, { username });
+      res.json(updatedUser);
+    } catch (err) {
+      console.error("Update username error:", err);
+      res.status(500).json({ message: "Error updating username" });
+    }
+  });
+
   app.get(api.users.get.path, async (req, res) => {
     const user = await storage.getUserByWallet(req.params.walletAddress);
     if (!user) return res.status(404).json({ message: "User not found" });
