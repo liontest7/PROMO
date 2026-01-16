@@ -113,7 +113,7 @@ export default function Leaderboard() {
   };
 
   const CountdownTimer = () => {
-    if (!timeLeft) return null;
+    if (!timeLeft || (weeklyPrizePool === 0 && timeframe === 'weekly')) return null;
     return (
       <div className="flex gap-4 mt-4">
         {[
