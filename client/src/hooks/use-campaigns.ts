@@ -24,7 +24,7 @@ export function useCampaigns(creatorId?: string) {
       if (!res.ok) throw new Error("Failed to fetch campaigns");
       return api.campaigns.list.responses[200].parse(await res.json());
     },
-    refetchInterval: 5000, // Refresh every 5 seconds for real-time updates
+    refetchInterval: 2000, // Very fast refresh for near-instant updates
   });
 }
 

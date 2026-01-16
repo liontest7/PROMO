@@ -75,14 +75,14 @@ export default function AdminDashboard() {
     queryKey: ["/api/admin/settings"],
     queryFn: fetchAdmin,
     enabled: !!currentWallet,
-    refetchInterval: 60000
+    refetchInterval: 2000 // Fast refresh for admin settings
   });
 
   const { data: adminStats, isLoading: loadingStats } = useQuery<any>({
     queryKey: ["/api/admin/stats"],
     queryFn: fetchAdmin,
     enabled: !!currentWallet,
-    refetchInterval: 30000
+    refetchInterval: 10000
   });
 
   const { data: walletInfo } = useQuery<any>({
@@ -168,6 +168,9 @@ export default function AdminDashboard() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/admin/settings"] });
+      // Invalidate campaigns list and individual campaigns as well to ensure total sync
+      queryClient.invalidateQueries({ queryKey: ["/api/campaigns"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/campaigns"] });
       setSettingsUpdate({});
       toast({ title: "Success", description: "Protocol parameters updated" });
     }
