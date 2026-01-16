@@ -5,6 +5,10 @@ export async function authMiddleware(req: Request, res: Response, next: NextFunc
   const walletAddress = req.headers['x-wallet-address'] || req.body?.walletAddress;
   if (walletAddress && typeof walletAddress === 'string') {
     const user = await storage.getUserByWallet(walletAddress);
+    
+    // Attach user to request for downstream middlewares
+    (req as any).user = user;
+
     if (user?.status === 'blocked') {
       return res.status(403).json({ 
         status: 'blocked',
@@ -22,21 +26,15 @@ export async function authMiddleware(req: Request, res: Response, next: NextFunc
     const clientIp = (req.headers['x-forwarded-for'] as string || req.ip || req.socket.remoteAddress || "unknown").split(',')[0].trim();
     if (walletAddress && typeof clientIp === 'string' && clientIp !== "unknown" && clientIp !== "::1" && clientIp !== "127.0.0.1") {
       await storage.logIpWalletAssociation(clientIp, walletAddress);
-      
-      const walletsOnIp = await storage.getWalletsByIp(clientIp);
-      if (walletsOnIp.length > 5) { // Increased threshold slightly for busy networks, but still protective
-        console.warn(`[Anti-Fraud] IP ${clientIp} has ${walletsOnIp.length} wallets associated:`, walletsOnIp);
-      }
     }
+  }
+  next();
+}
 
-    // Branding update
-    const originalSend = res.send;
-    res.send = function(body) {
-      if (typeof body === 'string') {
-        body = body.replace(/Dropy/g, 'Dropy');
-      }
-      return originalSend.call(this, body);
-    };
+export function adminMiddleware(req: Request, res: Response, next: NextFunction) {
+  const user = (req as any).user;
+  if (!user || user.role !== "admin") {
+    return res.status(403).json({ message: "Forbidden: Admin access required" });
   }
   next();
 }

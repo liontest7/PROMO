@@ -7,6 +7,7 @@ import { useQuery } from "@tanstack/react-query";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { Link } from "wouter";
 import {
   Accordion,
   AccordionContent,
@@ -290,9 +291,22 @@ export default function Leaderboard() {
                       </div>
                     </div>
                   )) : (
-                    <div className="p-32 text-center">
-                      <p className="text-white/30 text-xl uppercase font-black tracking-[0.4em] italic animate-pulse">Neural Ranking Data Missing</p>
-                    </div>
+            <Card className="glass-card border-white/5 bg-white/5 p-8 text-center rounded-3xl">
+              <div className="flex flex-col items-center gap-4 py-12">
+                <div className="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center mb-2">
+                  <Trophy className="w-10 h-10 text-primary opacity-20" />
+                </div>
+                <h3 className="text-2xl font-display font-black text-white uppercase tracking-tighter">No Rankings Yet</h3>
+                <p className="text-white/60 max-w-md mx-auto font-medium text-center">
+                  The leaderboard for this period is still being calculated. Complete missions to be the first to appear here!
+                </p>
+                <Link href="/earn">
+                  <Button className="mt-4 bg-primary text-primary-foreground font-black px-8 h-12 rounded-2xl hover-elevate">
+                    START EARNING NOW
+                  </Button>
+                </Link>
+              </div>
+            </Card>
                   )}
                 </div>
               </CardContent>

@@ -3,8 +3,12 @@ import { storage } from "../storage";
 import { PLATFORM_CONFIG } from "@shared/config";
 import os from "os";
 import { AutomationService } from "../services/automation";
+import { adminMiddleware } from "../middleware/auth";
 
 export function setupAdminRoutes(app: Express) {
+  // Protect all admin routes
+  app.use("/api/admin", adminMiddleware);
+
   // Fraud Monitoring
   app.get("/api/admin/fraud/suspicious-users", async (req, res) => {
     try {

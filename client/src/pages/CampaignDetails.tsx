@@ -475,7 +475,7 @@ export default function CampaignDetails() {
                   </Button>
                   <Button variant="outline" size="sm" className="h-10 text-xs font-black border-white/10 bg-white/5 hover:bg-[#BEF32C]/20 hover:border-[#BEF32C]/40 transition-all gap-2 text-white rounded-lg group" asChild>
                     <a href={`${CONFIG.TOKEN_DETAILS.BUY_LINKS.JUPITER}${campaign.tokenAddress}`} target="_blank" rel="noreferrer">
-                      <img src={CONFIG.ui.walletIcons.jupiter} className="w-4 h-4" />
+                      <img src={CONFIG.ui.walletIcons.jupiter} alt="Jupiter" className="w-4 h-4" />
                       JUPITER
                     </a>
                   </Button>
