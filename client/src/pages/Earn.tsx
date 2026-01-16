@@ -58,8 +58,7 @@ export default function Earn() {
       if (!res.ok) return null;
       return res.json();
     },
-    refetchInterval: 500,
-    staleTime: 0,
+    refetchInterval: 1000,
   });
 
   const [activeTab, setActiveTab] = useState<"active" | "closed">("active");
@@ -82,6 +81,9 @@ export default function Earn() {
   const ITEMS_PER_PAGE = 12;
 
   const filteredCampaigns = campaigns?.filter(c => {
+    // If campaigns are globally disabled, don't show any active campaigns
+    if (settings && !settings.campaignsEnabled && activeTab === "active") return false;
+
     const matchesTab = activeTab === "active" ? c.status === "active" : (c.status === "completed" || c.status === "paused");
     if (!matchesTab) return false;
 

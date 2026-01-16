@@ -13,7 +13,7 @@ import { useQuery } from "@tanstack/react-query";
 
 import { PLATFORM_CONFIG } from "@shared/config";
 
-function EarnContentOnly() {
+function EarnContentOnly({ settings }: { settings: any }) {
   const { data: campaigns, isLoading } = useCampaigns();
   const { isConnected } = useWallet();
   const { toast } = useToast();
@@ -32,9 +32,18 @@ function EarnContentOnly() {
     );
   }
 
+  // If campaigns are globally disabled, don't show them on landing page either
+  if (settings && !settings.campaignsEnabled) {
+    return (
+      <div className="col-span-full py-20 text-center">
+        <p className="text-xl font-bold text-white/40 italic uppercase tracking-widest">Campaigns are temporarily paused for maintenance.</p>
+      </div>
+    );
+  }
+
   return (
     <>
-      {campaigns?.slice(0, 3).map((campaign) => (
+      {campaigns?.filter(c => c.status === 'active').slice(0, 3).map((campaign) => (
         <CampaignCard 
           key={campaign.id} 
           campaign={campaign} 
@@ -74,8 +83,7 @@ export default function Landing() {
       if (!res.ok) return null;
       return res.json();
     },
-    refetchInterval: 500,
-    staleTime: 0,
+    refetchInterval: 1000,
   });
 
   const creationFee = settings?.creationFee || PLATFORM_CONFIG.TOKENOMICS.CREATION_FEE;
@@ -204,7 +212,7 @@ export default function Landing() {
             </div>
             
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              <EarnContentOnly />
+              <EarnContentOnly settings={settings} />
             </div>
           </div>
         </section>

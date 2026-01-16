@@ -75,15 +75,14 @@ export default function AdminDashboard() {
     queryKey: ["/api/admin/settings"],
     queryFn: fetchAdmin,
     enabled: !!currentWallet,
-    refetchInterval: 500, // Check every half second for ultra-responsive UI
-    staleTime: 0,
+    refetchInterval: 1000,
   });
 
   const { data: adminStats, isLoading: loadingStats } = useQuery<any>({
     queryKey: ["/api/admin/stats"],
     queryFn: fetchAdmin,
     enabled: !!currentWallet,
-    refetchInterval: 5000
+    refetchInterval: 30000
   });
 
   const { data: walletInfo } = useQuery<any>({
