@@ -29,12 +29,12 @@ export function AdminWalletSection() {
             <Badge variant="outline" className="border-primary/50 text-primary font-black uppercase tracking-widest">Master Treasury</Badge>
           </div>
           <div className="space-y-1">
-            <p className="text-[10px] font-black text-primary uppercase tracking-widest">Solana Network Balance</p>
-            <h2 className="text-4xl font-black font-display text-white">{walletInfo?.balanceSol?.toFixed(4) || "0.0000"} SOL</h2>
+            <p className="text-[12px] font-black text-primary uppercase tracking-widest">Solana Network Balance</p>
+            <h2 className="text-5xl font-black font-display text-white">{walletInfo?.balanceSol?.toFixed(4) || "0.0000"} SOL</h2>
           </div>
-          <div className="mt-6 p-4 rounded-xl bg-black/20 border border-white/5">
-            <p className="text-[10px] font-bold text-white/50 uppercase mb-1">Wallet Address</p>
-            <code className="text-xs text-primary font-mono break-all">{walletInfo?.address || "NOT_LOADED"}</code>
+          <div className="mt-6 p-4 rounded-xl bg-black/20 border border-white/10">
+            <p className="text-[12px] font-black text-white uppercase mb-1">Wallet Address</p>
+            <code className="text-sm text-primary font-black font-mono break-all">{walletInfo?.address || "NOT_LOADED"}</code>
           </div>
         </Card>
 
@@ -46,17 +46,17 @@ export function AdminWalletSection() {
             <Badge variant="outline" className="border-white/20 text-white font-black uppercase tracking-widest">Native Token</Badge>
           </div>
           <div className="space-y-1">
-            <p className="text-[10px] font-black text-white uppercase tracking-widest">$DROPY Supply in Treasury</p>
-            <h2 className="text-4xl font-black font-display text-white">{walletInfo?.balanceDropy?.toLocaleString() || "0"} $DROPY</h2>
+            <p className="text-[12px] font-black text-white uppercase tracking-widest">$DROPY Supply in Treasury</p>
+            <h2 className="text-5xl font-black font-display text-white">{walletInfo?.balanceDropy?.toLocaleString() || "0"} $DROPY</h2>
           </div>
           <div className="mt-6 grid grid-cols-2 gap-4">
-             <div className="p-3 rounded-xl bg-white/5 border border-white/5">
-                <p className="text-[9px] font-bold text-white/50 uppercase">Network Status</p>
-                <p className="text-xs font-black text-green-500 uppercase">Mainnet Beta</p>
+             <div className="p-3 rounded-xl bg-white/5 border border-white/10">
+                <p className="text-[11px] font-black text-white uppercase">Network Status</p>
+                <p className="text-sm font-black text-green-500 uppercase">Mainnet Beta</p>
              </div>
-             <div className="p-3 rounded-xl bg-white/5 border border-white/5">
-                <p className="text-[9px] font-bold text-white/50 uppercase">Tx Priority</p>
-                <p className="text-xs font-black text-primary uppercase">Ultra High</p>
+             <div className="p-3 rounded-xl bg-white/5 border border-white/10">
+                <p className="text-[11px] font-black text-white uppercase">Tx Priority</p>
+                <p className="text-sm font-black text-primary uppercase">Ultra High</p>
              </div>
           </div>
         </Card>
@@ -69,13 +69,13 @@ export function AdminWalletSection() {
             <Badge variant="outline" className="border-white/20 text-white font-black uppercase tracking-widest">Rewards Pool</Badge>
           </div>
           <div className="space-y-1 py-4">
-            <p className="text-[10px] font-black text-white uppercase tracking-widest">Weekly Rewards Pool</p>
-            <h2 className="text-4xl font-black font-display text-white">{walletInfo?.weeklyRewardsPool?.toLocaleString() || "0"} $DROPY</h2>
-            <p className="text-[10px] text-white/50 uppercase">Accumulated from creation fees</p>
+            <p className="text-[12px] font-black text-white uppercase tracking-widest">Weekly Rewards Pool</p>
+            <h2 className="text-5xl font-black font-display text-white">{walletInfo?.weeklyRewardsPool?.toLocaleString() || "0"} $DROPY</h2>
+            <p className="text-[11px] font-black text-white uppercase">Accumulated from creation fees</p>
           </div>
           <div className="grid grid-cols-2 gap-2 mt-2">
-            <Button size="sm" variant="outline" className="h-8 text-[10px] font-black uppercase tracking-widest border-white/10">Active Balance</Button>
-            <Button size="sm" className="h-8 text-[10px] font-black uppercase tracking-widest bg-white text-black hover:bg-white/90">Distribute</Button>
+            <Button size="sm" variant="outline" className="h-9 text-[11px] font-black uppercase tracking-widest border-white/20 text-white">Active Balance</Button>
+            <Button size="sm" className="h-9 text-[11px] font-black uppercase tracking-widest bg-white text-black hover:bg-white/90">Distribute</Button>
           </div>
         </Card>
       </div>

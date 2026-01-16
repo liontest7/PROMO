@@ -21,53 +21,53 @@ export function AdminHealthSection() {
   return (
     <div className="space-y-6">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <Card className="glass-card border-white/10 bg-white/[0.01]">
+        <Card className="glass-card border-white/20 bg-white/[0.01]">
           <CardHeader className="pb-2">
-            <CardTitle className="text-xs font-black uppercase tracking-widest text-white/50 flex items-center gap-2">
-              <Activity className="w-3 h-3 text-primary" /> Infrastructure
+            <CardTitle className="text-base font-black uppercase tracking-widest text-white flex items-center gap-2">
+              <Activity className="w-4 h-4 text-primary" /> Infrastructure
             </CardTitle>
           </CardHeader>
-          <CardContent className="space-y-2">
+          <CardContent className="space-y-3">
             <div className="flex justify-between items-center">
-              <span className="text-xs font-bold text-white/70 uppercase">Database</span>
-              <Badge variant="outline" className="bg-green-500/10 text-green-500 border-green-500/20 text-[10px] uppercase font-black tracking-widest px-2">Connected</Badge>
+              <span className="text-base font-black text-white uppercase">Database</span>
+              <Badge variant="outline" className="bg-green-500/10 text-green-500 border-green-500/30 text-xs uppercase font-black tracking-widest px-3 py-1">Connected</Badge>
             </div>
             <div className="flex justify-between items-center">
-              <span className="text-xs font-bold text-white/70 uppercase">Solana RPC</span>
-              <Badge variant="outline" className="bg-green-500/10 text-green-500 border-green-500/20 text-[10px] uppercase font-black tracking-widest px-2">Healthy</Badge>
+              <span className="text-base font-black text-white uppercase">Solana RPC</span>
+              <Badge variant="outline" className="bg-green-500/10 text-green-500 border-green-500/30 text-xs uppercase font-black tracking-widest px-3 py-1">Healthy</Badge>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="glass-card border-white/10 bg-white/[0.01]">
+        <Card className="glass-card border-white/20 bg-white/[0.01]">
           <CardHeader className="pb-2">
-            <CardTitle className="text-[10px] font-black uppercase tracking-[0.2em] text-white/50 flex items-center gap-2">
-              <Cpu className="w-3 h-3 text-blue-400" /> Resources
+            <CardTitle className="text-base font-black uppercase tracking-widest text-white flex items-center gap-2">
+              <Cpu className="w-4 h-4 text-blue-400" /> Resources
             </CardTitle>
           </CardHeader>
           <CardContent>
-             <div className="text-[10px] font-black text-white/70 uppercase tracking-widest mb-1.5 flex justify-between">
+             <div className="text-sm font-black text-white uppercase tracking-widest mb-2.5 flex justify-between">
                <span>Memory Usage</span>
-               <span className="text-primary">{Math.round((health?.memory?.rss || 0) / 1024 / 1024)}MB / 512MB</span>
+               <span className="text-primary font-black">{(health?.memory?.rss ? Math.round(health.memory.rss / 1024 / 1024) : 0)}MB / 512MB</span>
              </div>
-             <div className="h-2 w-full bg-white/5 rounded-full overflow-hidden border border-white/5">
+             <div className="h-3 w-full bg-white/5 rounded-full overflow-hidden border border-white/10">
                 <div className="h-full bg-gradient-to-r from-primary/50 to-primary shadow-[0_0_10px_rgba(34,197,94,0.4)] transition-all duration-1000" style={{ width: `${Math.min(100, ((health?.memory?.rss || 0) / (512 * 1024 * 1024)) * 100)}%` }} />
              </div>
           </CardContent>
         </Card>
 
-        <Card className="glass-card border-white/10 bg-white/[0.01]">
+        <Card className="glass-card border-white/20 bg-white/[0.01]">
           <CardHeader className="pb-2">
-            <CardTitle className="text-[10px] font-black uppercase tracking-[0.2em] text-white/50 flex items-center gap-2">
-              <HardDrive className="w-3 h-3 text-orange-400" /> Uptime
+            <CardTitle className="text-base font-black uppercase tracking-widest text-white flex items-center gap-2">
+              <HardDrive className="w-4 h-4 text-orange-400" /> Uptime
             </CardTitle>
           </CardHeader>
-          <CardContent className="flex flex-col items-center justify-center py-1">
-            <div className="text-3xl font-black font-display text-white tracking-tighter italic">
+          <CardContent className="flex flex-col items-center justify-center py-2">
+            <div className="text-5xl font-black font-display text-white tracking-tighter italic">
               {health?.uptime ? `${Math.floor(health.uptime / 3600)}H ${Math.floor((health.uptime % 3600) / 60)}M` : "0H 0M"}
             </div>
-            <div className="text-[9px] font-black text-green-500 uppercase tracking-[0.2em] mt-1 flex items-center gap-1">
-              <div className="w-1 h-1 rounded-full bg-green-500 animate-pulse" />
+            <div className="text-xs font-black text-green-500 uppercase tracking-widest mt-2 flex items-center gap-1.5">
+              <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
               Continuous Protection
             </div>
           </CardContent>

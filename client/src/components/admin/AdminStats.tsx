@@ -39,21 +39,21 @@ export function AdminStats({ stats, campaignsCount }: AdminStatsProps) {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <Card className="glass-card border-white/5 bg-white/[0.02] hover-elevate transition-all rounded-2xl">
+        <Card className="glass-card border-white/10 bg-white/[0.02] hover-elevate transition-all rounded-2xl">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-black uppercase tracking-widest text-white">Admin Stats</CardTitle>
-            <div className="p-2 rounded-lg bg-purple-500/10">
-              <ShieldAlert className="h-4 w-4 text-purple-400" />
+            <CardTitle className="text-base font-black uppercase tracking-widest text-white">Admin Stats</CardTitle>
+            <div className="p-2 rounded-lg bg-purple-500/20">
+              <ShieldAlert className="h-5 w-5 text-purple-400" />
             </div>
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-black font-display text-white">{totalUsersCount}</div>
-            <div className="flex flex-col gap-1 mt-2">
-              <div className="flex items-center justify-between text-xs font-bold">
+            <div className="text-4xl font-black font-display text-white">{totalUsersCount}</div>
+            <div className="flex flex-col gap-1.5 mt-3">
+              <div className="flex items-center justify-between text-sm font-black">
                 <span className="text-white uppercase">Users</span>
                 <span className="text-white">{totalUsersCount}</span>
               </div>
-              <div className="flex items-center justify-between text-xs font-bold">
+              <div className="flex items-center justify-between text-sm font-black">
                 <span className="text-white uppercase">Campaigns</span>
                 <span className="text-white">{campaignsCount}</span>
               </div>
@@ -61,47 +61,47 @@ export function AdminStats({ stats, campaignsCount }: AdminStatsProps) {
           </CardContent>
         </Card>
 
-        <Card className="glass-card border-white/5 bg-white/[0.02] hover-elevate transition-all rounded-2xl">
+        <Card className="glass-card border-white/10 bg-white/[0.02] hover-elevate transition-all rounded-2xl">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-black uppercase tracking-widest text-white">Campaigns</CardTitle>
-            <div className="p-2 rounded-lg bg-orange-500/10">
-              <Megaphone className="h-4 w-4 text-orange-400" />
+            <CardTitle className="text-base font-black uppercase tracking-widest text-white">Campaigns</CardTitle>
+            <div className="p-2 rounded-lg bg-orange-500/20">
+              <Megaphone className="h-5 w-5 text-orange-400" />
             </div>
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-black font-display text-white">{campaignsCount}</div>
-            <div className="flex items-center gap-2 mt-2">
-              <span className="text-xs text-white font-black uppercase tracking-widest">{activeCampaignsCount} ACTIVE MANAGED</span>
+            <div className="text-4xl font-black font-display text-white">{campaignsCount}</div>
+            <div className="flex items-center gap-2 mt-3">
+              <span className="text-sm text-white font-black uppercase tracking-widest">{activeCampaignsCount} ACTIVE MANAGED</span>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="glass-card border-white/5 bg-white/[0.02] hover-elevate transition-all rounded-2xl">
+        <Card className="glass-card border-white/10 bg-white/[0.02] hover-elevate transition-all rounded-2xl">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-black uppercase tracking-widest text-white">Total Task Load</CardTitle>
-            <div className="p-2 rounded-lg bg-green-500/10">
-              <CheckCircle className="h-4 w-4 text-green-400" />
+            <CardTitle className="text-base font-black uppercase tracking-widest text-white">Total Task Load</CardTitle>
+            <div className="p-2 rounded-lg bg-green-500/20">
+              <CheckCircle className="h-5 w-5 text-green-400" />
             </div>
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-black font-display text-white">{totalExecutionsCount}</div>
-            <div className="flex items-center gap-2 mt-2">
-              <span className="flex h-2 w-2 rounded-full bg-green-500 animate-pulse" />
-              <span className="text-xs text-white font-black uppercase tracking-widest">REAL-TIME VERIFIED</span>
+            <div className="text-4xl font-black font-display text-white">{totalExecutionsCount}</div>
+            <div className="flex items-center gap-2 mt-3">
+              <span className="flex h-2.5 w-2.5 rounded-full bg-green-500 animate-pulse" />
+              <span className="text-sm text-white font-black uppercase tracking-widest">REAL-TIME VERIFIED</span>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="glass-card border-primary/20 bg-primary/5 hover-elevate transition-all rounded-2xl">
+        <Card className="glass-card border-primary/30 bg-primary/5 hover-elevate transition-all rounded-2xl">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-black uppercase tracking-widest text-primary">Protocol Payouts</CardTitle>
+            <CardTitle className="text-base font-black uppercase tracking-widest text-primary">Protocol Payouts</CardTitle>
             <div className="p-2 rounded-lg bg-primary/20">
-              <ArrowUpRight className="h-4 w-4 text-primary" />
+              <ArrowUpRight className="h-5 w-5 text-primary" />
             </div>
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-black font-display text-primary">{totalRewardsPaid.toLocaleString()}</div>
-            <p className="text-xs text-primary/60 mt-1 uppercase font-black tracking-widest">Distributed Tokens</p>
+            <div className="text-4xl font-black font-display text-primary">{totalRewardsPaid.toLocaleString()}</div>
+            <p className="text-sm text-primary mt-1.5 uppercase font-black tracking-widest italic underline decoration-primary/30">Distributed Tokens</p>
           </CardContent>
         </Card>
       </div>

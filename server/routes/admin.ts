@@ -302,6 +302,7 @@ export function setupAdminRoutes(app: Express) {
       try {
         const { getSolanaConnection } = await import("../services/solana");
         const { PublicKey } = await import("@solana/web3.js");
+        const { getAccount, getAssociatedTokenAddress } = await import("@solana/spl-token");
         
         const connection = await getSolanaConnection();
         const pubkey = new PublicKey(systemWalletAddress);
@@ -309,16 +310,37 @@ export function setupAdminRoutes(app: Express) {
         const solLamports = await connection.getBalance(pubkey);
         balanceSol = solLamports / 1e9;
 
-        // Calculate real DROPY from fees + initial supply
-        const allExecutions = await storage.getAllExecutions();
-        const feesCollected = allExecutions
-          .filter(e => e.status === 'paid' || e.status === 'verified')
-          .reduce((acc, e) => {
-            const reward = e.action ? parseFloat(e.action.rewardAmount) : 0;
-            return acc + (reward * 0.1); // 10% fee assumption
-          }, 0);
-          
-        balanceDropy = 1000000 + feesCollected; // 1M base + fees
+        // Calculate real DROPY from on-chain balance if CA exists
+        const DROPY_CA = process.env.VITE_DROPY_CA;
+        if (DROPY_CA && DROPY_CA !== "DropyAddressHere") {
+          try {
+            const tokenMint = new PublicKey(DROPY_CA);
+            const ata = await getAssociatedTokenAddress(tokenMint, pubkey);
+            const account = await getAccount(connection, ata);
+            balanceDropy = Number(account.amount) / 1e6; // Assuming 6 decimals
+          } catch (e) {
+            console.warn("[Admin Wallet Info] Could not fetch on-chain DROPY balance:", e);
+            // Fallback calculation from fees + initial supply if on-chain fetch fails
+            const allExecutions = await storage.getAllExecutions();
+            const feesCollected = allExecutions
+              .filter(e => e.status === 'paid' || e.status === 'verified')
+              .reduce((acc, e) => {
+                const reward = e.action ? parseFloat(e.action.rewardAmount) : 0;
+                return acc + (reward * 0.1); 
+              }, 0);
+            balanceDropy = 1000000 + feesCollected;
+          }
+        } else {
+          // Calculate from fees + initial supply if no CA yet
+          const allExecutions = await storage.getAllExecutions();
+          const feesCollected = allExecutions
+            .filter(e => e.status === 'paid' || e.status === 'verified')
+            .reduce((acc, e) => {
+              const reward = e.action ? parseFloat(e.action.rewardAmount) : 0;
+              return acc + (reward * 0.1); 
+            }, 0);
+          balanceDropy = 1000000 + feesCollected;
+        }
       } catch (err) {
         console.warn("[Admin Wallet Info] Could not fetch live balance:", err);
         balanceSol = 0; 

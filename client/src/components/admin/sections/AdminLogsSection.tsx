@@ -51,30 +51,30 @@ export function AdminLogsSection() {
       <Card className="glass-card border-white/10 bg-white/[0.01] rounded-xl overflow-hidden">
         <div className="p-0 max-h-[600px] overflow-y-auto custom-scrollbar">
           <Table>
-            <TableHeader className="sticky top-0 bg-[#0a0a0a] z-10 border-b border-white/10">
+            <TableHeader className="sticky top-0 bg-[#0a0a0a] z-10 border-b border-white/20">
               <TableRow className="border-none hover:bg-transparent">
-                <TableHead className="text-[10px] font-black uppercase text-white w-32">Timestamp</TableHead>
-                <TableHead className="text-[10px] font-black uppercase text-white w-24">Level</TableHead>
-                <TableHead className="text-[10px] font-black uppercase text-white">Event</TableHead>
-                <TableHead className="text-[10px] font-black uppercase text-white">Details</TableHead>
+                <TableHead className="text-xs font-black uppercase text-white w-32 py-4">Timestamp</TableHead>
+                <TableHead className="text-xs font-black uppercase text-white w-24 py-4">Level</TableHead>
+                <TableHead className="text-xs font-black uppercase text-white py-4">Event</TableHead>
+                <TableHead className="text-xs font-black uppercase text-white py-4">Details</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {logs?.length > 0 ? logs.map((log: any, i: number) => (
-                <TableRow key={i} className="border-white/5 hover:bg-white/[0.02]">
-                  <TableCell className="text-[10px] font-mono text-white/50">{format(new Date(log.timestamp), 'HH:mm:ss')}</TableCell>
+                <TableRow key={i} className="border-white/10 hover:bg-white/[0.05] transition-colors">
+                  <TableCell className="text-xs font-black font-mono text-white/80">{format(new Date(log.timestamp), 'HH:mm:ss')}</TableCell>
                   <TableCell>
                     <Badge variant="outline" className={cn(
-                      "text-[9px] font-black uppercase",
-                      log.level === 'error' ? 'text-red-500 border-red-500/20' : 
-                      log.level === 'warn' ? 'text-yellow-500 border-yellow-500/20' : 
-                      'text-blue-400 border-blue-400/20'
+                      "text-[10px] font-black uppercase px-2 py-0.5",
+                      log.level === 'error' ? 'text-red-500 border-red-500/40 bg-red-500/5' : 
+                      log.level === 'warn' ? 'text-yellow-500 border-yellow-500/40 bg-yellow-500/5' : 
+                      'text-blue-400 border-blue-400/40 bg-blue-400/5'
                     )}>
                       {log.level}
                     </Badge>
                   </TableCell>
-                  <TableCell className="text-xs font-bold text-white uppercase tracking-tighter">{log.event}</TableCell>
-                  <TableCell className="text-xs font-medium text-white/70 font-mono max-w-md truncate">{log.details}</TableCell>
+                  <TableCell className="text-sm font-black text-white uppercase tracking-tighter">{log.event}</TableCell>
+                  <TableCell className="text-sm font-black text-white font-mono max-w-md truncate">{log.details}</TableCell>
                 </TableRow>
               )) : (
                 <TableRow>
