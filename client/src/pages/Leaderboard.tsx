@@ -290,8 +290,17 @@ export default function Leaderboard() {
                 </div>
                 <CardContent className="p-0">
                   <div className="divide-y divide-white/10">
+                    <AnimatePresence mode="popLayout">
                     {paginatedLeaders?.length > 0 ? paginatedLeaders.map((user: any, idx: number) => (
-                      <div key={user.id || idx} className="flex items-center px-12 py-10 hover:bg-white/[0.05] transition-all group relative">
+                      <motion.div 
+                        layout
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        exit={{ opacity: 0, x: 20 }}
+                        transition={{ duration: 0.5, type: "spring", stiffness: 100 }}
+                        key={user.id} 
+                        className="flex items-center px-12 py-10 hover:bg-white/[0.05] transition-all group relative"
+                      >
                         <div className="absolute left-0 w-1.5 h-0 bg-primary group-hover:h-full transition-all duration-300" />
                         <div className="w-20 flex items-center gap-2">
                           <span className={cn(
@@ -318,25 +327,28 @@ export default function Leaderboard() {
                       <div className="w-40 text-right">
                         <p className="text-2xl font-black font-display text-white/50">{user.tasks || 0}</p>
                       </div>
-                    </div>
+                    </motion.div>
                   )) : (
-            <Card className="glass-card border-white/5 bg-white/5 p-8 text-center rounded-3xl">
-              <div className="flex flex-col items-center gap-4 py-12">
-                <div className="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center mb-2">
-                  <Trophy className="w-10 h-10 text-primary opacity-20" />
-                </div>
-                <h3 className="text-2xl font-display font-black text-white uppercase tracking-tighter">No Rankings Yet</h3>
-                <p className="text-white/60 max-w-md mx-auto font-medium text-center">
-                  The leaderboard for this period is still being calculated. Complete missions to be the first to appear here!
-                </p>
-                <Link href="/earn">
-                  <Button className="mt-4 bg-primary text-primary-foreground font-black px-8 h-12 rounded-2xl hover-elevate">
-                    START EARNING NOW
-                  </Button>
-                </Link>
-              </div>
-            </Card>
+                    <div className="p-12 text-center">
+                      <Card className="glass-card border-white/5 bg-white/5 p-8 text-center rounded-3xl">
+                        <div className="flex flex-col items-center gap-4 py-12">
+                          <div className="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center mb-2">
+                            <Trophy className="w-10 h-10 text-primary opacity-20" />
+                          </div>
+                          <h3 className="text-2xl font-display font-black text-white uppercase tracking-tighter">No Rankings Yet</h3>
+                          <p className="text-white/60 max-w-md mx-auto font-medium text-center">
+                            The leaderboard for this period is still being calculated. Complete missions to be the first to appear here!
+                          </p>
+                          <Link href="/earn">
+                            <Button className="mt-4 bg-primary text-primary-foreground font-black px-8 h-12 rounded-2xl hover-elevate">
+                              START EARNING NOW
+                            </Button>
+                          </Link>
+                        </div>
+                      </Card>
+                    </div>
                   )}
+                  </AnimatePresence>
                 </div>
               </CardContent>
             </Card>

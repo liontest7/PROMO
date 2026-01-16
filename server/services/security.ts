@@ -19,11 +19,10 @@ export async function checkIpFraud(ip: string, walletAddress: string) {
   
   const associatedWallets = await storage.getWalletsByIp(ip);
   
-  // Strict limit: Max 5 wallets per IP to prevent sybil attacks
-  // Optimization: Early exit if wallet is already associated
+  // Strict limit: Max 2 wallets per IP to prevent sybil attacks (Reduced from 5 for better security)
   if (associatedWallets.includes(walletAddress)) return true;
 
-  if (associatedWallets.length >= 5) {
+  if (associatedWallets.length >= 2) {
     console.warn(`[Anti-Fraud] Blocked wallet ${walletAddress} from IP ${ip} (Already has ${associatedWallets.length} wallets)`);
     return false;
   }

@@ -292,9 +292,14 @@ export class DatabaseStorage implements IStorage {
     let startDate: Date | null = null;
     
     if (timeframe === 'weekly') {
-      startDate = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+      // Start of current week (Monday 00:00:00)
+      startDate = new Date(now);
+      const day = startDate.getDay();
+      const diff = startDate.getDate() - day + (day === 0 ? -6 : 1);
+      startDate.setDate(diff);
+      startDate.setHours(0, 0, 0, 0);
     } else if (timeframe === 'monthly') {
-      startDate = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+      startDate = new Date(now.getFullYear(), now.getMonth(), 1);
     }
 
     const rankings = allUsers.map(user => {
@@ -316,7 +321,7 @@ export class DatabaseStorage implements IStorage {
         tasks,
         walletAddress: user.walletAddress,
         fullWallet: user.walletAddress,
-        rank: 0 // Will be set after sorting
+        rank: 0 
       };
     });
 
