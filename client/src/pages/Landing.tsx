@@ -84,7 +84,7 @@ export default function Landing() {
       return res.json();
     },
     refetchInterval: 1000,
-    staleTime: Infinity,
+    staleTime: 0,
   });
 
   const creationFee = settings?.creationFee || PLATFORM_CONFIG.TOKENOMICS.CREATION_FEE;

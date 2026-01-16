@@ -103,7 +103,8 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
 
   const { data: settings, isLoading: loadingSettings } = useQuery<any>({
     queryKey: ["/api/public/settings"],
-    staleTime: 30000, // Cache for 30s
+    refetchInterval: 1000,
+    staleTime: 0,
   });
 
   const handleOpenClick = (e: React.MouseEvent) => {
