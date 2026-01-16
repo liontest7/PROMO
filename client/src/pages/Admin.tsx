@@ -277,10 +277,9 @@ export default function AdminDashboard() {
                         <Switch 
                           id="social-enabled" 
                           checked={settings?.socialEngagementEnabled ?? true} 
-                          disabled={settings?.twitterApiStatus !== 'active'}
                           onCheckedChange={(checked) => updateSettingsMutation.mutate({ socialEngagementEnabled: checked })}
                         />
-                        <Label htmlFor="social-enabled" className={cn("text-xs uppercase tracking-wider font-bold", settings?.twitterApiStatus !== 'active' ? "text-white/30" : "text-white")}>Social Engagement</Label>
+                        <Label htmlFor="social-enabled" className="text-xs uppercase tracking-wider font-bold text-white">Social Engagement</Label>
                       </div>
                     </div>
                   </div>

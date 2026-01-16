@@ -1,8 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Wallet, ArrowUpRight, ArrowDownLeft, Clock, ShieldCheck, Zap } from "lucide-react";
+import { Wallet, ArrowUpRight, ArrowDownLeft, Clock, ShieldCheck, Zap, Trophy } from "lucide-react";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Button } from "@/components/ui/button";
 import { format } from "date-fns";
 
 export function AdminWalletSection() {
@@ -11,11 +12,15 @@ export function AdminWalletSection() {
     refetchInterval: 60000,
   });
 
+  const { data: adminStats } = useQuery<any>({
+    queryKey: ["/api/admin/stats"],
+  });
+
   if (isLoading) return <div className="p-8 text-center text-white font-bold animate-pulse">SCANNING PROTOCOL WALLET...</div>;
 
   return (
     <div className="space-y-6">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <Card className="glass-card border-primary/20 bg-primary/5 rounded-2xl p-6">
           <div className="flex items-center justify-between mb-4">
             <div className="p-3 rounded-2xl bg-primary/20">
@@ -53,6 +58,24 @@ export function AdminWalletSection() {
                 <p className="text-[9px] font-bold text-white/50 uppercase">Tx Priority</p>
                 <p className="text-xs font-black text-primary uppercase">Ultra High</p>
              </div>
+          </div>
+        </Card>
+
+        <Card className="glass-card border-white/10 bg-white/[0.01] rounded-2xl p-6 flex flex-col justify-between">
+          <div className="flex items-center justify-between">
+            <div className="p-3 rounded-2xl bg-white/10">
+              <Trophy className="w-8 h-8 text-white" />
+            </div>
+            <Badge variant="outline" className="border-white/20 text-white font-black uppercase tracking-widest">Rewards Pool</Badge>
+          </div>
+          <div className="space-y-1 py-4">
+            <p className="text-[10px] font-black text-white uppercase tracking-widest">Weekly Rewards Pool</p>
+            <h2 className="text-4xl font-black font-display text-white">{adminStats?.weeklyRewardsPool?.toLocaleString() || "0"} $DROPY</h2>
+            <p className="text-[10px] text-white/50 uppercase">Accumulated from creation fees</p>
+          </div>
+          <div className="grid grid-cols-2 gap-2 mt-2">
+            <Button size="sm" variant="outline" className="h-8 text-[10px] font-black uppercase tracking-widest border-white/10">Active Balance</Button>
+            <Button size="sm" className="h-8 text-[10px] font-black uppercase tracking-widest bg-white text-black hover:bg-white/90">Distribute</Button>
           </div>
         </Card>
       </div>

@@ -103,17 +103,11 @@ export function Footer() {
                   </li>
                 ))}
                 {isConnected &&
-                  (role === "advertiser" ||
-                    (role as any) === "admin" ||
+                  ((role as any) === "admin" ||
                     (role as any) === "superadmin") && (
                     <li>
                       <Link
-                        href={
-                          (role as any) === "admin" ||
-                          (role as any) === "superadmin"
-                            ? "/admin"
-                            : "/advertiser"
-                        }
+                        href="/admin"
                         className="group flex items-center text-muted-foreground hover:text-primary transition-colors text-sm font-bold"
                       >
                         <ChevronRight className="w-3 h-3 mr-1 opacity-0 -ml-4 group-hover:opacity-100 group-hover:ml-0 transition-all duration-300" />

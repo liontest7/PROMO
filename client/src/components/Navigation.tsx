@@ -40,9 +40,7 @@ export function Navigation() {
   const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
   const [isConnecting, setIsConnecting] = useState(false);
 
-  const handleConnect = async (roleType: 'user' | 'advertiser') => {
-    // If turnstileToken is not present, we can't proceed with verification
-    // But we still want to allow the connect attempt if the user is legitimate
+  const handleConnect = async (roleType: 'user') => {
     setIsConnecting(true);
     try {
       await connect(roleType);
