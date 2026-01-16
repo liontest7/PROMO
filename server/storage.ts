@@ -84,8 +84,19 @@ export class DatabaseStorage implements IStorage {
     return await db.select().from(systemLogs).orderBy(desc(systemLogs.createdAt)).limit(limit);
   }
 
-  async clearLogs(): Promise<void> {
-    await db.delete(systemLogs);
+  async getErrorLogs(limit: number = 20): Promise<any[]> {
+    return await db.select().from(systemLogs)
+      .where(eq(systemLogs.level, 'error'))
+      .orderBy(desc(systemLogs.createdAt))
+      .limit(limit);
+  }
+
+  async getAdminLogs(limit: number = 100): Promise<any[]> {
+    return this.getLogs(limit);
+  }
+
+  async clearAdminLogs(): Promise<void> {
+    return this.clearLogs();
   }
   private ipWalletLog: Map<string, Set<string>> = new Map();
 
