@@ -58,7 +58,8 @@ export default function Earn() {
       if (!res.ok) return null;
       return res.json();
     },
-    staleTime: 60000,
+    refetchInterval: 1000,
+    staleTime: 0,
   });
 
   const [activeTab, setActiveTab] = useState<"active" | "closed">("active");

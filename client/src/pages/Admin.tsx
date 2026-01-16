@@ -74,8 +74,9 @@ export default function AdminDashboard() {
   const { data: settings, isLoading: loadingSettings } = useQuery<any>({
     queryKey: ["/api/admin/settings"],
     queryFn: fetchAdmin,
-    staleTime: 60000,
-    enabled: !!currentWallet
+    refetchInterval: 1000,
+    staleTime: 0,
+    enabled: !!currentWallet,
   });
 
   const { data: adminStats, isLoading: loadingStats } = useQuery<any>({
@@ -166,11 +167,24 @@ export default function AdminDashboard() {
       if (!res.ok) throw new Error(await res.text() || 'Failed to update settings');
       return res.json();
     },
-    onSuccess: () => {
+    onMutate: async (newSettings) => {
+      await queryClient.cancelQueries({ queryKey: ["/api/admin/settings"] });
+      const previousSettings = queryClient.getQueryData(["/api/admin/settings"]);
+      queryClient.setQueryData(["/api/admin/settings"], (old: any) => ({
+        ...old,
+        ...newSettings,
+      }));
+      return { previousSettings };
+    },
+    onError: (err, newSettings, context) => {
+      queryClient.setQueryData(["/api/admin/settings"], context?.previousSettings);
+    },
+    onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/admin/settings"] });
-      // Invalidate campaigns list and individual campaigns as well to ensure total sync
       queryClient.invalidateQueries({ queryKey: ["/api/campaigns"] });
       queryClient.invalidateQueries({ queryKey: ["/api/admin/campaigns"] });
+    },
+    onSuccess: () => {
       setSettingsUpdate({});
       toast({ title: "Success", description: "Protocol parameters updated" });
     }
