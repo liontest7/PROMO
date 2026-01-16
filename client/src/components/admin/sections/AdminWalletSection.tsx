@@ -95,9 +95,22 @@ export function AdminWalletSection() {
               </TableRow>
             </TableHeader>
             <TableBody>
-               <TableRow className="border-white/5">
-                <TableCell colSpan={4} className="text-center py-12 text-white/30 text-xs font-black uppercase tracking-widest">No recent on-chain events detected</TableCell>
-               </TableRow>
+              {walletInfo?.recentLogs?.length > 0 ? (
+                walletInfo.recentLogs.map((log: any, i: number) => (
+                  <TableRow key={i} className="border-white/5">
+                    <TableCell className="text-[10px] font-mono text-white/70">{log.type || "TRANSFER"}</TableCell>
+                    <TableCell className="text-[10px] font-mono text-white">{log.amount || "---"}</TableCell>
+                    <TableCell className="text-[10px] font-mono text-primary truncate max-w-[150px]">{log.destination || "SYSTEM"}</TableCell>
+                    <TableCell>
+                      <Badge variant="outline" className="text-[8px] border-green-500/50 text-green-500 uppercase">COMPLETED</Badge>
+                    </TableCell>
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow className="border-white/5">
+                  <TableCell colSpan={4} className="text-center py-12 text-white/30 text-xs font-black uppercase tracking-widest">No recent on-chain events detected</TableCell>
+                </TableRow>
+              )}
             </TableBody>
           </Table>
         </CardContent>
