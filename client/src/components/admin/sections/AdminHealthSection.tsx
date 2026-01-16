@@ -7,12 +7,26 @@ import { RefreshCw, ExternalLink, ShieldCheck, Activity, Cpu, HardDrive, AlertCi
 import { useToast } from "@/hooks/use-toast";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
+import { useWallet } from "@/hooks/use-wallet";
 
 export function AdminHealthSection() {
   const { toast } = useToast();
   
+  const { walletAddress } = useWallet();
   const { data: health, isLoading } = useQuery<any>({
     queryKey: ["/api/admin/system-health"],
+    queryFn: async () => {
+      const currentWallet = walletAddress || localStorage.getItem('walletAddress');
+      const res = await fetch("/api/admin/system-health", {
+        headers: {
+          'x-wallet-address': currentWallet || '',
+          'wallet-address': currentWallet || '',
+          'Content-Type': 'application/json'
+        }
+      });
+      if (!res.ok) throw new Error("Failed to fetch health");
+      return res.json();
+    }
   });
 
   if (isLoading) return <div className="p-8 text-center text-white font-bold animate-pulse">MONITORING SYSTEM VITALS...</div>;

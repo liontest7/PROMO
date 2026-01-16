@@ -39,7 +39,15 @@ export function AdminAnalytics() {
 
   if (!analytics) return null;
 
-  const COLORS = ['#22c55e', '#16a34a', '#15803d', '#14532d'];
+  const COLORS = ['#22c55e', '#16a34a', '#15803d', '#14532d', '#166534'];
+  const distributionData = analytics?.distribution && analytics.distribution.some((d: any) => d.value > 0) 
+    ? analytics.distribution 
+    : [
+        { name: 'Twitter', value: 0 },
+        { name: 'Telegram', value: 0 },
+        { name: 'Website', value: 0 }
+      ];
+
   const stats = analytics.stats || {};
   const trend = analytics.trend || [];
   const engagements = analytics.engagements || {};
@@ -50,62 +58,62 @@ export function AdminAnalytics() {
   return (
     <div className="space-y-6">
       {/* Top Stats Row */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <Card className="glass-card border-white/10 bg-white/[0.01]">
-          <CardHeader className="pb-2">
-            <CardDescription className="text-[10px] uppercase font-black tracking-widest text-primary">Volume</CardDescription>
-            <CardTitle className="text-2xl font-display font-black text-white italic">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <Card className="glass-card border-white/10 bg-white/[0.01] hover:bg-white/[0.03] transition-colors">
+          <CardHeader className="pb-3">
+            <CardDescription className="text-xs uppercase font-black tracking-[0.2em] text-primary/80">Volume</CardDescription>
+            <CardTitle className="text-4xl font-display font-black text-white italic tracking-tighter">
               {(payouts?.totalRewards || stats?.totalRewardsPaid || 0).toLocaleString()}
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="flex items-center gap-1 text-[10px] text-white font-black uppercase">
-              <TrendingUp className="w-3 h-3" />
+            <div className="flex items-center gap-2 text-xs text-white/70 font-black uppercase tracking-widest">
+              <TrendingUp className="w-4 h-4 text-primary" />
               Total $DROPY Distributed
             </div>
           </CardContent>
         </Card>
         
-        <Card className="glass-card border-white/10 bg-white/[0.01]">
-          <CardHeader className="pb-2">
-            <CardDescription className="text-[10px] uppercase font-black tracking-widest text-primary">Engagement</CardDescription>
-            <CardTitle className="text-2xl font-display font-black text-white italic">
+        <Card className="glass-card border-white/10 bg-white/[0.01] hover:bg-white/[0.03] transition-colors">
+          <CardHeader className="pb-3">
+            <CardDescription className="text-xs uppercase font-black tracking-[0.2em] text-primary/80">Engagement</CardDescription>
+            <CardTitle className="text-4xl font-display font-black text-white italic tracking-tighter">
               {(engagements?.totalExecutions || stats?.totalExecutions || 0).toLocaleString()}
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="flex items-center gap-1 text-[10px] text-white font-black uppercase">
-              <Target className="w-3 h-3" />
+            <div className="flex items-center gap-2 text-xs text-white/70 font-black uppercase tracking-widest">
+              <Target className="w-4 h-4 text-primary" />
               Verified Actions
             </div>
           </CardContent>
         </Card>
 
-        <Card className="glass-card border-white/10 bg-white/[0.01]">
-          <CardHeader className="pb-2">
-            <CardDescription className="text-[10px] uppercase font-black tracking-widest text-primary">Reach</CardDescription>
-            <CardTitle className="text-2xl font-display font-black text-white italic">
+        <Card className="glass-card border-white/10 bg-white/[0.01] hover:bg-white/[0.03] transition-colors">
+          <CardHeader className="pb-3">
+            <CardDescription className="text-xs uppercase font-black tracking-[0.2em] text-primary/80">Reach</CardDescription>
+            <CardTitle className="text-4xl font-display font-black text-white italic tracking-tighter">
               {(growth?.totalUsers || stats?.totalUsers || 0).toLocaleString()}
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="flex items-center gap-1 text-[10px] text-white font-black uppercase">
-              <Users className="w-3 h-3" />
+            <div className="flex items-center gap-2 text-xs text-white/70 font-black uppercase tracking-widest">
+              <Users className="w-4 h-4 text-primary" />
               Unique Wallets
             </div>
           </CardContent>
         </Card>
 
-        <Card className="glass-card border-white/10 bg-white/[0.01]">
-          <CardHeader className="pb-2">
-            <CardDescription className="text-[10px] uppercase font-black tracking-widest text-primary">Treasury</CardDescription>
-            <CardTitle className="text-2xl font-display font-black text-white italic">
+        <Card className="glass-card border-white/10 bg-white/[0.01] hover:bg-white/[0.03] transition-colors">
+          <CardHeader className="pb-3">
+            <CardDescription className="text-xs uppercase font-black tracking-[0.2em] text-primary/80">Treasury</CardDescription>
+            <CardTitle className="text-4xl font-display font-black text-white italic tracking-tighter">
               {(treasury?.totalBurned || 15000).toLocaleString()}
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="flex items-center gap-1 text-[10px] text-white font-black uppercase">
-              <Coins className="w-3 h-3" />
+            <div className="flex items-center gap-2 text-xs text-white/70 font-black uppercase tracking-widest">
+              <Coins className="w-4 h-4 text-primary" />
               Total $DROPY Burned
             </div>
           </CardContent>
@@ -163,19 +171,19 @@ export function AdminAnalytics() {
 
         <Card className="glass-card border-white/10 bg-white/[0.01]">
           <CardHeader>
-            <CardTitle className="text-white uppercase font-black text-sm tracking-widest">Action Distribution</CardTitle>
-            <CardDescription className="text-white">Verifications by type</CardDescription>
+            <CardTitle className="text-white uppercase font-black text-lg tracking-widest">Action Distribution</CardTitle>
+            <CardDescription className="text-white/60 font-bold">Verifications by type</CardDescription>
           </CardHeader>
-          <CardContent className="h-[300px]">
+          <CardContent className="h-[300px] relative">
+            {distributionData.every((d: any) => d.value === 0) && (
+              <div className="absolute inset-0 flex items-center justify-center z-10">
+                <p className="text-xs font-black uppercase tracking-[0.2em] text-white/20 italic">No verification data yet</p>
+              </div>
+            )}
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
                 <Pie
-                  data={analytics?.distribution && analytics.distribution.length > 0 ? analytics.distribution : [
-                    { name: 'Follow', value: 45 },
-                    { name: 'Retweet', value: 25 },
-                    { name: 'Website', value: 20 },
-                    { name: 'Other', value: 10 }
-                  ]}
+                  data={distributionData}
                   cx="50%"
                   cy="50%"
                   innerRadius={60}
@@ -184,13 +192,8 @@ export function AdminAnalytics() {
                   dataKey="value"
                   nameKey="name"
                 >
-                  {(analytics?.distribution && analytics.distribution.length > 0 ? analytics.distribution : [
-                    { name: 'Follow', value: 45 },
-                    { name: 'Retweet', value: 25 },
-                    { name: 'Website', value: 20 },
-                    { name: 'Other', value: 10 }
-                  ]).map((_: any, index: number) => (
-                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                  {distributionData.map((_: any, index: number) => (
+                    <Cell key={`cell-${index}`} fill={distributionData.every((d: any) => d.value === 0) ? '#1f2937' : COLORS[index % COLORS.length]} />
                   ))}
                 </Pie>
                 <Tooltip 
