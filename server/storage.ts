@@ -1,7 +1,7 @@
 import { db } from "./db";
 import { eq, desc, asc, sql } from "drizzle-orm";
 import {
-  users, campaigns, actions, executions, holderState, systemSettings, prizeHistory,
+  users, campaigns, actions, executions, holderState, systemSettings, prizeHistory, systemLogs,
   type User, type InsertUser,
   type Campaign, type InsertCampaign,
   type Action, type InsertAction,
@@ -72,7 +72,10 @@ export interface IStorage {
   // System Logs
   createLog(log: { level: "info" | "warn" | "error", source: string, message: string, details?: any }): Promise<void>;
   getLogs(limit?: number): Promise<any[]>;
+  getErrorLogs(limit?: number): Promise<any[]>;
+  getAdminLogs(limit?: number): Promise<any[]>;
   clearLogs(): Promise<void>;
+  clearAdminLogs(): Promise<void>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -93,6 +96,10 @@ export class DatabaseStorage implements IStorage {
 
   async getAdminLogs(limit: number = 100): Promise<any[]> {
     return this.getLogs(limit);
+  }
+
+  async clearLogs(): Promise<void> {
+    await db.delete(systemLogs);
   }
 
   async clearAdminLogs(): Promise<void> {

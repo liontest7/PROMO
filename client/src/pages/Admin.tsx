@@ -92,7 +92,7 @@ export default function AdminDashboard() {
     c.status?.toLowerCase().includes(searchTerm.toLowerCase())
   ), [campaigns, searchTerm]);
 
-  const filteredExecutions = useMemo(() => (executions || []).filter(e => 
+  const filteredExecutions = useMemo(() => (executions || []).filter((e: any) => 
     e.user?.walletAddress?.toLowerCase().includes(searchTerm.toLowerCase()) ||
     e.campaign?.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
     e.action?.type?.toLowerCase().includes(searchTerm.toLowerCase()) ||
