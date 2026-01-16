@@ -2,36 +2,17 @@ import { Request, Response, NextFunction } from "express";
 import { storage } from "../storage";
 
 export async function authMiddleware(req: Request, res: Response, next: NextFunction) {
-  let walletAddress = req.headers['x-wallet-address'] || req.body?.walletAddress;
+  const walletAddress = (req.headers['x-wallet-address'] as string) || req.body?.walletAddress || (req.query?.walletAddress as string);
   
-  // Also check query params for cases like Twitter callback or external redirects
-  if (!walletAddress && req.query?.walletAddress) {
-    walletAddress = req.query.walletAddress;
-  }
-
   if (walletAddress && typeof walletAddress === 'string') {
     const user = await storage.getUserByWallet(walletAddress);
-    
-    // Attach user to request for downstream middlewares
     (req as any).user = user;
 
     if (user?.status === 'blocked') {
-      return res.status(403).json({ 
-        status: 'blocked',
-        message: "Your account is permanently blocked for security reasons." 
-      });
+      return res.status(403).json({ status: 'blocked', message: "Account blocked" });
     }
     if (user?.status === 'suspended') {
-      return res.status(403).json({ 
-        status: 'suspended',
-        message: "Your account is temporarily suspended for review. Please check back later." 
-      });
-    }
-
-    // IP-Wallet association for anti-fraud
-    const clientIp = (req.headers['x-forwarded-for'] as string || req.ip || req.socket.remoteAddress || "unknown").split(',')[0].trim();
-    if (walletAddress && typeof clientIp === 'string' && clientIp !== "unknown" && clientIp !== "::1" && clientIp !== "127.0.0.1") {
-      await storage.logIpWalletAssociation(clientIp, walletAddress);
+      return res.status(403).json({ status: 'suspended', message: "Account suspended" });
     }
   }
   next();

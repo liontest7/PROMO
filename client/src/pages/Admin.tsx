@@ -30,96 +30,50 @@ export default function AdminDashboard() {
   const [isControlsExpanded, setIsControlsExpanded] = useState(false);
   const [settingsUpdate, setSettingsUpdate] = useState<any>({});
   
+  const fetchAdmin = async ({ queryKey }: any) => {
+    const walletAddress = localStorage.getItem('walletAddress');
+    const path = queryKey.join("/");
+    const fetchUrl = path.startsWith('/') ? path : `/${path}`;
+    const res = await fetch(fetchUrl, {
+      headers: {
+        'x-wallet-address': walletAddress || '',
+        'Content-Type': 'application/json'
+      }
+    });
+    if (!res.ok) {
+      const errorText = await res.text();
+      console.error(`[Admin] Fetch failed for ${fetchUrl}:`, errorText);
+      throw new Error(errorText || "Forbidden");
+    }
+    return res.json();
+  };
+
   const { data: settings, isLoading: loadingSettings } = useQuery<any>({
     queryKey: ["/api/admin/settings"],
     staleTime: 60000,
     refetchOnWindowFocus: false,
-    meta: {
-      headers: {
-        'x-wallet-address': localStorage.getItem('walletAddress') || ''
-      }
-    }
-  });
-
-  const updateSettingsMutation = useMutation({
-    mutationFn: async (newSettings: any) => {
-      // Merge with current settings to validate correctly
-      const burn = newSettings.burnPercent !== undefined ? Number(newSettings.burnPercent) : (settings?.burnPercent ?? 50);
-      const rewards = newSettings.rewardsPercent !== undefined ? Number(newSettings.rewardsPercent) : (settings?.rewardsPercent ?? 40);
-      const system = newSettings.systemPercent !== undefined ? Number(newSettings.systemPercent) : (settings?.systemPercent ?? 10);
-      const creationFee = newSettings.creationFee !== undefined ? Number(newSettings.creationFee) : (settings?.creationFee ?? 10000);
-      
-      if (burn + rewards + system !== 100) {
-        throw new Error(`Total distribution must equal exactly 100% (Current: ${burn + rewards + system}%)`);
-      }
-
-      const payload = {
-        ...newSettings,
-        burnPercent: burn,
-        rewardsPercent: rewards,
-        systemPercent: system,
-        creationFee: creationFee
-      };
-
-      const res = await fetch("/api/admin/settings", {
-        method: 'POST',
-        headers: { 
-          'Content-Type': 'application/json',
-          'x-wallet-address': localStorage.getItem('walletAddress') || ''
-        },
-        body: JSON.stringify(payload)
-      });
-      if (!res.ok) {
-        const errData = await res.json();
-        throw new Error(errData.message || 'Failed to update settings');
-      }
-      return res.json();
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/admin/settings"] });
-      toast({ title: "Success", description: "System settings updated" });
-      setSettingsUpdate({});
-    },
-    onError: (error: Error) => {
-      toast({ 
-        title: "Validation Error", 
-        description: error.message,
-        variant: "destructive"
-      });
-    }
+    queryFn: fetchAdmin
   });
 
   const { data: users, isLoading: loadingUsers } = useQuery<any[]>({
     queryKey: ["/api/admin/users"],
     staleTime: 60000,
     refetchOnWindowFocus: false,
-    meta: {
-      headers: {
-        'x-wallet-address': localStorage.getItem('walletAddress') || ''
-      }
-    }
+    queryFn: fetchAdmin
   });
 
   const { data: campaigns, isLoading: loadingCampaigns } = useQuery<any[]>({
     queryKey: ["/api/admin/campaigns"],
     staleTime: 60000,
     refetchOnWindowFocus: false,
-    meta: {
-      headers: {
-        'x-wallet-address': localStorage.getItem('walletAddress') || ''
-      }
-    }
+    queryFn: fetchAdmin
   });
 
   const { data: executions, isLoading: loadingExecutions } = useQuery<any[]>({
     queryKey: ["/api/admin/executions"],
     staleTime: 60000,
     refetchOnWindowFocus: false,
-    meta: {
-      headers: {
-        'x-wallet-address': localStorage.getItem('walletAddress') || ''
-      }
-    }
+    queryFn: fetchAdmin
   });
 
   const { data: systemHealth, isLoading: loadingHealth } = useQuery<{
@@ -131,14 +85,10 @@ export default function AdminDashboard() {
     errorLogs: any[];
   }>({
     queryKey: ["/api/admin/system-health"],
-    refetchInterval: 30000, // Reduced from 10000 to reduce noise
+    refetchInterval: 30000,
     staleTime: 30000,
     refetchOnWindowFocus: false,
-    meta: {
-      headers: {
-        'x-wallet-address': localStorage.getItem('walletAddress') || ''
-      }
-    }
+    queryFn: fetchAdmin
   });
 
   const { data: adminStats, isLoading: loadingStats } = useQuery<{
@@ -153,11 +103,7 @@ export default function AdminDashboard() {
     queryKey: ["/api/admin/stats"],
     staleTime: 60000,
     refetchOnWindowFocus: false,
-    meta: {
-      headers: {
-        'x-wallet-address': localStorage.getItem('walletAddress') || ''
-      }
-    }
+    queryFn: fetchAdmin
   });
 
   const filteredUsers = (users || []).filter(u => 

@@ -29,13 +29,21 @@ export const getQueryFn: <T>(options: {
 }) => QueryFunction<T> =
   ({ on401: unauthorizedBehavior }) =>
   async ({ queryKey }) => {
-    const headers: Record<string, string> = {};
     const walletAddress = localStorage.getItem('walletAddress');
+    const headers: Record<string, string> = {
+      'Content-Type': 'application/json'
+    };
+    
     if (walletAddress) {
       headers['x-wallet-address'] = walletAddress;
     }
 
-    const res = await fetch(queryKey.join("/") as string, {
+    let path = queryKey.join("/");
+    if (!path.startsWith('/')) path = '/' + path;
+
+    console.log(`[QueryClient] Fetching: ${path}, Wallet: ${walletAddress}`);
+
+    const res = await fetch(path, {
       credentials: "include",
       headers
     });

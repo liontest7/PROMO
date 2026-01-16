@@ -6,41 +6,37 @@ import { AutomationService } from "../services/automation";
 import { adminMiddleware } from "../middleware/auth";
 
 export function setupAdminRoutes(app: Express) {
-  // Protect all admin routes
-  app.use("/api/admin", async (req, res, next) => {
-    const walletAddress = req.headers['x-wallet-address'] || req.query.walletAddress;
+  // Use a middleware function that properly extracts the wallet address and attaches the admin user
+  const adminAuthMiddleware = async (req: Request, res: Response, next: NextFunction) => {
+    // Check header first, then query, then body
+    const walletAddress = (req.headers['x-wallet-address'] as string) || (req.query.walletAddress as string) || (req.body?.walletAddress as string);
+    
+    console.log(`[Admin Auth] Request: ${req.method} ${req.originalUrl}, Wallet: ${walletAddress}`);
+
     if (!walletAddress) {
+      console.error("[Admin Auth] No wallet address found in headers, query, or body");
       return res.status(403).json({ message: "Forbidden: Wallet address required" });
     }
-    const user = await storage.getUserByWallet(walletAddress as string);
-    if (!user || user.role !== "admin") {
-      console.error(`Admin access denied for wallet: ${walletAddress}. Role: ${user?.role}`);
+
+    const user = await storage.getUserByWallet(walletAddress);
+    if (!user) {
+      console.error(`[Admin Auth] No user found for wallet: ${walletAddress}`);
       return res.status(403).json({ message: "Forbidden: Admin access required" });
     }
+
+    if (user.role !== "admin") {
+      console.error(`[Admin Auth] Wallet ${walletAddress} is not an admin. Role: ${user.role}`);
+      return res.status(403).json({ message: "Forbidden: Admin access required" });
+    }
+
     (req as any).user = user;
     next();
-  });
+  };
 
-  // Fraud Monitoring
-  app.get("/api/admin/fraud/suspicious-users", async (req, res) => {
-    try {
-      const suspicious = await storage.getSuspiciousUsers();
-      res.json(suspicious);
-    } catch (err) {
-      res.status(500).json({ message: "Error fetching suspicious users" });
-    }
-  });
+  // Apply the middleware to all /api/admin routes
+  app.use("/api/admin", adminAuthMiddleware);
 
-  app.get("/api/admin/fraud/suspicious-campaigns", async (req, res) => {
-    try {
-      const suspicious = await storage.getSuspiciousCampaigns();
-      res.json(suspicious);
-    } catch (err) {
-      res.status(500).json({ message: "Error fetching suspicious campaigns" });
-    }
-  });
-
-  // Admin stats
+  // Stats
   app.get("/api/admin/stats", async (req, res) => {
     try {
       const allUsers = await storage.getAllUsers();
@@ -63,107 +59,19 @@ export function setupAdminRoutes(app: Express) {
       };
       res.json(stats);
     } catch (err) {
-      console.error("Admin stats error:", err);
-      res.status(500).json({ message: "Error fetching admin stats" });
+      console.error("[Admin Stats] Error:", err);
+      res.status(500).json({ message: "Failed to fetch stats" });
     }
   });
 
-  app.post("/api/admin/trigger-week-reset", async (req, res) => {
+  // Settings
+  app.get("/api/admin/settings", async (req, res) => {
     try {
-      const automation = AutomationService.getInstance();
-      // @ts-ignore - Reaching into private method for manual trigger
-      await automation.checkAndCloseWeek();
-      res.json({ success: true, message: "Week reset triggered" });
+      const settings = await storage.getSystemSettings();
+      res.json(settings || {});
     } catch (err) {
-      console.error("Manual reset error:", err);
-      res.status(500).json({ message: "Failed to trigger reset" });
-    }
-  });
-
-  // Users management
-  app.get("/api/admin/users", async (req, res) => {
-    try {
-      const users = await storage.getAllUsers();
-      res.json(users);
-    } catch (err) {
-      res.status(500).json({ message: "Error fetching users" });
-    }
-  });
-
-  app.post("/api/admin/users/:id/role", async (req, res) => {
-    try {
-      const user = await storage.updateUser(parseInt(req.params.id), { role: req.body.role });
-      res.json(user);
-    } catch (err) {
-      res.status(500).json({ message: "Error updating user role" });
-    }
-  });
-
-  app.post("/api/admin/users/:id/status", async (req, res) => {
-    try {
-      const user = await storage.updateUser(parseInt(req.params.id), { status: req.body.status });
-      res.json(user);
-    } catch (err) {
-      res.status(500).json({ message: "Error updating user status" });
-    }
-  });
-
-  app.post("/api/admin/users/:id/balance", async (req, res) => {
-    try {
-      const user = await storage.updateUser(parseInt(req.params.id), { balance: req.body.balance });
-      res.json(user);
-    } catch (err) {
-      res.status(500).json({ message: "Error updating user balance" });
-    }
-  });
-
-  app.post("/api/admin/users/:id/reputation", async (req, res) => {
-    try {
-      const user = await storage.updateUser(parseInt(req.params.id), { reputationScore: req.body.reputationScore });
-      res.json(user);
-    } catch (err) {
-      res.status(500).json({ message: "Error updating user reputation" });
-    }
-  });
-
-  // Campaigns management
-  app.get("/api/admin/campaigns", async (req, res) => {
-    try {
-      const campaigns = await storage.getAllCampaigns();
-      res.json(campaigns);
-    } catch (err) {
-      res.status(500).json({ message: "Error fetching campaigns" });
-    }
-  });
-
-  // Executions management
-  app.get("/api/admin/executions", async (req, res) => {
-    try {
-      const executions = await storage.getAllExecutions();
-      res.json(executions);
-    } catch (err) {
-      res.status(500).json({ message: "Error fetching executions" });
-    }
-  });
-
-  // System Health
-  app.get("/api/admin/system-health", async (req, res) => {
-    try {
-      const health = {
-        uptime: process.uptime(),
-        memory: {
-          rss: Math.round(process.memoryUsage().rss / 1024 / 1024),
-          heapTotal: Math.round(process.memoryUsage().heapTotal / 1024 / 1024),
-          heapUsed: Math.round(process.memoryUsage().heapUsed / 1024 / 1024),
-        },
-        cpu: os.loadavg(),
-        dbStatus: 'Connected',
-        rpcStatus: 'Healthy',
-        errorLogs: []
-      };
-      res.json(health);
-    } catch (err) {
-      res.status(500).json({ message: "Error fetching system health" });
+      console.error("[Admin Settings] Error:", err);
+      res.status(500).json({ message: "Failed to fetch settings" });
     }
   });
 
@@ -172,58 +80,140 @@ export function setupAdminRoutes(app: Express) {
       const settings = await storage.updateSystemSettings(req.body);
       res.json(settings);
     } catch (err) {
-      res.status(500).json({ message: "Error updating settings" });
+      console.error("[Admin Settings Update] Error:", err);
+      res.status(500).json({ message: "Failed to update settings" });
     }
   });
 
-  // Admin Analytics
+  // Users
+  app.get("/api/admin/users", async (req, res) => {
+    try {
+      const users = await storage.getAllUsers();
+      res.json(users);
+    } catch (err) {
+      console.error("[Admin Users] Error:", err);
+      res.status(500).json({ message: "Failed to fetch users" });
+    }
+  });
+
+  app.post("/api/admin/users/:id/role", async (req, res) => {
+    try {
+      const user = await storage.updateUser(parseInt(req.params.id), { role: req.body.role });
+      res.json(user);
+    } catch (err) {
+      res.status(500).json({ message: "Failed to update role" });
+    }
+  });
+
+  app.post("/api/admin/users/:id/status", async (req, res) => {
+    try {
+      const user = await storage.updateUser(parseInt(req.params.id), { status: req.body.status });
+      res.json(user);
+    } catch (err) {
+      res.status(500).json({ message: "Failed to update status" });
+    }
+  });
+
+  // Campaigns
+  app.get("/api/admin/campaigns", async (req, res) => {
+    try {
+      const campaigns = await storage.getAllCampaigns();
+      res.json(campaigns);
+    } catch (err) {
+      console.error("[Admin Campaigns] Error:", err);
+      res.status(500).json({ message: "Failed to fetch campaigns" });
+    }
+  });
+
+  // Executions
+  app.get("/api/admin/executions", async (req, res) => {
+    try {
+      const executions = await storage.getAllExecutions();
+      res.json(executions);
+    } catch (err) {
+      console.error("[Admin Executions] Error:", err);
+      res.status(500).json({ message: "Failed to fetch executions" });
+    }
+  });
+
+  // Analytics
   app.get("/api/admin/analytics", async (req, res) => {
     try {
       const allUsers = await storage.getAllUsers();
       const allCampaigns = await storage.getAllCampaigns();
       const allExecutions = await storage.getAllExecutions();
 
-      const stats = {
-        totalUsers: allUsers.length,
-        totalCampaigns: allCampaigns.length,
-        totalExecutions: allExecutions.length,
-        activeCampaigns: allCampaigns.filter(c => c.status === 'active').length,
-        taskVerified: allExecutions.filter(e => e.status === 'verified' || e.status === 'paid').length,
-        conversionRate: allUsers.length > 0 
-          ? (allExecutions.length / allUsers.length).toFixed(1)
-          : "0.0"
-      };
-
-      // Generate last 7 days trend
-      const trend = [];
-      for (let i = 6; i >= 0; i--) {
-        const date = new Date();
-        date.setDate(date.getDate() - i);
-        const dateStr = date.toISOString().split('T')[0];
-        
-        const count = allExecutions.filter(e => {
-          if (!e.createdAt) return false;
-          const eDate = new Date(e.createdAt).toISOString().split('T')[0];
-          return eDate === dateStr;
-        }).length;
-
-        trend.push({ date: dateStr, count });
-      }
-
-      res.json({ stats, trend });
+      res.json({
+        stats: {
+          totalUsers: allUsers.length,
+          totalCampaigns: allCampaigns.length,
+          totalExecutions: allExecutions.length,
+          activeCampaigns: allCampaigns.filter(c => c.status === 'active').length,
+        },
+        trend: []
+      });
     } catch (err) {
-      console.error("Analytics error:", err);
-      res.status(500).json({ message: "Error fetching analytics" });
+      console.error("[Admin Analytics] Error:", err);
+      res.status(500).json({ message: "Failed to fetch analytics" });
     }
   });
 
-  // Prize History Payout Management
+  // System Health
+  app.get("/api/admin/system-health", async (req, res) => {
+    try {
+      res.json({
+        uptime: process.uptime(),
+        memory: process.memoryUsage(),
+        cpu: os.loadavg(),
+        dbStatus: 'Connected',
+        rpcStatus: 'Healthy',
+        errorLogs: []
+      });
+    } catch (err) {
+      console.error("[Admin Health] Error:", err);
+      res.status(500).json({ message: "Failed to fetch health" });
+    }
+  });
+
+  // Fraud Monitoring
+  app.get("/api/admin/fraud/suspicious-users", async (req, res) => {
+    try {
+      const suspicious = await storage.getSuspiciousUsers();
+      res.json(suspicious);
+    } catch (err) {
+      res.status(500).json({ message: "Failed to fetch suspicious users" });
+    }
+  });
+
+  app.get("/api/admin/fraud/suspicious-campaigns", async (req, res) => {
+    try {
+      const suspicious = await storage.getSuspiciousCampaigns();
+      res.json(suspicious);
+    } catch (err) {
+      res.status(500).json({ message: "Failed to fetch suspicious campaigns" });
+    }
+  });
+
+  // Automation / Week Reset
+  app.post("/api/admin/trigger-week-reset", async (req, res) => {
+    try {
+      const automation = AutomationService.getInstance();
+      // @ts-ignore
+      await automation.checkAndCloseWeek();
+      res.json({ success: true, message: "Week reset triggered" });
+    } catch (err) {
+      console.error("[Admin Reset] Error:", err);
+      res.status(500).json({ message: "Failed to trigger reset" });
+    }
+  });
+
+  // Prizes
   app.get("/api/admin/prizes", async (req, res) => {
     try {
       const history = await storage.getPrizeHistory();
       res.json(history);
     } catch (err) {
-      res.status(500).json({ message: "Error fetching prize history" });
+      res.status(500).json({ message: "Failed to fetch prize history" });
     }
   });
 
@@ -235,18 +225,11 @@ export function setupAdminRoutes(app: Express) {
 
       const { AutomationService } = await import("../services/automation");
       const automation = AutomationService.getInstance();
-      
-      // Update status to processing before retrying
       await storage.updatePrizeHistoryStatus(entry.id, "processing", entry.winners);
-      
-      // Run async
-      automation.processWinners(entry.id, entry.winners).catch(err => {
-        console.error(`Manual retry failed: ${err}`);
-      });
-
+      automation.processWinners(entry.id, entry.winners).catch(console.error);
       res.json({ message: "Retry initiated" });
     } catch (err) {
-      res.status(500).json({ message: "Error retrying payouts" });
+      res.status(500).json({ message: "Failed to retry payout" });
     }
   });
 }
