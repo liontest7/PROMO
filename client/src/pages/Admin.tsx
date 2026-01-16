@@ -323,7 +323,7 @@ export default function AdminDashboard() {
                         <div className="flex flex-col">
                           <Switch 
                             id="social-enabled" 
-                            checked={settings?.socialEngagementEnabled ?? true} 
+                            checked={settings?.socialEngagementEnabled ?? false} 
                             disabled={settings?.twitterApiStatus !== 'active'}
                             onCheckedChange={(checked) => updateSettingsMutation.mutate({ socialEngagementEnabled: checked })}
                           />

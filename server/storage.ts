@@ -623,9 +623,11 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getSystemSettings(): Promise<typeof systemSettings.$inferSelect> {
-    let [settings] = await db.select().from(systemSettings);
     const hasTwitterKeys = !!(process.env.X_CONSUMER_KEY && process.env.X_CONSUMER_SECRET && process.env.X_BEARER_TOKEN);
     const currentTwitterStatus = hasTwitterKeys ? "active" : "error";
+
+    // Always fetch the first record
+    let [settings] = await db.select().from(systemSettings).orderBy(asc(systemSettings.id)).limit(1);
 
     if (!settings) {
       [settings] = await db.insert(systemSettings).values({
@@ -647,6 +649,7 @@ export class DatabaseStorage implements IStorage {
         needsUpdate = true;
       }
 
+      // Sync socialEngagementEnabled with actual API status on every read
       if (!hasTwitterKeys && settings.socialEngagementEnabled) {
         updates.socialEngagementEnabled = false;
         needsUpdate = true;
