@@ -24,8 +24,6 @@ export function AdminAnalytics() {
     queryKey: ["/api/admin/analytics"],
     queryFn: fetchAnalytics,
     enabled: !!(walletAddress || localStorage.getItem('walletAddress')),
-    refetchInterval: 120000,
-    staleTime: 120000,
   });
 
   if (isLoading) {

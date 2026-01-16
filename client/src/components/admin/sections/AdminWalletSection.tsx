@@ -9,7 +9,6 @@ import { format } from "date-fns";
 export function AdminWalletSection() {
   const { data: walletInfo, isLoading } = useQuery<any>({
     queryKey: ["/api/admin/wallet-info"],
-    refetchInterval: 60000,
   });
 
   const { data: adminStats } = useQuery<any>({

@@ -13,7 +13,6 @@ export function AdminHealthSection() {
   
   const { data: health, isLoading } = useQuery<any>({
     queryKey: ["/api/admin/system-health"],
-    refetchInterval: 30000,
   });
 
   if (isLoading) return <div className="p-8 text-center text-white font-bold animate-pulse">MONITORING SYSTEM VITALS...</div>;

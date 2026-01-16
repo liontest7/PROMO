@@ -53,42 +53,36 @@ export default function AdminDashboard() {
   const { data: users, isLoading: loadingUsers } = useQuery<any[]>({
     queryKey: ["/api/admin/users"],
     queryFn: fetchAdmin,
-    staleTime: 60000,
     enabled: !!currentWallet
   });
 
   const { data: campaigns, isLoading: loadingCampaigns } = useQuery<any[]>({
     queryKey: ["/api/admin/campaigns"],
     queryFn: fetchAdmin,
-    staleTime: 60000,
     enabled: !!currentWallet
   });
 
   const { data: executions, isLoading: loadingExecutions } = useQuery<any[]>({
     queryKey: ["/api/admin/executions"],
     queryFn: fetchAdmin,
-    staleTime: 60000,
     enabled: !!currentWallet
   });
 
   const { data: settings, isLoading: loadingSettings } = useQuery<any>({
     queryKey: ["/api/admin/settings"],
     queryFn: fetchAdmin,
-    staleTime: 60000,
     enabled: !!currentWallet
   });
 
   const { data: adminStats, isLoading: loadingStats } = useQuery<any>({
     queryKey: ["/api/admin/stats"],
     queryFn: fetchAdmin,
-    staleTime: 60000,
     enabled: !!currentWallet
   });
 
   const { data: walletInfo } = useQuery<any>({
     queryKey: ["/api/admin/wallet-info"],
     queryFn: fetchAdmin,
-    staleTime: 60000,
     enabled: !!currentWallet
   });
 
