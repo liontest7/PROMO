@@ -29,8 +29,15 @@ export const getQueryFn: <T>(options: {
 }) => QueryFunction<T> =
   ({ on401: unauthorizedBehavior }) =>
   async ({ queryKey }) => {
+    const headers: Record<string, string> = {};
+    const walletAddress = localStorage.getItem('walletAddress');
+    if (walletAddress) {
+      headers['x-wallet-address'] = walletAddress;
+    }
+
     const res = await fetch(queryKey.join("/") as string, {
       credentials: "include",
+      headers
     });
 
     if (unauthorizedBehavior === "returnNull" && res.status === 401) {
