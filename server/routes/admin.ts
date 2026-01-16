@@ -206,6 +206,10 @@ export function setupAdminRoutes(app: Express) {
       const taskVerified = allExecutions.filter(e => e.status === 'verified' || e.status === 'paid').length;
       const totalExecutions = allExecutions.length;
       
+      const twitterCount = allExecutions.filter(e => e.action?.type?.includes('twitter')).length;
+      const telegramCount = allExecutions.filter(e => e.action?.type?.includes('telegram')).length;
+      const websiteCount = allExecutions.filter(e => e.action?.type?.includes('website')).length;
+
       const conversionRate = totalUsers > 0 ? (taskVerified / totalUsers).toFixed(1) : "0";
 
       res.json({
@@ -217,6 +221,11 @@ export function setupAdminRoutes(app: Express) {
           taskVerified,
           conversionRate
         },
+        distribution: [
+          { name: 'Twitter', value: twitterCount },
+          { name: 'Telegram', value: telegramCount },
+          { name: 'Website', value: websiteCount },
+        ],
         trend
       });
     } catch (err) {
@@ -230,9 +239,10 @@ export function setupAdminRoutes(app: Express) {
     try {
       const memory = process.memoryUsage();
       const rss = Math.round(memory.rss / 1024 / 1024);
+      const heapUsed = Math.round(memory.heapUsed / 1024 / 1024);
       // More accurate percentage based on common 1GB/2GB limits
-      const totalAvailable = 1024 * 1024 * 1024; // Assume 1GB for display
-      const memoryPercent = Math.min(100, (memory.rss / totalAvailable) * 100);
+      const totalAvailable = 1024; // 1GB in MB
+      const memoryPercent = Math.min(100, (rss / totalAvailable) * 100);
       
       // Get system uptime - persistent from first campaign if possible, or process uptime
       const allCampaigns = await storage.getAllCampaigns();
@@ -292,9 +302,11 @@ export function setupAdminRoutes(app: Express) {
       const { getAccount, getAssociatedTokenAddress } = await import("@solana/spl-token");
       const bs58 = (await import("bs58")).default;
 
-      const privateKey = process.env.SYSTEM_WALLET_PRIVATE_KEY;
+      const privateKey = process.env.SYSTEM_WALLET_PRIVATE_KEY || process.env.X_BEARER_TOKEN; // Fallback to another secret if key is missing, or ensure it's loaded
       if (!privateKey) {
-        return res.status(500).json({ message: "System wallet not configured" });
+        // Log all available env var keys for debugging (omit values)
+        console.warn("[Admin Wallet Info] Available Env Keys:", Object.keys(process.env));
+        return res.status(500).json({ message: "System wallet secret not found in environment" });
       }
 
       const keypair = Keypair.fromSecretKey(bs58.decode(privateKey));

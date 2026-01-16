@@ -21,9 +21,12 @@ export function startTwitterHealthCheck() {
   const checkHealth = async () => {
     try {
       const settings = await storage.getSystemSettings();
-      const keys = settings.twitterApiKeys?.primary;
       
-      if (!keys?.apiKey) {
+      // Use X_BEARER_TOKEN from secrets directly if configured
+      const bearerToken = process.env.X_BEARER_TOKEN;
+      
+      if (!bearerToken) {
+        console.warn("[Twitter Service] X_BEARER_TOKEN not found in environment");
         if (settings.twitterApiStatus !== 'disconnected') {
           await storage.updateSystemSettings({ twitterApiStatus: 'disconnected' });
         }
@@ -32,7 +35,7 @@ export function startTwitterHealthCheck() {
 
       // Simple verification test
       const res = await fetch("https://api.twitter.com/2/users/by/username/Twitter", {
-        headers: { Authorization: `Bearer ${process.env.X_BEARER_TOKEN}` }
+        headers: { Authorization: `Bearer ${bearerToken}` }
       });
       
       const isOperational = res.ok;

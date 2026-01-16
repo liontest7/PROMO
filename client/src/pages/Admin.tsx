@@ -233,7 +233,7 @@ export default function AdminDashboard() {
                       />
                       <Label htmlFor="campaigns-enabled" className="flex flex-col">
                         <span className="font-bold uppercase text-xs tracking-widest text-white">Global Campaign Status</span>
-                        <span className="text-sm text-white/70">{settings?.campaignsEnabled ? 'Enabled' : 'Disabled'}</span>
+                        <span className="text-sm text-white font-medium">{settings?.campaignsEnabled ? 'Enabled' : 'Disabled'}</span>
                       </Label>
                     </div>
                   </div>

@@ -59,7 +59,7 @@ export function AdminAnalytics() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="flex items-center gap-1 text-[10px] text-white/50 font-bold uppercase">
+            <div className="flex items-center gap-1 text-[10px] text-white font-bold uppercase">
               <TrendingUp className="w-3 h-3" />
               Total $DROPY Distributed
             </div>
@@ -74,7 +74,7 @@ export function AdminAnalytics() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="flex items-center gap-1 text-[10px] text-white/50 font-bold uppercase">
+            <div className="flex items-center gap-1 text-[10px] text-white font-bold uppercase">
               <Target className="w-3 h-3" />
               Verified Actions
             </div>
@@ -89,7 +89,7 @@ export function AdminAnalytics() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="flex items-center gap-1 text-[10px] text-white/50 font-bold uppercase">
+            <div className="flex items-center gap-1 text-[10px] text-white font-bold uppercase">
               <Users className="w-3 h-3" />
               Unique Wallets
             </div>
@@ -104,7 +104,7 @@ export function AdminAnalytics() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="flex items-center gap-1 text-[10px] text-white/50 font-bold uppercase">
+            <div className="flex items-center gap-1 text-[10px] text-white font-bold uppercase">
               <Coins className="w-3 h-3" />
               Total $DROPY Burned
             </div>
@@ -117,7 +117,7 @@ export function AdminAnalytics() {
         <Card className="glass-card border-white/10 bg-white/[0.01]">
           <CardHeader>
             <CardTitle className="text-white uppercase font-black text-sm tracking-widest">Protocol Growth</CardTitle>
-            <CardDescription className="text-white/50">Daily user registrations (Last 30 days)</CardDescription>
+            <CardDescription className="text-white">Daily user registrations (Last 30 days)</CardDescription>
           </CardHeader>
           <CardContent className="h-[300px]">
             <ResponsiveContainer width="100%" height="100%">
@@ -164,31 +164,31 @@ export function AdminAnalytics() {
         <Card className="glass-card border-white/10 bg-white/[0.01]">
           <CardHeader>
             <CardTitle className="text-white uppercase font-black text-sm tracking-widest">Action Distribution</CardTitle>
-            <CardDescription className="text-white/50">Verifications by type</CardDescription>
+            <CardDescription className="text-white">Verifications by type</CardDescription>
           </CardHeader>
           <CardContent className="h-[300px]">
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
                 <Pie
-                  data={engagements?.actionBreakdown && engagements.actionBreakdown.length > 0 ? engagements.actionBreakdown : [
-                    { type: 'Follow', count: 45 },
-                    { type: 'Retweet', count: 25 },
-                    { type: 'Website', count: 20 },
-                    { type: 'Other', count: 10 }
+                  data={analytics?.distribution && analytics.distribution.length > 0 ? analytics.distribution : [
+                    { name: 'Follow', value: 45 },
+                    { name: 'Retweet', value: 25 },
+                    { name: 'Website', value: 20 },
+                    { name: 'Other', value: 10 }
                   ]}
                   cx="50%"
                   cy="50%"
                   innerRadius={60}
                   outerRadius={80}
                   paddingAngle={5}
-                  dataKey="count"
-                  nameKey="type"
+                  dataKey="value"
+                  nameKey="name"
                 >
-                  {(engagements?.actionBreakdown && engagements.actionBreakdown.length > 0 ? engagements.actionBreakdown : [
-                    { type: 'Follow', count: 45 },
-                    { type: 'Retweet', count: 25 },
-                    { type: 'Website', count: 20 },
-                    { type: 'Other', count: 10 }
+                  {(analytics?.distribution && analytics.distribution.length > 0 ? analytics.distribution : [
+                    { name: 'Follow', value: 45 },
+                    { name: 'Retweet', value: 25 },
+                    { name: 'Website', value: 20 },
+                    { name: 'Other', value: 10 }
                   ]).map((_: any, index: number) => (
                     <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                   ))}
