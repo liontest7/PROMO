@@ -8,6 +8,8 @@ import { queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { format } from "date-fns";
 
+const cnHelper = (...classes: any[]) => classes.filter(Boolean).join(' ');
+
 export function AdminLogsSection() {
   const { toast } = useToast();
   
@@ -28,27 +30,27 @@ export function AdminLogsSection() {
     }
   });
 
-  if (isLoading) return <div className="p-8 text-center text-white font-bold animate-pulse">FETCHING SYSTEM LOGS...</div>;
+  if (isLoading) return <div className="p-8 text-center text-white font-black animate-pulse">FETCHING SYSTEM LOGS...</div>;
 
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <div className="flex items-center gap-3">
           <Terminal className="w-5 h-5 text-primary" />
-          <h2 className="text-lg font-black uppercase tracking-widest text-white">System Activity Log</h2>
+          <h2 className="text-xl font-black uppercase tracking-widest text-white">System Activity Log</h2>
         </div>
         <Button 
           variant="destructive" 
           size="sm" 
           onClick={() => clearLogsMutation.mutate()}
           disabled={clearLogsMutation.isPending}
-          className="h-8 font-black uppercase text-[10px] tracking-widest"
+          className="h-9 font-black uppercase text-xs tracking-widest"
         >
           <Trash2 className="w-3 h-3 mr-2" /> Clear All
         </Button>
       </div>
 
-      <Card className="glass-card border-white/10 bg-white/[0.01] rounded-xl overflow-hidden">
+      <Card className="glass-card border-white/20 bg-white/[0.01] rounded-xl overflow-hidden">
         <div className="p-0 max-h-[600px] overflow-y-auto custom-scrollbar">
           <Table>
             <TableHeader className="sticky top-0 bg-[#0a0a0a] z-10 border-b border-white/20">
@@ -60,11 +62,11 @@ export function AdminLogsSection() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {logs?.length > 0 ? logs.map((log: any, i: number) => (
+              {logs && logs.length > 0 ? logs.map((log: any, i: number) => (
                 <TableRow key={i} className="border-white/10 hover:bg-white/[0.05] transition-colors">
                   <TableCell className="text-xs font-black font-mono text-white/80">{format(new Date(log.timestamp), 'HH:mm:ss')}</TableCell>
                   <TableCell>
-                    <Badge variant="outline" className={cn(
+                    <Badge variant="outline" className={cnHelper(
                       "text-[10px] font-black uppercase px-2 py-0.5",
                       log.level === 'error' ? 'text-red-500 border-red-500/40 bg-red-500/5' : 
                       log.level === 'warn' ? 'text-yellow-500 border-yellow-500/40 bg-yellow-500/5' : 
@@ -78,7 +80,7 @@ export function AdminLogsSection() {
                 </TableRow>
               )) : (
                 <TableRow>
-                  <TableCell colSpan={4} className="text-center py-20 text-white/30 text-xs font-black uppercase tracking-widest">No activity recorded</TableCell>
+                  <TableCell colSpan={4} className="text-center py-20 text-white/30 text-sm font-black uppercase tracking-widest">No activity recorded</TableCell>
                 </TableRow>
               )}
             </TableBody>
@@ -88,5 +90,3 @@ export function AdminLogsSection() {
     </div>
   );
 }
-
-const cn = (...classes: any[]) => classes.filter(Boolean).join(' ');
