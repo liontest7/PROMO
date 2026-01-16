@@ -6,6 +6,11 @@ import { z } from "zod";
 import { db } from "../db";
 import { users } from "@shared/schema";
 import { eq } from "drizzle-orm";
+import BadWordsNext from "bad-words-next";
+
+const badwords = new BadWordsNext();
+
+const usernameUpdateRateLimit: Record<string, number> = {};
 
 export function setupUserRoutes(app: Express) {
   app.post('/api/users/auth', async (req, res) => {
@@ -43,15 +48,36 @@ export function setupUserRoutes(app: Express) {
 
   app.patch("/api/users/:walletAddress/username", async (req, res) => {
     try {
-      const user = await storage.getUserByWallet(req.params.walletAddress);
-      if (!user) return res.status(404).json({ message: "User not found" });
-      
+      const { walletAddress } = req.params;
       const { username } = req.body;
-      if (typeof username !== "string") {
+
+      if (!username || typeof username !== "string") {
         return res.status(400).json({ message: "Invalid username" });
       }
 
+      if (username.length < 3 || username.length > 20) {
+        return res.status(400).json({ message: "Username must be between 3 and 20 characters" });
+      }
+
+      if (badwords.check(username)) {
+        return res.status(400).json({ message: "Username contains restricted content" });
+      }
+
+      // Rate limit: Once every 24 hours
+      const now = Date.now();
+      const lastUpdate = usernameUpdateRateLimit[walletAddress] || 0;
+      const twentyFourHours = 24 * 60 * 60 * 1000;
+
+      if (now - lastUpdate < twentyFourHours) {
+        const remainingHours = Math.ceil((twentyFourHours - (now - lastUpdate)) / (1000 * 60 * 60));
+        return res.status(429).json({ message: `You can update your username again in ${remainingHours} hours` });
+      }
+
+      const user = await storage.getUserByWallet(walletAddress);
+      if (!user) return res.status(404).json({ message: "User not found" });
+
       const updatedUser = await storage.updateUser(user.id, { username });
+      usernameUpdateRateLimit[walletAddress] = now;
       res.json(updatedUser);
     } catch (err) {
       console.error("Update username error:", err);
