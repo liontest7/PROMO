@@ -1,8 +1,11 @@
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Terminal, Activity, Shield, CheckCircle, AlertCircle } from "lucide-react";
+import { Terminal, Activity, Shield, CheckCircle, AlertCircle, Trash2 } from "lucide-react";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation } from "@tanstack/react-query";
+import { queryClient } from "@/lib/queryClient";
+import { useToast } from "@/hooks/use-toast";
+import { Button } from "@/components/ui/button";
 
 interface LiveTerminalProps {
   errorLogs: any[];
@@ -10,26 +13,34 @@ interface LiveTerminalProps {
 }
 
 export function LiveTerminal({ errorLogs, executions }: LiveTerminalProps) {
-  const { data: history } = useQuery<any[]>({
-    queryKey: ["/api/leaderboard/history"],
+  const { toast } = useToast();
+  const { data: systemLogs } = useQuery<any[]>({
+    queryKey: ["/api/admin/logs"],
+    refetchInterval: 5000,
+  });
+
+  const clearLogsMutation = useMutation({
+    mutationFn: async () => {
+      const res = await fetch("/api/admin/logs/clear", { method: 'POST' });
+      if (!res.ok) throw new Error("Failed to clear logs");
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/logs"] });
+      toast({ title: "Success", description: "Logs cleared" });
+    }
   });
 
   // Combine and sort logs by timestamp
   const terminalLogs = [
-    ...(errorLogs || []).map(log => ({ ...log, type: 'error', source: 'SYSTEM' })),
+    ...(systemLogs || []).map(log => ({ ...log, type: 'system', source: log.source })),
     ...(executions || []).map(exec => ({ 
       timestamp: exec.createdAt, 
       type: 'execution',
       message: `User ${exec.user?.walletAddress.slice(0,6)}... completed ${exec.action?.type} for ${exec.campaign?.title} (Status: ${exec.status})`,
       source: 'EXECUTION'
-    })),
-    ...(history || []).flatMap(h => h.winners.map((w: any) => ({
-      timestamp: h.endDate,
-      type: w.status === 'paid' ? 'success' : 'error',
-      message: `Weekly Payout: ${w.name} received ${w.prizeAmount} $DROPY (${w.status})`,
-      source: 'AUTOMATION'
-    })))
-  ].sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
+    }))
+  ].sort((a, b) => new Date(b.timestamp || b.createdAt).getTime() - new Date(a.timestamp || a.createdAt).getTime());
 
   return (
     <Card className="glass-card border-white/10 bg-black rounded-2xl overflow-hidden font-mono">
@@ -41,9 +52,20 @@ export function LiveTerminal({ errorLogs, executions }: LiveTerminalProps) {
           </CardTitle>
           <CardDescription className="text-base font-bold text-white">Real-time system events, payouts, and security alerts.</CardDescription>
         </div>
-        <div className="flex items-center gap-2 bg-primary/10 px-3 py-1.5 rounded-full border border-primary/20">
-          <Activity className="w-3 h-3 text-primary animate-pulse" />
-          <span className="text-xs font-black text-primary uppercase tracking-widest">Engine Active</span>
+        <div className="flex items-center gap-4">
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            className="h-8 w-8 text-white/50 hover:text-red-400"
+            onClick={() => clearLogsMutation.mutate()}
+            disabled={clearLogsMutation.isPending}
+          >
+            <Trash2 className="h-4 w-4" />
+          </Button>
+          <div className="flex items-center gap-2 bg-primary/10 px-3 py-1.5 rounded-full border border-primary/20">
+            <Activity className="w-3 h-3 text-primary animate-pulse" />
+            <span className="text-xs font-black text-primary uppercase tracking-widest">Engine Active</span>
+          </div>
         </div>
       </CardHeader>
       <CardContent className="p-4 h-[500px] overflow-y-auto space-y-2 flex flex-col-reverse">
@@ -54,11 +76,11 @@ export function LiveTerminal({ errorLogs, executions }: LiveTerminalProps) {
         )}
         {terminalLogs.map((log: any, i: number) => (
           <div key={i} className="text-sm leading-relaxed flex gap-4 group py-1 border-b border-white/5 last:border-0">
-            <span className="text-white/60 font-black min-w-[70px]">[{format(new Date(log.timestamp), 'HH:mm:ss')}]</span>
+            <span className="text-white/60 font-black min-w-[70px]">[{format(new Date(log.timestamp || log.createdAt), 'HH:mm:ss')}]</span>
             <span className={cn(
               "font-black uppercase tracking-widest text-xs min-w-[100px]",
               log.source === 'EXECUTION' ? 'text-green-400' : 
-              log.source === 'AUTOMATION' ? 'text-blue-400' : 'text-primary'
+              log.source === 'WALLET' ? 'text-blue-400' : 'text-primary'
             )}>[{log.source}]</span>
             <span className="text-white font-bold group-hover:text-primary transition-colors flex-1">{log.message}</span>
           </div>

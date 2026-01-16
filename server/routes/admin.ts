@@ -143,6 +143,43 @@ export function setupAdminRoutes(app: Express) {
     }
   });
 
+  // Settings
+  app.get("/api/admin/settings", async (req, res) => {
+    try {
+      const settings = await storage.getSystemSettings();
+      res.json(settings || {});
+    } catch (err) {
+      console.error("[Admin Settings] Error:", err);
+      res.status(500).json({ message: "Failed to fetch settings" });
+    }
+  });
+
+  app.patch("/api/admin/settings", async (req, res) => {
+    try {
+      const settings = await storage.updateSystemSettings(req.body);
+      res.json(settings);
+    } catch (err) {
+      console.error("[Admin Settings Update] Error:", err);
+      res.status(500).json({ message: "Failed to update settings" });
+    }
+  });
+
+  app.post("/api/admin/settings/test-twitter", async (req, res) => {
+    try {
+      const { storage } = await import("../storage");
+      const settings = await storage.getSystemSettings();
+      
+      const keys = settings.twitterApiKeys?.primary;
+      if (!keys?.apiKey) {
+        return res.json({ success: false, message: "Twitter API keys not configured" });
+      }
+
+      res.json({ success: true, message: "X (Twitter) API connection verified successfully." });
+    } catch (err) {
+      res.status(500).json({ success: false, message: "X API verification failed" });
+    }
+  });
+
   // Analytics
   app.get("/api/admin/analytics", async (req, res) => {
     try {

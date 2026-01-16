@@ -246,7 +246,21 @@ export default function AdminDashboard() {
     }
   });
 
-  if (loadingUsers || loadingCampaigns || loadingExecutions || loadingStats || loadingHealth || loadingSettings) {
+  const { data: logs, isLoading: loadingLogs } = useQuery<any[]>({
+    queryKey: ["/api/admin/logs"],
+    refetchInterval: 5000,
+    queryFn: fetchAdmin,
+    enabled: !!(walletAddress || localStorage.getItem('walletAddress'))
+  });
+
+  const { data: walletInfo, isLoading: loadingWallet } = useQuery<any>({
+    queryKey: ["/api/admin/wallet-info"],
+    refetchInterval: 30000,
+    queryFn: fetchAdmin,
+    enabled: !!(walletAddress || localStorage.getItem('walletAddress'))
+  });
+
+  if (loadingUsers || loadingCampaigns || loadingExecutions || loadingStats || loadingHealth || loadingSettings || loadingLogs || loadingWallet) {
     return (
       <div className="flex h-screen items-center justify-center bg-background">
         <div className="flex flex-col items-center gap-4">
@@ -442,6 +456,7 @@ export default function AdminDashboard() {
         <AdminStats 
           stats={adminStats || { totalUsers: 0, activeCampaigns: 0, totalExecutions: 0, totalRewardsPaid: 0, blockedUsers: 0 }} 
           campaignsCount={campaigns?.length || 0} 
+          walletInfo={walletInfo}
         />
 
         <Tabs defaultValue="users" className="w-full">

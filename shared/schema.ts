@@ -5,6 +5,15 @@ import { relations } from "drizzle-orm";
 
 // === TABLE DEFINITIONS ===
 
+export const systemLogs = pgTable("system_logs", {
+  id: serial("id").primaryKey(),
+  level: text("level", { enum: ["info", "warn", "error"] }).notNull(),
+  source: text("source").notNull(), // 'SYSTEM', 'EXECUTION', 'AUTOMATION', 'WALLET'
+  message: text("message").notNull(),
+  details: jsonb("details"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
 export const systemSettings = pgTable("system_settings", {
   id: serial("id").primaryKey(),
   campaignsEnabled: boolean("campaigns_enabled").default(true).notNull(),
@@ -16,6 +25,7 @@ export const systemSettings = pgTable("system_settings", {
     backup?: { apiKey: string; apiSecret: string; bearerToken: string };
   }>(),
   solanaRpcUrls: jsonb("solana_rpc_urls").$type<string[]>(),
+  systemWalletAddress: text("system_wallet_address"),
   burnPercent: integer("burn_percent").default(50).notNull(),
   rewardsPercent: integer("rewards_percent").default(40).notNull(),
   systemPercent: integer("system_percent").default(10).notNull(),

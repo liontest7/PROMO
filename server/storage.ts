@@ -69,9 +69,24 @@ export interface IStorage {
   // Anti-fraud
   getWalletsByIp(ip: string): Promise<string[]>;
   logIpWalletAssociation(ip: string, wallet: string): Promise<void>;
+  // System Logs
+  createLog(log: { level: "info" | "warn" | "error", source: string, message: string, details?: any }): Promise<void>;
+  getLogs(limit?: number): Promise<any[]>;
+  clearLogs(): Promise<void>;
 }
 
 export class DatabaseStorage implements IStorage {
+  async createLog(log: { level: "info" | "warn" | "error", source: string, message: string, details?: any }): Promise<void> {
+    await db.insert(systemLogs).values(log);
+  }
+
+  async getLogs(limit: number = 100): Promise<any[]> {
+    return await db.select().from(systemLogs).orderBy(desc(systemLogs.createdAt)).limit(limit);
+  }
+
+  async clearLogs(): Promise<void> {
+    await db.delete(systemLogs);
+  }
   private ipWalletLog: Map<string, Set<string>> = new Map();
 
   async getWalletsByIp(ip: string): Promise<string[]> {
