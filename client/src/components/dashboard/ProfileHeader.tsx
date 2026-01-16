@@ -2,7 +2,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Edit2, Check, X, Trophy, ArrowUpRight, Camera } from "lucide-react";
+import { Edit2, Check, X, Trophy, ArrowUpRight, Copy } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
@@ -31,7 +31,6 @@ export function ProfileHeader({
   isPublicView = false
 }: ProfileHeaderProps) {
   const [isEditing, setIsEditing] = useState(false);
-  const [isEditingAvatar, setIsEditingAvatar] = useState(false);
   const [newName, setNewName] = useState(username || "");
   const [newAvatarUrl, setNewAvatarUrl] = useState(avatarUrl || "");
   const queryClient = useQueryClient();
@@ -46,7 +45,6 @@ export function ProfileHeader({
       queryClient.invalidateQueries({ queryKey: ["/api/users", walletAddress] });
       queryClient.invalidateQueries({ queryKey: ["/api/leaderboard"] });
       setIsEditing(false);
-      setIsEditingAvatar(false);
       toast({
         title: "Success",
         description: "Profile updated successfully",
@@ -61,14 +59,28 @@ export function ProfileHeader({
     }
   });
 
-  const handleSaveName = () => {
-    if (newName.trim()) {
-      mutation.mutate({ username: newName.trim() });
+  const handleSave = () => {
+    const data: { username?: string, profileImageUrl?: string } = {};
+    if (newName.trim() !== (username || "")) data.username = newName.trim();
+    if (newAvatarUrl.trim() !== (avatarUrl || "")) data.profileImageUrl = newAvatarUrl.trim();
+    
+    if (Object.keys(data).length > 0) {
+      mutation.mutate(data);
+    } else {
+      setIsEditing(false);
     }
   };
 
-  const handleSaveAvatar = () => {
-    mutation.mutate({ profileImageUrl: newAvatarUrl.trim() });
+  const copyToClipboard = () => {
+    navigator.clipboard.writeText(walletAddress);
+    toast({
+      title: "Copied",
+      description: "Wallet address copied to clipboard",
+    });
+  };
+
+  const formatWallet = (address: string) => {
+    return `${address.slice(0, 4)}...${address.slice(-4)}`;
   };
 
   return (
@@ -76,7 +88,7 @@ export function ProfileHeader({
       <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-transparent to-transparent opacity-60" />
       <div className="relative z-10 flex flex-col md:flex-row items-center gap-8">
         <div className="relative">
-          <div className="w-32 h-32 rounded-full bg-gradient-to-tr from-primary via-primary/60 to-primary/20 p-1.5 shadow-[0_0_40px_rgba(34,197,94,0.4)] relative group/avatar">
+          <div className="w-32 h-32 rounded-full bg-gradient-to-tr from-primary via-primary/60 to-primary/20 p-1.5 shadow-[0_0_40px_rgba(34,197,94,0.4)] relative">
             <div className="w-full h-full rounded-full bg-background flex items-center justify-center overflow-hidden border-4 border-background">
               <Avatar className="h-full w-full">
                 <AvatarImage 
@@ -88,16 +100,6 @@ export function ProfileHeader({
                 </AvatarFallback>
               </Avatar>
             </div>
-            {!isPublicView && (
-              <Button 
-                size="icon" 
-                variant="secondary" 
-                className="absolute bottom-0 right-0 rounded-full h-8 w-8 shadow-xl border-2 border-background opacity-0 group-hover/avatar:opacity-100 transition-opacity"
-                onClick={() => setIsEditingAvatar(true)}
-              >
-                <Camera className="w-4 h-4" />
-              </Button>
-            )}
           </div>
           <Badge className="absolute -bottom-3 left-1/2 -translate-x-1/2 px-5 py-2 bg-primary text-primary-foreground font-black text-xs rounded-full border-4 border-background shadow-xl uppercase tracking-widest">
             LVL {level}
@@ -107,27 +109,43 @@ export function ProfileHeader({
         <div className="text-center md:text-left space-y-2">
           <div className="flex flex-col md:flex-row items-center gap-3">
             {isEditing ? (
-              <div className="flex items-center gap-2">
+              <div className="flex flex-col gap-3">
+                <div className="flex items-center gap-2">
+                  <Input 
+                    placeholder="New Username"
+                    value={newName}
+                    onChange={(e) => setNewName(e.target.value)}
+                    className="bg-white/5 border-white/10 text-xl font-display font-black italic uppercase tracking-tighter w-64 h-10"
+                    autoFocus
+                  />
+                  <Button size="icon" variant="ghost" className="h-10 w-10" onClick={handleSave} disabled={mutation.isPending}>
+                    <Check className="w-5 h-5 text-primary" />
+                  </Button>
+                  <Button size="icon" variant="ghost" className="h-10 w-10" onClick={() => setIsEditing(false)}>
+                    <X className="w-5 h-5 text-red-500" />
+                  </Button>
+                </div>
                 <Input 
-                  value={newName}
-                  onChange={(e) => setNewName(e.target.value)}
-                  className="bg-white/5 border-white/10 text-2xl font-display font-black italic uppercase tracking-tighter w-48 h-10"
-                  autoFocus
+                  placeholder="Avatar Image URL"
+                  value={newAvatarUrl}
+                  onChange={(e) => setNewAvatarUrl(e.target.value)}
+                  className="bg-white/5 border-white/10 h-8 text-xs w-64"
                 />
-                <Button size="icon" variant="ghost" className="h-10 w-10" onClick={handleSaveName} disabled={mutation.isPending}>
-                  <Check className="w-5 h-5 text-primary" />
-                </Button>
-                <Button size="icon" variant="ghost" className="h-10 w-10" onClick={() => setIsEditing(false)}>
-                  <X className="w-5 h-5 text-red-500" />
-                </Button>
+                <p className="text-[10px] text-white/40 italic uppercase tracking-widest">
+                  Note: Changes allowed once every 24h. No profanity.
+                </p>
               </div>
             ) : (
               <div className="flex items-center gap-2">
                 <h1 className="text-3xl font-display font-black tracking-tighter uppercase italic leading-none text-white drop-shadow-sm">
-                  {username || `USER ${walletAddress.slice(0, 4)}...${walletAddress.slice(-4)}`}
+                  {username || `USER ${formatWallet(walletAddress)}`}
                 </h1>
                 {!isPublicView && (
-                  <Button size="icon" variant="ghost" className="h-8 w-8 opacity-50 hover:opacity-100" onClick={() => setIsEditing(true)}>
+                  <Button size="icon" variant="ghost" className="h-8 w-8 opacity-50 hover:opacity-100" onClick={() => {
+                    setNewName(username || "");
+                    setNewAvatarUrl(avatarUrl || "");
+                    setIsEditing(true);
+                  }}>
                     <Edit2 className="w-4 h-4" />
                   </Button>
                 )}
@@ -138,26 +156,14 @@ export function ProfileHeader({
             </Badge>
           </div>
 
-          <p className="text-white font-mono text-sm uppercase font-bold tracking-wider mt-1 opacity-90">
-            {walletAddress}
-          </p>
-
-          {isEditingAvatar && (
-            <div className="flex items-center gap-2 mt-2">
-              <Input 
-                placeholder="Avatar Image URL"
-                value={newAvatarUrl}
-                onChange={(e) => setNewAvatarUrl(e.target.value)}
-                className="bg-white/5 border-white/10 h-8 text-xs w-64"
-              />
-              <Button size="sm" className="h-8 px-3" onClick={handleSaveAvatar} disabled={mutation.isPending}>
-                Save
-              </Button>
-              <Button size="sm" variant="ghost" className="h-8 px-3" onClick={() => setIsEditingAvatar(false)}>
-                Cancel
-              </Button>
-            </div>
-          )}
+          <div className="flex items-center justify-center md:justify-start gap-2">
+            <p className="text-white font-mono text-sm uppercase font-bold tracking-wider opacity-90">
+              {isPublicView ? formatWallet(walletAddress) : walletAddress}
+            </p>
+            <Button size="icon" variant="ghost" className="h-6 w-6 opacity-30 hover:opacity-100" onClick={copyToClipboard}>
+              <Copy className="w-3 h-3" />
+            </Button>
+          </div>
         </div>
       </div>
       
