@@ -24,6 +24,8 @@ interface SystemHealthProps {
     dbStatus: string;
     rpcStatus: string;
     errorLogs: any[];
+    memoryUsage?: string;
+    memoryPercent?: number;
   };
 }
 
@@ -112,14 +114,14 @@ export function SystemHealth({ health }: SystemHealthProps) {
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="space-y-1">
-              <div className="flex items-center justify-between text-xs font-bold text-white/70 uppercase">
+              <div className="flex items-center justify-between text-xs font-bold text-white uppercase">
                 <span>Memory Usage</span>
-                <span>{Math.round((health?.memory?.heapUsed || 0) / 1024 / 1024)}MB / {Math.round((health?.memory?.heapTotal || 0) / 1024 / 1024)}MB</span>
+                <span>{health?.memoryUsage || "0MB"}</span>
               </div>
-              <div className="h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
+              <div className="h-2 w-full bg-white/5 rounded-full overflow-hidden border border-white/10">
                 <div 
-                  className="h-full bg-primary" 
-                  style={{ width: `${Math.min(100, ((health?.memory?.heapUsed || 0) / (health?.memory?.heapTotal || 1)) * 100)}%` }}
+                  className="h-full bg-primary shadow-[0_0_10px_rgba(34,197,94,0.4)]" 
+                  style={{ width: `${health?.memoryPercent || 0}%` }}
                 />
               </div>
             </div>

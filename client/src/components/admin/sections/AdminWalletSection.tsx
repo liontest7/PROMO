@@ -32,7 +32,7 @@ export function AdminWalletSection() {
             <h2 className="text-4xl font-black font-display text-white">{walletInfo?.balanceSol?.toFixed(4) || "0.0000"} SOL</h2>
           </div>
           <div className="mt-6 p-4 rounded-xl bg-black/20 border border-white/10">
-            <p className="text-[12px] font-black text-white uppercase mb-1">Wallet Address</p>
+            <p className="text-[12px] font-black text-white uppercase mb-1">Treasury Wallet</p>
             <code className="text-sm text-primary font-black font-mono break-all">{walletInfo?.address || "NOT_LOADED"}</code>
           </div>
         </Card>

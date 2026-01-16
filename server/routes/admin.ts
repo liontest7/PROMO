@@ -230,7 +230,9 @@ export function setupAdminRoutes(app: Express) {
     try {
       const memory = process.memoryUsage();
       const rss = Math.round(memory.rss / 1024 / 1024);
-      const memoryPercent = Math.min(100, (memory.rss / (512 * 1024 * 1024)) * 100);
+      // More accurate percentage based on common 1GB/2GB limits
+      const totalAvailable = 1024 * 1024 * 1024; // Assume 1GB for display
+      const memoryPercent = Math.min(100, (memory.rss / totalAvailable) * 100);
       
       // Get system uptime - persistent from first campaign if possible, or process uptime
       const allCampaigns = await storage.getAllCampaigns();
@@ -254,7 +256,7 @@ export function setupAdminRoutes(app: Express) {
         cpu: os.loadavg(),
         dbStatus: 'Connected',
         rpcStatus: 'Healthy',
-        errorLogs: await storage.getErrorLogs ? await (storage as any).getErrorLogs() : []
+        errorLogs: await (storage as any).getErrorLogs ? await (storage as any).getErrorLogs() : []
       });
     } catch (err) {
       console.error("[Admin Health] Error:", err);
@@ -286,81 +288,47 @@ export function setupAdminRoutes(app: Express) {
   // Wallet Info
   app.get("/api/admin/wallet-info", async (req, res) => {
     try {
-      let systemWalletAddress = "DajB37qp74UzwND3N1rVWtLdxr55nhvuK2D4x476zmns"; // Default fallback
-      
-      try {
-        const { Keypair } = await import("@solana/web3.js");
-        const bs58 = (await import("bs58")).default;
-        const privateKey = process.env.SYSTEM_WALLET_PRIVATE_KEY;
-        if (privateKey) {
-          const keypair = Keypair.fromSecretKey(bs58.decode(privateKey));
-          systemWalletAddress = keypair.publicKey.toBase58();
-        }
-      } catch (e) {
-        console.warn("[Admin Wallet Info] Error deriving system wallet:", e);
+      const { Keypair, PublicKey, Connection } = await import("@solana/web3.js");
+      const { getAccount, getAssociatedTokenAddress } = await import("@solana/spl-token");
+      const bs58 = (await import("bs58")).default;
+
+      const privateKey = process.env.SYSTEM_WALLET_PRIVATE_KEY;
+      if (!privateKey) {
+        return res.status(500).json({ message: "System wallet not configured" });
       }
 
-      let balanceSol = 0;
+      const keypair = Keypair.fromSecretKey(bs58.decode(privateKey));
+      const systemWalletAddress = keypair.publicKey.toBase58();
+      
+      const connection = await (await import("../services/solana")).getSolanaConnection();
+      const pubkey = keypair.publicKey;
+      
+      const solLamports = await connection.getBalance(pubkey);
+      const balanceSol = solLamports / 1e9;
+
       let balanceDropy = 0;
-
-      try {
-        const { getSolanaConnection } = await import("../services/solana");
-        const { PublicKey } = await import("@solana/web3.js");
-        const { getAccount, getAssociatedTokenAddress } = await import("@solana/spl-token");
-        
-        const connection = await getSolanaConnection();
-        const pubkey = new PublicKey(systemWalletAddress);
-        
-        const solLamports = await connection.getBalance(pubkey);
-        balanceSol = solLamports / 1e9;
-
-        // Calculate real DROPY from on-chain balance if CA exists
-        const DROPY_CA = process.env.VITE_DROPY_CA;
-        if (DROPY_CA && DROPY_CA !== "DropyAddressHere") {
-          try {
-            const tokenMint = new PublicKey(DROPY_CA);
-            const ata = await getAssociatedTokenAddress(tokenMint, pubkey);
-            const account = await getAccount(connection, ata);
-            balanceDropy = Number(account.amount) / 1e6; // Assuming 6 decimals
-          } catch (e) {
-            console.warn("[Admin Wallet Info] Could not fetch on-chain DROPY balance:", e);
-            // Fallback calculation from fees + initial supply if on-chain fetch fails
-            const allExecutions = await storage.getAllExecutions();
-            const feesCollected = allExecutions
-              .filter(e => e.status === 'paid' || e.status === 'verified')
-              .reduce((acc, e) => {
-                const reward = e.action ? parseFloat(e.action.rewardAmount) : 0;
-                return acc + (reward * 0.1); 
-              }, 0);
-            balanceDropy = 1000000 + feesCollected;
-          }
-        } else {
-          // Calculate from fees + initial supply if no CA yet
-          const allExecutions = await storage.getAllExecutions();
-          const feesCollected = allExecutions
-            .filter(e => e.status === 'paid' || e.status === 'verified')
-            .reduce((acc, e) => {
-              const reward = e.action ? parseFloat(e.action.rewardAmount) : 0;
-              return acc + (reward * 0.1); 
-            }, 0);
-          balanceDropy = 1000000 + feesCollected;
+      const DROPY_CA = process.env.VITE_DROPY_CA;
+      if (DROPY_CA && DROPY_CA !== "DropyAddressHere") {
+        try {
+          const tokenMint = new PublicKey(DROPY_CA);
+          const ata = await getAssociatedTokenAddress(tokenMint, pubkey);
+          const account = await getAccount(connection, ata);
+          balanceDropy = Number(account.amount) / 1e6;
+        } catch (e) {
+          console.warn("[Admin Wallet Info] Could not fetch DROPY balance:", e);
         }
-      } catch (err) {
-        console.warn("[Admin Wallet Info] Could not fetch live balance:", err);
-        balanceSol = 0; 
-        balanceDropy = 1500000;
       }
-      
+
       const allExecutions = await storage.getAllExecutions();
       const weeklyRewardsPool = allExecutions
         .filter(e => e.status === 'paid' || e.status === 'verified')
         .reduce((acc, e) => {
           const reward = e.action ? parseFloat(e.action.rewardAmount) : 0;
-          return acc + (reward * 0.05); // 5% pool assumption
+          return acc + (reward * 0.05);
         }, 0);
 
       const logs = await (storage as any).getAdminLogs?.() || [];
-      const walletLogs = logs.filter((l: any) => l.source === 'Wallet' || l.source === 'Payout');
+      const walletLogs = logs.filter((l: any) => l.source === 'Wallet' || l.source === 'Payout' || l.source === 'System');
 
       res.json({
         address: systemWalletAddress,

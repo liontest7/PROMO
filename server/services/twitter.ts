@@ -1,4 +1,5 @@
 import fetch from "node-fetch";
+import { storage } from "../storage";
 
 // Optimized Twitter verification service with reusable ID fetching
 async function getUserId(accessToken: string, username?: string): Promise<string | null> {
@@ -11,6 +12,52 @@ async function getUserId(accessToken: string, username?: string): Promise<string
   });
   const data: any = await res.json();
   return data.data?.id || null;
+}
+
+// Background Health Check and Auto-Reconnection logic
+export function startTwitterHealthCheck() {
+  console.log("[Twitter Service] Initializing health monitor...");
+  
+  const checkHealth = async () => {
+    try {
+      const settings = await storage.getSystemSettings();
+      const keys = settings.twitterApiKeys?.primary;
+      
+      if (!keys?.apiKey) {
+        if (settings.twitterApiStatus !== 'disconnected') {
+          await storage.updateSystemSettings({ twitterApiStatus: 'disconnected' });
+        }
+        return;
+      }
+
+      // Simple verification test
+      const res = await fetch("https://api.twitter.com/2/users/by/username/Twitter", {
+        headers: { Authorization: `Bearer ${process.env.X_BEARER_TOKEN}` }
+      });
+      
+      const isOperational = res.ok;
+      const newStatus = isOperational ? 'active' : 'degraded';
+      
+      if (settings.twitterApiStatus !== newStatus) {
+        console.log(`[Twitter Service] Status changed: ${settings.twitterApiStatus} -> ${newStatus}`);
+        await storage.updateSystemSettings({ twitterApiStatus: newStatus });
+      }
+
+      // Fallback logic if degraded
+      if (!isOperational && settings.twitterApiKeys?.backup?.apiKey) {
+        console.warn("[Twitter Service] Primary API failing, consider switching to backup...");
+        // In a real scenario, we might automatically rotate keys here
+      }
+
+    } catch (error) {
+      console.error("[Twitter Service] Health check failed:", error);
+      await storage.updateSystemSettings({ twitterApiStatus: 'error' });
+    }
+  };
+
+  // Run every 5 minutes
+  setInterval(checkHealth, 5 * 60 * 1000);
+  checkHealth(); // Initial run
 }
 
 export async function verifyTwitterFollow(accessToken: string, targetUsername: string): Promise<boolean> {
