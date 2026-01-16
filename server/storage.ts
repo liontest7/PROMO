@@ -655,12 +655,26 @@ export class DatabaseStorage implements IStorage {
     if (!settings) {
       const [newSettings] = await db.insert(systemSettings).values({
         campaignsEnabled: update.campaignsEnabled ?? true,
+        holderQualificationEnabled: update.holderQualificationEnabled ?? true,
+        socialEngagementEnabled: update.socialEngagementEnabled ?? true,
         twitterApiStatus: update.twitterApiStatus ?? "coming_soon"
       }).returning();
       return newSettings;
     }
+
+    const finalUpdate: any = { ...update, updatedAt: new Date() };
+    
+    // Global toggle hierarchy: If Global is toggled, it forces both sub-categories
+    if (update.campaignsEnabled === true) {
+      finalUpdate.holderQualificationEnabled = true;
+      finalUpdate.socialEngagementEnabled = true;
+    } else if (update.campaignsEnabled === false) {
+      finalUpdate.holderQualificationEnabled = false;
+      finalUpdate.socialEngagementEnabled = false;
+    }
+
     const [updated] = await db.update(systemSettings)
-      .set({ ...update, updatedAt: new Date() })
+      .set(finalUpdate)
       .where(eq(systemSettings.id, settings.id))
       .returning();
     return updated;

@@ -282,7 +282,10 @@ export default function AdminDashboard() {
                       <Switch 
                         id="campaigns-enabled" 
                         checked={settings?.campaignsEnabled ?? true} 
-                        onCheckedChange={(checked) => updateSettingsMutation.mutate({ campaignsEnabled: checked })}
+                        onCheckedChange={(checked) => {
+                          // Optimistic update for UI feel if needed, but the mutation handles it
+                          updateSettingsMutation.mutate({ campaignsEnabled: checked });
+                        }}
                       />
                       <Label htmlFor="campaigns-enabled" className="flex flex-col">
                         <span className="font-bold uppercase text-xs tracking-widest text-white">Global Campaign Status</span>
@@ -291,11 +294,14 @@ export default function AdminDashboard() {
                     </div>
 
                     <div className="flex items-center space-x-4 border-l border-white/10 pl-6">
-                      <div className={`h-3 w-3 rounded-full animate-pulse ${settings?.twitterApiStatus === 'active' ? 'bg-green-500' : 'bg-yellow-500'}`} />
+                      <div className={`h-3 w-3 rounded-full ${settings?.twitterApiStatus === 'active' ? 'bg-green-500 animate-pulse' : 'bg-red-500'} transition-colors duration-500`} />
                       <div className="flex flex-col">
-                        <span className="font-bold uppercase text-xs tracking-widest text-white">Twitter API Status</span>
-                        <span className="text-sm text-white/70">
-                          {settings?.twitterApiStatus === 'active' ? 'Connected' : 'Disconnected'}
+                        <span className="font-bold uppercase text-[10px] tracking-widest text-white/50">Twitter API</span>
+                        <span className={cn(
+                          "text-xs font-black uppercase tracking-tighter",
+                          settings?.twitterApiStatus === 'active' ? 'text-green-500' : 'text-red-500'
+                        )}>
+                          {settings?.twitterApiStatus === 'active' ? 'Live & Connected' : 'Disconnected'}
                         </span>
                       </div>
                     </div>
