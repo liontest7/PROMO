@@ -625,13 +625,13 @@ export class DatabaseStorage implements IStorage {
   async getSystemSettings(): Promise<typeof systemSettings.$inferSelect> {
     let [settings] = await db.select().from(systemSettings);
     const hasTwitterKeys = !!(process.env.X_CONSUMER_KEY && process.env.X_CONSUMER_SECRET && process.env.X_BEARER_TOKEN);
-    const currentTwitterStatus = hasTwitterKeys ? "active" : "coming_soon";
+    const currentTwitterStatus = hasTwitterKeys ? "active" : "error";
 
     if (!settings) {
       [settings] = await db.insert(systemSettings).values({
         campaignsEnabled: true,
         holderQualificationEnabled: true,
-        socialEngagementEnabled: hasTwitterKeys, // Auto-sync with API presence
+        socialEngagementEnabled: hasTwitterKeys,
         twitterApiStatus: currentTwitterStatus,
         burnPercent: 50,
         rewardsPercent: 40,
@@ -639,7 +639,6 @@ export class DatabaseStorage implements IStorage {
         creationFee: 10000
       }).returning();
     } else {
-      // Dynamic check for Twitter API status and auto-disable social if needed
       let needsUpdate = false;
       const updates: any = {};
 
@@ -648,7 +647,6 @@ export class DatabaseStorage implements IStorage {
         needsUpdate = true;
       }
 
-      // If Twitter API is down, we must disable social engagement to prevent broken campaigns
       if (!hasTwitterKeys && settings.socialEngagementEnabled) {
         updates.socialEngagementEnabled = false;
         needsUpdate = true;
@@ -666,22 +664,27 @@ export class DatabaseStorage implements IStorage {
 
   async updateSystemSettings(update: Partial<typeof systemSettings.$inferSelect>): Promise<typeof systemSettings.$inferSelect> {
     const [settings] = await db.select().from(systemSettings);
+    const hasTwitterKeys = !!(process.env.X_CONSUMER_KEY && process.env.X_CONSUMER_SECRET && process.env.X_BEARER_TOKEN);
+    
     if (!settings) {
       const [newSettings] = await db.insert(systemSettings).values({
         campaignsEnabled: update.campaignsEnabled ?? true,
         holderQualificationEnabled: update.holderQualificationEnabled ?? true,
-        socialEngagementEnabled: update.socialEngagementEnabled ?? true,
-        twitterApiStatus: update.twitterApiStatus ?? "coming_soon"
+        socialEngagementEnabled: update.socialEngagementEnabled ?? hasTwitterKeys,
+        twitterApiStatus: hasTwitterKeys ? "active" : "error",
+        burnPercent: update.burnPercent ?? 50,
+        rewardsPercent: update.rewardsPercent ?? 40,
+        systemPercent: update.systemPercent ?? 10,
+        creationFee: update.creationFee ?? 10000
       }).returning();
       return newSettings;
     }
 
     const finalUpdate: any = { ...update, updatedAt: new Date() };
     
-    // Global toggle hierarchy: If Global is toggled, it forces both sub-categories
     if (update.campaignsEnabled === true) {
       finalUpdate.holderQualificationEnabled = true;
-      finalUpdate.socialEngagementEnabled = true;
+      finalUpdate.socialEngagementEnabled = hasTwitterKeys;
     } else if (update.campaignsEnabled === false) {
       finalUpdate.holderQualificationEnabled = false;
       finalUpdate.socialEngagementEnabled = false;
