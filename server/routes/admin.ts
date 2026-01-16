@@ -75,7 +75,7 @@ export function setupAdminRoutes(app: Express) {
     }
   });
 
-  app.post("/api/admin/settings", async (req, res) => {
+  app.patch("/api/admin/settings", async (req, res) => {
     try {
       const settings = await storage.updateSystemSettings(req.body);
       res.json(settings);

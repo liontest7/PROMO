@@ -49,7 +49,13 @@ export function setupCampaignRoutes(app: Express) {
         return res.status(403).json({ message: "Holder Qualification campaigns are currently disabled." });
       }
       if (body.campaignType === "engagement" && !settings.socialEngagementEnabled) {
-        return res.status(403).json({ message: "Social Engagement campaigns are currently disabled." });
+        // Only block if there are social actions
+        const hasSocialActions = body.actions?.some((a: any) => 
+          a.type === 'twitter' || a.type.startsWith('twitter_') || a.type.startsWith('telegram_')
+        );
+        if (hasSocialActions) {
+          return res.status(403).json({ message: "Social Engagement campaigns are currently disabled due to API connectivity issues." });
+        }
       }
 
       const campaignData = insertCampaignSchema.parse(req.body);
