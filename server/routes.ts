@@ -84,9 +84,9 @@ export async function registerRoutes(
       const allUsers = await storage.getAllUsers();
       const allCampaigns = await storage.getAllCampaigns();
       
-      // Filter for verified/active status
+      // Filter for verified/active status - Relaxed for admin visibility
       const activeCampaigns = allCampaigns.filter(c => c.status === 'active').length;
-      const totalUsers = allUsers.filter(u => u.status === 'active' && u.acceptedTerms).length;
+      const totalUsers = allUsers.length;
       const totalVerifiedProjects = Array.from(new Set(allCampaigns.map(c => c.creatorId))).length;
       
       // Calculate total rewards and burned amount using optimized logic
