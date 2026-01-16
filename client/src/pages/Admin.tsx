@@ -17,7 +17,6 @@ import { AuditDialog } from "@/components/admin/AuditDialog";
 import { AdminAnalytics } from "@/components/admin/AdminAnalytics";
 import { AdminHealthSection } from "@/components/admin/sections/AdminHealthSection";
 import { AdminWalletSection } from "@/components/admin/sections/AdminWalletSection";
-import { AdminLogsSection } from "@/components/admin/sections/AdminLogsSection";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
@@ -34,49 +33,62 @@ export default function AdminDashboard() {
   
   const currentWallet = walletAddress || localStorage.getItem('walletAddress');
 
+  const fetchAdmin = async ({ queryKey }: any) => {
+    const path = queryKey.join("/");
+    const fetchUrl = path.startsWith('/') ? path : `/${path}`;
+    const res = await fetch(fetchUrl, {
+      headers: {
+        'x-wallet-address': currentWallet || '',
+        'wallet-address': currentWallet || '',
+        'Content-Type': 'application/json'
+      }
+    });
+    if (!res.ok) {
+      const errorText = await res.text();
+      throw new Error(errorText || "Forbidden");
+    }
+    return res.json();
+  };
+
   const { data: users, isLoading: loadingUsers } = useQuery<any[]>({
     queryKey: ["/api/admin/users"],
-    staleTime: 300000,
-    refetchInterval: false,
-    refetchOnWindowFocus: false,
+    queryFn: fetchAdmin,
+    staleTime: 60000,
     enabled: !!currentWallet
   });
 
   const { data: campaigns, isLoading: loadingCampaigns } = useQuery<any[]>({
     queryKey: ["/api/admin/campaigns"],
-    staleTime: 300000,
-    refetchInterval: false,
-    refetchOnWindowFocus: false,
+    queryFn: fetchAdmin,
+    staleTime: 60000,
     enabled: !!currentWallet
   });
 
   const { data: executions, isLoading: loadingExecutions } = useQuery<any[]>({
     queryKey: ["/api/admin/executions"],
-    staleTime: 300000,
-    refetchInterval: false,
-    refetchOnWindowFocus: false,
+    queryFn: fetchAdmin,
+    staleTime: 60000,
     enabled: !!currentWallet
   });
 
   const { data: settings, isLoading: loadingSettings } = useQuery<any>({
     queryKey: ["/api/admin/settings"],
-    staleTime: 600000,
-    refetchInterval: false,
-    refetchOnWindowFocus: false,
+    queryFn: fetchAdmin,
+    staleTime: 60000,
     enabled: !!currentWallet
   });
 
   const { data: adminStats, isLoading: loadingStats } = useQuery<any>({
     queryKey: ["/api/admin/stats"],
-    staleTime: 300000,
-    refetchInterval: false,
-    refetchOnWindowFocus: false,
+    queryFn: fetchAdmin,
+    staleTime: 60000,
     enabled: !!currentWallet
   });
 
   const { data: walletInfo } = useQuery<any>({
     queryKey: ["/api/admin/wallet-info"],
-    staleTime: 300000,
+    queryFn: fetchAdmin,
+    staleTime: 60000,
     enabled: !!currentWallet
   });
 
@@ -98,44 +110,6 @@ export default function AdminDashboard() {
     e.action?.type?.toLowerCase().includes(searchTerm.toLowerCase()) ||
     e.status?.toLowerCase().includes(searchTerm.toLowerCase())
   ), [executions, searchTerm]);
-
-  const updateRoleMutation = useMutation({
-    mutationFn: async ({ userId, role }: { userId: number, role: string }) => {
-      const res = await fetch(`/api/admin/users/${userId}/role`, {
-        method: 'POST',
-        headers: { 
-          'Content-Type': 'application/json',
-          'x-wallet-address': currentWallet || '',
-        },
-        body: JSON.stringify({ role })
-      });
-      if (!res.ok) throw new Error('Failed to update role');
-      return res.json();
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/admin/users"] });
-      toast({ title: "Success", description: "User role updated successfully" });
-    }
-  });
-
-  const updateStatusMutation = useMutation({
-    mutationFn: async ({ userId, status }: { userId: number, status: string }) => {
-      const res = await fetch(`/api/admin/users/${userId}/status`, {
-        method: 'POST',
-        headers: { 
-          'Content-Type': 'application/json',
-          'x-wallet-address': currentWallet || '',
-        },
-        body: JSON.stringify({ status })
-      });
-      if (!res.ok) throw new Error('Failed to update status');
-      return res.json();
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/admin/users"] });
-      toast({ title: "Success", description: "User status updated" });
-    }
-  });
 
   const updateSettingsMutation = useMutation({
     mutationFn: async (updates: any) => {
@@ -161,9 +135,7 @@ export default function AdminDashboard() {
     mutationFn: async () => {
       const res = await fetch("/api/admin/settings/test-twitter", {
         method: 'POST',
-        headers: { 
-          'x-wallet-address': currentWallet || '',
-        }
+        headers: { 'x-wallet-address': currentWallet || '' }
       });
       return res.json();
     },
@@ -194,15 +166,10 @@ export default function AdminDashboard() {
     <div className="min-h-screen bg-background text-foreground pb-20">
       <Navigation />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
-        <div className="flex flex-col md:flex-row items-center justify-between gap-6 mb-2">
-          <div className="flex-1">
-             <AdminStats 
-                stats={adminStats || { totalUsers: 0, activeCampaigns: 0, totalExecutions: 0, totalRewardsPaid: 0, blockedUsers: 0 }} 
-                campaignsCount={campaigns?.length || 0} 
-                walletInfo={walletInfo}
-              />
-          </div>
-        </div>
+        <AdminStats 
+          stats={adminStats || { totalUsers: 0, activeCampaigns: 0, totalExecutions: 0, totalRewardsPaid: 0, blockedUsers: 0 }} 
+          campaignsCount={campaigns?.length || 0} 
+        />
 
         <Card className="glass-card border-white/10 bg-white/[0.01] rounded-2xl overflow-hidden">
           <CardHeader 
@@ -240,8 +207,7 @@ export default function AdminDashboard() {
                       <h3 className="font-bold uppercase text-xs tracking-widest text-white">Campaign Category Controls</h3>
                       <div className="flex items-center gap-2">
                         <Button 
-                          size="sm" 
-                          variant="outline" 
+                          size="sm" variant="outline" 
                           className="h-6 px-2 text-[10px] font-black uppercase tracking-widest border-primary/20 text-primary hover:bg-primary/10"
                           onClick={() => testXConnectionMutation.mutate()}
                           disabled={testXConnectionMutation.isPending}
@@ -272,10 +238,7 @@ export default function AdminDashboard() {
                           disabled={settings?.twitterApiStatus !== 'active'}
                           onCheckedChange={(checked) => updateSettingsMutation.mutate({ socialEngagementEnabled: checked })}
                         />
-                        <Label htmlFor="social-enabled" className={cn(
-                          "text-xs uppercase tracking-wider font-bold",
-                          settings?.twitterApiStatus !== 'active' ? "text-white/30" : "text-white"
-                        )}>Social Engagement</Label>
+                        <Label htmlFor="social-enabled" className={cn("text-xs uppercase tracking-wider font-bold", settings?.twitterApiStatus !== 'active' ? "text-white/30" : "text-white")}>Social Engagement</Label>
                       </div>
                     </div>
                   </div>
@@ -284,18 +247,12 @@ export default function AdminDashboard() {
                 <div className="space-y-4 p-4 rounded-xl bg-white/5 border border-white/10">
                   <div className="flex items-center justify-between">
                     <h3 className="font-bold uppercase text-xs tracking-widest text-white">Protocol Parameters</h3>
-                    <Badge variant="outline" className="text-[10px] font-black uppercase text-primary border-primary/20">
-                      Total Allocation: {(settingsUpdate.burnPercent ?? settings?.burnPercent ?? 0) + 
-                             (settingsUpdate.rewardsPercent ?? settings?.rewardsPercent ?? 0) + 
-                             (settingsUpdate.systemPercent ?? settings?.systemPercent ?? 0)}%
-                    </Badge>
                   </div>
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-1.5">
                       <Label className="text-xs text-white uppercase tracking-wider font-bold">Creation Fee ($DROPY)</Label>
                       <Input 
-                        type="number" 
-                        className="h-10 bg-black/20 border-white/10 text-sm text-white"
+                        type="number" className="h-10 bg-black/20 border-white/10 text-sm text-white"
                         value={settingsUpdate.creationFee ?? settings?.creationFee ?? 10000} 
                         onChange={(e) => setSettingsUpdate((prev: any) => ({ ...prev, creationFee: parseInt(e.target.value) }))}
                       />
@@ -303,8 +260,7 @@ export default function AdminDashboard() {
                     <div className="space-y-1.5">
                       <Label className="text-xs text-white uppercase tracking-wider font-bold">Burn %</Label>
                       <Input 
-                        type="number" 
-                        className="h-10 bg-black/20 border-white/10 text-sm text-white"
+                        type="number" className="h-10 bg-black/20 border-white/10 text-sm text-white"
                         value={settingsUpdate.burnPercent ?? settings?.burnPercent ?? 50} 
                         onChange={(e) => setSettingsUpdate((prev: any) => ({ ...prev, burnPercent: parseInt(e.target.value) }))}
                       />
@@ -312,8 +268,7 @@ export default function AdminDashboard() {
                     <div className="space-y-1.5">
                       <Label className="text-xs text-white uppercase tracking-wider font-bold">Rewards %</Label>
                       <Input 
-                        type="number" 
-                        className="h-10 bg-black/20 border-white/10 text-sm text-white"
+                        type="number" className="h-10 bg-black/20 border-white/10 text-sm text-white"
                         value={settingsUpdate.rewardsPercent ?? settings?.rewardsPercent ?? 40} 
                         onChange={(e) => setSettingsUpdate((prev: any) => ({ ...prev, rewardsPercent: parseInt(e.target.value) }))}
                       />
@@ -321,16 +276,14 @@ export default function AdminDashboard() {
                     <div className="space-y-1.5">
                       <Label className="text-xs text-white uppercase tracking-wider font-bold">System %</Label>
                       <Input 
-                        type="number" 
-                        className="h-10 bg-black/20 border-white/10 text-sm text-white"
+                        type="number" className="h-10 bg-black/20 border-white/10 text-sm text-white"
                         value={settingsUpdate.systemPercent ?? settings?.systemPercent ?? 10} 
                         onChange={(e) => setSettingsUpdate((prev: any) => ({ ...prev, systemPercent: parseInt(e.target.value) }))}
                       />
                     </div>
                   </div>
                   <Button 
-                    size="sm"
-                    className="w-full h-10 font-black uppercase text-xs tracking-widest mt-2 bg-white text-black hover:bg-white/90" 
+                    size="sm" className="w-full h-10 font-black uppercase text-xs tracking-widest mt-2 bg-white text-black hover:bg-white/90" 
                     onClick={() => updateSettingsMutation.mutate(settingsUpdate)}
                     disabled={updateSettingsMutation.isPending || Object.keys(settingsUpdate).length === 0}
                   >
@@ -366,11 +319,7 @@ export default function AdminDashboard() {
           </div>
 
           <TabsContent value="users">
-            <UserTable 
-              users={filteredUsers} 
-              onUpdateStatus={(id, status) => updateStatusMutation.mutate({ userId: id, status })}
-              onUpdateRole={(id, role) => updateRoleMutation.mutate({ userId: id, role })}
-            />
+            <UserTable users={filteredUsers} />
           </TabsContent>
 
           <TabsContent value="analytics">
@@ -378,10 +327,7 @@ export default function AdminDashboard() {
           </TabsContent>
 
           <TabsContent value="campaigns">
-            <CampaignTable 
-              campaigns={filteredCampaigns} 
-              onAudit={(campaign) => setSelectedCampaign(campaign)}
-            />
+            <CampaignTable campaigns={filteredCampaigns} onAudit={(campaign) => setSelectedCampaign(campaign)} />
           </TabsContent>
 
           <TabsContent value="executions">
@@ -397,18 +343,12 @@ export default function AdminDashboard() {
           </TabsContent>
 
           <TabsContent value="fraud">
-            <FraudShield 
-              users={filteredUsers} 
-              onUpdateStatus={(id, status) => updateStatusMutation.mutate({ userId: id, status })}
-            />
+            <FraudShield users={filteredUsers} />
           </TabsContent>
         </Tabs>
 
         {selectedCampaign && (
-           <AuditDialog 
-              campaign={selectedCampaign} 
-              onClose={() => setSelectedCampaign(null)} 
-            />
+          <AuditDialog campaign={selectedCampaign} onClose={() => setSelectedCampaign(null)} />
         )}
       </div>
     </div>

@@ -20,7 +20,7 @@ interface AdminStatsProps {
   };
 }
 
-export function AdminStats({ stats, campaignsCount, walletInfo }: AdminStatsProps) {
+export function AdminStats({ stats, campaignsCount }: AdminStatsProps) {
   const { toast } = useToast();
   const totalRewardsPaid = stats?.totalRewardsPaid || 0;
   const activeCampaignsCount = stats?.activeCampaigns || 0;
@@ -36,21 +36,9 @@ export function AdminStats({ stats, campaignsCount, walletInfo }: AdminStatsProp
           </h1>
           <p className="text-white font-bold mt-3 text-base">Real-time ecosystem management and protocol oversight.</p>
         </div>
-        
-        <div className="flex flex-col gap-4">
-          <div className="flex items-center gap-4 p-4 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-sm">
-            <div className="flex flex-col items-end">
-              <span className="text-[10px] font-black text-white uppercase tracking-widest mb-1">System Wallet Balance</span>
-              <span className="text-2xl font-black font-display text-primary">{walletInfo?.balanceSol?.toFixed(2) || "0.00"} SOL</span>
-            </div>
-            <div className="w-12 h-12 rounded-xl bg-primary/20 flex items-center justify-center">
-              <Wallet className="w-6 h-6 text-primary" />
-            </div>
-          </div>
-        </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <Card className="glass-card border-white/5 bg-white/[0.02] hover-elevate transition-all rounded-2xl">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-black uppercase tracking-widest text-white">Admin Stats</CardTitle>
@@ -68,30 +56,6 @@ export function AdminStats({ stats, campaignsCount, walletInfo }: AdminStatsProp
               <div className="flex items-center justify-between text-xs font-bold">
                 <span className="text-white uppercase">Campaigns</span>
                 <span className="text-white">{campaignsCount}</span>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="glass-card border-white/5 bg-white/[0.02] hover-elevate transition-all rounded-2xl">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-black uppercase tracking-widest text-white">System Wallet</CardTitle>
-            <div className="p-2 rounded-lg bg-primary/10">
-              <Wallet className="h-4 w-4 text-primary" />
-            </div>
-          </CardHeader>
-          <CardContent>
-            <div className="text-xl font-black font-display text-white truncate">
-              {walletInfo?.address ? `${walletInfo.address.slice(0,4)}...${walletInfo.address.slice(-4)}` : "NOT CONFIGURED"}
-            </div>
-            <div className="flex flex-col gap-1 mt-2">
-              <div className="flex items-center justify-between text-[10px] font-bold">
-                <span className="text-white/50 uppercase">SOL</span>
-                <span className="text-green-400">{walletInfo?.balanceSol?.toFixed(3) || "0.000"}</span>
-              </div>
-              <div className="flex items-center justify-between text-[10px] font-bold">
-                <span className="text-white/50 uppercase">$DROPY</span>
-                <span className="text-primary">{walletInfo?.balanceDropy?.toLocaleString() || "0"}</span>
               </div>
             </div>
           </CardContent>
