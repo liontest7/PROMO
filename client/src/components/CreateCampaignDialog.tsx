@@ -113,7 +113,7 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
       return;
     }
 
-    if (settings && !settings.campaignsEnabled) {
+    if (settings && settings.campaignsEnabled === false) {
       e.preventDefault();
       toast({
         title: "Maintenance",

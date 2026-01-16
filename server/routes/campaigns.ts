@@ -41,8 +41,8 @@ export function setupCampaignRoutes(app: Express) {
     try {
       const settings = await storage.getSystemSettings();
       
-      // Global switch check
-      if (settings.campaignsEnabled === false) {
+      // Global switch check - ensure it strictly checks for false
+      if (settings && settings.campaignsEnabled === false) {
         return res.status(503).json({ message: "Campaign creation is temporarily disabled by administrator." });
       }
 
