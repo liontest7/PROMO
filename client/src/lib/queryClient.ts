@@ -45,7 +45,10 @@ export const getQueryFn: <T>(options: {
 
     const res = await fetch(path, {
       credentials: "include",
-      headers
+      headers: {
+        ...headers,
+        'x-wallet-address': walletAddress || '',
+      }
     });
 
     if (unauthorizedBehavior === "returnNull" && res.status === 401) {

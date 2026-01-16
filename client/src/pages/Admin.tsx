@@ -216,7 +216,17 @@ export default function AdminDashboard() {
                   </div>
 
                   <div className="space-y-4 p-4 rounded-xl bg-white/5 border border-white/10">
-                    <h3 className="font-bold uppercase text-xs tracking-widest text-white mb-2">Campaign Category Controls</h3>
+                    <div className="flex items-center justify-between mb-2">
+                      <h3 className="font-bold uppercase text-xs tracking-widest text-white">Campaign Category Controls</h3>
+                      <div className="flex items-center gap-2">
+                        <Badge variant="outline" className={cn(
+                          "text-[10px] uppercase font-bold",
+                          settings?.twitterApiStatus === 'active' ? "text-green-400 border-green-400/20" : "text-orange-400 border-orange-400/20"
+                        )}>
+                          X API: {settings?.twitterApiStatus || 'Checking...'}
+                        </Badge>
+                      </div>
+                    </div>
                     <div className="grid grid-cols-2 gap-4">
                       <div className="flex items-center space-x-3">
                         <Switch 
@@ -268,6 +278,24 @@ export default function AdminDashboard() {
                         className="h-10 bg-black/20 border-white/10 text-sm text-white"
                         value={settingsUpdate.burnPercent ?? settings?.burnPercent ?? 50} 
                         onChange={(e) => setSettingsUpdate((prev: any) => ({ ...prev, burnPercent: parseInt(e.target.value) }))}
+                      />
+                    </div>
+                    <div className="space-y-1.5">
+                      <Label className="text-xs text-white uppercase tracking-wider font-bold">Rewards %</Label>
+                      <Input 
+                        type="number" 
+                        className="h-10 bg-black/20 border-white/10 text-sm text-white"
+                        value={settingsUpdate.rewardsPercent ?? settings?.rewardsPercent ?? 40} 
+                        onChange={(e) => setSettingsUpdate((prev: any) => ({ ...prev, rewardsPercent: parseInt(e.target.value) }))}
+                      />
+                    </div>
+                    <div className="space-y-1.5">
+                      <Label className="text-xs text-white uppercase tracking-wider font-bold">System %</Label>
+                      <Input 
+                        type="number" 
+                        className="h-10 bg-black/20 border-white/10 text-sm text-white"
+                        value={settingsUpdate.systemPercent ?? settings?.systemPercent ?? 10} 
+                        onChange={(e) => setSettingsUpdate((prev: any) => ({ ...prev, systemPercent: parseInt(e.target.value) }))}
                       />
                     </div>
                   </div>
