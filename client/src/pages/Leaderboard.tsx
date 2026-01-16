@@ -1,13 +1,14 @@
 import { Navigation } from "@/components/Navigation";
-import { Trophy, Star, Medal, Crown, Calendar, Globe, Clock, Loader2, History, ExternalLink as ExternalLinkIcon, ChevronDown, ChevronUp } from "lucide-react";
+import { Trophy, Star, Medal, Crown, Calendar, Globe, Clock, Loader2, History, ExternalLink as ExternalLinkIcon, ChevronDown, ChevronUp, ArrowUp, ArrowDown, Minus } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { PLATFORM_CONFIG } from "@shared/config";
 import { useQuery } from "@tanstack/react-query";
 import { cn } from "@/lib/utils";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   Accordion,
   AccordionContent,
@@ -20,6 +21,7 @@ export default function Leaderboard() {
   const [timeframe, setTimeframe] = useState<"all_time" | "monthly" | "weekly">("weekly");
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
+  const previousRanksRef = useRef<Record<number, number>>({});
 
   const { data: leaderboardRes, isLoading, error } = useQuery<any>({
     queryKey: ["/api/leaderboard", timeframe],
@@ -28,8 +30,27 @@ export default function Leaderboard() {
       if (!response.ok) throw new Error("Failed to fetch leaderboard");
       return response.json();
     },
-    staleTime: 30000,
+    refetchInterval: 10000, // Refresh data every 10 seconds for "Live" feel
   });
+
+  // Track rank changes
+  const [rankChanges, setRankChanges] = useState<Record<number, 'up' | 'down' | 'same'>>({});
+
+  useEffect(() => {
+    if (leaderboardRes?.ranking) {
+      const newChanges: Record<number, 'up' | 'down' | 'same'> = {};
+      leaderboardRes.ranking.forEach((user: any) => {
+        const prevRank = previousRanksRef.current[user.id];
+        if (prevRank !== undefined) {
+          if (user.rank < prevRank) newChanges[user.id] = 'up';
+          else if (user.rank > prevRank) newChanges[user.id] = 'down';
+          else newChanges[user.id] = 'same';
+        }
+        previousRanksRef.current[user.id] = user.rank;
+      });
+      setRankChanges(newChanges);
+    }
+  }, [leaderboardRes]);
 
   if (error) {
     console.error("Leaderboard query error:", error);
@@ -39,7 +60,7 @@ export default function Leaderboard() {
     queryKey: ["/api/leaderboard/history"],
   });
 
-  if (isLoading) {
+  if (isLoading && !leaderboardRes) {
     return (
       <div className="min-h-screen bg-background text-foreground">
         <Navigation />
@@ -54,15 +75,20 @@ export default function Leaderboard() {
   const activeLeaders = leaderboardRes?.ranking || [];
   const weeklyPrizePool = leaderboardRes?.weeklyPrizePool || 0;
   
-  // No filtering here, use the ranking from API directly
   const paginatedLeaders = activeLeaders.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
   
-  // Prize history pagination (5 weeks per page)
   const historyItemsPerPage = 5;
   const historyData = history || [];
   const paginatedHistory = historyData.slice((currentPage - 1) * historyItemsPerPage, currentPage * historyItemsPerPage);
   const totalHistoryPages = Math.ceil(historyData.length / historyItemsPerPage);
   const totalPages = view === "ranking" ? Math.ceil(activeLeaders.length / itemsPerPage) : totalHistoryPages;
+
+  const RankIndicator = ({ userId }: { userId: number }) => {
+    const change = rankChanges[userId];
+    if (change === 'up') return <ArrowUp className="w-4 h-4 text-green-500 animate-bounce" />;
+    if (change === 'down') return <ArrowDown className="w-4 h-4 text-red-500 animate-bounce" />;
+    return <Minus className="w-4 h-4 text-white/20" />;
+  };
 
   return (
     <div className="min-h-screen bg-[#050505] text-white">
@@ -267,13 +293,16 @@ export default function Leaderboard() {
                     {paginatedLeaders?.length > 0 ? paginatedLeaders.map((user: any, idx: number) => (
                       <div key={user.id || idx} className="flex items-center px-12 py-10 hover:bg-white/[0.05] transition-all group relative">
                         <div className="absolute left-0 w-1.5 h-0 bg-primary group-hover:h-full transition-all duration-300" />
-                        <span className={cn(
-                          "w-20 text-3xl font-black font-display transition-colors",
-                          user.rank === 1 ? "text-yellow-500" :
-                          user.rank === 2 ? "text-gray-300" :
-                          user.rank === 3 ? "text-amber-600" :
-                          "text-white/80"
-                        )}>#{user.rank}</span>
+                        <div className="w-20 flex items-center gap-2">
+                          <span className={cn(
+                            "text-3xl font-black font-display transition-colors",
+                            user.rank === 1 ? "text-yellow-500" :
+                            user.rank === 2 ? "text-gray-300" :
+                            user.rank === 3 ? "text-amber-600" :
+                            "text-white/80"
+                          )}>#{user.rank}</span>
+                          <RankIndicator userId={user.id} />
+                        </div>
                         <div className="flex-1 flex items-center gap-8">
                           <Avatar className="h-16 w-16 border-2 border-white/10 group-hover:border-primary/60 transition-all shadow-xl">
                             <AvatarFallback className="text-base font-black bg-white/10">{user.avatar || 'U'}</AvatarFallback>

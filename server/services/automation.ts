@@ -206,7 +206,7 @@ export class AutomationService {
         // Use the reward token address from config or system settings
         const settings = await storage.getSystemSettings();
         // Fallback to a valid default if needed, but ideally it's in settings
-        const tokenAddress = "DROPyHsh35kS5eJ7qYqYqYqYqYqYqYqYqYqYqYqYqYq"; 
+        const tokenAddress = PLATFORM_CONFIG.TOKEN_DETAILS.ADDRESS; 
         
         const sig = await transferTokens(
           winner.walletAddress.trim(),

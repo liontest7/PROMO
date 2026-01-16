@@ -285,7 +285,44 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getLeaderboardData(timeframe: string): Promise<any[]> {
-    return []; // Simplified for sync
+    const allUsers = await this.getAllUsers();
+    const allExecutions = await this.getAllExecutions();
+    
+    const now = new Date();
+    let startDate: Date | null = null;
+    
+    if (timeframe === 'weekly') {
+      startDate = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+    } else if (timeframe === 'monthly') {
+      startDate = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+    }
+
+    const rankings = allUsers.map(user => {
+      const filteredExecutions = allExecutions.filter(e => {
+        const isUser = e.userId === user.id;
+        const isVerified = e.status === 'verified' || e.status === 'paid';
+        const isWithinTimeframe = !startDate || (e.createdAt && new Date(e.createdAt) >= startDate);
+        return isUser && isVerified && isWithinTimeframe;
+      });
+
+      const points = filteredExecutions.length * 10;
+      const tasks = filteredExecutions.length;
+      
+      return {
+        id: user.id,
+        name: user.twitterHandle ? `@${user.twitterHandle}` : `User ${user.walletAddress.slice(0, 4)}...${user.walletAddress.slice(-4)}`,
+        avatar: user.twitterHandle ? user.twitterHandle[0].toUpperCase() : 'U',
+        points,
+        tasks,
+        walletAddress: user.walletAddress,
+        fullWallet: user.walletAddress,
+        rank: 0 // Will be set after sorting
+      };
+    });
+
+    return rankings
+      .sort((a, b) => b.points - a.points || a.id - b.id)
+      .map((item, index) => ({ ...item, rank: index + 1 }));
   }
 
   async getPrizeHistoryEntry(id: number): Promise<any> {
