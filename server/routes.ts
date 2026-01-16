@@ -33,6 +33,14 @@ export async function registerRoutes(
     try {
       const settings = await storage.getSystemSettings();
       // Only expose necessary UI flags
+      if (!settings) {
+        return res.json({
+          campaignsEnabled: true,
+          holderQualificationEnabled: true,
+          socialEngagementEnabled: true,
+          twitterApiStatus: "operational",
+        });
+      }
       res.json({
         campaignsEnabled: settings.campaignsEnabled,
         holderQualificationEnabled: settings.holderQualificationEnabled,
@@ -55,8 +63,8 @@ export async function registerRoutes(
       // Get creation fee and rewards percent from settings for dynamic prize pool calculation
       const settings = await storage.getSystemSettings();
       const allCampaigns = (await storage.getAllCampaigns()).filter(c => c.creationFeePaid);
-      const rewardsPercent = (settings.rewardsPercent || 40) / 100;
-      const creationFee = settings.creationFee || PLATFORM_CONFIG.TOKENOMICS.CREATION_FEE;
+      const rewardsPercent = ((settings?.rewardsPercent || 40)) / 100;
+      const creationFee = settings?.creationFee || PLATFORM_CONFIG.TOKENOMICS.CREATION_FEE;
       
       // Real weekly prize pool: (Total Campaigns * Creation Fee) * Rewards Percent
       const weeklyPrizePool = allCampaigns.length * creationFee * rewardsPercent;
@@ -79,7 +87,7 @@ export async function registerRoutes(
       const formattedHistory = history.map(h => ({
         period: `Week #${h.weekNumber}`,
         dates: `${new Date(h.startDate).toLocaleDateString('en-US', { month: 'short', day: '2-digit' })} - ${new Date(h.endDate).toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' })}`,
-        winners: h.winners.map(w => ({
+        winners: (h.winners || []).map((w: any) => ({
           name: w.twitterHandle ? `@${w.twitterHandle}` : `User ${w.walletAddress.slice(0, 4)}...${w.walletAddress.slice(-4)}`,
           avatar: w.twitterHandle ? w.twitterHandle[0].toUpperCase() : 'U',
           prizeAmount: parseFloat(w.prizeAmount),
@@ -113,8 +121,8 @@ export async function registerRoutes(
         .reduce((sum, e) => sum + (parseFloat(e.action.rewardAmount) || 0), 0);
 
       const settings = await storage.getSystemSettings();
-      const creationFee = settings.creationFee || PLATFORM_CONFIG.TOKENOMICS.CREATION_FEE;
-      const burnPercent = (settings.burnPercent || 50) / 100;
+      const creationFee = settings?.creationFee || PLATFORM_CONFIG.TOKENOMICS.CREATION_FEE;
+      const burnPercent = ((settings?.burnPercent || 50)) / 100;
       const calculatedBurned = allCampaigns.length * creationFee * burnPercent;
 
       res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
