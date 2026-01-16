@@ -240,6 +240,7 @@ export function setupAdminRoutes(app: Express) {
       const memory = process.memoryUsage();
       const rss = Math.round(memory.rss / 1024 / 1024);
       const heapUsed = Math.round(memory.heapUsed / 1024 / 1024);
+      const heapTotal = Math.round(memory.heapTotal / 1024 / 1024);
       // More accurate percentage based on common 1GB/2GB limits
       const totalAvailable = 1024; // 1GB in MB
       const memoryPercent = Math.min(100, (rss / totalAvailable) * 100);
@@ -259,9 +260,9 @@ export function setupAdminRoutes(app: Express) {
         memoryUsage: `${rss}MB`,
         memoryPercent: Math.round(memoryPercent),
         memory: {
-          heapUsed: memory.heapUsed,
-          heapTotal: memory.heapTotal,
-          rss: memory.rss
+          heapUsed: heapUsed,
+          heapTotal: heapTotal,
+          rss: rss
         },
         cpu: os.loadavg(),
         dbStatus: 'Connected',

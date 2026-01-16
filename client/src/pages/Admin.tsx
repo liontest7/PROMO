@@ -53,37 +53,43 @@ export default function AdminDashboard() {
   const { data: users, isLoading: loadingUsers } = useQuery<any[]>({
     queryKey: ["/api/admin/users"],
     queryFn: fetchAdmin,
-    enabled: !!currentWallet
+    enabled: !!currentWallet,
+    refetchInterval: 30000 // Refresh every 30 seconds
   });
 
   const { data: campaigns, isLoading: loadingCampaigns } = useQuery<any[]>({
     queryKey: ["/api/admin/campaigns"],
     queryFn: fetchAdmin,
-    enabled: !!currentWallet
+    enabled: !!currentWallet,
+    refetchInterval: 30000
   });
 
   const { data: executions, isLoading: loadingExecutions } = useQuery<any[]>({
     queryKey: ["/api/admin/executions"],
     queryFn: fetchAdmin,
-    enabled: !!currentWallet
+    enabled: !!currentWallet,
+    refetchInterval: 10000 // More frequent for logs
   });
 
   const { data: settings, isLoading: loadingSettings } = useQuery<any>({
     queryKey: ["/api/admin/settings"],
     queryFn: fetchAdmin,
-    enabled: !!currentWallet
+    enabled: !!currentWallet,
+    refetchInterval: 60000
   });
 
   const { data: adminStats, isLoading: loadingStats } = useQuery<any>({
     queryKey: ["/api/admin/stats"],
     queryFn: fetchAdmin,
-    enabled: !!currentWallet
+    enabled: !!currentWallet,
+    refetchInterval: 30000
   });
 
   const { data: walletInfo } = useQuery<any>({
     queryKey: ["/api/admin/wallet-info"],
     queryFn: fetchAdmin,
-    enabled: !!currentWallet
+    enabled: !!currentWallet,
+    refetchInterval: 30000
   });
 
   const filteredUsers = useMemo(() => (users || []).filter(u => 
