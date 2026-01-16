@@ -315,7 +315,7 @@ export class DatabaseStorage implements IStorage {
       
       return {
         id: user.id,
-        name: user.twitterHandle ? `@${user.twitterHandle}` : `User ${user.walletAddress.slice(0, 4)}...${user.walletAddress.slice(-4)}`,
+        name: user.username || (user.twitterHandle ? `@${user.twitterHandle}` : `User ${user.walletAddress.slice(0, 4)}...${user.walletAddress.slice(-4)}`),
         avatar: user.twitterHandle ? user.twitterHandle[0].toUpperCase() : 'U',
         points,
         tasks,

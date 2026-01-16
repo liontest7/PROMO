@@ -88,7 +88,7 @@ export async function registerRoutes(
         period: `Week #${h.weekNumber}`,
         dates: `${new Date(h.startDate).toLocaleDateString('en-US', { month: 'short', day: '2-digit' })} - ${new Date(h.endDate).toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' })}`,
         winners: (h.winners || []).map((w: any) => ({
-          name: w.twitterHandle ? `@${w.twitterHandle}` : `User ${w.walletAddress.slice(0, 4)}...${w.walletAddress.slice(-4)}`,
+          name: w.username || (w.twitterHandle ? `@${w.twitterHandle}` : `User ${w.walletAddress.slice(0, 4)}...${w.walletAddress.slice(-4)}`),
           avatar: w.twitterHandle ? w.twitterHandle[0].toUpperCase() : 'U',
           prizeAmount: parseFloat(w.prizeAmount),
           proofUrl: w.transactionSignature ? `https://solscan.io/tx/${w.transactionSignature}` : "#"

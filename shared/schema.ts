@@ -36,6 +36,7 @@ export const systemSettings = pgTable("system_settings", {
 export const users = pgTable("users", {
   id: serial("id").primaryKey(),
   walletAddress: text("wallet_address").notNull().unique(),
+  username: text("username"),
   role: text("role", { enum: ["user", "advertiser", "admin"] }).default("user").notNull(),
   reputationScore: integer("reputation_score").default(100),
   balance: numeric("balance").default("0").notNull(),
