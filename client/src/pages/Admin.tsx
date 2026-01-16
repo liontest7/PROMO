@@ -235,7 +235,13 @@ export default function AdminDashboard() {
                       <Switch 
                         id="campaigns-enabled" 
                         checked={settings?.campaignsEnabled ?? true} 
-                        onCheckedChange={(checked) => updateSettingsMutation.mutate({ campaignsEnabled: checked })}
+                        onCheckedChange={(checked) => {
+                          updateSettingsMutation.mutate({ 
+                            campaignsEnabled: checked,
+                            holderQualificationEnabled: checked,
+                            socialEngagementEnabled: checked
+                          });
+                        }}
                       />
                       <Label htmlFor="campaigns-enabled" className="flex flex-col">
                         <span className="font-bold uppercase text-xs tracking-widest text-white">Global Campaign Status</span>
@@ -260,7 +266,7 @@ export default function AdminDashboard() {
                           "text-[10px] uppercase font-bold",
                           settings?.twitterApiStatus === 'active' ? "text-green-400 border-green-400/20" : "text-orange-400 border-orange-400/20"
                         )}>
-                          X API: {settings?.twitterApiStatus === 'active' ? 'LIVE & CONNECTED' : 'CHECKING...'}
+                          X API: {settings?.twitterApiStatus?.toUpperCase() || 'CHECKING...'}
                         </Badge>
                       </div>
                     </div>

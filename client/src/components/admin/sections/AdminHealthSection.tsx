@@ -53,8 +53,8 @@ export function AdminHealthSection() {
                 <div className="h-full bg-gradient-to-r from-primary/50 to-primary shadow-[0_0_10px_rgba(34,197,94,0.4)] transition-all duration-1000" style={{ width: `${health?.memoryPercent || 0}%` }} />
              </div>
              <div className="mt-4 grid grid-cols-2 gap-4 text-xs font-black uppercase tracking-widest text-white">
-               <div>RSS: {health?.memory?.rss ? Math.round(health.memory.rss / 1024 / 1024) : 0}MB</div>
-               <div>Heap: {health?.memory?.heapUsed ? Math.round(health.memory.heapUsed / 1024 / 1024) : 0}MB</div>
+               <div>RSS: {health?.memory?.rss || 0}MB</div>
+               <div>Heap: {health?.memory?.heapUsed || 0}MB</div>
              </div>
           </CardContent>
         </Card>
