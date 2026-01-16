@@ -447,7 +447,12 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
                                 Holder Qualification {getCampaignStatusLabel("holder_qualification")}
                               </SelectItem>
                               <SelectItem value="engagement" disabled={isSocialDisabled || loadingSettings}>
-                                Social Engagement {getCampaignStatusLabel("engagement")} {settings?.twitterApiStatus !== 'active' ? "(Twitter API Disconnected)" : ""}
+                                Social Engagement {getCampaignStatusLabel("engagement")}
+                                {settings?.twitterApiStatus !== 'active' && settings?.socialEngagementEnabled && (
+                                  <span className="block text-[10px] text-yellow-500 font-medium mt-0.5">
+                                    Verification delayed: Twitter API Disconnected
+                                  </span>
+                                )}
                               </SelectItem>
                             </SelectContent>
                           </Select>

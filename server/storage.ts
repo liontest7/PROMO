@@ -635,7 +635,7 @@ export class DatabaseStorage implements IStorage {
         id: 1,
         campaignsEnabled: true,
         holderQualificationEnabled: true,
-        socialEngagementEnabled: hasTwitterKeys,
+        socialEngagementEnabled: true, // Allow by default, API check is for verification
         twitterApiStatus: currentTwitterStatus,
         burnPercent: 50,
         rewardsPercent: 40,
@@ -648,23 +648,9 @@ export class DatabaseStorage implements IStorage {
         [settings] = await db.select().from(systemSettings).where(eq(systemSettings.id, 1));
       }
     } else {
-      let needsUpdate = false;
-      const updates: any = {};
-
       if (settings.twitterApiStatus !== currentTwitterStatus) {
-        updates.twitterApiStatus = currentTwitterStatus;
-        needsUpdate = true;
-      }
-
-      // Sync socialEngagementEnabled with actual API status ONLY if it was active but keys are missing
-      if (!hasTwitterKeys && settings.socialEngagementEnabled) {
-        updates.socialEngagementEnabled = false;
-        needsUpdate = true;
-      }
-
-      if (needsUpdate) {
         [settings] = await db.update(systemSettings)
-          .set(updates)
+          .set({ twitterApiStatus: currentTwitterStatus })
           .where(eq(systemSettings.id, settings.id))
           .returning();
       }
@@ -674,19 +660,17 @@ export class DatabaseStorage implements IStorage {
 
   async updateSystemSettings(update: Partial<typeof systemSettings.$inferSelect>): Promise<typeof systemSettings.$inferSelect> {
     const current = await this.getSystemSettings();
-    const hasTwitterKeys = !!(process.env.X_CONSUMER_KEY && process.env.X_CONSUMER_SECRET && process.env.X_BEARER_TOKEN);
     
     const finalUpdate: any = { ...update, updatedAt: new Date() };
     
-    // If campaignsEnabled is explicitly set, we sync sub-features to it
-    // But we don't force sub-features to stay true if campaignsEnabled is already true
+    // Global Campaign Status override
     if (update.campaignsEnabled === false) {
       finalUpdate.holderQualificationEnabled = false;
       finalUpdate.socialEngagementEnabled = false;
     } else if (update.campaignsEnabled === true) {
-      // Only enable if they weren't explicitly disabled or we are turning the system back on
+      // When enabling global status, we re-enable sub-features
       finalUpdate.holderQualificationEnabled = true;
-      finalUpdate.socialEngagementEnabled = hasTwitterKeys;
+      finalUpdate.socialEngagementEnabled = true;
     }
 
     const [updated] = await db.update(systemSettings)
