@@ -27,7 +27,7 @@ export function startTwitterHealthCheck() {
       
       if (!bearerToken) {
         console.warn("[Twitter Service] X_BEARER_TOKEN not found in environment");
-        if (settings.twitterApiStatus !== 'disconnected') {
+        if (settings?.twitterApiStatus !== 'disconnected') {
           await storage.updateSystemSettings({ twitterApiStatus: 'disconnected' });
         }
         return;
@@ -41,13 +41,13 @@ export function startTwitterHealthCheck() {
       const isOperational = res.ok;
       const newStatus = isOperational ? 'active' : 'degraded';
       
-      if (settings.twitterApiStatus !== newStatus) {
-        console.log(`[Twitter Service] Status changed: ${settings.twitterApiStatus} -> ${newStatus}`);
+      if (settings?.twitterApiStatus !== newStatus) {
+        console.log(`[Twitter Service] Status changed: ${settings?.twitterApiStatus} -> ${newStatus}`);
         await storage.updateSystemSettings({ twitterApiStatus: newStatus });
       }
 
       // Fallback logic if degraded
-      if (!isOperational && settings.twitterApiKeys?.backup?.apiKey) {
+      if (!isOperational && settings?.twitterApiKeys?.backup?.apiKey) {
         console.warn("[Twitter Service] Primary API failing, consider switching to backup...");
         // In a real scenario, we might automatically rotate keys here
       }
