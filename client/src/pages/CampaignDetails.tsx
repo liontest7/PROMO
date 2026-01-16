@@ -6,6 +6,7 @@ import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
+import { apiRequest } from "@/lib/queryClient";
 import { 
   Twitter, 
   Globe, 
@@ -154,6 +155,29 @@ export default function CampaignDetails() {
       campaign 
     });
   };
+
+  const { mutate: verifyAction, isPending: isVerifying } = useMutation({
+    mutationFn: async (data: any) => {
+      const res = await apiRequest("POST", "/api/executions/verify", data);
+      return res.json();
+    },
+    onSuccess: (data) => {
+      if (data.status === "verified") {
+        onVerificationSuccess(selectedAction?.action.id || 0);
+        setSelectedAction(null);
+      } else if (data.status === "tracking") {
+        toast({ title: "Follow Detected", description: data.message });
+        setSelectedAction(null);
+      }
+    },
+    onError: (error: Error) => {
+      toast({
+        title: "Verification Failed",
+        description: error.message,
+        variant: "destructive",
+      });
+    },
+  });
 
   const onVerificationSuccess = (actionId: number) => {
     queryClient.invalidateQueries({ queryKey: [`/api/executions/campaign/${campaign?.id}`] });
@@ -351,7 +375,7 @@ export default function CampaignDetails() {
                                 <Button 
                                   size="sm"
                                   variant={isCompleted ? "outline" : "default"}
-                                  disabled={isCompleted && !isWithdrawn}
+                                  disabled={(isCompleted && !isWithdrawn) || isVerifying}
                                   className={cn(
                                     "font-black px-5 h-9 rounded-lg text-xs uppercase tracking-widest transition-all",
                                     isCompleted && "border-primary/50 text-primary bg-primary/5 no-default-hover-elevate",
@@ -359,7 +383,9 @@ export default function CampaignDetails() {
                                   )}
                                   onClick={handleHolderClick}
                                 >
-                                  {isWithdrawn ? "CLAIMED" : isCompleted ? `+${campaign.rewardPerWallet}` : "COMPLETE"}
+                                  {isVerifying ? (
+                                    <Loader2 className="w-3 h-3 animate-spin" />
+                                  ) : isWithdrawn ? "CLAIMED" : isCompleted ? `+${campaign.rewardPerWallet}` : "COMPLETE"}
                                 </Button>
                               );
                             })()}
@@ -399,7 +425,7 @@ export default function CampaignDetails() {
                                 <Button 
                                   size="sm"
                                   variant={isCompleted ? "outline" : "default"}
-                                  disabled={isCompleted && !isWithdrawn}
+                                  disabled={(isCompleted && !isWithdrawn) || isVerifying}
                                   className={cn(
                                     "font-black px-5 h-9 rounded-lg text-xs uppercase tracking-widest transition-all",
                                     isCompleted && "border-primary/50 text-primary bg-primary/5 no-default-hover-elevate",
@@ -407,7 +433,9 @@ export default function CampaignDetails() {
                                   )}
                                   onClick={() => !isCompleted && handleActionClick(action)}
                                 >
-                                  {isWithdrawn ? "CLAIMED" : isCompleted ? `+${action.rewardAmount}` : "COMPLETE"}
+                                  {isVerifying && selectedAction?.action.id === action.id ? (
+                                    <Loader2 className="w-3 h-3 animate-spin" />
+                                  ) : isWithdrawn ? "CLAIMED" : isCompleted ? `+${action.rewardAmount}` : "COMPLETE"}
                                 </Button>
                               </div>
                             </div>
@@ -434,7 +462,7 @@ export default function CampaignDetails() {
                 <h2 className="text-xl font-display font-black text-white tracking-tight uppercase">Market Overview</h2>
                 <div className="flex flex-wrap gap-3">
                   <Button variant="outline" size="sm" className="h-10 text-xs font-black border-white/10 bg-white/5 hover:bg-[#FF8C00]/20 hover:border-[#FF8C00]/40 transition-all gap-2 text-white rounded-lg group" asChild>
-                    <a href={`https://pump.fun/${campaign.tokenAddress}`} target="_blank" rel="noreferrer">
+                    <a href={`https://pump.fun/coin/${campaign.tokenAddress}`} target="_blank" rel="noreferrer">
                       <img src={CONFIG.ui.walletIcons.pumpfun} className="w-4 h-4 rounded" />
                       PUMP.FUN
                     </a>
