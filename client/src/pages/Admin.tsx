@@ -51,27 +51,31 @@ export default function AdminDashboard() {
   const { data: settings, isLoading: loadingSettings } = useQuery<any>({
     queryKey: ["/api/admin/settings"],
     staleTime: 60000,
+    refetchInterval: 60000,
     refetchOnWindowFocus: false,
     queryFn: fetchAdmin
   });
 
   const { data: users, isLoading: loadingUsers } = useQuery<any[]>({
     queryKey: ["/api/admin/users"],
-    staleTime: 60000,
+    staleTime: 30000,
+    refetchInterval: 30000,
     refetchOnWindowFocus: false,
     queryFn: fetchAdmin
   });
 
   const { data: campaigns, isLoading: loadingCampaigns } = useQuery<any[]>({
     queryKey: ["/api/admin/campaigns"],
-    staleTime: 60000,
+    staleTime: 30000,
+    refetchInterval: 30000,
     refetchOnWindowFocus: false,
     queryFn: fetchAdmin
   });
 
   const { data: executions, isLoading: loadingExecutions } = useQuery<any[]>({
     queryKey: ["/api/admin/executions"],
-    staleTime: 60000,
+    staleTime: 30000,
+    refetchInterval: 30000,
     refetchOnWindowFocus: false,
     queryFn: fetchAdmin
   });
@@ -101,8 +105,8 @@ export default function AdminDashboard() {
     suspiciousUsers?: number;
   }>({
     queryKey: ["/api/admin/stats"],
-    staleTime: 5000,
-    refetchInterval: 10000,
+    staleTime: 30000,
+    refetchInterval: 30000,
     refetchOnWindowFocus: true,
     queryFn: fetchAdmin
   });

@@ -8,12 +8,15 @@ export function setupAdminRoutes(app: Express) {
   // Use a middleware function that properly extracts the wallet address and attaches the admin user
   const adminAuthMiddleware = async (req: Request, res: Response, next: NextFunction) => {
     // Check header first, then query, then body
-    const walletAddress = (req.headers['x-wallet-address'] as string) || (req.query.walletAddress as string) || (req.body?.walletAddress as string);
+    const walletAddress = (req.headers['x-wallet-address'] as string) || 
+                         (req.query.walletAddress as string) || 
+                         (req.body?.walletAddress as string) ||
+                         (req.headers['wallet-address'] as string);
     
     console.log(`[Admin Auth] Request: ${req.method} ${req.originalUrl}, Wallet: ${walletAddress}`);
 
-    if (!walletAddress) {
-      console.warn("[Admin Auth] No wallet address found in headers, query, or body");
+    if (!walletAddress || walletAddress === 'undefined' || walletAddress === 'null') {
+      console.warn("[Admin Auth] No valid wallet address found");
       return res.status(403).json({ message: "Forbidden: Wallet address required" });
     }
 
