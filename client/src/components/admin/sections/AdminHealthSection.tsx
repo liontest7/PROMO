@@ -48,10 +48,10 @@ export function AdminHealthSection() {
           <CardContent>
              <div className="text-[10px] font-black text-white/70 uppercase tracking-widest mb-1.5 flex justify-between">
                <span>Memory Usage</span>
-               <span className="text-primary">{Math.round((health?.memory?.heapUsed || 142) / 1024 / 1024)}MB / 512MB</span>
+               <span className="text-primary">{Math.round((health?.memory?.heapUsed || 0) / 1024 / 1024)}MB / 512MB</span>
              </div>
              <div className="h-2 w-full bg-white/5 rounded-full overflow-hidden border border-white/5">
-                <div className="h-full bg-gradient-to-r from-primary/50 to-primary shadow-[0_0_10px_rgba(34,197,94,0.4)] transition-all duration-1000" style={{ width: `${Math.min(100, ((health?.memory?.heapUsed || 142) / (512 * 1024 * 1024)) * 100)}%` }} />
+                <div className="h-full bg-gradient-to-r from-primary/50 to-primary shadow-[0_0_10px_rgba(34,197,94,0.4)] transition-all duration-1000" style={{ width: `${Math.min(100, ((health?.memory?.heapUsed || 0) / (512 * 1024 * 1024)) * 100)}%` }} />
              </div>
           </CardContent>
         </Card>
@@ -64,7 +64,7 @@ export function AdminHealthSection() {
           </CardHeader>
           <CardContent className="flex flex-col items-center justify-center py-1">
             <div className="text-3xl font-black font-display text-white tracking-tighter italic">
-              {Math.floor((health?.uptime || 34200) / 3600)}H {Math.floor(((health?.uptime || 34200) % 3600) / 60)}M
+              {health?.uptime ? `${Math.floor(health.uptime / 3600)}H ${Math.floor((health.uptime % 3600) / 60)}M` : "0H 0M"}
             </div>
             <div className="text-[9px] font-black text-green-500 uppercase tracking-[0.2em] mt-1 flex items-center gap-1">
               <div className="w-1 h-1 rounded-full bg-green-500 animate-pulse" />

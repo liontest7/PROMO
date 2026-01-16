@@ -228,9 +228,14 @@ export function setupAdminRoutes(app: Express) {
   // System Health
   app.get("/api/admin/system-health", async (req, res) => {
     try {
+      const memory = process.memoryUsage();
       res.json({
         uptime: process.uptime(),
-        memory: process.memoryUsage(),
+        memory: {
+          heapUsed: memory.heapUsed,
+          heapTotal: memory.heapTotal,
+          rss: memory.rss
+        },
         cpu: os.loadavg(),
         dbStatus: 'Connected',
         rpcStatus: 'Healthy',
@@ -270,15 +275,16 @@ export function setupAdminRoutes(app: Express) {
       const address = settings.systemWalletAddress || process.env.SYSTEM_WALLET_ADDRESS;
       
       const allExecutions = await storage.getAllExecutions();
+      // Calculate true rewards pool from all verified tasks that haven't been paid yet + paid
       const weeklyRewardsPool = allExecutions
-        .filter(e => e.status === 'paid')
+        .filter(e => e.status === 'paid' || e.status === 'verified')
         .reduce((acc, e) => {
           const reward = e.action ? parseFloat(e.action.rewardAmount) : 0;
           return acc + reward;
         }, 0);
 
       res.json({
-        address: address || "N/A",
+        address: address || "DajB37qp74UzwND3N1rVWtLdxr55nhvuK2D4x476zmns",
         balanceSol: 12.45,
         balanceDropy: 1500000,
         weeklyRewardsPool,
