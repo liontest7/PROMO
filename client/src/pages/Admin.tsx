@@ -101,8 +101,9 @@ export default function AdminDashboard() {
     suspiciousUsers?: number;
   }>({
     queryKey: ["/api/admin/stats"],
-    staleTime: 60000,
-    refetchOnWindowFocus: false,
+    staleTime: 5000,
+    refetchInterval: 10000,
+    refetchOnWindowFocus: true,
     queryFn: fetchAdmin
   });
 

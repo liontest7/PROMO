@@ -14,13 +14,22 @@ export function setupAdminRoutes(app: Express) {
     console.log(`[Admin Auth] Request: ${req.method} ${req.originalUrl}, Wallet: ${walletAddress}`);
 
     if (!walletAddress) {
-      console.error("[Admin Auth] No wallet address found in headers, query, or body");
+      console.warn("[Admin Auth] No wallet address found in headers, query, or body");
+      // Don't block completely if we want to allow testing but for now let's keep it strict
+      // but ensure the frontend is sending it.
       return res.status(403).json({ message: "Forbidden: Wallet address required" });
     }
 
     const user = await storage.getUserByWallet(walletAddress);
     if (!user) {
-      console.error(`[Admin Auth] No user found for wallet: ${walletAddress}`);
+      // If user doesn't exist but is trying to access admin, maybe it's the first admin?
+      // Or just a typo. Let's check if any user exists at all.
+      const allUsers = await storage.getAllUsers();
+      if (allUsers.length === 0) {
+        // Bootstrap mode: allow first user to be admin? No, too risky.
+        // Just log it.
+        console.error(`[Admin Auth] No user found for wallet: ${walletAddress}`);
+      }
       return res.status(403).json({ message: "Forbidden: Admin access required" });
     }
 
