@@ -201,6 +201,26 @@ export default function AdminDashboard() {
     }
   });
 
+  const updateSettingsMutation = useMutation({
+    mutationFn: async (updates: any) => {
+      const res = await fetch("/api/admin/settings", {
+        method: 'PATCH',
+        headers: { 
+          'Content-Type': 'application/json',
+          'x-wallet-address': localStorage.getItem('walletAddress') || ''
+        },
+        body: JSON.stringify(updates)
+      });
+      if (!res.ok) throw new Error('Failed to update settings');
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/settings"] });
+      setSettingsUpdate({});
+      toast({ title: "Success", description: "Protocol parameters updated" });
+    }
+  });
+
   if (loadingUsers || loadingCampaigns || loadingExecutions || loadingStats || loadingHealth || loadingSettings) {
     return (
       <div className="flex h-screen items-center justify-center bg-background">
