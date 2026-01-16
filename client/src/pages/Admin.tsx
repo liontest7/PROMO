@@ -142,11 +142,13 @@ export default function AdminDashboard() {
 
   const updateRoleMutation = useMutation({
     mutationFn: async ({ userId, role }: { userId: number, role: string }) => {
+      const currentWallet = walletAddress || localStorage.getItem('walletAddress');
       const res = await fetch(`/api/admin/users/${userId}/role`, {
         method: 'POST',
         headers: { 
           'Content-Type': 'application/json',
-          'x-wallet-address': localStorage.getItem('walletAddress') || ''
+          'x-wallet-address': currentWallet || '',
+          'wallet-address': currentWallet || ''
         },
         body: JSON.stringify({ role })
       });
@@ -161,11 +163,13 @@ export default function AdminDashboard() {
 
   const updateStatusMutation = useMutation({
     mutationFn: async ({ userId, status }: { userId: number, status: string }) => {
+      const currentWallet = walletAddress || localStorage.getItem('walletAddress');
       const res = await fetch(`/api/admin/users/${userId}/status`, {
         method: 'POST',
         headers: { 
           'Content-Type': 'application/json',
-          'x-wallet-address': localStorage.getItem('walletAddress') || ''
+          'x-wallet-address': currentWallet || '',
+          'wallet-address': currentWallet || ''
         },
         body: JSON.stringify({ status })
       });
