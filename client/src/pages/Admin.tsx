@@ -472,7 +472,6 @@ export default function AdminDashboard() {
                   users={filteredUsers}
                   onUpdateRole={(userId, role) => updateRoleMutation.mutate({ userId, role })}
                   onUpdateStatus={(userId, status) => updateStatusMutation.mutate({ userId, status })}
-                  onUpdateRole={(userId, role) => updateRoleMutation.mutate({ userId, role })}
                 />
               </CardContent>
             </Card>

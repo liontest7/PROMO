@@ -159,7 +159,7 @@ export function setupAdminRoutes(app: Express) {
         d.setDate(d.getDate() - i);
         const dateStr = d.toISOString().split('T')[0];
         const count = allExecutions.filter(e => {
-          const eDate = new Date(e.timestamp || Date.now()).toISOString().split('T')[0];
+          const eDate = new Date(e.createdAt || Date.now()).toISOString().split('T')[0];
           return eDate === dateStr;
         }).length;
         trend.push({ date: dateStr, count });
