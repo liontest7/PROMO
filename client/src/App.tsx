@@ -14,7 +14,6 @@ import { ErrorBoundary } from "react-error-boundary";
 import Landing from "@/pages/Landing";
 import Earn from "@/pages/Earn";
 import Dashboard from "@/pages/Dashboard";
-import AdvertiserDashboard from "@/pages/AdvertiserDashboard";
 import About from "@/pages/About";
 import Leaderboard from "@/pages/Leaderboard";
 import CampaignDetails from "@/pages/CampaignDetails";
@@ -111,10 +110,6 @@ function Router() {
           <ProtectedRoute component={Dashboard} />
         </Route>
 
-        {/* Advertiser Routes */}
-        <Route path="/advertiser">
-          <ProtectedRoute component={AdvertiserDashboard} allowedRole="advertiser" />
-        </Route>
         <Route path="/campaign/:id">
           <PageWrapper><CampaignDetails /></PageWrapper>
         </Route>

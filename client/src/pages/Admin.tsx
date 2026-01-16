@@ -157,6 +157,26 @@ export default function AdminDashboard() {
     }
   });
 
+  const testXConnectionMutation = useMutation({
+    mutationFn: async () => {
+      const res = await fetch("/api/admin/settings/test-twitter", {
+        method: 'POST',
+        headers: { 
+          'x-wallet-address': currentWallet || '',
+        }
+      });
+      return res.json();
+    },
+    onSuccess: (data) => {
+      if (data.success) {
+        toast({ title: "X API Verified", description: data.message });
+        queryClient.invalidateQueries({ queryKey: ["/api/admin/settings"] });
+      } else {
+        toast({ title: "Verification Failed", description: data.message, variant: "destructive" });
+      }
+    }
+  });
+
   const isInitialLoading = (loadingUsers || loadingCampaigns || loadingExecutions || loadingStats || loadingSettings) && !users;
 
   if (isInitialLoading) {
@@ -219,6 +239,15 @@ export default function AdminDashboard() {
                     <div className="flex items-center justify-between mb-2">
                       <h3 className="font-bold uppercase text-xs tracking-widest text-white">Campaign Category Controls</h3>
                       <div className="flex items-center gap-2">
+                        <Button 
+                          size="sm" 
+                          variant="outline" 
+                          className="h-6 px-2 text-[10px] font-black uppercase tracking-widest border-primary/20 text-primary hover:bg-primary/10"
+                          onClick={() => testXConnectionMutation.mutate()}
+                          disabled={testXConnectionMutation.isPending}
+                        >
+                          {testXConnectionMutation.isPending ? "Testing..." : "Test Connection"}
+                        </Button>
                         <Badge variant="outline" className={cn(
                           "text-[10px] uppercase font-bold",
                           settings?.twitterApiStatus === 'active' ? "text-green-400 border-green-400/20" : "text-orange-400 border-orange-400/20"
