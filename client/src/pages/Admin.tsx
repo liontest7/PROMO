@@ -260,7 +260,7 @@ export default function AdminDashboard() {
                           "text-[10px] uppercase font-bold",
                           settings?.twitterApiStatus === 'active' ? "text-green-400 border-green-400/20" : "text-orange-400 border-orange-400/20"
                         )}>
-                          X API: {settings?.twitterApiStatus || 'Checking...'}
+                          X API: {settings?.twitterApiStatus === 'active' ? 'LIVE & CONNECTED' : 'CHECKING...'}
                         </Badge>
                       </div>
                     </div>

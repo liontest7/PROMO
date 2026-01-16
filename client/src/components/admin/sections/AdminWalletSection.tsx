@@ -70,7 +70,7 @@ export function AdminWalletSection() {
           </div>
           <div className="space-y-1 py-4">
             <p className="text-[10px] font-black text-white uppercase tracking-widest">Weekly Rewards Pool</p>
-            <h2 className="text-4xl font-black font-display text-white">{adminStats?.weeklyRewardsPool?.toLocaleString() || "0"} $DROPY</h2>
+            <h2 className="text-4xl font-black font-display text-white">{walletInfo?.weeklyRewardsPool?.toLocaleString() || "0"} $DROPY</h2>
             <p className="text-[10px] text-white/50 uppercase">Accumulated from creation fees</p>
           </div>
           <div className="grid grid-cols-2 gap-2 mt-2">

@@ -269,11 +269,19 @@ export function setupAdminRoutes(app: Express) {
       const settings = await storage.getSystemSettings();
       const address = settings.systemWalletAddress || process.env.SYSTEM_WALLET_ADDRESS;
       
-      // Basic mock data if not connected to live solana
+      const allExecutions = await storage.getAllExecutions();
+      const weeklyRewardsPool = allExecutions
+        .filter(e => e.status === 'paid')
+        .reduce((acc, e) => {
+          const reward = e.action ? parseFloat(e.action.rewardAmount) : 0;
+          return acc + reward;
+        }, 0);
+
       res.json({
         address: address || "N/A",
         balanceSol: 12.45,
         balanceDropy: 1500000,
+        weeklyRewardsPool,
         network: "mainnet-beta"
       });
     } catch (err) {
