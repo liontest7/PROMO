@@ -56,7 +56,10 @@ export default function AdminDashboard() {
 
       const res = await fetch("/api/admin/settings", {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'x-wallet-address': localStorage.getItem('walletAddress') || ''
+        },
         body: JSON.stringify(payload)
       });
       if (!res.ok) {
@@ -138,7 +141,10 @@ export default function AdminDashboard() {
     mutationFn: async ({ userId, role }: { userId: number, role: string }) => {
       const res = await fetch(`/api/admin/users/${userId}/role`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'x-wallet-address': localStorage.getItem('walletAddress') || ''
+        },
         body: JSON.stringify({ role })
       });
       if (!res.ok) throw new Error('Failed to update role');
@@ -154,7 +160,10 @@ export default function AdminDashboard() {
     mutationFn: async ({ userId, status }: { userId: number, status: string }) => {
       const res = await fetch(`/api/admin/users/${userId}/status`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'x-wallet-address': localStorage.getItem('walletAddress') || ''
+        },
         body: JSON.stringify({ status })
       });
       if (!res.ok) throw new Error('Failed to update status');
@@ -170,7 +179,10 @@ export default function AdminDashboard() {
     mutationFn: async ({ userId, balance }: { userId: number, balance: string }) => {
       const res = await fetch(`/api/admin/users/${userId}/balance`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'x-wallet-address': localStorage.getItem('walletAddress') || ''
+        },
         body: JSON.stringify({ balance })
       });
       if (!res.ok) throw new Error('Failed to update balance');
@@ -186,7 +198,10 @@ export default function AdminDashboard() {
     mutationFn: async ({ userId, reputationScore }: { userId: number, reputationScore: number }) => {
       const res = await fetch(`/api/admin/users/${userId}/reputation`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'x-wallet-address': localStorage.getItem('walletAddress') || ''
+        },
         body: JSON.stringify({ reputationScore })
       });
       if (!res.ok) throw new Error('Failed to update reputation');
@@ -326,7 +341,7 @@ export default function AdminDashboard() {
                   </div>
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-1.5">
-                      <Label className="text-xs text-white uppercase tracking-wider font-bold">Creation Fee ($MEME)</Label>
+                      <Label className="text-xs text-white uppercase tracking-wider font-bold">Creation Fee ($DROPY)</Label>
                       <Input 
                         type="number" 
                         className="h-10 bg-black/20 border-white/10 text-sm text-white"
