@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Navigation } from "@/components/Navigation";
 import { Input } from "@/components/ui/input";
@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import { useWallet } from "@/hooks/use-wallet";
 import { AdminStats } from "@/components/admin/AdminStats";
 import { UserTable } from "@/components/admin/UserTable";
 import { CampaignTable } from "@/components/admin/CampaignTable";
@@ -24,6 +25,7 @@ import { cn } from "@/lib/utils";
 
 export default function AdminDashboard() {
   const { toast } = useToast();
+  const { walletAddress } = useWallet();
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCampaign, setSelectedCampaign] = useState<any>(null);
   
@@ -31,14 +33,14 @@ export default function AdminDashboard() {
   const [settingsUpdate, setSettingsUpdate] = useState<any>({});
   
   const fetchAdmin = async ({ queryKey }: any) => {
-    const walletAddress = localStorage.getItem('walletAddress');
-    console.log(`[Admin] Fetching ${queryKey.join("/")} with wallet: ${walletAddress}`);
+    const currentWallet = walletAddress || localStorage.getItem('walletAddress');
+    console.log(`[Admin] Fetching ${queryKey.join("/")} with wallet: ${currentWallet}`);
     const path = queryKey.join("/");
     const fetchUrl = path.startsWith('/') ? path : `/${path}`;
     const res = await fetch(fetchUrl, {
       headers: {
-        'x-wallet-address': walletAddress || '',
-        'wallet-address': walletAddress || '',
+        'x-wallet-address': currentWallet || '',
+        'wallet-address': currentWallet || '',
         'Content-Type': 'application/json'
       }
     });
@@ -52,34 +54,38 @@ export default function AdminDashboard() {
 
   const { data: settings, isLoading: loadingSettings } = useQuery<any>({
     queryKey: ["/api/admin/settings"],
-    staleTime: 60000,
-    refetchInterval: 60000,
+    staleTime: 120000,
+    refetchInterval: 120000,
     refetchOnWindowFocus: false,
-    queryFn: fetchAdmin
+    queryFn: fetchAdmin,
+    enabled: !!(walletAddress || localStorage.getItem('walletAddress'))
   });
 
   const { data: users, isLoading: loadingUsers } = useQuery<any[]>({
     queryKey: ["/api/admin/users"],
-    staleTime: 30000,
-    refetchInterval: 30000,
+    staleTime: 60000,
+    refetchInterval: 60000,
     refetchOnWindowFocus: false,
-    queryFn: fetchAdmin
+    queryFn: fetchAdmin,
+    enabled: !!(walletAddress || localStorage.getItem('walletAddress'))
   });
 
   const { data: campaigns, isLoading: loadingCampaigns } = useQuery<any[]>({
     queryKey: ["/api/admin/campaigns"],
-    staleTime: 30000,
-    refetchInterval: 30000,
+    staleTime: 60000,
+    refetchInterval: 60000,
     refetchOnWindowFocus: false,
-    queryFn: fetchAdmin
+    queryFn: fetchAdmin,
+    enabled: !!(walletAddress || localStorage.getItem('walletAddress'))
   });
 
   const { data: executions, isLoading: loadingExecutions } = useQuery<any[]>({
     queryKey: ["/api/admin/executions"],
-    staleTime: 30000,
-    refetchInterval: 30000,
+    staleTime: 60000,
+    refetchInterval: 60000,
     refetchOnWindowFocus: false,
-    queryFn: fetchAdmin
+    queryFn: fetchAdmin,
+    enabled: !!(walletAddress || localStorage.getItem('walletAddress'))
   });
 
   const { data: systemHealth, isLoading: loadingHealth } = useQuery<{
@@ -91,10 +97,11 @@ export default function AdminDashboard() {
     errorLogs: any[];
   }>({
     queryKey: ["/api/admin/system-health"],
-    refetchInterval: 30000,
-    staleTime: 30000,
+    refetchInterval: 60000,
+    staleTime: 60000,
     refetchOnWindowFocus: false,
-    queryFn: fetchAdmin
+    queryFn: fetchAdmin,
+    enabled: !!(walletAddress || localStorage.getItem('walletAddress'))
   });
 
   const { data: adminStats, isLoading: loadingStats } = useQuery<{
@@ -107,30 +114,31 @@ export default function AdminDashboard() {
     suspiciousUsers?: number;
   }>({
     queryKey: ["/api/admin/stats"],
-    staleTime: 60000,
-    refetchInterval: 60000,
+    staleTime: 120000,
+    refetchInterval: 120000,
     refetchOnWindowFocus: false,
-    queryFn: fetchAdmin
+    queryFn: fetchAdmin,
+    enabled: !!(walletAddress || localStorage.getItem('walletAddress'))
   });
 
-  const filteredUsers = (users || []).filter(u => 
+  const filteredUsers = useMemo(() => (users || []).filter(u => 
     u.walletAddress?.toLowerCase().includes(searchTerm.toLowerCase()) ||
     u.role?.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  ), [users, searchTerm]);
 
-  const filteredCampaigns = (campaigns || []).filter(c => 
+  const filteredCampaigns = useMemo(() => (campaigns || []).filter(c => 
     c.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
     c.tokenName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
     c.tokenAddress?.toLowerCase().includes(searchTerm.toLowerCase()) ||
     c.status?.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  ), [campaigns, searchTerm]);
 
-  const filteredExecutions = (executions || []).filter(e => 
+  const filteredExecutions = useMemo(() => (executions || []).filter(e => 
     e.user?.walletAddress?.toLowerCase().includes(searchTerm.toLowerCase()) ||
     e.campaign?.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
     e.action?.type?.toLowerCase().includes(searchTerm.toLowerCase()) ||
     e.status?.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  ), [executions, searchTerm]);
 
   const updateRoleMutation = useMutation({
     mutationFn: async ({ userId, role }: { userId: number, role: string }) => {
@@ -210,15 +218,20 @@ export default function AdminDashboard() {
 
   const updateSettingsMutation = useMutation({
     mutationFn: async (updates: any) => {
+      const currentWallet = walletAddress || localStorage.getItem('walletAddress');
       const res = await fetch("/api/admin/settings", {
         method: 'PATCH',
         headers: { 
           'Content-Type': 'application/json',
-          'x-wallet-address': localStorage.getItem('walletAddress') || ''
+          'x-wallet-address': currentWallet || '',
+          'wallet-address': currentWallet || ''
         },
         body: JSON.stringify(updates)
       });
-      if (!res.ok) throw new Error('Failed to update settings');
+      if (!res.ok) {
+        const err = await res.text();
+        throw new Error(err || 'Failed to update settings');
+      }
       return res.json();
     },
     onSuccess: () => {
