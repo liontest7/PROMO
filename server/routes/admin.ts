@@ -230,7 +230,7 @@ export function setupAdminRoutes(app: Express) {
     try {
       const memory = process.memoryUsage();
       res.json({
-        uptime: process.uptime(),
+        uptime: Math.floor(process.uptime()),
         memory: {
           heapUsed: memory.heapUsed,
           heapTotal: memory.heapTotal,
@@ -272,7 +272,8 @@ export function setupAdminRoutes(app: Express) {
   app.get("/api/admin/wallet-info", async (req, res) => {
     try {
       const settings = await storage.getSystemSettings();
-      const address = settings.systemWalletAddress || process.env.SYSTEM_WALLET_ADDRESS;
+      // Use the dedicated system wallet from environment/secrets
+      const systemWallet = process.env.SYSTEM_WALLET_ADDRESS || "DajB37qp74UzwND3N1rVWtLdxr55nhvuK2D4x476zmns";
       
       const allExecutions = await storage.getAllExecutions();
       // Calculate true rewards pool from all verified tasks that haven't been paid yet + paid
@@ -283,8 +284,10 @@ export function setupAdminRoutes(app: Express) {
           return acc + reward;
         }, 0);
 
+      // In a real scenario, we would fetch the live balance from Solana Connection here
+      // For now, ensuring the address is correctly identified as the SYSTEM wallet
       res.json({
-        address: address || "DajB37qp74UzwND3N1rVWtLdxr55nhvuK2D4x476zmns",
+        address: systemWallet,
         balanceSol: 12.45,
         balanceDropy: 1500000,
         weeklyRewardsPool,
