@@ -36,13 +36,13 @@ export default function AdminDashboard() {
 
   const updateSettingsMutation = useMutation({
     mutationFn: async (newSettings: any) => {
-      // Validate total percentage is 100
-      const burn = newSettings.burnPercent ?? settings?.burnPercent ?? 0;
-      const rewards = newSettings.rewardsPercent ?? settings?.rewardsPercent ?? 0;
-      const system = newSettings.systemPercent ?? settings?.systemPercent ?? 0;
+      // Merge with current settings to validate correctly
+      const burn = newSettings.burnPercent !== undefined ? newSettings.burnPercent : (settings?.burnPercent ?? 50);
+      const rewards = newSettings.rewardsPercent !== undefined ? newSettings.rewardsPercent : (settings?.rewardsPercent ?? 40);
+      const system = newSettings.systemPercent !== undefined ? newSettings.systemPercent : (settings?.systemPercent ?? 10);
       
       if (burn + rewards + system !== 100) {
-        throw new Error('Total distribution must equal exactly 100%');
+        throw new Error(`Total distribution must equal exactly 100% (Current: ${burn + rewards + system}%)`);
       }
 
       const res = await fetch("/api/admin/settings", {

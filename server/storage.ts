@@ -636,6 +636,16 @@ export class DatabaseStorage implements IStorage {
         systemPercent: 10,
         creationFee: 10000
       }).returning();
+    } else {
+      // Dynamic check for Twitter API status based on ENV vars
+      const hasTwitterKeys = !!(process.env.X_CONSUMER_KEY && process.env.X_CONSUMER_SECRET && process.env.X_BEARER_TOKEN);
+      const currentStatus = hasTwitterKeys ? "active" : "coming_soon";
+      if (settings.twitterApiStatus !== currentStatus) {
+        [settings] = await db.update(systemSettings)
+          .set({ twitterApiStatus: currentStatus })
+          .where(eq(systemSettings.id, settings.id))
+          .returning();
+      }
     }
     return settings;
   }

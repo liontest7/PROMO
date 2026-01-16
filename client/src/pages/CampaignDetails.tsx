@@ -475,7 +475,7 @@ export default function CampaignDetails() {
                     </a>
                   </Button>
                   <Button variant="outline" size="sm" className="h-10 text-xs font-black border-white/10 bg-white/5 hover:bg-primary/20 hover:border-primary/40 transition-all gap-2 text-white rounded-lg group" asChild>
-                    <a href={`https://solscan.io/account/${campaign.tokenAddress}`} target="_blank" rel="noreferrer">
+                    <a href={`https://solscan.io/token/${campaign.tokenAddress}`} target="_blank" rel="noreferrer">
                       <Globe className="w-4 h-4 text-primary" />
                       SOLSCAN
                     </a>
