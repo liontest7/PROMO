@@ -38,52 +38,52 @@ export function FraudShield({ users, campaigns, onUpdateStatus }: FraudShieldPro
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-      <Card className="glass-card border-red-500/20 bg-red-500/5 rounded-2xl overflow-hidden">
-        <CardHeader className="border-b border-red-500/10">
-          <CardTitle className="text-xl text-red-400 flex items-center gap-2">
-            <UserX className="h-5 w-5" />
+      <Card className="glass-card border-red-500/30 bg-red-500/5 rounded-2xl overflow-hidden">
+        <CardHeader className="border-b border-red-500/20 bg-red-500/5">
+          <CardTitle className="text-2xl font-black uppercase tracking-widest text-red-500 flex items-center gap-2">
+            <UserX className="h-6 w-6" />
             Suspicious Wallets
           </CardTitle>
-          <CardDescription className="text-sm font-bold text-red-200/80">High-balance accounts or unusual reputation scores.</CardDescription>
+          <CardDescription className="text-base font-black text-red-200/90 uppercase tracking-tight italic">Flagged protocol participants requiring immediate review.</CardDescription>
         </CardHeader>
         <CardContent className="p-0">
-          <ScrollArea className="h-[400px]">
+          <ScrollArea className="h-[500px]">
             <Table>
-                  <TableHeader>
-                    <TableRow className="border-red-500/10 hover:bg-transparent">
-                      <TableHead className="text-xs font-black uppercase text-red-400 tracking-widest">Wallet</TableHead>
-                      <TableHead className="text-xs font-black uppercase text-red-400 tracking-widest">Rep/Bal</TableHead>
-                      <TableHead className="text-right text-xs font-black uppercase text-red-400 tracking-widest pr-4">Action</TableHead>
+                  <TableHeader className="bg-red-500/10 border-b border-red-500/20 sticky top-0 z-10">
+                    <TableRow className="border-none">
+                      <TableHead className="text-sm font-black uppercase text-red-400 tracking-widest py-4">Wallet</TableHead>
+                      <TableHead className="text-sm font-black uppercase text-red-400 tracking-widest py-4">Status & Score</TableHead>
+                      <TableHead className="text-right text-sm font-black uppercase text-red-400 tracking-widest pr-6 py-4">Control</TableHead>
                     </TableRow>
                   </TableHeader>
               <TableBody>
                 {suspiciousUsers.map((user: any) => (
                   <TableRow key={user.id} className="border-red-500/10 hover:bg-red-500/10 transition-colors">
-                    <TableCell className="font-mono text-[11px] font-black py-4 text-white">
-                      {user.walletAddress.slice(0, 4)}...{user.walletAddress.slice(-4)}
+                    <TableCell className="font-mono text-sm font-black py-5 text-white">
+                      {user.walletAddress.slice(0, 6)}...{user.walletAddress.slice(-4)}
                     </TableCell>
                     <TableCell>
-                      <div className="flex flex-col gap-1">
-                        <Badge variant="outline" className="text-[10px] w-fit font-black text-white">R:{user.reputationScore}</Badge>
-                        <Badge variant="outline" className="text-[10px] w-fit font-black text-red-400">B:{user.balance}</Badge>
+                      <div className="flex items-center gap-2">
+                        <Badge variant="outline" className="text-[12px] font-black text-white bg-white/10 border-white/20 px-2 py-0.5">R:{user.reputationScore}</Badge>
+                        <Badge variant="outline" className="text-[12px] font-black text-red-400 bg-red-500/10 border-red-500/30 px-2 py-0.5">B:{user.balance}</Badge>
                       </div>
                     </TableCell>
-                    <TableCell className="text-right pr-4">
+                    <TableCell className="text-right pr-6">
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
-                          <Button size="sm" variant="destructive" className="h-7 px-3 font-black text-[10px] uppercase tracking-widest">
+                          <Button size="sm" variant="destructive" className="h-9 px-4 font-black text-xs uppercase tracking-widest border border-red-500/50 hover:bg-red-500 transition-all">
                             MANAGE
                           </Button>
                         </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end" className="bg-black/90 border-white/10 backdrop-blur-xl">
-                          <DropdownMenuItem className="text-[10px] font-bold uppercase text-green-500" onClick={() => onUpdateStatus(user.id, 'active')}>
-                            <UserCheck className="w-3 h-3 mr-2" /> SET ACTIVE
+                        <DropdownMenuContent align="end" className="bg-black border-red-500/30 text-white p-2">
+                          <DropdownMenuItem className="text-xs font-black uppercase tracking-widest text-green-500 focus:bg-green-500/20 cursor-pointer" onClick={() => onUpdateStatus(user.id, 'active')}>
+                            <UserCheck className="w-4 h-4 mr-2" /> SET ACTIVE
                           </DropdownMenuItem>
-                          <DropdownMenuItem className="text-[10px] font-bold uppercase text-yellow-500" onClick={() => onUpdateStatus(user.id, 'suspended')}>
-                            <Clock className="w-3 h-3 mr-2" /> SUSPEND
+                          <DropdownMenuItem className="text-xs font-black uppercase tracking-widest text-yellow-500 focus:bg-yellow-500/20 cursor-pointer" onClick={() => onUpdateStatus(user.id, 'suspended')}>
+                            <Clock className="w-4 h-4 mr-2" /> SUSPEND
                           </DropdownMenuItem>
-                          <DropdownMenuItem className="text-[10px] font-bold uppercase text-red-500" onClick={() => onUpdateStatus(user.id, 'blocked')}>
-                            <Ban className="w-3 h-3 mr-2" /> BLOCK
+                          <DropdownMenuItem className="text-xs font-black uppercase tracking-widest text-red-500 focus:bg-red-500/20 cursor-pointer" onClick={() => onUpdateStatus(user.id, 'blocked')}>
+                            <Ban className="w-4 h-4 mr-2" /> BLOCK
                           </DropdownMenuItem>
                         </DropdownMenuContent>
                       </DropdownMenu>
@@ -92,9 +92,9 @@ export function FraudShield({ users, campaigns, onUpdateStatus }: FraudShieldPro
                 ))}
                 {suspiciousUsers.length === 0 && (
                   <TableRow>
-                    <TableCell colSpan={3} className="text-center py-10">
-                      <ShieldCheck className="w-8 h-8 mx-auto mb-2 opacity-50 text-white" />
-                      <p className="text-[10px] uppercase font-black tracking-widest text-white">Clean Protocol</p>
+                    <TableCell colSpan={3} className="text-center py-20">
+                      <ShieldCheck className="w-12 h-12 mx-auto mb-4 text-green-500/50" />
+                      <p className="text-sm font-black uppercase tracking-widest text-white italic">Clean Protocol Environment</p>
                     </TableCell>
                   </TableRow>
                 )}
@@ -104,39 +104,39 @@ export function FraudShield({ users, campaigns, onUpdateStatus }: FraudShieldPro
         </CardContent>
       </Card>
 
-      <Card className="glass-card border-yellow-500/20 bg-yellow-500/5 rounded-2xl overflow-hidden">
-        <CardHeader className="border-b border-yellow-500/10">
-          <CardTitle className="text-xl text-yellow-400 flex items-center gap-2">
-            <AlertTriangle className="h-5 w-5" />
-            Campaign Alerts
+      <Card className="glass-card border-yellow-500/30 bg-yellow-500/5 rounded-2xl overflow-hidden">
+        <CardHeader className="border-b border-yellow-500/20 bg-yellow-500/5">
+          <CardTitle className="text-2xl font-black uppercase tracking-widest text-yellow-400 flex items-center gap-2">
+            <AlertTriangle className="h-6 w-6" />
+            Campaign Anomalies
           </CardTitle>
-          <CardDescription className="text-sm font-bold text-yellow-200/80">Budget anomalies or manual suspensions.</CardDescription>
+          <CardDescription className="text-base font-black text-yellow-200/90 uppercase tracking-tight italic">Irregular budget behavior or manual intervention alerts.</CardDescription>
         </CardHeader>
         <CardContent className="p-0">
-          <ScrollArea className="h-[400px]">
+          <ScrollArea className="h-[500px]">
             <Table>
-                  <TableHeader>
-                    <TableRow className="border-yellow-500/10 hover:bg-transparent">
-                      <TableHead className="text-xs font-black uppercase text-yellow-400 tracking-widest">Project</TableHead>
-                      <TableHead className="text-xs font-black uppercase text-yellow-400 tracking-widest">State</TableHead>
-                      <TableHead className="text-right text-xs font-black uppercase text-yellow-400 tracking-widest pr-4">Status</TableHead>
+                  <TableHeader className="bg-yellow-500/10 border-b border-yellow-500/20 sticky top-0 z-10">
+                    <TableRow className="border-none">
+                      <TableHead className="text-sm font-black uppercase text-yellow-400 tracking-widest py-4">Project</TableHead>
+                      <TableHead className="text-sm font-black uppercase text-yellow-400 tracking-widest py-4">State</TableHead>
+                      <TableHead className="text-right text-sm font-black uppercase text-yellow-400 tracking-widest pr-6 py-4">Status</TableHead>
                     </TableRow>
                   </TableHeader>
               <TableBody>
                 {suspiciousCampaigns.map((campaign: any) => (
                   <TableRow key={campaign.id} className="border-yellow-500/10 hover:bg-yellow-500/10 transition-colors">
-                    <TableCell className="font-bold py-4 text-sm text-white">{campaign.title}</TableCell>
-                    <TableCell className="font-mono text-xs text-yellow-400 font-black">{campaign.remainingBudget} / {campaign.totalBudget}</TableCell>
-                    <TableCell className="text-right pr-4">
-                      <Badge variant="outline" className="text-[10px] font-black uppercase border-yellow-500/30 text-yellow-400 tracking-widest">{campaign.status}</Badge>
+                    <TableCell className="font-black py-5 text-base text-white uppercase">{campaign.title}</TableCell>
+                    <TableCell className="font-mono text-sm text-yellow-400 font-black">{campaign.remainingBudget} / {campaign.totalBudget}</TableCell>
+                    <TableCell className="text-right pr-6">
+                      <Badge variant="outline" className="text-[12px] font-black uppercase border-yellow-500/40 text-yellow-400 bg-yellow-500/10 px-3 py-1 tracking-widest">{campaign.status}</Badge>
                     </TableCell>
                   </TableRow>
                 ))}
                 {suspiciousCampaigns.length === 0 && (
                   <TableRow>
-                    <TableCell colSpan={3} className="text-center py-10">
-                      <ShieldCheck className="w-8 h-8 mx-auto mb-2 opacity-50 text-white" />
-                      <p className="text-[10px] uppercase font-black tracking-widest text-white">Healthy Campaigns</p>
+                    <TableCell colSpan={3} className="text-center py-20">
+                      <ShieldCheck className="w-12 h-12 mx-auto mb-4 text-green-500/50" />
+                      <p className="text-sm font-black uppercase tracking-widest text-white italic">Healthy Campaign Ecosystem</p>
                     </TableCell>
                   </TableRow>
                 )}

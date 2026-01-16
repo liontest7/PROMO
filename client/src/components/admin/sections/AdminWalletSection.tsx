@@ -80,18 +80,18 @@ export function AdminWalletSection() {
         </Card>
       </div>
 
-      <Card className="glass-card border-white/10 bg-white/[0.01] rounded-2xl overflow-hidden">
-        <CardHeader className="border-b border-white/5 bg-white/[0.02]">
-          <CardTitle className="text-sm font-black uppercase tracking-widest text-white">Recent Protocol Transactions</CardTitle>
+      <Card className="glass-card border-white/20 bg-white/[0.01] rounded-2xl overflow-hidden">
+        <CardHeader className="border-b border-white/20 bg-white/[0.02]">
+          <CardTitle className="text-base font-black uppercase tracking-widest text-white">Recent Protocol Transactions</CardTitle>
         </CardHeader>
         <CardContent className="p-0">
           <Table>
             <TableHeader>
-              <TableRow className="border-white/5 bg-white/[0.01]">
-                <TableHead className="text-[10px] font-black uppercase text-white">Type</TableHead>
-                <TableHead className="text-[10px] font-black uppercase text-white">Amount</TableHead>
-                <TableHead className="text-[10px] font-black uppercase text-white">Destination</TableHead>
-                <TableHead className="text-[10px] font-black uppercase text-white">Status</TableHead>
+              <TableRow className="border-white/20 bg-white/[0.02]">
+                <TableHead className="text-xs font-black uppercase text-white py-4">Type</TableHead>
+                <TableHead className="text-xs font-black uppercase text-white py-4">Amount</TableHead>
+                <TableHead className="text-xs font-black uppercase text-white py-4">Destination</TableHead>
+                <TableHead className="text-xs font-black uppercase text-white py-4">Status</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -107,8 +107,8 @@ export function AdminWalletSection() {
                   </TableRow>
                 ))
               ) : (
-                <TableRow className="border-white/5">
-                  <TableCell colSpan={4} className="text-center py-12 text-white/30 text-sm font-black uppercase tracking-widest">No recent on-chain events detected</TableCell>
+                <TableRow className="border-white/10">
+                  <TableCell colSpan={4} className="text-center py-12 text-white/30 text-sm font-black uppercase tracking-widest italic">No recent on-chain events detected</TableCell>
                 </TableRow>
               )}
             </TableBody>

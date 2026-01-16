@@ -74,31 +74,31 @@ export function AdminHealthSection() {
         </Card>
       </div>
 
-      <Card className="glass-card border-white/10 bg-white/[0.01] overflow-hidden">
-        <CardHeader className="border-b border-white/5">
-          <CardTitle className="text-sm flex items-center gap-2 text-destructive font-black uppercase tracking-widest">
-            <AlertCircle className="w-4 h-4" /> Recent Error Log
+      <Card className="glass-card border-white/20 bg-white/[0.01] overflow-hidden">
+        <CardHeader className="border-b border-white/20 bg-white/[0.02]">
+          <CardTitle className="text-base flex items-center gap-2 text-destructive font-black uppercase tracking-widest">
+            <AlertCircle className="w-5 h-5" /> Recent Error Log
           </CardTitle>
         </CardHeader>
         <CardContent className="p-0">
           <Table>
-            <TableHeader className="bg-white/[0.02]">
-              <TableRow className="border-white/5">
-                <TableHead className="text-[10px] font-black uppercase text-white">Timestamp</TableHead>
-                <TableHead className="text-[10px] font-black uppercase text-white">Source</TableHead>
-                <TableHead className="text-[10px] font-black uppercase text-white">Message</TableHead>
+            <TableHeader className="bg-white/[0.02] border-b border-white/20">
+              <TableRow className="border-none">
+                <TableHead className="text-xs font-black uppercase text-white py-4">Timestamp</TableHead>
+                <TableHead className="text-xs font-black uppercase text-white py-4">Source</TableHead>
+                <TableHead className="text-xs font-black uppercase text-white py-4">Message</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {health?.errorLogs?.length > 0 ? health.errorLogs.map((log: any, i: number) => (
-                <TableRow key={i} className="border-white/5">
-                  <TableCell className="text-[10px] font-mono text-white font-bold">{format(new Date(log.timestamp), 'HH:mm:ss')}</TableCell>
-                  <TableCell><Badge variant="outline" className="text-[9px] uppercase text-white">{log.source}</Badge></TableCell>
-                  <TableCell className="text-xs font-medium text-red-400">{log.message}</TableCell>
+                <TableRow key={i} className="border-white/10 hover:bg-white/[0.05] transition-colors">
+                  <TableCell className="text-xs font-black font-mono text-white/80">{format(new Date(log.timestamp), 'HH:mm:ss')}</TableCell>
+                  <TableCell><Badge variant="outline" className="text-[10px] font-black uppercase text-white border-white/30 px-2 py-0.5">[{log.source}]</Badge></TableCell>
+                  <TableCell className="text-sm font-black text-red-400">{log.message}</TableCell>
                 </TableRow>
               )) : (
                 <TableRow>
-                  <TableCell colSpan={3} className="text-center py-8 text-white/50 text-xs font-black uppercase tracking-widest">All systems nominal</TableCell>
+                  <TableCell colSpan={3} className="text-center py-12 text-white/30 text-sm font-black uppercase tracking-widest italic">All systems nominal</TableCell>
                 </TableRow>
               )}
             </TableBody>

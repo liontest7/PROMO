@@ -43,27 +43,27 @@ export function UserTable({
   return (
     <>
       <Table>
-        <TableHeader className="bg-white/[0.02]">
-          <TableRow className="border-white/5 hover:bg-transparent">
-            <TableHead className="text-[12px] font-black uppercase text-white tracking-widest">Wallet Identifier</TableHead>
-            <TableHead className="text-[12px] font-black uppercase text-white tracking-widest">Permission Level</TableHead>
-            <TableHead className="text-[12px] font-black uppercase text-white tracking-widest">Balance</TableHead>
-            <TableHead className="text-[12px] font-black uppercase text-white tracking-widest">Trust Score</TableHead>
-            <TableHead className="text-[12px] font-black uppercase text-white tracking-widest">Joined Protocol</TableHead>
-            <TableHead className="text-right text-[12px] font-black uppercase text-white tracking-widest pr-8">Actions</TableHead>
+        <TableHeader className="bg-white/[0.05] border-b border-white/20">
+          <TableRow className="border-none hover:bg-transparent">
+            <TableHead className="text-sm font-black uppercase text-white tracking-widest py-5">Wallet Identifier</TableHead>
+            <TableHead className="text-sm font-black uppercase text-white tracking-widest py-5">Status</TableHead>
+            <TableHead className="text-sm font-black uppercase text-white tracking-widest py-5">Role</TableHead>
+            <TableHead className="text-sm font-black uppercase text-white tracking-widest py-5">Balance</TableHead>
+            <TableHead className="text-sm font-black uppercase text-white tracking-widest py-5">Joined</TableHead>
+            <TableHead className="text-right text-sm font-black uppercase text-white tracking-widest pr-8 py-5">Actions</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {(!users || users.length === 0) && (
             <TableRow>
-              <TableCell colSpan={6} className="text-center py-10 text-white text-xs uppercase font-black tracking-widest italic">
+              <TableCell colSpan={6} className="text-center py-20 text-white/50 text-sm uppercase font-black tracking-widest italic">
                 No protocol users found.
               </TableCell>
             </TableRow>
           )}
           {users?.map((user: any) => (
-            <TableRow key={user.id} className="border-white/5 hover:bg-white/[0.02] transition-colors cursor-pointer" onClick={() => setSelectedUser(user)}>
-              <TableCell className="font-mono text-xs font-bold py-4 text-white">
+            <TableRow key={user.id} className="border-white/10 hover:bg-white/[0.05] transition-colors cursor-pointer" onClick={() => setSelectedUser(user)}>
+              <TableCell className="font-mono text-sm font-black py-5 text-white">
                 <span className="text-primary mr-1 opacity-50">#</span>
                 {user.walletAddress.slice(0, 8)}...{user.walletAddress.slice(-6)}
               </TableCell>
@@ -71,10 +71,10 @@ export function UserTable({
                 <Badge 
                   variant={user.status === 'blocked' ? 'destructive' : user.status === 'suspended' ? 'outline' : 'secondary'}
                   className={cn(
-                    "text-[11px] font-black uppercase tracking-widest",
-                    user.status === 'blocked' && "bg-red-500/20 text-red-500 border-red-500/30",
-                    user.status === 'suspended' && "bg-yellow-500/20 text-yellow-500 border-yellow-500/30",
-                    user.status === 'active' && "bg-green-500/20 text-green-500 border-green-500/30"
+                    "text-[12px] font-black uppercase tracking-widest px-3 py-1",
+                    user.status === 'blocked' && "bg-red-500/20 text-red-500 border-red-500/40",
+                    user.status === 'suspended' && "bg-yellow-500/20 text-yellow-500 border-yellow-500/40",
+                    user.status === 'active' && "bg-green-500/20 text-green-500 border-green-500/40"
                   )}
                 >
                   {user.status}
@@ -83,71 +83,61 @@ export function UserTable({
               <TableCell>
                 <Badge 
                   variant={user.role === 'admin' ? 'default' : 'secondary'}
-                  className={user.role === 'admin' ? 'bg-red-500/10 text-red-500 border-red-500/20 text-[11px] font-black uppercase' : 'text-[11px] font-black uppercase'}
+                  className={cn(
+                    "text-[12px] font-black uppercase tracking-widest px-3 py-1",
+                    user.role === 'admin' ? 'bg-red-500/20 text-red-400 border-red-500/40' : 'bg-white/10 text-white border-white/20'
+                  )}
                 >
                   {user.role}
                 </Badge>
               </TableCell>
               <TableCell>
-                <div className="flex items-center gap-2">
-                  <span className="text-sm font-mono font-bold text-white">{user.balance || 0}</span>
-                </div>
+                <span className="text-base font-black font-mono text-white">{user.balance || 0}</span>
               </TableCell>
-              <TableCell>
-                <div className="flex items-center gap-2">
-                  <span className="text-sm font-bold font-display">{user.reputationScore}</span>
-                  <div className="w-12 h-1.5 rounded-full bg-white/5 overflow-hidden">
-                    <div 
-                      className="h-full bg-primary" 
-                      style={{ width: `${Math.min(100, (user.reputationScore / 500) * 100)}%` }}
-                    />
-                  </div>
-                </div>
-              </TableCell>
-              <TableCell className="text-sm text-white font-bold">
+              <TableCell className="text-sm text-white font-black uppercase">
                 {user.createdAt ? format(new Date(user.createdAt), 'MMM d, yyyy') : 'Genesis'}
               </TableCell>
               <TableCell className="text-right pr-8" onClick={(e) => e.stopPropagation()}>
-                    <div className="flex justify-end gap-2">
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button 
-                            size="sm" 
-                            variant="outline" 
-                            className="h-8 border-white/10 font-black text-xs uppercase tracking-widest text-white"
-                          >
-                            <ShieldAlert className="w-4 h-4 mr-2" />
-                            Status
-                          </Button>
-                        </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end" className="bg-black/90 border-white/10 backdrop-blur-xl text-white">
+                <div className="flex justify-end gap-3">
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button 
+                        size="sm" 
+                        variant="outline" 
+                        className="h-10 border-white/20 font-black text-xs uppercase tracking-widest text-white hover:bg-white/10"
+                      >
+                        <ShieldAlert className="w-4 h-4 mr-2" />
+                        Status
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end" className="bg-black border-white/20 text-white p-2">
                       <DropdownMenuItem 
-                        className="text-xs font-bold uppercase tracking-wider text-green-500 hover:bg-green-500/10"
+                        className="text-xs font-black uppercase tracking-widest text-green-500 focus:bg-green-500/20 cursor-pointer"
                         onClick={() => onUpdateStatus(user.id, 'active')}
                       >
-                        <UserCheck className="w-3 h-3 mr-2" />
+                        <UserCheck className="w-4 h-4 mr-2" />
                         Set Active
                       </DropdownMenuItem>
                       <DropdownMenuItem 
-                        className="text-xs font-bold uppercase tracking-wider text-yellow-500 hover:bg-yellow-500/10"
+                        className="text-xs font-black uppercase tracking-widest text-yellow-500 focus:bg-yellow-500/20 cursor-pointer"
                         onClick={() => onUpdateStatus(user.id, 'suspended')}
                       >
-                        <Clock className="w-3 h-3 mr-2" />
-                        Suspend (Check)
+                        <Clock className="w-4 h-4 mr-2" />
+                        Suspend
                       </DropdownMenuItem>
                       <DropdownMenuItem 
-                        className="text-xs font-bold uppercase tracking-wider text-red-500 hover:bg-red-500/10"
+                        className="text-xs font-black uppercase tracking-widest text-red-500 focus:bg-red-500/20 cursor-pointer"
                         onClick={() => onUpdateStatus(user.id, 'blocked')}
                       >
-                        <Ban className="w-3 h-3 mr-2" />
-                        Block Permanent
+                        <Ban className="w-4 h-4 mr-2" />
+                        Block
                       </DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
                   <Button 
                     size="sm" 
                     variant="ghost"
-                    className="h-8 text-xs font-black uppercase hover:bg-primary/10 hover:text-primary tracking-widest text-white"
+                    className="h-10 text-xs font-black uppercase hover:bg-white/10 hover:text-white tracking-widest text-white/70"
                     onClick={() => onUpdateRole(user.id, user.role === 'admin' ? 'user' : 'admin')}
                   >
                     {user.role === 'admin' ? 'Demote' : 'Promote'}
