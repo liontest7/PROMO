@@ -74,6 +74,7 @@ export default function Landing() {
       if (!res.ok) return null;
       return res.json();
     },
+    refetchInterval: 5000,
   });
 
   const creationFee = settings?.creationFee || PLATFORM_CONFIG.TOKENOMICS.CREATION_FEE;

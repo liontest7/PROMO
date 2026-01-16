@@ -24,7 +24,7 @@ export function useCampaigns(creatorId?: string) {
       if (!res.ok) throw new Error("Failed to fetch campaigns");
       return api.campaigns.list.responses[200].parse(await res.json());
     },
-    refetchInterval: 30000, // Refresh every 30 seconds
+    refetchInterval: 5000, // Refresh every 5 seconds for real-time updates
   });
 }
 
@@ -39,7 +39,7 @@ export function useCampaign(id: number) {
       return api.campaigns.get.responses[200].parse(await res.json());
     },
     enabled: !!id,
-    refetchInterval: 15000, // Refresh individual campaign more frequently
+    refetchInterval: 5000, // Refresh individual campaign more frequently
   });
 }
 

@@ -45,9 +45,21 @@ export default function Earn() {
   const { data: user } = useQuery<any>({
     queryKey: ["/api/users", walletAddress],
     enabled: !!walletAddress,
+    refetchInterval: 10000,
   });
 
   const { data: campaigns, isLoading } = useCampaigns();
+
+  // Add global settings query to handle real-time feature toggling
+  const { data: settings } = useQuery<any>({
+    queryKey: ["/api/admin/settings"],
+    queryFn: async () => {
+      const res = await fetch("/api/admin/settings");
+      if (!res.ok) return null;
+      return res.json();
+    },
+    refetchInterval: 5000,
+  });
 
   const [activeTab, setActiveTab] = useState<"active" | "closed">("active");
 
