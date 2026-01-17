@@ -460,27 +460,14 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
 
                   {watchedType && (
                     <div className="space-y-8 animate-in fade-in slide-in-from-top-4 duration-500">
-                      <Accordion type="single" collapsible defaultValue="details" className="space-y-4">
-                        <AccordionItem value="details" className="border border-white/10 bg-white/[0.02] rounded-3xl overflow-hidden px-6">
-                          <AccordionTrigger className="hover:no-underline py-4">
-                            <div className="flex items-center gap-3">
-                              <Globe className="w-5 h-5 text-primary" />
-                              <span className="font-black uppercase tracking-widest text-xs">Project Details</span>
-                            </div>
-                          </AccordionTrigger>
-                          <AccordionContent className="pt-2 pb-6 space-y-6">
-                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                              <FormField control={form.control} name="websiteUrl" render={({ field }) => (
-                                <FormItem><FormLabel className="text-[10px] uppercase font-black opacity-40">Website</FormLabel><FormControl><Input placeholder="https://..." className="bg-white/5 border-white/10" {...field} /></FormControl><FormMessage /></FormItem>
-                              )} />
-                              <FormField control={form.control} name="twitterUrl" render={({ field }) => (
-                                <FormItem><FormLabel className="text-[10px] uppercase font-black opacity-40">Twitter</FormLabel><FormControl><Input placeholder="https://x.com/..." className="bg-white/5 border-white/10" {...field} /></FormControl><FormMessage /></FormItem>
-                              )} />
-                              <FormField control={form.control} name="telegramUrl" render={({ field }) => (
-                                <FormItem><FormLabel className="text-[10px] uppercase font-black opacity-40">Telegram</FormLabel><FormControl><Input placeholder="https://t.me/..." className="bg-white/5 border-white/10" {...field} /></FormControl><FormMessage /></FormItem>
-                              )} />
-                            </div>
-
+                      {/* Project Details Section - Always Visible */}
+                      <div className="space-y-4">
+                        <div className="border border-white/10 bg-white/[0.02] rounded-3xl overflow-hidden px-6 pb-6">
+                          <div className="flex items-center gap-3 py-4 border-b border-white/5 mb-4">
+                            <Globe className="w-5 h-5 text-primary" />
+                            <span className="font-black uppercase tracking-widest text-xs">Project Details</span>
+                          </div>
+                          <div className="space-y-6">
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                               <FormField
                                 control={form.control}
@@ -488,7 +475,9 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
                                 render={({ field }) => (
                                   <FormItem>
                                     <FormLabel className="text-[10px] uppercase font-black opacity-40">Campaign Title</FormLabel>
-                                    <FormControl><Input placeholder="e.g. Community Growth" className="bg-white/5 border-white/10" {...field} /></FormControl>
+                                    <FormControl>
+                                      <Input placeholder="Enter title..." className="bg-white/5 border-white/10" {...field} />
+                                    </FormControl>
                                     <FormMessage />
                                   </FormItem>
                                 )}
@@ -499,15 +488,61 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
                                 render={({ field }) => (
                                   <FormItem>
                                     <FormLabel className="text-[10px] uppercase font-black opacity-40">Token Symbol</FormLabel>
-                                    <FormControl><Input placeholder="e.g. SOL" className="bg-white/5 border-white/10" {...field} /></FormControl>
+                                    <FormControl>
+                                      <Input placeholder="e.g. SOL" className="bg-white/5 border-white/10" {...field} />
+                                    </FormControl>
                                     <FormMessage />
                                   </FormItem>
                                 )}
                               />
                             </div>
-                          </AccordionContent>
-                        </AccordionItem>
-                      </Accordion>
+
+                            <FormField
+                              control={form.control}
+                              name="description"
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel className="text-[10px] uppercase font-black opacity-40">Description</FormLabel>
+                                  <FormControl>
+                                    <Textarea placeholder="Tell users about your project..." className="bg-white/5 border-white/10 min-h-[100px]" {...field} />
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+                          </div>
+                        </div>
+
+                        <Accordion type="single" collapsible defaultValue="assets" className="space-y-4">
+                          <AccordionItem value="assets" className="border border-white/10 bg-white/[0.02] rounded-3xl overflow-hidden px-6">
+                            <AccordionTrigger className="hover:no-underline py-4">
+                              <div className="flex items-center gap-3">
+                                <Plus className="w-5 h-5 text-primary" />
+                                <span className="font-black uppercase tracking-widest text-xs">Assets & Links</span>
+                              </div>
+                            </AccordionTrigger>
+                            <AccordionContent className="pt-2 pb-6 space-y-6">
+                              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <FormField control={form.control} name="logoUrl" render={({ field }) => (
+                                  <FormItem><FormLabel className="text-[10px] uppercase font-black opacity-40">Logo URL</FormLabel><FormControl><Input placeholder="https://..." className="bg-white/5 border-white/10" {...field} /></FormControl><FormMessage /></FormItem>
+                                )} />
+                                <FormField control={form.control} name="bannerUrl" render={({ field }) => (
+                                  <FormItem><FormLabel className="text-[10px] uppercase font-black opacity-40">Banner URL</FormLabel><FormControl><Input placeholder="https://..." className="bg-white/5 border-white/10" {...field} /></FormControl><FormMessage /></FormItem>
+                                )} />
+                              </div>
+                              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                <FormField control={form.control} name="websiteUrl" render={({ field }) => (
+                                  <FormItem><FormLabel className="text-[10px] uppercase font-black opacity-40">Website</FormLabel><FormControl><Input placeholder="https://..." className="bg-white/5 border-white/10" {...field} /></FormControl><FormMessage /></FormItem>
+                                )} />
+                                <FormField control={form.control} name="twitterUrl" render={({ field }) => (
+                                  <FormItem><FormLabel className="text-[10px] uppercase font-black opacity-40">Twitter</FormLabel><FormControl><Input placeholder="https://x.com/..." className="bg-white/5 border-white/10" {...field} /></FormControl><FormMessage /></FormItem>
+                                )} />
+                                <FormField control={form.control} name="telegramUrl" render={({ field }) => (
+                                  <FormItem><FormLabel className="text-[10px] uppercase font-black opacity-40">Telegram</FormLabel><FormControl><Input placeholder="https://t.me/..." className="bg-white/5 border-white/10" {...field} /></FormControl><FormMessage /></FormItem>
+                                )} />
+                              </div>
+                            </AccordionContent>
+                          </AccordionItem>
 
                       <FormField
                         control={form.control}
