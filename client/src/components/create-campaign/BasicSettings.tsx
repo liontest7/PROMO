@@ -8,6 +8,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { UseFormReturn } from "react-hook-form";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Rocket, Coins } from "lucide-react";
 
 interface BasicSettingsProps {
   form: UseFormReturn<any>;
@@ -15,14 +17,52 @@ interface BasicSettingsProps {
 }
 
 export function BasicSettings({ form, fetchTokenMetadata }: BasicSettingsProps) {
+  const tokenName = form.watch("tokenName");
+  
   return (
     <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+      <div className="p-4 bg-primary/10 rounded-2xl border border-primary/20 mb-6">
+        <div className="flex items-center justify-between mb-4">
+          <div>
+            <h3 className="text-lg font-black text-white uppercase tracking-tighter italic">Target Asset</h3>
+            <p className="text-[10px] text-primary font-bold uppercase tracking-widest">{tokenName ? `${tokenName} - ${form.watch("tokenAddress")}` : "No Token Loaded"}</p>
+          </div>
+          <FormField
+            control={form.control}
+            name="campaignType"
+            render={({ field }) => (
+              <FormItem className="w-48">
+                <Select onValueChange={field.onChange} value={field.value}>
+                  <FormControl>
+                    <SelectTrigger className="bg-background/50 border-primary/20 h-10 rounded-xl">
+                      <SelectValue placeholder="Change Type" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent className="bg-background border-primary/20">
+                    <SelectItem value="engagement">
+                      <div className="flex items-center gap-2">
+                        <Rocket className="h-3.5 w-3.5 text-primary" /> Social Growth
+                      </div>
+                    </SelectItem>
+                    <SelectItem value="holder_qualification">
+                      <div className="flex items-center gap-2">
+                        <Coins className="h-3.5 w-3.5 text-primary" /> Holder Airdrop
+                      </div>
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
+              </FormItem>
+            )}
+          />
+        </div>
+      </div>
+
       <FormField
         control={form.control}
         name="title"
         render={({ field }) => (
           <FormItem>
-            <FormLabel className="text-primary font-bold uppercase tracking-widest text-xs">Campaign Title</FormLabel>
+            <FormLabel className="text-primary font-bold uppercase tracking-widest text-[10px]">Campaign Title</FormLabel>
             <FormControl>
               <Input 
                 placeholder="e.g. My Project Growth Campaign" 
@@ -40,11 +80,11 @@ export function BasicSettings({ form, fetchTokenMetadata }: BasicSettingsProps) 
         name="description"
         render={({ field }) => (
           <FormItem>
-            <FormLabel className="text-primary font-bold uppercase tracking-widest text-xs">Campaign Description</FormLabel>
+            <FormLabel className="text-primary font-bold uppercase tracking-widest text-[10px]">Campaign Description</FormLabel>
             <FormControl>
               <Textarea
-                placeholder="Describe your campaign goals and what makes your project unique..."
-                className="min-h-[120px] bg-primary/5 border-primary/20 focus:border-primary resize-none rounded-xl"
+                placeholder="Describe your campaign goals..."
+                className="min-h-[100px] bg-primary/5 border-primary/20 focus:border-primary resize-none rounded-xl"
                 {...field}
               />
             </FormControl>
@@ -59,13 +99,9 @@ export function BasicSettings({ form, fetchTokenMetadata }: BasicSettingsProps) 
           name="logoUrl"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-primary font-bold uppercase tracking-widest text-xs">Logo Image URL</FormLabel>
+              <FormLabel className="text-primary font-bold uppercase tracking-widest text-[10px]">Logo Image URL</FormLabel>
               <FormControl>
-                <Input 
-                  placeholder="https://..." 
-                  className="bg-primary/5 border-primary/20 focus:border-primary h-12 rounded-xl"
-                  {...field} 
-                />
+                <Input placeholder="https://..." className="bg-primary/5 border-primary/20 h-12 rounded-xl" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -76,13 +112,9 @@ export function BasicSettings({ form, fetchTokenMetadata }: BasicSettingsProps) 
           name="bannerUrl"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-primary font-bold uppercase tracking-widest text-xs">Banner Header URL</FormLabel>
+              <FormLabel className="text-primary font-bold uppercase tracking-widest text-[10px]">Banner Header URL</FormLabel>
               <FormControl>
-                <Input 
-                  placeholder="https://..." 
-                  className="bg-primary/5 border-primary/20 focus:border-primary h-12 rounded-xl"
-                  {...field} 
-                />
+                <Input placeholder="https://..." className="bg-primary/5 border-primary/20 h-12 rounded-xl" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -96,11 +128,10 @@ export function BasicSettings({ form, fetchTokenMetadata }: BasicSettingsProps) 
           name="websiteUrl"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-primary font-bold uppercase tracking-widest text-xs">Website</FormLabel>
+              <FormLabel className="text-primary font-bold uppercase tracking-widest text-[10px]">Website</FormLabel>
               <FormControl>
                 <Input placeholder="https://..." className="bg-primary/5 border-primary/20 h-10 rounded-lg" {...field} />
               </FormControl>
-              <FormMessage />
             </FormItem>
           )}
         />
@@ -109,11 +140,10 @@ export function BasicSettings({ form, fetchTokenMetadata }: BasicSettingsProps) 
           name="twitterUrl"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-primary font-bold uppercase tracking-widest text-xs">Twitter/X</FormLabel>
+              <FormLabel className="text-primary font-bold uppercase tracking-widest text-[10px]">Twitter/X</FormLabel>
               <FormControl>
                 <Input placeholder="https://x.com/..." className="bg-primary/5 border-primary/20 h-10 rounded-lg" {...field} />
               </FormControl>
-              <FormMessage />
             </FormItem>
           )}
         />
@@ -122,11 +152,10 @@ export function BasicSettings({ form, fetchTokenMetadata }: BasicSettingsProps) 
           name="telegramUrl"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-primary font-bold uppercase tracking-widest text-xs">Telegram</FormLabel>
+              <FormLabel className="text-primary font-bold uppercase tracking-widest text-[10px]">Telegram</FormLabel>
               <FormControl>
                 <Input placeholder="https://t.me/..." className="bg-primary/5 border-primary/20 h-10 rounded-lg" {...field} />
               </FormControl>
-              <FormMessage />
             </FormItem>
           )}
         />
