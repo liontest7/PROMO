@@ -132,15 +132,15 @@ export function BasicSettings({ form, fetchTokenMetadata }: BasicSettingsProps) 
         />
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <FormField
           control={form.control}
           name="websiteUrl"
           render={({ field }) => (
             <FormItem className="space-y-1.5">
-              <FormLabel className="text-primary font-black uppercase tracking-[0.2em] text-[10px]">Website</FormLabel>
+              <FormLabel className="text-primary font-black uppercase tracking-[0.2em] text-xs">Website</FormLabel>
               <FormControl>
-                <Input placeholder="https://..." className="bg-primary/5 border-primary/30 h-9 rounded-lg text-white/80 text-xs" {...field} />
+                <Input placeholder="https://..." className="bg-primary/5 border-primary/30 h-11 rounded-xl text-white font-bold" {...field} />
               </FormControl>
             </FormItem>
           )}
@@ -150,9 +150,9 @@ export function BasicSettings({ form, fetchTokenMetadata }: BasicSettingsProps) 
           name="twitterUrl"
           render={({ field }) => (
             <FormItem className="space-y-1.5">
-              <FormLabel className="text-primary font-black uppercase tracking-[0.2em] text-[10px]">Twitter/X</FormLabel>
+              <FormLabel className="text-primary font-black uppercase tracking-[0.2em] text-xs">Twitter/X</FormLabel>
               <FormControl>
-                <Input placeholder="https://x.com/..." className="bg-primary/5 border-primary/30 h-9 rounded-lg text-white/80 text-xs" {...field} />
+                <Input placeholder="https://x.com/..." className="bg-primary/5 border-primary/30 h-11 rounded-xl text-white font-bold" {...field} />
               </FormControl>
             </FormItem>
           )}
@@ -162,9 +162,9 @@ export function BasicSettings({ form, fetchTokenMetadata }: BasicSettingsProps) 
           name="telegramUrl"
           render={({ field }) => (
             <FormItem className="space-y-1.5">
-              <FormLabel className="text-primary font-black uppercase tracking-[0.2em] text-[10px]">Telegram</FormLabel>
+              <FormLabel className="text-primary font-black uppercase tracking-[0.2em] text-xs">Telegram</FormLabel>
               <FormControl>
-                <Input placeholder="https://t.me/..." className="bg-primary/5 border-primary/30 h-9 rounded-lg text-white/80 text-xs" {...field} />
+                <Input placeholder="https://t.me/..." className="bg-primary/5 border-primary/30 h-11 rounded-xl text-white font-bold" {...field} />
               </FormControl>
             </FormItem>
           )}

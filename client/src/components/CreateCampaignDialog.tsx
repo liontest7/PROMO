@@ -406,9 +406,9 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
               <div className="flex-1 overflow-y-auto px-10 pb-10 custom-scrollbar animate-in fade-in duration-500">
                 {step === "edit" ? (
                   <Form {...form}>
-                    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+                    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
                       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-                        <TabsList className="grid grid-cols-3 mb-6 bg-primary/5 border-2 border-primary/10 p-1.5 h-14 rounded-[20px] shadow-inner shrink-0 sticky top-0 z-50 bg-background/80 backdrop-blur-md">
+                        <TabsList className="grid grid-cols-3 mb-4 bg-primary/5 border-2 border-primary/10 p-1.5 h-14 rounded-[20px] shadow-inner shrink-0 sticky top-0 z-50 bg-background/80 backdrop-blur-md">
                           <TabsTrigger value="general" className="rounded-xl data-[state=active]:bg-primary data-[state=active]:text-primary-foreground font-black text-[11px] uppercase tracking-[0.2em] gap-3 transition-all shadow-sm">
                             <Layout className="h-4 w-4" /> BRANDING
                           </TabsTrigger>
