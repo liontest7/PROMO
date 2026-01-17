@@ -32,7 +32,6 @@ import { Plus, Trash2, Rocket, Eye, CheckCircle2, Globe, Twitter, Send, Loader2,
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
-import { CampaignSuccessCard } from "./CampaignSuccessCard";
 import { SuccessCard } from "./SuccessCard";
 
 // Form Schema
@@ -45,10 +44,10 @@ const formSchema = insertCampaignSchema.extend({
     required_error: "Please select a campaign category",
   }),
   totalBudget: z.coerce.number().min(0.00001, "Total budget must be greater than 0"),
-  minHoldingAmount: z.coerce.number().min(0).optional(),
-  minHoldingDuration: z.coerce.number().min(0).optional(),
-  rewardPerWallet: z.coerce.number().min(0).optional(),
-  maxClaims: z.coerce.number().min(1, "At least 1 participant required").optional(),
+  minHoldingAmount: z.coerce.number().min(0).optional().nullable(),
+  minHoldingDuration: z.coerce.number().min(0).optional().nullable(),
+  rewardPerWallet: z.coerce.number().min(0).optional().nullable(),
+  maxClaims: z.coerce.number().min(1, "At least 1 participant required").optional().nullable(),
   actions: z.array(insertActionSchema.omit({ campaignId: true }).extend({
     type: z.string().min(1, "Action type required"),
     title: z.string().min(3, "Action title required"),
@@ -156,7 +155,11 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
       multiDaySolDays: 0,
       campaignType: undefined,
       actions: [],
-      creatorId: userId || undefined
+      creatorId: userId || undefined,
+      minHoldingAmount: 0,
+      minHoldingDuration: 0,
+      rewardPerWallet: 0,
+      maxClaims: 0
     },
   });
 
@@ -497,6 +500,60 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
                               </FormItem>
                             )}
                           />
+                          <FormField
+                            control={form.control}
+                            name="minXFollowers"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel className="text-[10px] uppercase font-black opacity-60 text-white">Min X Followers</FormLabel>
+                                <FormControl>
+                                  <Input type="number" className="bg-white/5 border-white/10 text-white" {...field} />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                          <FormField
+                            control={form.control}
+                            name="minFollowDurationDays"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel className="text-[10px] uppercase font-black opacity-60 text-white">Min Follow Hold (Days)</FormLabel>
+                                <FormControl>
+                                  <Input type="number" className="bg-white/5 border-white/10 text-white" {...field} />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                          <div className="grid grid-cols-2 gap-2">
+                            <FormField
+                              control={form.control}
+                              name="multiDaySolAmount"
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel className="text-[10px] uppercase font-black opacity-60 text-white">SOL Amount</FormLabel>
+                                  <FormControl>
+                                    <Input type="number" step="0.01" className="bg-white/5 border-white/10 text-white" {...field} />
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+                            <FormField
+                              control={form.control}
+                              name="multiDaySolDays"
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel className="text-[10px] uppercase font-black opacity-60 text-white">Days</FormLabel>
+                                  <FormControl>
+                                    <Input type="number" className="bg-white/5 border-white/10 text-white" {...field} />
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+                          </div>
                         </div>
                       </div>
 
@@ -628,6 +685,37 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
                             </FormItem>
                           )}
                         />
+
+                        {watchedType === "holder_qualification" && (
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 border border-white/5 bg-white/[0.01] rounded-2xl">
+                            <FormField
+                              control={form.control}
+                              name="minHoldingAmount"
+                              render={({ field: { value, ...field } }) => (
+                                <FormItem>
+                                  <FormLabel className="text-[10px] uppercase font-black opacity-60 text-white">Min Holding Amount</FormLabel>
+                                  <FormControl>
+                                    <Input type="number" step="0.0001" className="bg-white/5 border-white/10 text-white" value={value || ""} {...field} />
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+                            <FormField
+                              control={form.control}
+                              name="minHoldingDuration"
+                              render={({ field: { value, ...field } }) => (
+                                <FormItem>
+                                  <FormLabel className="text-[10px] uppercase font-black opacity-60 text-white">Min Hold Days</FormLabel>
+                                  <FormControl>
+                                    <Input type="number" className="bg-white/5 border-white/10 text-white" value={value || ""} {...field} />
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+                          </div>
+                        )}
                       </div>
 
                       {watchedType === "engagement" && (
@@ -720,10 +808,10 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
                           <FormField
                             control={form.control}
                             name="rewardPerWallet"
-                            render={({ field }) => (
+                            render={({ field: { value, ...field } }) => (
                               <FormItem>
                                 <FormLabel className="text-[10px] uppercase font-black opacity-60 text-white">Reward per Wallet</FormLabel>
-                                <FormControl><Input type="number" step="0.0001" placeholder="0.1" className="h-12 bg-black/40 border-white/10" {...field} /></FormControl>
+                                <FormControl><Input type="number" step="0.0001" placeholder="0.1" className="h-12 bg-black/40 border-white/10" value={value || ""} {...field} /></FormControl>
                                 <FormMessage />
                               </FormItem>
                             )}
@@ -731,10 +819,10 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
                           <FormField
                             control={form.control}
                             name="maxClaims"
-                            render={({ field }) => (
+                            render={({ field: { value, ...field } }) => (
                               <FormItem>
                                 <FormLabel className="text-[10px] uppercase font-black opacity-60 text-white">Max Participants</FormLabel>
-                                <FormControl><Input type="number" placeholder="100" className="h-12 bg-black/40 border-white/10" {...field} /></FormControl>
+                                <FormControl><Input type="number" placeholder="100" className="h-12 bg-black/40 border-white/10" value={value || ""} {...field} /></FormControl>
                                 <FormMessage />
                               </FormItem>
                             )}

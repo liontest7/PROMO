@@ -42,7 +42,7 @@ export default function Dashboard() {
   const [prevLevel, setPrevLevel] = useState<number | null>(null);
 
   useEffect(() => {
-    if (user?.reputationScore !== undefined) {
+    if (user?.reputationScore !== undefined && user?.reputationScore !== null) {
       const currentLevel = Math.floor(user.reputationScore / 100) + 1;
       if (prevLevel !== null && currentLevel > prevLevel) {
         toast({

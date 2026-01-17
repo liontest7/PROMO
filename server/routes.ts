@@ -369,7 +369,7 @@ export async function registerRoutes(
                 return res.status(202).json({ 
                   success: true, 
                   status: "tracking", 
-                  message: "Follow detected! You must maintain this follow for " + minFollowDurationDays + " days to earn rewards.",
+                  message: `Follow detected! You must maintain this follow for ${minFollowDurationDays} days to earn rewards.`,
                   followProgress: {
                     currentDays: 0,
                     requiredDays: minFollowDurationDays,
@@ -377,7 +377,7 @@ export async function registerRoutes(
                   }
                 });
               } else {
-                return res.status(403).json({ message: "Please follow @"+targetUsername+" first." });
+                return res.status(403).json({ message: `Please follow @${targetUsername} first.` });
               }
             } else {
               const followStart = new Date(tracking.followStartTimestamp).getTime();
