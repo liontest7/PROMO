@@ -274,7 +274,7 @@ export default function Leaderboard() {
                     </div>
                   </div>
                   <h3 className="text-2xl font-black font-display uppercase italic tracking-tight text-white truncate w-full px-2">
-                    {activeLeaders?.[1]?.name || '---'}
+                    {activeLeaders?.[1]?.username || activeLeaders?.[1]?.name || '---'}
                     {activeLeaders?.[1] && activeLeaders[1].points === 0 && (
                       <span className="block text-[8px] text-red-400 not-italic mt-1">NOT ELIGIBLE</span>
                     )}
@@ -302,7 +302,7 @@ export default function Leaderboard() {
                     </div>
                   </div>
                   <h3 className="text-3xl font-black font-display uppercase italic tracking-tighter text-white truncate w-full px-2">
-                    {activeLeaders?.[0]?.name || '---'}
+                    {activeLeaders?.[0]?.username || activeLeaders?.[0]?.name || '---'}
                     {activeLeaders?.[0] && activeLeaders[0].points === 0 && (
                       <span className="block text-[10px] text-red-400 not-italic mt-1">NOT ELIGIBLE</span>
                     )}
@@ -329,7 +329,7 @@ export default function Leaderboard() {
                     </div>
                   </div>
                   <h3 className="text-2xl font-black font-display uppercase italic tracking-tight text-white truncate w-full px-2">
-                    {activeLeaders?.[2]?.name || '---'}
+                    {activeLeaders?.[2]?.username || activeLeaders?.[2]?.name || '---'}
                     {activeLeaders?.[2] && activeLeaders[2].points === 0 && (
                       <span className="block text-[8px] text-red-400 not-italic mt-1">NOT ELIGIBLE</span>
                     )}
@@ -378,12 +378,12 @@ export default function Leaderboard() {
                         <div className="flex-1 flex items-center gap-8">
                           <Avatar className="h-16 w-16 border-2 border-white/10 group-hover:border-primary/60 transition-all shadow-xl">
                             <AvatarImage src={user.profileImageUrl || PLATFORM_CONFIG.ASSETS.MAIN_LOGO} className="object-cover" />
-                            <AvatarFallback className="text-base font-black bg-white/10">{user.avatar || 'U'}</AvatarFallback>
+                            <AvatarFallback className="text-base font-black bg-white/10">{user.username?.[0] || user.avatar || 'U'}</AvatarFallback>
                           </Avatar>
                           <div className="flex flex-col gap-1">
-                          <span className="font-black text-2xl font-display uppercase italic tracking-tight text-white group-hover:text-primary transition-colors">{user.name || "Anonymous User"}</span>
-                          <span className="text-xs font-mono text-white/40 truncate max-w-[250px]">{user.fullWallet || "No Wallet"}</span>
-                        </div>
+                            <span className="font-black text-2xl font-display uppercase italic tracking-tight text-white group-hover:text-primary transition-colors">{user.username || user.name || "Anonymous User"}</span>
+                            <span className="text-xs font-mono text-white/40 truncate max-w-[250px]">{user.fullWallet || "No Wallet"}</span>
+                          </div>
                       </div>
                       <div className="w-40 text-right">
                         <p className="text-3xl font-black font-display text-primary drop-shadow-[0_0_15px_rgba(34,197,94,0.4)]">{(user.points || 0).toLocaleString()}</p>

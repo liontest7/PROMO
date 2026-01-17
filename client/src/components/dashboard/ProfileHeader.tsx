@@ -83,6 +83,10 @@ export function ProfileHeader({
     return `${address.slice(0, 4)}...${address.slice(-4)}`;
   };
 
+  const calculateLevel = (score: number) => {
+    return Math.floor(score / 100) + 1;
+  };
+
   return (
     <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 p-8 rounded-[2.5rem] bg-white/[0.04] border border-white/10 backdrop-blur-3xl relative overflow-hidden group shadow-xl">
       <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-transparent to-transparent opacity-60" />
@@ -102,7 +106,7 @@ export function ProfileHeader({
             </div>
           </div>
           <Badge className="absolute -bottom-3 left-1/2 -translate-x-1/2 px-5 py-2 bg-primary text-primary-foreground font-black text-xs rounded-full border-4 border-background shadow-xl uppercase tracking-widest">
-            LVL {level}
+            LVL {calculateLevel(reputationScore)}
           </Badge>
         </div>
         
