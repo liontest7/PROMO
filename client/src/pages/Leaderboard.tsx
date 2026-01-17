@@ -267,6 +267,7 @@ export default function Leaderboard() {
                   <div className="relative mb-6">
                     <div className="w-24 h-24 rounded-full bg-[#111] border-2 border-white/20 p-1.5 relative">
                       <Avatar className="h-full w-full">
+                        <AvatarImage src={activeLeaders?.[1]?.profileImageUrl || PLATFORM_CONFIG.ASSETS.MAIN_LOGO} />
                         <AvatarFallback className="bg-emerald-500/20 text-emerald-500 font-black text-2xl">{activeLeaders?.[1]?.avatar || '?'}</AvatarFallback>
                       </Avatar>
                       <div className="absolute -top-3 -right-3 w-10 h-10 rounded-2xl bg-white text-black flex items-center justify-center font-black text-lg border-2 border-[#050505] shadow-2xl transform rotate-12 transition-transform group-hover:scale-110 group-hover:rotate-0">#2</div>
@@ -293,6 +294,7 @@ export default function Leaderboard() {
                   <div className="relative mb-6">
                     <div className="w-32 h-32 rounded-full bg-[#111] border-4 border-yellow-500/50 p-1.5 shadow-[0_0_40px_rgba(234,179,8,0.4)] relative">
                       <Avatar className="h-full w-full">
+                        <AvatarImage src={activeLeaders?.[0]?.profileImageUrl || PLATFORM_CONFIG.ASSETS.MAIN_LOGO} />
                         <AvatarFallback className="bg-primary/20 text-primary font-black text-4xl">{activeLeaders?.[0]?.avatar || '?'}</AvatarFallback>
                       </Avatar>
                       <div className="absolute -top-3 -right-3 w-12 h-12 rounded-2xl bg-yellow-500 text-black flex items-center justify-center font-black text-xl border-2 border-[#050505] shadow-2xl transform rotate-12 transition-transform group-hover:scale-110 group-hover:rotate-0">#1</div>
@@ -320,6 +322,7 @@ export default function Leaderboard() {
                   <div className="relative mb-6">
                     <div className="w-24 h-24 rounded-full bg-[#111] border-2 border-white/20 p-1.5 relative">
                       <Avatar className="h-full w-full">
+                        <AvatarImage src={activeLeaders?.[2]?.profileImageUrl || PLATFORM_CONFIG.ASSETS.MAIN_LOGO} />
                         <AvatarFallback className="bg-amber-600/20 text-amber-600 font-black text-2xl">{activeLeaders?.[2]?.avatar || '?'}</AvatarFallback>
                       </Avatar>
                       <div className="absolute -top-3 -right-3 w-10 h-10 rounded-2xl bg-amber-600 text-white flex items-center justify-center font-black text-lg border-2 border-[#050505] shadow-2xl transform rotate-12 transition-transform group-hover:scale-110 group-hover:rotate-0">#3</div>
@@ -374,6 +377,7 @@ export default function Leaderboard() {
                         </div>
                         <div className="flex-1 flex items-center gap-8">
                           <Avatar className="h-16 w-16 border-2 border-white/10 group-hover:border-primary/60 transition-all shadow-xl">
+                            <AvatarImage src={user.profileImageUrl || PLATFORM_CONFIG.ASSETS.MAIN_LOGO} className="object-cover" />
                             <AvatarFallback className="text-base font-black bg-white/10">{user.avatar || 'U'}</AvatarFallback>
                           </Avatar>
                           <div className="flex flex-col gap-1">
