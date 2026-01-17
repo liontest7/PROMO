@@ -18,8 +18,9 @@ import {
 } from "@/components/ui/dialog";
 import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
-import { Rocket, Shield } from "lucide-react";
+import { Rocket, Sparkles, ChevronRight, Layout, ShieldCheck, ListChecks, Coins, Search, Zap } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 
 import { BasicSettings } from "./create-campaign/BasicSettings";
@@ -82,7 +83,8 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
   const [internalOpen, setInternalOpen] = useState(false);
   const open = controlledOpen !== undefined ? controlledOpen : internalOpen;
   const setOpen = controlledOnOpenChange !== undefined ? controlledOnOpenChange : setInternalOpen;
-  const [step, setStep] = useState<"edit" | "preview">("edit");
+  const [step, setStep] = useState<"initial" | "edit" | "preview">("initial");
+  const [activeTab, setActiveTab] = useState("general");
   const [showSuccessCard, setShowSuccessCard] = useState(false);
   const [createdCampaign, setCreatedCampaign] = useState<any>(null);
   const { mutate: createCampaign, isPending } = useCreateCampaign();
@@ -102,19 +104,21 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
       bannerUrl: "", logoUrl: "", websiteUrl: "", twitterUrl: "", telegramUrl: "",
       minSolBalance: 0, minWalletAgeDays: 0, minXAccountAgeDays: 0, minXFollowers: 0,
       minFollowDurationDays: 0, multiDaySolAmount: 0, multiDaySolDays: 0,
+      minHoldingAmount: 0, minHoldingDuration: 0,
       campaignType: undefined, actions: [], creatorId: userId || undefined,
     },
   });
 
   const watchedType = form.watch("campaignType");
   const watchedActions = form.watch("actions") || [];
+  const watchedMaxClaims = form.watch("maxClaims") || 0;
 
-  const platformFee = PLATFORM_CONFIG.TOKENOMICS.CREATION_FEE;
-  const baseGasFee = PLATFORM_CONFIG.FEE_SOL;
+  const platformFee = 0.5; // Fixed SOL fee
+  const baseGasFee = 0.005;
   const perRewardGasFee = 0.0015;
 
   const totalExecutions = watchedType === "holder_qualification"
-    ? Number(form.watch("maxClaims") || 0)
+    ? Number(watchedMaxClaims)
     : watchedActions.reduce((acc, a) => acc + (Number(a.maxExecutions) || 0), 0);
 
   const gasFeeSol = Number((baseGasFee + totalExecutions * perRewardGasFee).toFixed(4));
@@ -122,13 +126,13 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
   useEffect(() => {
     if (watchedType === "holder_qualification") {
       const reward = Number(form.watch("rewardPerWallet")) || 0;
-      const claims = Number(form.watch("maxClaims")) || 0;
+      const claims = Number(watchedMaxClaims) || 0;
       form.setValue("totalBudget", Number((reward * claims).toFixed(6)));
     } else if (watchedActions.length > 0) {
       const total = watchedActions.reduce((acc, a) => acc + (Number(a.rewardAmount) * Number(a.maxExecutions) || 0), 0);
       form.setValue("totalBudget", Number(total.toFixed(6)));
     }
-  }, [watchedActions, form.watch("rewardPerWallet"), form.watch("maxClaims"), watchedType, form]);
+  }, [watchedActions, form.watch("rewardPerWallet"), watchedMaxClaims, watchedType, form]);
 
   const fetchTokenMetadata = async (address: string) => {
     if (!address || address.length < 32) return;
@@ -169,10 +173,28 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
       } else if (moralisData && moralisData.mint) {
         form.setValue("tokenName", moralisData.symbol);
         form.setValue("logoUrl", moralisData.logo);
+        if (moralisData.description) form.setValue("description", moralisData.description);
       }
       
       toast({ title: "Metadata Loaded", description: "Project details retrieved successfully." });
     } catch (e) { console.error("Metadata error:", e); }
+  };
+
+  const handleInitialSubmit = async () => {
+    const address = form.getValues("tokenAddress");
+    const type = form.getValues("campaignType");
+    
+    if (!address || address.length < 32) {
+      toast({ title: "Error", description: "Please enter a valid Solana token address.", variant: "destructive" });
+      return;
+    }
+    if (!type) {
+      toast({ title: "Error", description: "Please select a campaign category.", variant: "destructive" });
+      return;
+    }
+
+    await fetchTokenMetadata(address);
+    setStep("edit");
   };
 
   const onSubmit = (values: FormValues) => {
@@ -196,6 +218,10 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
         multiDaySolHolding: values.multiDaySolAmount > 0 ? {
           amount: values.multiDaySolAmount,
           days: values.multiDaySolDays
+        } : undefined,
+        minProjectTokenHolding: values.minHoldingAmount > 0 ? {
+          amount: values.minHoldingAmount,
+          days: values.minHoldingDuration
         } : undefined
       },
       actions: values.campaignType === "holder_qualification" || !values.actions ? [] : values.actions.map(a => ({
@@ -207,7 +233,7 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
       onSuccess: (data) => {
         setCreatedCampaign(data);
         setOpen(false);
-        setStep("edit");
+        setStep("initial");
         form.reset();
         setShowSuccessCard(true);
         window.dispatchEvent(new CustomEvent("campaign-created", { detail: data }));
@@ -220,7 +246,7 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
 
   return (
     <>
-      <Dialog open={open} onOpenChange={o => { setOpen(o); if (!o) setStep("edit"); }}>
+      <Dialog open={open} onOpenChange={o => { setOpen(o); if (!o) { setStep("initial"); setActiveTab("general"); } }}>
         <DialogTrigger asChild>
           <Button onClick={e => {
             if (!isConnected) { e.preventDefault(); connect("advertiser"); return; }
@@ -229,79 +255,186 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
               toast({ title: "Maintenance", description: "Campaign creation is disabled.", variant: "destructive" }); 
               return;
             }
-          }} className="bg-primary text-primary-foreground font-bold hover:shadow-[0_0_20px_rgba(34,197,94,0.4)] transition-all">
-            <Rocket className="mr-2 h-4 w-4" /> Launch Campaign
+          }} className="bg-primary text-primary-foreground font-black uppercase tracking-widest hover:shadow-[0_0_30px_rgba(34,197,94,0.4)] transition-all h-12 px-8 rounded-2xl border-b-4 border-black/20 active:border-b-0 active:translate-y-1">
+            <Rocket className="mr-2 h-5 w-5 animate-pulse" /> Launch Campaign
           </Button>
         </DialogTrigger>
-        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto glass-card border-primary/20 p-0">
-          <div className="p-6">
-            <DialogHeader className="mb-6">
-              <DialogTitle className="text-2xl font-display text-primary">
-                {step === "preview" ? "Preview Your Campaign" : "Create New Campaign"}
-              </DialogTitle>
-              <DialogDescription>
-                {step === "preview" ? "Review all details before publishing." : "Set up a new Pay-Per-Action campaign to boost your project."}
-              </DialogDescription>
-            </DialogHeader>
+        <DialogContent className="max-w-2xl max-h-[95vh] overflow-hidden glass-card border-primary/20 p-0 shadow-2xl">
+          <div className="relative">
+            <div className="absolute top-0 right-0 p-12 text-primary/5 pointer-events-none overflow-hidden">
+              <Zap className="h-48 w-48 rotate-12" />
+            </div>
 
-            {step === "edit" ? (
-              <Form {...form}>
-                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <FormField control={form.control} name="campaignType" render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Campaign Category</FormLabel>
-                        <Select onValueChange={v => { field.onChange(v); form.setValue("actions", v === "holder_qualification" ? [] : [{ type: "website", title: "Visit Website", url: "", rewardAmount: 0.01, maxExecutions: 10 }]); }} value={field.value}>
-                          <FormControl><SelectTrigger><SelectValue placeholder="Select type" /></SelectTrigger></FormControl>
-                          <SelectContent>
-                            <SelectItem value="engagement">Social Engagement</SelectItem>
-                            <SelectItem value="holder_qualification">Holder Qualification</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </FormItem>
-                    )} />
+            <div className="p-8 pb-4">
+              <DialogHeader className="mb-6">
+                <div className="flex items-center gap-3 mb-2">
+                  <div className="p-2 bg-primary/20 rounded-xl">
+                    <Rocket className="h-6 w-6 text-primary" />
+                  </div>
+                  <DialogTitle className="text-3xl font-display text-white italic tracking-tighter uppercase leading-none">
+                    {step === "initial" ? "Initialize Launch" : step === "preview" ? "Final Review" : "Configure Strategy"}
+                  </DialogTitle>
+                </div>
+                <DialogDescription className="text-muted-foreground font-medium tracking-wide">
+                  {step === "initial" ? "Enter your token details to start your growth engine." : step === "preview" ? "Verify all parameters before deploying to Solana." : "Define how you want to scale your project presence."}
+                </DialogDescription>
+              </DialogHeader>
+
+              {step === "initial" ? (
+                <div className="space-y-8 animate-in fade-in slide-in-from-bottom-8 duration-500 py-4">
+                  <div className="grid grid-cols-1 gap-6">
+                    <div className="space-y-3">
+                      <label className="text-[10px] font-black text-primary uppercase tracking-[0.3em] px-1">Target Asset</label>
+                      <div className="relative group">
+                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-primary opacity-50 group-focus-within:opacity-100 transition-opacity" />
+                        <Input 
+                          placeholder="Enter Solana Token Address (CA)..." 
+                          className="h-16 pl-12 bg-primary/5 border-2 border-primary/10 focus:border-primary/40 rounded-2xl text-lg font-mono tracking-tight transition-all"
+                          value={form.watch("tokenAddress")}
+                          onChange={e => form.setValue("tokenAddress", e.target.value)}
+                        />
+                      </div>
+                    </div>
+
+                    <div className="space-y-3">
+                      <label className="text-[10px] font-black text-primary uppercase tracking-[0.3em] px-1">Campaign Core</label>
+                      <div className="grid grid-cols-2 gap-4">
+                        <button 
+                          onClick={() => form.setValue("campaignType", "engagement")}
+                          className={`flex flex-col items-center justify-center p-6 rounded-3xl border-2 transition-all gap-3 ${watchedType === 'engagement' ? 'bg-primary/20 border-primary shadow-lg shadow-primary/20' : 'bg-white/5 border-white/10 hover:border-white/20'}`}
+                        >
+                          <Zap className={`h-8 w-8 ${watchedType === 'engagement' ? 'text-primary' : 'text-white/40'}`} />
+                          <div className="text-center">
+                            <p className="text-[11px] font-black uppercase tracking-widest text-white leading-none mb-1">Social Growth</p>
+                            <p className="text-[9px] text-muted-foreground font-bold italic">Pay-Per-Action</p>
+                          </div>
+                        </button>
+                        <button 
+                          onClick={() => form.setValue("campaignType", "holder_qualification")}
+                          className={`flex flex-col items-center justify-center p-6 rounded-3xl border-2 transition-all gap-3 ${watchedType === 'holder_qualification' ? 'bg-primary/20 border-primary shadow-lg shadow-primary/20' : 'bg-white/5 border-white/10 hover:border-white/20'}`}
+                        >
+                          <Coins className={`h-8 w-8 ${watchedType === 'holder_qualification' ? 'text-primary' : 'text-white/40'}`} />
+                          <div className="text-center">
+                            <p className="text-[11px] font-black uppercase tracking-widest text-white leading-none mb-1">Holder Airdrop</p>
+                            <p className="text-[9px] text-muted-foreground font-bold italic">Loyalty Reward</p>
+                          </div>
+                        </button>
+                      </div>
+                    </div>
                   </div>
 
-                  <BasicSettings form={form} fetchTokenMetadata={fetchTokenMetadata} />
-                  
-                  {watchedType === "engagement" ? (
-                    <EngagementActions form={form} />
-                  ) : watchedType === "holder_qualification" ? (
-                    <div className="grid grid-cols-2 gap-4 p-4 border rounded-lg bg-primary/5">
-                      <FormField control={form.control} name="rewardPerWallet" render={({ field }) => (
-                        <FormItem><FormLabel>Reward Per Holder</FormLabel><FormControl><Input type="number" step="0.00001" {...field} /></FormControl></FormItem>
-                      )} />
-                      <FormField control={form.control} name="maxClaims" render={({ field }) => (
-                        <FormItem><FormLabel>Max Participants</FormLabel><FormControl><Input type="number" {...field} /></FormControl></FormItem>
-                      )} />
-                    </div>
-                  ) : null}
+                  <Button 
+                    onClick={handleInitialSubmit}
+                    className="w-full h-16 rounded-[24px] font-black text-lg uppercase tracking-[0.2em] bg-primary hover:bg-primary/90 shadow-[0_0_30px_rgba(34,197,94,0.3)] transition-all group"
+                  >
+                    START CONFIGURATION <ChevronRight className="ml-2 h-6 w-6 group-hover:translate-x-1 transition-transform" />
+                  </Button>
+                </div>
+              ) : step === "edit" ? (
+                <div className="overflow-y-auto max-h-[65vh] pr-2 custom-scrollbar p-1">
+                  <Form {...form}>
+                    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+                      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+                        <TabsList className="grid grid-cols-3 mb-8 bg-primary/5 border border-primary/10 p-1.5 h-14 rounded-[20px]">
+                          <TabsTrigger value="general" className="rounded-2xl data-[state=active]:bg-primary data-[state=active]:text-primary-foreground font-black text-[10px] uppercase tracking-widest gap-2 transition-all">
+                            <Layout className="h-4 w-4" /> BRANDING
+                          </TabsTrigger>
+                          <TabsTrigger value="actions" className="rounded-2xl data-[state=active]:bg-primary data-[state=active]:text-primary-foreground font-black text-[10px] uppercase tracking-widest gap-2 transition-all">
+                            <ListChecks className="h-4 w-4" /> REWARDS
+                          </TabsTrigger>
+                          <TabsTrigger value="protections" className="rounded-2xl data-[state=active]:bg-primary data-[state=active]:text-primary-foreground font-black text-[10px] uppercase tracking-widest gap-2 transition-all">
+                            <ShieldCheck className="h-4 w-4" /> SECURITY
+                          </TabsTrigger>
+                        </TabsList>
 
-                  <CampaignProtections form={form} />
-                  
-                  <div className="p-4 bg-primary/10 rounded-lg border border-primary/20">
-                    <div className="flex justify-between items-center mb-2">
-                      <span className="text-sm font-bold">Airdrop Budget</span>
-                      <span className="font-mono text-primary font-bold">{form.watch("totalBudget")} {form.watch("tokenName")}</span>
-                    </div>
-                    <div className="flex justify-between items-center text-xs text-muted-foreground">
-                      <span>Creation Fee: 0.5 SOL</span>
-                      <span>Gas (Escrow): {gasFeeSol} SOL</span>
-                    </div>
-                  </div>
+                        <TabsContent value="general" className="mt-0 space-y-6">
+                          <BasicSettings form={form} fetchTokenMetadata={fetchTokenMetadata} />
+                          <div className="flex justify-end pt-4">
+                            <Button type="button" onClick={() => setActiveTab("actions")} className="h-14 px-8 rounded-2xl font-black uppercase tracking-widest text-xs gap-2 shadow-lg hover:scale-105 transition-all">
+                              CONFIGURE REWARDS <ChevronRight className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        </TabsContent>
 
-                  <Button type="submit" className="w-full h-12 font-bold text-lg">Continue to Preview</Button>
-                </form>
-              </Form>
-            ) : (
-              <CampaignPreview
-                values={form.getValues()}
-                onBack={() => setStep("edit")}
-                onConfirm={form.handleSubmit(onSubmit)}
-                isPending={isPending}
-                gasFeeSol={gasFeeSol}
-              />
-            )}
+                        <TabsContent value="actions" className="mt-0 space-y-6">
+                          {watchedType === "engagement" ? (
+                            <EngagementActions form={form} />
+                          ) : (
+                            <div className="space-y-6">
+                              <div className="p-8 bg-primary/10 rounded-[32px] border-2 border-primary/20 text-center space-y-4 shadow-inner relative overflow-hidden">
+                                <div className="absolute -top-4 -right-4 p-2 opacity-5"><Coins className="h-24 w-24" /></div>
+                                <div className="p-4 bg-primary/20 rounded-3xl w-fit mx-auto shadow-lg"><Coins className="h-10 w-10 text-primary animate-bounce" /></div>
+                                <div className="space-y-2">
+                                  <h3 className="text-xl font-black uppercase tracking-widest text-white italic">Airdrop Parameters</h3>
+                                  <p className="text-xs text-muted-foreground font-bold uppercase tracking-tighter">Define incentives for your long-term holders</p>
+                                </div>
+                                <div className="grid grid-cols-2 gap-6 pt-4">
+                                  <FormField control={form.control} name="rewardPerWallet" render={({ field }) => (
+                                    <FormItem className="space-y-1.5">
+                                      <FormLabel className="text-[10px] font-black uppercase tracking-widest text-primary/60">Reward / Wallet</FormLabel>
+                                      <FormControl><Input type="number" step="0.00001" {...field} className="h-14 bg-primary/5 border-2 border-primary/10 focus:border-primary/40 rounded-2xl text-center font-mono text-lg font-black" /></FormControl>
+                                    </FormItem>
+                                  )} />
+                                  <FormField control={form.control} name="maxClaims" render={({ field }) => (
+                                    <FormItem className="space-y-1.5">
+                                      <FormLabel className="text-[10px] font-black uppercase tracking-widest text-primary/60">Max Participants</FormLabel>
+                                      <FormControl><Input type="number" {...field} className="h-14 bg-primary/5 border-2 border-primary/10 focus:border-primary/40 rounded-2xl text-center font-mono text-lg font-black" /></FormControl>
+                                    </FormItem>
+                                  )} />
+                                </div>
+                              </div>
+                            </div>
+                          )}
+                          <div className="flex justify-between pt-4">
+                            <Button type="button" variant="outline" onClick={() => setActiveTab("general")} className="h-14 px-8 rounded-2xl font-black uppercase tracking-widest text-xs border-2">BACK</Button>
+                            <Button type="button" onClick={() => setActiveTab("protections")} className="h-14 px-8 rounded-2xl font-black uppercase tracking-widest text-xs gap-2 shadow-lg hover:scale-105 transition-all">
+                              ACTIVATE SHIELD <ChevronRight className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        </TabsContent>
+
+                        <TabsContent value="protections" className="mt-0 space-y-6">
+                          <CampaignProtections form={form} />
+                          <div className="p-6 bg-white/5 rounded-[28px] border-2 border-white/10 space-y-5 shadow-2xl relative overflow-hidden group">
+                            <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:rotate-12 transition-transform duration-700"><Rocket className="h-24 w-24" /></div>
+                            <div className="space-y-4 relative z-10">
+                              <div className="flex justify-between items-center group/fee">
+                                <span className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em] group-hover/fee:text-white transition-colors">Airdrop Budget</span>
+                                <span className="font-mono text-primary font-black text-lg group-hover/fee:scale-105 transition-transform">{form.watch("totalBudget")?.toLocaleString()} ${form.watch("tokenName")}</span>
+                              </div>
+                              <div className="flex justify-between items-center text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">
+                                <div className="flex flex-col gap-1">
+                                  <span className="flex items-center gap-1.5"><div className="w-1.5 h-1.5 bg-primary rounded-full shadow-[0_0_8px_rgba(34,197,94,0.6)]" /> Platform Fee: 0.50 SOL</span>
+                                  <span className="flex items-center gap-1.5"><div className="w-1.5 h-1.5 bg-primary/40 rounded-full" /> Gas (Escrow): {gasFeeSol} SOL</span>
+                                </div>
+                                <div className="text-right">
+                                  <span className="block text-primary/40 mb-1 italic">Secured in Smart Contract</span>
+                                  <div className="px-3 py-1 bg-white/5 rounded-lg border border-white/10 text-white font-mono">Total: {(0.5 + gasFeeSol).toFixed(4)} SOL</div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div className="flex justify-between pt-4">
+                            <Button type="button" variant="outline" onClick={() => setActiveTab("actions")} className="h-14 px-8 rounded-2xl font-black uppercase tracking-widest text-xs border-2">BACK</Button>
+                            <Button type="submit" className="h-14 px-10 rounded-2xl font-black uppercase tracking-[0.2em] text-xs bg-primary shadow-[0_0_30px_rgba(34,197,94,0.4)] hover:scale-105 transition-all">
+                              PREVIEW CAMPAIGN <Sparkles className="h-4 w-4 ml-2" />
+                            </Button>
+                          </div>
+                        </TabsContent>
+                      </Tabs>
+                    </form>
+                  </Form>
+                </div>
+              ) : (
+                <CampaignPreview
+                  values={form.getValues()}
+                  onBack={() => setStep("edit")}
+                  onConfirm={form.handleSubmit(onSubmit)}
+                  isPending={isPending}
+                  gasFeeSol={gasFeeSol}
+                />
+              )}
+            </div>
           </div>
         </DialogContent>
       </Dialog>

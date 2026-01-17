@@ -9,6 +9,10 @@ import {
   Eye,
   Shield,
   Coins,
+  ChevronLeft,
+  AlertCircle,
+  ExternalLink,
+  Wallet
 } from "lucide-react";
 
 interface CampaignPreviewProps {
@@ -27,151 +31,225 @@ export function CampaignPreview({
   gasFeeSol,
 }: CampaignPreviewProps) {
   const isHolder = values.campaignType === "holder_qualification";
+  const platformFee = 0.5; 
+  const totalCostSol = Number((platformFee + gasFeeSol).toFixed(4));
 
   return (
-    <div className="space-y-6">
-      <div className="relative h-32 rounded-lg overflow-hidden bg-primary/10 border border-primary/20">
-        {values.bannerUrl ? (
-          <img
-            src={values.bannerUrl}
-            alt="Banner"
-            className="w-full h-full object-cover"
-          />
-        ) : (
-          <div className="w-full h-full flex items-center justify-center text-primary/40">
-            <Eye className="h-8 w-8" />
-          </div>
-        )}
-        <div className="absolute bottom-2 left-2 flex items-center gap-3 bg-background/80 backdrop-blur-md p-2 rounded-lg border border-primary/20">
-          <div className="w-12 h-12 rounded-lg overflow-hidden bg-primary/10">
+    <div className="space-y-8 animate-in fade-in zoom-in duration-500 max-h-[70vh] overflow-y-auto pr-2 custom-scrollbar">
+      {/* Banner & Brand Card */}
+      <div className="relative group p-1">
+        <div className="relative h-56 rounded-[32px] overflow-hidden bg-primary/10 border-4 border-primary/20 shadow-2xl">
+          {values.bannerUrl ? (
             <img
-              src={values.logoUrl}
-              alt="Logo"
-              className="w-full h-full object-cover"
+              src={values.bannerUrl}
+              alt="Campaign Banner"
+              className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
             />
-          </div>
-          <div>
-            <h3 className="font-bold text-sm leading-none">{values.title}</h3>
-            <p className="text-xs text-muted-foreground">{values.tokenName}</p>
+          ) : (
+            <div className="w-full h-full flex flex-col items-center justify-center text-primary/20 space-y-2 bg-gradient-to-br from-primary/5 to-primary/20">
+              <Eye className="h-16 w-16 opacity-20" />
+              <span className="text-xs font-black uppercase tracking-widest opacity-40">Campaign Banner Preview</span>
+            </div>
+          )}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
+          
+          <div className="absolute bottom-6 left-6 right-6 flex items-end justify-between">
+            <div className="flex items-center gap-5">
+              <div className="w-20 h-20 rounded-[24px] overflow-hidden bg-background/40 border-4 border-white/30 shadow-2xl backdrop-blur-xl group-hover:scale-105 transition-transform duration-500">
+                <img src={values.logoUrl} alt="Logo" className="w-full h-full object-cover" />
+              </div>
+              <div className="space-y-1">
+                <div className="flex items-center gap-3">
+                  <h3 className="font-display font-black text-2xl text-white italic tracking-tighter uppercase drop-shadow-lg">
+                    {values.title}
+                  </h3>
+                  <Badge variant="primary" className="text-[10px] h-5 bg-primary text-primary-foreground font-black shadow-lg shadow-primary/30">PREVIEW</Badge>
+                </div>
+                <div className="flex items-center gap-4">
+                  <span className="text-primary font-mono text-base font-black tracking-[0.2em] drop-shadow-md">${values.tokenName}</span>
+                  <div className="flex items-center gap-2">
+                    {values.websiteUrl && <Globe className="h-3.5 w-3.5 text-white/60 hover:text-white transition-colors cursor-pointer" />}
+                    {values.twitterUrl && <Twitter className="h-3.5 w-3.5 text-white/60 hover:text-white transition-colors cursor-pointer" />}
+                    {values.telegramUrl && <Send className="h-3.5 w-3.5 text-white/60 hover:text-white transition-colors cursor-pointer" />}
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div className="space-y-4">
-          <section>
-            <h4 className="text-xs font-bold text-primary uppercase tracking-wider mb-2">
-              Campaign Details
-            </h4>
-            <div className="p-3 bg-primary/5 rounded-lg border border-primary/10 space-y-2">
-              <div className="flex justify-between text-sm">
-                <span className="text-muted-foreground">Category:</span>
-                <Badge variant="outline" className="text-[10px] capitalize">
-                  {values.campaignType?.replace("_", " ")}
-                </Badge>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="space-y-6">
+          <section className="space-y-3">
+            <div className="flex items-center gap-2 px-1">
+              <Rocket className="h-3.5 w-3.5 text-primary" />
+              <h4 className="text-[10px] font-black text-primary uppercase tracking-[0.3em]">Campaign Core</h4>
+            </div>
+            <div className="p-6 bg-primary/5 rounded-[28px] border border-primary/10 backdrop-blur-xl relative overflow-hidden group">
+              <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:scale-110 transition-transform duration-700">
+                <Rocket className="h-24 w-24" />
               </div>
-              <div className="flex justify-between text-sm">
-                <span className="text-muted-foreground">Budget:</span>
-                <span className="font-mono text-primary font-bold">
-                  {values.totalBudget} {values.tokenName}
-                </span>
+              <div className="space-y-5 relative z-10">
+                <div className="flex justify-between items-center border-b border-white/5 pb-4">
+                  <span className="text-xs text-muted-foreground uppercase font-black tracking-widest">Type</span>
+                  <Badge variant="outline" className="text-[10px] uppercase font-black tracking-widest py-1.5 border-primary/30 text-primary bg-primary/5">
+                    {values.campaignType?.replace("_", " ")}
+                  </Badge>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-xs text-muted-foreground uppercase font-black tracking-widest">Airdrop Pool</span>
+                  <div className="text-right">
+                    <span className="block text-2xl font-mono font-black text-primary leading-none tracking-tighter">
+                      {values.totalBudget?.toLocaleString()}
+                    </span>
+                    <span className="text-[10px] font-black uppercase text-muted-foreground tracking-widest">${values.tokenName}</span>
+                  </div>
+                </div>
               </div>
             </div>
           </section>
 
-          <section>
-            <h4 className="text-xs font-bold text-primary uppercase tracking-wider mb-2">
-              Requirements
-            </h4>
-            <div className="p-3 bg-primary/5 rounded-lg border border-primary/10 space-y-1">
-              {values.minSolBalance > 0 && (
-                <div className="flex items-center gap-2 text-xs">
-                  <CheckCircle2 className="h-3 w-3 text-primary" />
-                  <span>Min {values.minSolBalance} SOL Balance</span>
+          <section className="space-y-3">
+            <div className="flex items-center gap-2 px-1">
+              <Shield className="h-3.5 w-3.5 text-primary" />
+              <h4 className="text-[10px] font-black text-primary uppercase tracking-[0.3em]">Active Security</h4>
+            </div>
+            <div className="p-6 bg-white/5 rounded-[28px] border border-white/10 space-y-4 shadow-inner">
+              {[
+                { label: `Min ${values.minSolBalance} SOL Balance`, active: values.minSolBalance > 0 },
+                { label: `Min ${values.minWalletAgeDays}d Wallet Age`, active: values.minWalletAgeDays > 0 },
+                { label: `Min ${values.minXFollowers} X Followers`, active: values.minXFollowers > 0 },
+                { label: `Min ${values.minXAccountAgeDays}d X Age`, active: values.minXAccountAgeDays > 0 },
+                { label: `Hold ${values.minHoldingAmount} $${values.tokenName}`, active: values.minHoldingAmount > 0 },
+                { label: `Hold Duration: ${values.minHoldingDuration}d`, active: values.minHoldingDuration > 0 },
+              ].filter(p => p.active).length > 0 ? (
+                <div className="grid grid-cols-1 gap-2.5">
+                  {[
+                    { label: `Min ${values.minSolBalance} SOL Balance`, active: values.minSolBalance > 0 },
+                    { label: `Min ${values.minWalletAgeDays}d Wallet Age`, active: values.minWalletAgeDays > 0 },
+                    { label: `Min ${values.minXFollowers} X Followers`, active: values.minXFollowers > 0 },
+                    { label: `Min ${values.minXAccountAgeDays}d X Age`, active: values.minXAccountAgeDays > 0 },
+                    { label: `Hold ${values.minHoldingAmount} $${values.tokenName}`, active: (values.minHoldingAmount || 0) > 0 },
+                    { label: `Hold Duration: ${values.minHoldingDuration}d`, active: (values.minHoldingDuration || 0) > 0 },
+                  ].map((p, i) => p.active && (
+                    <div key={i} className="flex items-center gap-3 text-[11px] font-black text-white/90 py-2.5 px-4 bg-white/5 rounded-2xl border border-white/5 hover:bg-white/10 transition-colors">
+                      <CheckCircle2 className="h-3.5 w-3.5 text-primary shrink-0" />
+                      <span className="truncate">{p.label}</span>
+                    </div>
+                  ))}
                 </div>
-              )}
-              {values.minXFollowers > 0 && (
-                <div className="flex items-center gap-2 text-xs">
-                  <CheckCircle2 className="h-3 w-3 text-primary" />
-                  <span>Min {values.minXFollowers} X Followers</span>
+              ) : (
+                <div className="flex flex-col items-center justify-center py-4 space-y-2 opacity-40">
+                  <AlertCircle className="h-8 w-8 text-muted-foreground" />
+                  <span className="text-[10px] font-black uppercase tracking-widest italic">Standard Protections Only</span>
                 </div>
-              )}
-              {!values.minSolBalance && !values.minXFollowers && (
-                <span className="text-xs text-muted-foreground">
-                  No specific requirements
-                </span>
               )}
             </div>
           </section>
         </div>
 
-        <div className="space-y-4">
-          <section>
-            <h4 className="text-xs font-bold text-primary uppercase tracking-wider mb-2">
-              Action Summary
-            </h4>
-            <div className="p-3 bg-primary/5 rounded-lg border border-primary/10 space-y-2 max-h-[150px] overflow-y-auto">
+        <div className="space-y-6">
+          <section className="space-y-3">
+            <div className="flex items-center gap-2 px-1">
+              <Coins className="h-3.5 w-3.5 text-primary" />
+              <h4 className="text-[10px] font-black text-primary uppercase tracking-[0.3em]">Engagement Plan</h4>
+            </div>
+            <div className="p-6 bg-primary/5 rounded-[28px] border border-primary/10 space-y-3 max-h-[220px] overflow-y-auto custom-scrollbar shadow-inner">
               {isHolder ? (
-                <div className="flex items-center gap-2 text-sm">
-                  <Coins className="h-4 w-4 text-primary" />
-                  <span>Reward per Wallet: {values.rewardPerWallet}</span>
+                <div className="flex flex-col items-center justify-center py-8 space-y-4">
+                  <div className="p-4 bg-primary/20 rounded-full animate-pulse shadow-[0_0_20px_rgba(34,197,94,0.2)]">
+                    <Coins className="h-10 w-10 text-primary" />
+                  </div>
+                  <div className="text-center space-y-1">
+                    <p className="text-[10px] font-black uppercase tracking-[0.2em] text-white/60">Reward Per Participant</p>
+                    <p className="text-2xl font-mono font-black text-primary leading-tight">
+                      {values.rewardPerWallet?.toLocaleString()}
+                    </p>
+                    <p className="text-[10px] font-black uppercase text-muted-foreground tracking-widest">${values.tokenName}</p>
+                  </div>
                 </div>
               ) : (
                 values.actions?.map((action: any, i: number) => (
-                  <div
-                    key={i}
-                    className="flex items-center gap-2 text-xs py-1 border-b border-primary/5 last:border-0"
-                  >
-                    {action.type === "twitter_follow" && (
-                      <Twitter className="h-3 w-3" />
-                    )}
-                    {action.type === "telegram_join" && (
-                      <Send className="h-3 w-3" />
-                    )}
-                    {action.type === "website" && <Globe className="h-3 w-3" />}
-                    <span className="flex-1 truncate">{action.title}</span>
-                    <span className="font-mono text-primary">
-                      {action.rewardAmount}
-                    </span>
+                  <div key={i} className="group flex items-center gap-4 p-3.5 bg-white/5 rounded-[20px] border border-white/5 hover:border-primary/40 hover:bg-white/10 transition-all duration-500">
+                    <div className="p-2.5 bg-primary/10 rounded-xl group-hover:bg-primary/20 group-hover:scale-110 transition-all shadow-inner">
+                      {action.type === 'twitter_follow' || action.type === 'twitter_retweet' ? <Twitter className="h-4 w-4 text-[#1DA1F2]" /> :
+                       action.type === 'telegram_join' ? <Send className="h-4 w-4 text-[#0088cc]" /> :
+                       <Globe className="h-4 w-4 text-blue-400" />}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-[11px] font-black text-white truncate uppercase tracking-tight group-hover:text-primary transition-colors">{action.title}</p>
+                      <p className="text-[9px] text-muted-foreground truncate italic font-medium">{action.url}</p>
+                    </div>
+                    <div className="text-right shrink-0">
+                      <p className="text-xs font-mono font-black text-primary leading-none">+{action.rewardAmount}</p>
+                      <p className="text-[8px] font-black text-muted-foreground uppercase tracking-tighter mt-1">{action.maxExecutions} SLOTS</p>
+                    </div>
                   </div>
                 ))
               )}
             </div>
           </section>
 
-          <section>
-            <h4 className="text-xs font-bold text-primary uppercase tracking-wider mb-2">
-              Estimated Fees
-            </h4>
-            <div className="p-3 bg-primary/5 rounded-lg border border-primary/10 space-y-1">
-              <div className="flex justify-between text-xs">
-                <span className="text-muted-foreground">Creation Fee:</span>
-                <span>0.5 SOL</span>
+          <section className="space-y-3">
+            <div className="flex items-center gap-2 px-1">
+              <Wallet className="h-3.5 w-3.5 text-primary" />
+              <h4 className="text-[10px] font-black text-primary uppercase tracking-[0.3em]">Financial Settlement</h4>
+            </div>
+            <div className="p-6 bg-white/5 rounded-[28px] border border-white/10 space-y-5 shadow-2xl relative overflow-hidden">
+              <div className="absolute -bottom-4 -right-4 p-2 opacity-5">
+                <Shield className="h-20 w-20" />
               </div>
-              <div className="flex justify-between text-xs">
-                <span className="text-muted-foreground">Gas (Escrow):</span>
-                <span>{gasFeeSol} SOL</span>
+              <div className="space-y-3.5 relative z-10">
+                <div className="flex justify-between text-[11px] font-black py-1.5 border-b border-white/5 group">
+                  <span className="text-muted-foreground uppercase tracking-[0.15em] group-hover:text-white transition-colors">Creation Fee</span>
+                  <span className="text-white group-hover:text-primary transition-colors font-mono">0.5000 SOL</span>
+                </div>
+                <div className="flex justify-between text-[11px] font-black py-1.5 border-b border-white/5 group">
+                  <span className="text-muted-foreground uppercase tracking-[0.15em] group-hover:text-white transition-colors">Gas Allocation</span>
+                  <span className="text-white group-hover:text-primary transition-colors font-mono">{gasFeeSol} SOL</span>
+                </div>
+                <div className="flex justify-between items-center pt-4">
+                  <div className="space-y-0.5">
+                    <span className="block text-[10px] font-black text-primary uppercase tracking-[0.3em] leading-none">Total Settlement</span>
+                    <span className="text-[8px] font-bold text-muted-foreground uppercase italic tracking-widest">(Secured in Escrow)</span>
+                  </div>
+                  <div className="px-5 py-2.5 bg-primary/20 rounded-2xl border-2 border-primary/40 shadow-[0_0_20px_rgba(34,197,94,0.2)] group hover:scale-105 transition-transform">
+                    <span className="font-mono font-black text-primary text-2xl tracking-tighter group-hover:drop-shadow-[0_0_8px_rgba(34,197,94,0.6)]">{totalCostSol}</span>
+                    <span className="text-[10px] font-black text-primary/60 ml-1">SOL</span>
+                  </div>
+                </div>
               </div>
             </div>
           </section>
         </div>
       </div>
 
-      <div className="flex gap-3 pt-4 border-t border-primary/10">
-        <Button
-          variant="outline"
-          className="flex-1"
-          onClick={onBack}
+      <div className="flex gap-4 pt-8 mt-6 border-t border-white/10 relative z-20 pb-2">
+        <Button 
+          variant="outline" 
+          className="flex-1 h-16 rounded-[20px] font-black uppercase tracking-[0.2em] text-[10px] border-2 hover:bg-white/5 border-white/10 transition-all hover:scale-[1.02] active:scale-[0.98]"
+          onClick={onBack} 
           disabled={isPending}
         >
-          Back to Edit
+          <ChevronLeft className="w-4 h-4 mr-2" /> Adjust Settings
         </Button>
-        <Button
-          className="flex-1 font-bold"
-          onClick={onConfirm}
+        <Button 
+          className="flex-[1.8] h-16 rounded-[20px] font-black uppercase tracking-[0.3em] text-sm bg-primary hover:bg-primary/90 text-primary-foreground hover:scale-[1.02] active:scale-[0.98] shadow-[0_0_40px_rgba(34,197,94,0.4)] transition-all relative overflow-hidden group"
+          onClick={onConfirm} 
           disabled={isPending}
         >
-          {isPending ? "Launching..." : "Confirm & Launch"}
+          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:animate-[shimmer_2s_infinite]" />
+          {isPending ? (
+            <div className="flex items-center gap-3">
+              <div className="h-5 w-5 border-3 border-white/30 border-t-white rounded-full animate-spin" />
+              DEPLOYING SMART CONTRACT...
+            </div>
+          ) : (
+            <div className="flex items-center gap-3">
+              LAUNCH CAMPAIGN <Rocket className="h-6 w-6 animate-bounce" />
+            </div>
+          )}
         </Button>
       </div>
     </div>

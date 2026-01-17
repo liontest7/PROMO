@@ -16,85 +16,35 @@ interface BasicSettingsProps {
 
 export function BasicSettings({ form, fetchTokenMetadata }: BasicSettingsProps) {
   return (
-    <div className="space-y-6">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <FormField
-          control={form.control}
-          name="tokenAddress"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel className="text-primary font-bold">
-                Token Contract Address
-              </FormLabel>
-              <FormControl>
-                <Input
-                  placeholder="Enter Solana Mint Address..."
-                  className="bg-primary/5 border-primary/20 focus:border-primary"
-                  {...field}
-                  onChange={(e) => {
-                    field.onChange(e);
-                    fetchTokenMetadata(e.target.value);
-                  }}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="tokenName"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Token Symbol</FormLabel>
-              <FormControl>
-                <Input placeholder="$SYMBOL" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <FormField
-          control={form.control}
-          name="title"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Campaign Title</FormLabel>
-              <FormControl>
-                <Input placeholder="e.g. My Project Growth Campaign" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="initialMarketCap"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Initial Market Cap (USD)</FormLabel>
-              <FormControl>
-                <Input placeholder="Market cap at launch..." {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-      </div>
+    <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+      <FormField
+        control={form.control}
+        name="title"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel className="text-primary font-bold uppercase tracking-widest text-xs">Campaign Title</FormLabel>
+            <FormControl>
+              <Input 
+                placeholder="e.g. My Project Growth Campaign" 
+                className="bg-primary/5 border-primary/20 focus:border-primary h-12 rounded-xl"
+                {...field} 
+              />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
 
       <FormField
         control={form.control}
         name="description"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Campaign Description</FormLabel>
+            <FormLabel className="text-primary font-bold uppercase tracking-widest text-xs">Campaign Description</FormLabel>
             <FormControl>
               <Textarea
-                placeholder="Describe your campaign goals..."
-                className="min-h-[100px]"
+                placeholder="Describe your campaign goals and what makes your project unique..."
+                className="min-h-[120px] bg-primary/5 border-primary/20 focus:border-primary resize-none rounded-xl"
                 {...field}
               />
             </FormControl>
@@ -109,9 +59,13 @@ export function BasicSettings({ form, fetchTokenMetadata }: BasicSettingsProps) 
           name="logoUrl"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Logo Image URL</FormLabel>
+              <FormLabel className="text-primary font-bold uppercase tracking-widest text-xs">Logo Image URL</FormLabel>
               <FormControl>
-                <Input placeholder="https://..." {...field} />
+                <Input 
+                  placeholder="https://..." 
+                  className="bg-primary/5 border-primary/20 focus:border-primary h-12 rounded-xl"
+                  {...field} 
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -122,9 +76,13 @@ export function BasicSettings({ form, fetchTokenMetadata }: BasicSettingsProps) 
           name="bannerUrl"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Banner Header URL (Optional)</FormLabel>
+              <FormLabel className="text-primary font-bold uppercase tracking-widest text-xs">Banner Header URL</FormLabel>
               <FormControl>
-                <Input placeholder="https://..." {...field} />
+                <Input 
+                  placeholder="https://..." 
+                  className="bg-primary/5 border-primary/20 focus:border-primary h-12 rounded-xl"
+                  {...field} 
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -138,9 +96,9 @@ export function BasicSettings({ form, fetchTokenMetadata }: BasicSettingsProps) 
           name="websiteUrl"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Website</FormLabel>
+              <FormLabel className="text-primary font-bold uppercase tracking-widest text-xs">Website</FormLabel>
               <FormControl>
-                <Input placeholder="https://..." {...field} />
+                <Input placeholder="https://..." className="bg-primary/5 border-primary/20 h-10 rounded-lg" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -151,9 +109,9 @@ export function BasicSettings({ form, fetchTokenMetadata }: BasicSettingsProps) 
           name="twitterUrl"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Twitter/X</FormLabel>
+              <FormLabel className="text-primary font-bold uppercase tracking-widest text-xs">Twitter/X</FormLabel>
               <FormControl>
-                <Input placeholder="https://x.com/..." {...field} />
+                <Input placeholder="https://x.com/..." className="bg-primary/5 border-primary/20 h-10 rounded-lg" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -164,9 +122,9 @@ export function BasicSettings({ form, fetchTokenMetadata }: BasicSettingsProps) 
           name="telegramUrl"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Telegram</FormLabel>
+              <FormLabel className="text-primary font-bold uppercase tracking-widest text-xs">Telegram</FormLabel>
               <FormControl>
-                <Input placeholder="https://t.me/..." {...field} />
+                <Input placeholder="https://t.me/..." className="bg-primary/5 border-primary/20 h-10 rounded-lg" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
