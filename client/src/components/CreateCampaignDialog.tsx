@@ -124,7 +124,7 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
       }
     });
     return () => subscription.unsubscribe();
-  }, [form.watch]);
+  }, [form]);
 
   const { data: settings } = useQuery<any>({ 
     queryKey: ["/api/public/settings"], 
