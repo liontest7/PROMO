@@ -87,7 +87,7 @@ export default function Dashboard() {
       <div className="min-h-screen bg-background">
         <Navigation />
         <div className="flex items-center justify-center h-[80vh]">
-          <p className="text-muted-foreground">Please connect your wallet to view your dashboard.</p>
+          <p className="text-white font-medium">Please connect your wallet to view your dashboard.</p>
         </div>
       </div>
     );

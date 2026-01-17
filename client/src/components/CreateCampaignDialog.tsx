@@ -108,7 +108,6 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
   });
 
   const handleOpenClick = (e: React.MouseEvent) => {
-    // If settings are still loading, wait
     if (loadingSettings) {
       e.preventDefault();
       return;
@@ -186,8 +185,8 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
   }, 0);
 
   const platformFee = PLATFORM_CONFIG.TOKENOMICS.CREATION_FEE;
-  const baseGasFee = PLATFORM_CONFIG.FEE_SOL; // Base fee for Escrow setup (0.005 SOL)
-  const perRewardGasFee = 0.0015; // Optimized gas fee per reward transaction
+  const baseGasFee = PLATFORM_CONFIG.FEE_SOL; 
+  const perRewardGasFee = 0.0015; 
   
   const totalExecutions = watchedType === "holder_qualification" 
     ? Number(form.watch("maxClaims") || 0)
@@ -230,17 +229,14 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
         .then(res => res.json())
         .catch(() => null);
 
-      // Fetch Jupiter as well as it's often more reliable for captures
       const jupPromise = fetch(`https://tokens.jup.ag/token/${address}`)
         .then(res => res.json())
         .catch(() => null);
 
       const [dexData, pumpData, moralisData, jupData] = await Promise.all([dexPromise, pumpPromise, moralisPromise, jupPromise]);
 
-      // Initialize logoUrl as empty string to track if we found a good one
       mergedMetadata.logoUrl = "";
 
-      // 1. TOP PRIORITY: PumpFun (imagedelivery.net) - Best for capture
       if (pumpData && pumpData.success && pumpData.result) {
         const res = pumpData.result;
         if (!mergedMetadata.tokenName) mergedMetadata.tokenName = res.symbol;
@@ -249,13 +245,11 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
         if (!mergedMetadata.description) mergedMetadata.description = res.description;
       }
 
-      // 2. SECOND PRIORITY: Jupiter - Usually allows CORS/Capture
       if (!mergedMetadata.logoUrl && jupData && jupData.logoURI) {
         mergedMetadata.logoUrl = jupData.logoURI;
         if (jupData.symbol && !mergedMetadata.tokenName) mergedMetadata.tokenName = jupData.symbol;
       }
 
-      // 3. THIRD PRIORITY: DexScreener
       if (dexData && dexData.pairs && dexData.pairs.length > 0) {
         const bestPair = dexData.pairs.sort((a: any, b: any) => (b.liquidity?.usd || 0) - (a.liquidity?.usd || 0))[0];
         const token = bestPair.baseToken;
@@ -273,7 +267,6 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
         if (telegram?.url) mergedMetadata.telegramUrl = telegram.url;
       }
 
-      // 4. LAST RESORT: Moralis
       if (moralisData && moralisData.mint) {
         if (moralisData.symbol && !mergedMetadata.tokenName) mergedMetadata.tokenName = moralisData.symbol;
         if (moralisData.name && !mergedMetadata.title) mergedMetadata.title = `${moralisData.name} Growth Campaign`;
@@ -295,9 +288,7 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
         if (mergedMetadata.twitterUrl) form.setValue('twitterUrl', mergedMetadata.twitterUrl);
         if (mergedMetadata.telegramUrl) form.setValue('telegramUrl', mergedMetadata.telegramUrl);
         
-        // Handle Market Cap from different sources
         let mcValue = "";
-        // Prioritize DexScreener FDV/MarketCap as it's free and often more accurate for new tokens
         if (dexData?.pairs?.[0]?.marketCap) {
           mcValue = dexData.pairs[0].marketCap.toString();
         } else if (dexData?.pairs?.[0]?.fdv) {
@@ -460,442 +451,420 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
 
                   {watchedType && (
                     <div className="space-y-8 animate-in fade-in slide-in-from-top-4 duration-500">
-                      {/* Project Details Section - Always Visible */}
-                      <div className="space-y-4">
-                        <div className="border border-white/10 bg-white/[0.02] rounded-3xl overflow-hidden px-6 pb-6">
-                          <div className="flex items-center gap-3 py-4 border-b border-white/5 mb-4">
-                            <Globe className="w-5 h-5 text-primary" />
-                            <span className="font-black uppercase tracking-widest text-xs">Project Details</span>
-                          </div>
-                          <div className="space-y-6">
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                              <FormField
-                                control={form.control}
-                                name="title"
-                                render={({ field }) => (
-                                  <FormItem>
-                                    <FormLabel className="text-[10px] uppercase font-black opacity-60 text-white">Campaign Title</FormLabel>
-                                    <FormControl>
-                                      <Input placeholder="Enter title..." className="bg-white/5 border-white/10 text-white" {...field} />
-                                    </FormControl>
-                                    <FormMessage />
-                                  </FormItem>
-                                )}
-                              />
-                              <FormField
-                                control={form.control}
-                                name="tokenName"
-                                render={({ field }) => (
-                                  <FormItem>
-                                    <FormLabel className="text-[10px] uppercase font-black opacity-60 text-white">Token Symbol</FormLabel>
-                                    <FormControl>
-                                      <Input placeholder="e.g. SOL" className="bg-white/5 border-white/10 text-white" {...field} />
-                                    </FormControl>
-                                    <FormMessage />
-                                  </FormItem>
-                                )}
-                              />
-                            </div>
-
-                            <FormField
-                              control={form.control}
-                              name="description"
-                              render={({ field }) => (
-                                <FormItem>
-                                  <FormLabel className="text-[10px] uppercase font-black opacity-60 text-white">Description</FormLabel>
-                                  <FormControl>
-                                    <Textarea placeholder="Tell users about your project..." className="bg-white/5 border-white/10 min-h-[100px] text-white" {...field} />
-                                  </FormControl>
-                                  <FormMessage />
-                                </FormItem>
-                              )}
-                            />
-                          </div>
-                        </div>
-
-                        <Accordion type="single" collapsible defaultValue="assets" className="space-y-4">
-                          <AccordionItem value="assets" className="border border-white/10 bg-white/[0.02] rounded-3xl overflow-hidden px-6">
-                            <AccordionTrigger className="hover:no-underline py-4">
-                              <div className="flex items-center gap-3">
-                                <Plus className="w-5 h-5 text-primary" />
-                                <span className="font-black uppercase tracking-widest text-xs">Assets & Links</span>
-                              </div>
-                            </AccordionTrigger>
-                            <AccordionContent className="pt-2 pb-6 space-y-6">
-                              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <FormField control={form.control} name="logoUrl" render={({ field }) => (
-                                  <FormItem><FormLabel className="text-[10px] uppercase font-black opacity-40">Logo URL</FormLabel><FormControl><Input placeholder="https://..." className="bg-white/5 border-white/10" {...field} /></FormControl><FormMessage /></FormItem>
-                                )} />
-                                <FormField control={form.control} name="bannerUrl" render={({ field }) => (
-                                  <FormItem><FormLabel className="text-[10px] uppercase font-black opacity-40">Banner URL</FormLabel><FormControl><Input placeholder="https://..." className="bg-white/5 border-white/10" {...field} /></FormControl><FormMessage /></FormItem>
-                                )} />
-                              </div>
-                              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                <FormField control={form.control} name="websiteUrl" render={({ field }) => (
-                                  <FormItem><FormLabel className="text-[10px] uppercase font-black opacity-40">Website</FormLabel><FormControl><Input placeholder="https://..." className="bg-white/5 border-white/10" {...field} /></FormControl><FormMessage /></FormItem>
-                                )} />
-                                <FormField control={form.control} name="twitterUrl" render={({ field }) => (
-                                  <FormItem><FormLabel className="text-[10px] uppercase font-black opacity-40">Twitter</FormLabel><FormControl><Input placeholder="https://x.com/..." className="bg-white/5 border-white/10" {...field} /></FormControl><FormMessage /></FormItem>
-                                )} />
-                                <FormField control={form.control} name="telegramUrl" render={({ field }) => (
-                                  <FormItem><FormLabel className="text-[10px] uppercase font-black opacity-40">Telegram</FormLabel><FormControl><Input placeholder="https://t.me/..." className="bg-white/5 border-white/10" {...field} /></FormControl><FormMessage /></FormItem>
-                                )} />
-                              </div>
-                            </AccordionContent>
-                          </AccordionItem>
-                        </Accordion>
-                      </div>
-
-                      {/* Unified Anti-Bot Protection Section */}
-                      <div className="space-y-4">
-                        <div className="flex items-center gap-2 mb-2 p-4 rounded-xl bg-orange-500/5 border border-orange-500/20">
+                      {/* Requirements Section - Integrated Anti-Bot */}
+                      <div className="p-6 bg-orange-500/5 border border-orange-500/20 rounded-3xl space-y-4">
+                        <div className="flex items-center gap-3">
                           <Shield className="w-5 h-5 text-orange-500" />
-                          <div className="flex-1">
-                            <h3 className="text-sm font-black text-white uppercase tracking-wider leading-none mb-1">Advanced Anti-Bot Protection</h3>
-                            <p className="text-[10px] text-white/40 font-bold uppercase tracking-widest">Multi-layer security for your campaign</p>
-                          </div>
+                          <span className="font-black uppercase tracking-widest text-xs text-orange-500">Anti-Bot & Quality Controls</span>
                         </div>
-                        
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-5 rounded-2xl border border-white/5 bg-white/5">
-                          <div className="space-y-4">
-                            <p className="text-[10px] font-black uppercase text-primary tracking-widest border-b border-white/5 pb-2">Wallet Requirements</p>
-                            <FormField control={form.control} name="minSolBalance" render={({ field }) => (
-                              <FormItem><FormLabel className="text-[10px] uppercase font-bold text-white/60">Min SOL Balance</FormLabel><FormControl><Input type="number" step="0.01" placeholder="0.1" className="h-10 bg-black/20" {...field} /></FormControl></FormItem>
-                            )} />
-                            <FormField control={form.control} name="minWalletAgeDays" render={({ field }) => (
-                              <FormItem><FormLabel className="text-[10px] uppercase font-bold text-white/60">Min Wallet Age (Days)</FormLabel><FormControl><Input type="number" placeholder="30" className="h-10 bg-black/20" {...field} /></FormControl></FormItem>
-                            )} />
-                          </div>
-
-                          <div className="space-y-4 border-l border-white/5 pl-4">
-                            <p className="text-[10px] font-black uppercase text-[#1DA1F2] tracking-widest border-b border-white/5 pb-2">X (Twitter) Requirements</p>
-                            <div className="grid grid-cols-1 gap-3">
-                              <FormField control={form.control} name="minXAccountAgeDays" render={({ field }) => (
-                                <FormItem><FormLabel className="text-[10px] uppercase font-bold text-white/60">Account Age (Days)</FormLabel><FormControl><Input type="number" placeholder="90" className="h-10 bg-black/20" {...field} /></FormControl></FormItem>
-                              )} />
-                              <div className="grid grid-cols-2 gap-3">
-                                <FormField control={form.control} name="minXFollowers" render={({ field }) => (
-                                  <FormItem><FormLabel className="text-[10px] uppercase font-bold text-white/60">Min Followers</FormLabel><FormControl><Input type="number" placeholder="10" className="h-10 bg-black/20" {...field} /></FormControl></FormItem>
-                                )} />
-                                <FormField control={form.control} name="minFollowDurationDays" render={({ field }) => (
-                                  <FormItem><FormLabel className="text-[10px] uppercase font-bold text-white/60">Hold Follow (Days)</FormLabel><FormControl><Input type="number" placeholder="3" className="h-10 bg-black/20" {...field} /></FormControl></FormItem>
-                                )} />
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-
-                        {/* Visual Summary Sentence - Integrated as requested */}
-                        <div className="p-4 rounded-xl bg-primary/10 border border-primary/20 flex items-start gap-3">
-                          <div className="w-5 h-5 rounded-full bg-primary/20 flex items-center justify-center shrink-0 mt-0.5">
-                            <CheckCircle2 className="w-3 h-3 text-primary" />
-                          </div>
-                          <p className="text-[11px] font-bold text-white leading-relaxed uppercase tracking-tight">
-                            <span className="text-primary mr-1">Final Setup:</span>
-                            Only users with {form.watch('minSolBalance') || 0} SOL & {form.watch('minWalletAgeDays') || 0} day old wallets can participate. 
-                            {form.watch('minXAccountAgeDays') > 0 && ` Accounts must be ${form.watch('minXAccountAgeDays')}d+ old.`}
-                            {form.watch('minXFollowers') > 0 && ` ${form.watch('minXFollowers')}+ followers required.`}
-                            {form.watch('minFollowDurationDays') > 0 && ` Must maintain follow for ${form.watch('minFollowDurationDays')} days.`}
-                          </p>
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                          <FormField
+                            control={form.control}
+                            name="minSolBalance"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel className="text-[10px] uppercase font-black opacity-60 text-white">Min SOL Balance</FormLabel>
+                                <FormControl>
+                                  <Input type="number" step="0.01" className="bg-white/5 border-white/10 text-white" {...field} />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                          <FormField
+                            control={form.control}
+                            name="minWalletAgeDays"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel className="text-[10px] uppercase font-black opacity-60 text-white">Min Wallet Age (Days)</FormLabel>
+                                <FormControl>
+                                  <Input type="number" className="bg-white/5 border-white/10 text-white" {...field} />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                          <FormField
+                            control={form.control}
+                            name="minXAccountAgeDays"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel className="text-[10px] uppercase font-black opacity-60 text-white">Min X Account Age (Days)</FormLabel>
+                                <FormControl>
+                                  <Input type="number" className="bg-white/5 border-white/10 text-white" {...field} />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
                         </div>
                       </div>
 
-                      {watchedType === "holder_qualification" ? (
-                        <div className="space-y-4 p-4 rounded-xl bg-primary/5 border border-primary/20">
-                          <h3 className="font-semibold text-primary flex items-center gap-2">
-                            <CheckCircle2 className="w-4 h-4" /> Holding Requirements
-                          </h3>
-                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <FormField control={form.control} name="minHoldingAmount" render={({ field }) => (
-                              <FormItem><FormLabel>Min Holding Amount</FormLabel><FormControl><Input type="number" placeholder="1000" {...field} value={field.value ?? ""} /></FormControl><FormMessage /></FormItem>
-                            )} />
-                            <FormField control={form.control} name="minHoldingDuration" render={({ field }) => (
-                              <FormItem><FormLabel>Min Duration (Days)</FormLabel><FormControl><Input type="number" placeholder="7" {...field} value={field.value ?? ""} /></FormControl><FormMessage /></FormItem>
-                            )} />
-                          </div>
-                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <FormField control={form.control} name="rewardPerWallet" render={({ field }) => (
-                              <FormItem><FormLabel>Reward Per Wallet</FormLabel><FormControl><Input type="number" placeholder="10" {...field} value={field.value ?? ""} /></FormControl><FormMessage /></FormItem>
-                            )} />
-                            <FormField control={form.control} name="maxClaims" render={({ field }) => (
-                              <FormItem><FormLabel>Max Participants</FormLabel><FormControl><Input type="number" placeholder="100" {...field} value={field.value ?? ""} /></FormControl><FormMessage /></FormItem>
-                            )} />
-                          </div>
+                      <div className="space-y-6">
+                        <div className="flex items-center gap-3 py-4 border-b border-white/5 mb-4">
+                          <Globe className="w-5 h-5 text-primary" />
+                          <span className="font-black uppercase tracking-widest text-xs">Project Details</span>
                         </div>
-                      ) : (
-                        <div className="space-y-4 p-4 rounded-xl bg-primary/5 border border-primary/20">
-                          <div className="flex justify-between items-center mb-4">
-                            <h3 className="font-semibold text-primary flex items-center gap-2">
-                              <Twitter className="w-4 h-4" /> Social Missions
-                            </h3>
-                            <Button
-                              type="button"
-                              variant="outline"
-                              size="sm"
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <FormField
+                            control={form.control}
+                            name="title"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel className="text-[10px] uppercase font-black opacity-60 text-white">Campaign Title</FormLabel>
+                                <FormControl>
+                                  <Input placeholder="Enter title..." className="bg-white/5 border-white/10 text-white" {...field} />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                          <FormField
+                            control={form.control}
+                            name="tokenName"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel className="text-[10px] uppercase font-black opacity-60 text-white">Token Symbol</FormLabel>
+                                <FormControl>
+                                  <Input placeholder="e.g. SOL" className="bg-white/5 border-white/10 text-white" {...field} />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                        </div>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <FormField
+                            control={form.control}
+                            name="logoUrl"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel className="text-[10px] uppercase font-black opacity-60 text-white">Logo URL</FormLabel>
+                                <FormControl>
+                                  <Input placeholder="https://..." className="bg-white/5 border-white/10 text-white" {...field} />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                          <FormField
+                            control={form.control}
+                            name="bannerUrl"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel className="text-[10px] uppercase font-black opacity-60 text-white">Banner URL (Optional)</FormLabel>
+                                <FormControl>
+                                  <Input placeholder="https://..." className="bg-white/5 border-white/10 text-white" {...field} />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                        </div>
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                          <FormField
+                            control={form.control}
+                            name="websiteUrl"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel className="text-[10px] uppercase font-black opacity-60 text-white">Website</FormLabel>
+                                <FormControl>
+                                  <div className="relative">
+                                    <Globe className="absolute left-3 top-1/2 -translate-y-1/2 w-3 h-3 opacity-40" />
+                                    <Input placeholder="https://..." className="bg-white/5 border-white/10 text-white pl-8" {...field} />
+                                  </div>
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                          <FormField
+                            control={form.control}
+                            name="twitterUrl"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel className="text-[10px] uppercase font-black opacity-60 text-white">X (Twitter)</FormLabel>
+                                <FormControl>
+                                  <div className="relative">
+                                    <Twitter className="absolute left-3 top-1/2 -translate-y-1/2 w-3 h-3 opacity-40" />
+                                    <Input placeholder="https://x.com/..." className="bg-white/5 border-white/10 text-white pl-8" {...field} />
+                                  </div>
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                          <FormField
+                            control={form.control}
+                            name="telegramUrl"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel className="text-[10px] uppercase font-black opacity-60 text-white">Telegram</FormLabel>
+                                <FormControl>
+                                  <div className="relative">
+                                    <Send className="absolute left-3 top-1/2 -translate-y-1/2 w-3 h-3 opacity-40" />
+                                    <Input placeholder="https://t.me/..." className="bg-white/5 border-white/10 text-white pl-8" {...field} />
+                                  </div>
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                        </div>
+                        <FormField
+                          control={form.control}
+                          name="description"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel className="text-[10px] uppercase font-black opacity-60 text-white">Project Description</FormLabel>
+                              <FormControl>
+                                <Textarea 
+                                  placeholder="Tell users about your project..." 
+                                  className="bg-white/5 border-white/10 text-white min-h-[100px] resize-none" 
+                                  {...field} 
+                                />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
+
+                      {watchedType === "engagement" && (
+                        <div className="space-y-4">
+                          <div className="flex items-center justify-between">
+                            <FormLabel className="text-primary font-black uppercase tracking-widest text-[10px]">Engagement Actions</FormLabel>
+                            <Button 
+                              type="button" 
+                              variant="outline" 
+                              size="sm" 
                               onClick={() => append({ type: "website", title: "Visit Website", url: "", rewardAmount: 0.01, maxExecutions: 10 })}
-                              className="h-8 text-xs border-primary/20 hover:bg-primary/10"
+                              className="h-7 px-3 text-[10px] font-black uppercase tracking-widest border-primary/20 hover:bg-primary/10"
                             >
-                              <Plus className="w-3 h-3 mr-1" /> Add Task
+                              <Plus className="w-3 h-3 mr-1" /> Add Action
                             </Button>
                           </div>
-
-                          <div className="space-y-4">
+                          <div className="space-y-3">
                             {fields.map((field, index) => (
-                              <div key={field.id} className="p-4 rounded-lg bg-background/50 border border-white/5 space-y-4 relative group">
-                                <Button
-                                  type="button"
-                                  variant="ghost"
-                                  size="icon"
-                                  className="absolute top-2 right-2 h-6 w-6 text-muted-foreground hover:text-destructive opacity-0 group-hover:opacity-100 transition-opacity"
-                                  onClick={() => remove(index)}
-                                >
-                                  <Trash2 className="h-3 w-3" />
-                                </Button>
-
-                                <div className="grid grid-cols-2 gap-4">
-                                  <FormField
-                                    control={form.control}
-                                    name={`actions.${index}.type`}
-                                    render={({ field }) => (
-                                      <FormItem>
-                                        <FormLabel className="text-[10px] uppercase">Type</FormLabel>
-                                        <Select onValueChange={(val) => { field.onChange(val); form.setValue(`actions.${index}.title`, getActionDefaultTitle(val)); }} defaultValue={field.value}>
-                                          <FormControl><SelectTrigger className="h-8"><SelectValue /></SelectTrigger></FormControl>
-                                          <SelectContent>
-                                            <SelectItem value="website">Website</SelectItem>
-                                            <SelectItem value="twitter_follow">X Follow</SelectItem>
-                                            <SelectItem value="twitter_retweet">X Retweet</SelectItem>
-                                            <SelectItem value="telegram_join">Telegram</SelectItem>
-                                          </SelectContent>
-                                        </Select>
-                                      </FormItem>
-                                    )}
-                                  />
-                                  <FormField
-                                    control={form.control}
-                                    name={`actions.${index}.title`}
-                                    render={({ field }) => (
-                                      <FormItem>
-                                        <FormLabel className="text-[10px] uppercase">Task Label</FormLabel>
-                                        <FormControl><Input className="h-8" {...field} /></FormControl>
-                                      </FormItem>
-                                    )}
-                                  />
-                                </div>
-
-                                <FormField
-                                  control={form.control}
-                                  name={`actions.${index}.url`}
-                                  render={({ field }) => (
-                                    <FormItem>
-                                      <FormLabel className="text-[10px] uppercase">Target URL</FormLabel>
-                                      <FormControl><Input className="h-8" placeholder="https://..." {...field} /></FormControl>
-                                      <FormMessage />
-                                    </FormItem>
-                                  )}
-                                />
-
-                                <div className="grid grid-cols-2 gap-4">
-                                  <FormField
-                                    control={form.control}
-                                    name={`actions.${index}.rewardAmount`}
-                                    render={({ field }) => (
-                                      <FormItem>
-                                        <FormLabel className="text-[10px] uppercase">Reward</FormLabel>
-                                        <FormControl><Input type="number" step="any" className="h-8" {...field} /></FormControl>
-                                      </FormItem>
-                                    )}
-                                  />
-                                  <FormField
-                                    control={form.control}
-                                    name={`actions.${index}.maxExecutions`}
-                                    render={({ field }) => (
-                                      <FormItem>
-                                        <FormLabel className="text-[10px] uppercase">Slots</FormLabel>
-                                        <FormControl><Input type="number" className="h-8" {...field} /></FormControl>
-                                      </FormItem>
-                                    )}
-                                  />
+                              <div key={field.id} className="p-4 bg-white/[0.03] border border-white/10 rounded-2xl animate-in fade-in zoom-in-95 duration-200">
+                                <div className="grid grid-cols-1 md:grid-cols-12 gap-4 items-end">
+                                  <div className="md:col-span-3">
+                                    <FormField
+                                      control={form.control}
+                                      name={`actions.${index}.type`}
+                                      render={({ field }) => (
+                                        <FormItem>
+                                          <Select onValueChange={(v) => { field.onChange(v); form.setValue(`actions.${index}.title`, getActionDefaultTitle(v)); }} value={field.value}>
+                                            <FormControl><SelectTrigger className="h-10 bg-black/40 border-white/10 text-xs"><SelectValue /></SelectTrigger></FormControl>
+                                            <SelectContent className="bg-black border-white/10">
+                                              <SelectItem value="website" className="text-xs">Website Visit</SelectItem>
+                                              <SelectItem value="twitter_follow" className="text-xs">Twitter Follow</SelectItem>
+                                              <SelectItem value="twitter_retweet" className="text-xs">Twitter Retweet</SelectItem>
+                                              <SelectItem value="telegram_join" className="text-xs">Telegram Join</SelectItem>
+                                            </SelectContent>
+                                          </Select>
+                                        </FormItem>
+                                      )}
+                                    />
+                                  </div>
+                                  <div className="md:col-span-4">
+                                    <FormField
+                                      control={form.control}
+                                      name={`actions.${index}.url`}
+                                      render={({ field }) => (
+                                        <FormItem>
+                                          <FormControl><Input placeholder="URL..." className="h-10 bg-black/40 border-white/10 text-xs" {...field} /></FormControl>
+                                        </FormItem>
+                                      )}
+                                    />
+                                  </div>
+                                  <div className="md:col-span-2">
+                                    <FormField
+                                      control={form.control}
+                                      name={`actions.${index}.rewardAmount`}
+                                      render={({ field }) => (
+                                        <FormItem>
+                                          <FormControl><Input type="number" step="0.0001" placeholder="Reward" className="h-10 bg-black/40 border-white/10 text-xs" {...field} /></FormControl>
+                                        </FormItem>
+                                      )}
+                                    />
+                                  </div>
+                                  <div className="md:col-span-2">
+                                    <FormField
+                                      control={form.control}
+                                      name={`actions.${index}.maxExecutions`}
+                                      render={({ field }) => (
+                                        <FormItem>
+                                          <FormControl><Input type="number" placeholder="Limit" className="h-10 bg-black/40 border-white/10 text-xs" {...field} /></FormControl>
+                                        </FormItem>
+                                      )}
+                                    />
+                                  </div>
+                                  <div className="md:col-span-1">
+                                    <Button type="button" variant="ghost" size="icon" onClick={() => remove(index)} className="h-10 w-10 text-destructive hover:bg-destructive/10">
+                                      <Trash2 className="h-4 w-4" />
+                                    </Button>
+                                  </div>
                                 </div>
                               </div>
                             ))}
                           </div>
+                          {form.formState.errors.actions?.message && (
+                            <p className="text-xs font-bold text-destructive uppercase tracking-widest">{form.formState.errors.actions.message}</p>
+                          )}
                         </div>
                       )}
 
-                      <div className="p-4 rounded-xl bg-primary/5 border border-primary/20 space-y-4">
-                        <div className="flex justify-between items-center">
-                          <span className="text-sm font-bold text-primary uppercase tracking-wider">Payment Breakdown</span>
-                          <Badge variant="outline" className="text-[10px] uppercase border-primary/20 text-primary">Live Summary</Badge>
+                      {watchedType === "holder_qualification" && (
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-6 bg-primary/5 border border-primary/20 rounded-3xl">
+                          <FormField
+                            control={form.control}
+                            name="rewardPerWallet"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel className="text-[10px] uppercase font-black opacity-60 text-white">Reward per Wallet</FormLabel>
+                                <FormControl><Input type="number" step="0.0001" placeholder="0.1" className="h-12 bg-black/40 border-white/10" {...field} /></FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                          <FormField
+                            control={form.control}
+                            name="maxClaims"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel className="text-[10px] uppercase font-black opacity-60 text-white">Max Participants</FormLabel>
+                                <FormControl><Input type="number" placeholder="100" className="h-12 bg-black/40 border-white/10" {...field} /></FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
                         </div>
-                        
-                        <div className="space-y-2 border-b border-primary/10 pb-4">
-                          <div className="flex justify-between text-sm">
-                            <span className="text-muted-foreground italic">Airdrop Budget</span>
-                            <span className="font-bold">{watchedType === "holder_qualification" 
-                                ? (Number(form.watch("rewardPerWallet")) * Number(form.watch("maxClaims")) || 0).toLocaleString()
-                                : totalCalculatedCost.toLocaleString()
-                              } {form.watch("tokenName") || "Tokens"}</span>
-                          </div>
-                          <div className="flex justify-between text-sm">
-                            <span className="text-muted-foreground italic">Platform Fee (Burn/Rewards/System)</span>
-                            <span className="font-bold">{platformFee.toLocaleString()} {PLATFORM_CONFIG.TOKEN_SYMBOL}</span>
-                          </div>
-                          <div className="flex justify-between text-sm">
-                            <span className="text-muted-foreground italic">Network Gas (SOL)</span>
-                            <div className="text-right">
-                              <span className="font-bold text-emerald-500">{gasFeeSol} SOL</span>
-                              <p className="text-[9px] text-white/40 font-bold uppercase tracking-tighter">
-                                {totalExecutions > 0 ? `Covers ${totalExecutions} distribution txs` : "Creation fee included"}
-                              </p>
-                            </div>
-                          </div>
-                        </div>
+                      )}
 
-                        <div className="flex justify-between items-end pt-2">
-                          <div className="space-y-1">
-                            <p className="text-[10px] text-muted-foreground uppercase tracking-widest">Total to Pay</p>
-                            <div className="space-y-1">
-                              <p className="text-xl font-black text-white leading-none">
-                                {airdropBudget.toLocaleString(undefined, { maximumFractionDigits: 6 })} 
-                                <span className="text-xs ml-1 font-bold text-white/70">{form.watch("tokenName") || "Tokens"}</span>
-                              </p>
-                              <p className="text-xl font-black text-primary leading-none">
-                                {platformFee.toLocaleString()} 
-                                <span className="text-xs ml-1 font-bold text-primary/70">{PLATFORM_CONFIG.TOKEN_SYMBOL}</span>
-                              </p>
-                              <p className="text-xs text-emerald-500 font-bold">+ {gasFeeSol} SOL GAS FEE</p>
-                            </div>
-                          </div>
-                          <div className="text-right">
-                            <p className="text-[10px] text-muted-foreground uppercase tracking-widest mb-1">Total Slots</p>
-                            <p className="text-xl font-bold">
-                              {totalExecutions}
-                            </p>
-                          </div>
+                      <div className="space-y-4 pt-4 border-t border-white/5">
+                        <div className="flex justify-between items-center text-[10px] font-black uppercase tracking-widest">
+                          <span className="opacity-40">Token Budget:</span>
+                          <span className="text-white">{airdropBudget.toLocaleString()} {form.watch("tokenName") || "TOKENS"}</span>
                         </div>
-                        
-                        <div className="bg-primary/10 p-3 rounded-lg flex items-start gap-3 border border-primary/20">
-                           <Shield className="w-4 h-4 text-primary mt-0.5 shrink-0" />
-                           <p className="text-[11px] text-primary/80 leading-relaxed font-medium">
-                             You will sign <strong>one single transaction</strong> to authorize both the token budget and platform fees.
-                           </p>
+                        <div className="flex justify-between items-center text-[10px] font-black uppercase tracking-widest">
+                          <span className="opacity-40">Creation Fee:</span>
+                          <span className="text-primary">{platformFee} {form.watch("tokenName") || "TOKENS"}</span>
+                        </div>
+                        <div className="flex justify-between items-center text-[10px] font-black uppercase tracking-widest pt-2 border-t border-white/5">
+                          <span className="text-primary">Total Project Tokens:</span>
+                          <span className="text-primary text-sm">{totalProjectTokenCost.toLocaleString()} {form.watch("tokenName") || "TOKENS"}</span>
+                        </div>
+                        <div className="flex justify-between items-center text-[10px] font-black uppercase tracking-widest">
+                          <span className="text-orange-500">Gas Fee Deposit:</span>
+                          <span className="text-orange-500">{gasFeeSol} SOL</span>
                         </div>
                       </div>
 
-                      <div className="flex gap-3 pt-2">
-                        <Button 
-                          type="button" 
-                          className="flex-1 font-black text-sm h-12 shadow-[0_10px_20px_rgba(34,197,94,0.2)] hover:shadow-[0_15px_30px_rgba(34,197,94,0.3)] transition-all" 
-                          onClick={async () => {
-                            const isValid = await form.trigger();
-                            if (isValid) {
-                              setStep("preview");
-                            } else {
-                              toast({
-                                title: "Incomplete Form",
-                                description: "Please fill in all required fields marked with errors.",
-                                variant: "destructive"
-                              });
-                            }
-                          }}
-                        >
-                          <Eye className="mr-2 h-4 w-4" /> PREVIEW BEFORE LAUNCH
-                        </Button>
-                      </div>
+                      <Button 
+                        type="submit" 
+                        disabled={isPending} 
+                        className="w-full h-14 bg-primary text-primary-foreground font-black uppercase tracking-widest text-sm hover:shadow-[0_0_30px_rgba(34,197,94,0.4)] transition-all"
+                      >
+                        {isPending ? <Loader2 className="w-5 h-5 animate-spin" /> : "Review & Launch"}
+                      </Button>
                     </div>
                   )}
                 </form>
               </Form>
             ) : (
-              <div className="space-y-8 animate-in fade-in zoom-in-95 duration-300">
-                <div className="relative aspect-video rounded-2xl overflow-hidden bg-primary/10 border border-primary/20 group">
-                  {form.getValues("bannerUrl") ? (
-                    <img src={form.getValues("bannerUrl")} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" alt="Banner" />
-                  ) : (
-                    <div className="w-full h-full flex flex-col items-center justify-center text-primary/40 italic">
-                      <Globe className="w-12 h-12 mb-2 opacity-20" />
-                      <span>No Banner Preview Available</span>
+              <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                <div className="p-8 bg-white/[0.03] border border-white/10 rounded-[40px] space-y-8">
+                  <div className="flex items-center gap-6">
+                    <div className="w-24 h-24 rounded-[30px] overflow-hidden border-2 border-primary/20 bg-black flex-shrink-0">
+                      {form.watch("logoUrl") ? (
+                        <img src={form.watch("logoUrl")} alt="Logo" className="w-full h-full object-cover" />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center bg-primary/10">
+                          <Coins className="w-10 h-10 text-primary opacity-40" />
+                        </div>
+                      )}
                     </div>
-                  )}
-                  <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-background/40 to-transparent" />
-                  <div className="absolute bottom-6 left-6 flex items-center gap-4">
-                    <div className="w-16 h-16 rounded-xl bg-background/80 backdrop-blur border border-primary/30 p-1">
-                      {form.getValues("logoUrl") && <img src={form.getValues("logoUrl")} className="w-full h-full object-cover rounded-lg" alt="Logo" />}
+                    <div className="space-y-2">
+                      <h3 className="text-3xl font-display text-white">{form.watch("title")}</h3>
+                      <div className="flex items-center gap-3">
+                        <Badge variant="outline" className="bg-primary/10 text-primary border-primary/20 font-black uppercase tracking-widest text-[10px] py-1">
+                          {form.watch("campaignType") === "engagement" ? "Social Engagement" : "Holder Qualification"}
+                        </Badge>
+                        <span className="text-xs font-black text-white/40 uppercase tracking-widest">
+                          {form.watch("tokenName")} • {form.watch("initialMarketCap") ? `$${Number(form.watch("initialMarketCap")).toLocaleString()} MCAP` : "Market Cap Hidden"}
+                        </span>
+                      </div>
                     </div>
-                    <div>
-                      <h3 className="text-2xl font-black text-white">{form.getValues("title")}</h3>
-                      <p className="text-primary font-bold uppercase tracking-widest text-sm">${form.getValues("tokenName")}</p>
+                  </div>
+
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div className="p-4 bg-black/40 border border-white/5 rounded-3xl">
+                      <p className="text-[10px] font-black text-white/40 uppercase tracking-widest mb-1">Total Budget</p>
+                      <p className="text-lg font-display text-white">{form.watch("totalBudget")?.toLocaleString()}</p>
+                    </div>
+                    <div className="p-4 bg-black/40 border border-white/5 rounded-3xl">
+                      <p className="text-[10px] font-black text-white/40 uppercase tracking-widest mb-1">Creation Fee</p>
+                      <p className="text-lg font-display text-primary">{platformFee.toLocaleString()}</p>
+                    </div>
+                    <div className="p-4 bg-black/40 border border-white/5 rounded-3xl">
+                      <p className="text-[10px] font-black text-white/40 uppercase tracking-widest mb-1">Total Token Cost</p>
+                      <p className="text-lg font-display text-primary">{totalProjectTokenCost.toLocaleString()}</p>
+                    </div>
+                    <div className="p-4 bg-black/40 border border-white/5 rounded-3xl">
+                      <p className="text-[10px] font-black text-white/40 uppercase tracking-widest mb-1">SOL Gas Deposit</p>
+                      <p className="text-lg font-display text-orange-500">{gasFeeSol} SOL</p>
                     </div>
                   </div>
-                </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <div className="p-4 rounded-xl bg-primary/5 border border-primary/10">
-                    <p className="text-[10px] text-muted-foreground uppercase tracking-widest mb-1">Total Budget</p>
-                    <p className="font-bold text-lg">{form.getValues("totalBudget")} {form.getValues("tokenName")}</p>
+                  <div className="space-y-4">
+                    <p className="text-[10px] font-black text-white/40 uppercase tracking-widest flex items-center gap-2">
+                      <CheckCircle2 className="w-3 h-3 text-primary" /> Campaign Requirements
+                    </p>
+                    <div className="flex flex-wrap gap-2">
+                      {Number(form.watch("minSolBalance")) > 0 && (
+                        <Badge className="bg-white/5 text-white/80 border-white/10 font-bold uppercase tracking-widest text-[9px]">
+                          Min {form.watch("minSolBalance")} SOL
+                        </Badge>
+                      )}
+                      {Number(form.watch("minWalletAgeDays")) > 0 && (
+                        <Badge className="bg-white/5 text-white/80 border-white/10 font-bold uppercase tracking-widest text-[9px]">
+                          Wallet Age: {form.watch("minWalletAgeDays")}+ Days
+                        </Badge>
+                      )}
+                      {Number(form.watch("minXAccountAgeDays")) > 0 && (
+                        <Badge className="bg-white/5 text-white/80 border-white/10 font-bold uppercase tracking-widest text-[9px]">
+                          X Account: {form.watch("minXAccountAgeDays")}+ Days
+                        </Badge>
+                      )}
+                    </div>
                   </div>
-                  <div className="p-4 rounded-xl bg-primary/5 border border-primary/10">
-                    <p className="text-[10px] text-muted-foreground uppercase tracking-widest mb-1">Type</p>
-                    <p className="font-bold text-lg capitalize">{form.getValues("campaignType")?.replace("_", " ")}</p>
-                  </div>
-                  <div className="p-4 rounded-xl bg-primary/5 border border-primary/10">
-                    <p className="text-[10px] text-muted-foreground uppercase tracking-widest mb-1">Network</p>
-                    <p className="font-bold text-lg">Solana</p>
-                  </div>
-                </div>
 
-                <div className="space-y-4">
-                  <h4 className="text-[10px] font-black uppercase text-primary tracking-[0.2em]">Active Protections</h4>
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                    {form.getValues("minSolBalance") > 0 && (
-                      <div className="p-3 rounded-xl bg-white/5 border border-white/10">
-                        <p className="text-[9px] text-white/40 font-bold uppercase mb-1">Min Balance</p>
-                        <p className="text-sm font-black text-white">{form.getValues("minSolBalance")} SOL</p>
-                      </div>
-                    )}
-                    {form.getValues("minWalletAgeDays") > 0 && (
-                      <div className="p-3 rounded-xl bg-white/5 border border-white/10">
-                        <p className="text-[9px] text-white/40 font-bold uppercase mb-1">Wallet Age</p>
-                        <p className="text-sm font-black text-white">{form.getValues("minWalletAgeDays")} Days</p>
-                      </div>
-                    )}
-                    {form.getValues("minXAccountAgeDays") > 0 && (
-                      <div className="p-3 rounded-xl bg-white/5 border border-white/10">
-                        <p className="text-[9px] text-white/40 font-bold uppercase mb-1">X Account Age</p>
-                        <p className="text-sm font-black text-white">{form.getValues("minXAccountAgeDays")} Days</p>
-                      </div>
-                    )}
-                    {form.getValues("minXFollowers") > 0 && (
-                      <div className="p-3 rounded-xl bg-white/5 border border-white/10">
-                        <p className="text-[9px] text-white/40 font-bold uppercase mb-1">X Followers</p>
-                        <p className="text-sm font-black text-white">{form.getValues("minXFollowers")}+</p>
-                      </div>
-                    )}
+                  <div className="flex gap-4">
+                    <Button variant="ghost" onClick={() => setStep("edit")} className="flex-1 h-14 font-black uppercase tracking-widest text-xs border border-white/10 hover:bg-white/5">
+                      Back to Edit
+                    </Button>
+                    <Button 
+                      onClick={form.handleSubmit(onSubmit)} 
+                      disabled={isPending}
+                      className="flex-[2] h-14 bg-primary text-primary-foreground font-black uppercase tracking-widest text-sm hover:shadow-[0_0_40px_rgba(34,197,94,0.4)] transition-all"
+                    >
+                      {isPending ? <Loader2 className="w-5 h-5 animate-spin" /> : "Confirm & Pay"}
+                    </Button>
                   </div>
-                </div>
-
-                <div className="flex gap-3">
-                  <Button variant="outline" className="flex-1" onClick={() => setStep("edit")}>Back to Edit</Button>
-                  <Button className="flex-1 font-bold shadow-[0_0_20px_rgba(34,197,94,0.3)]" onClick={form.handleSubmit(onSubmit)} disabled={isPending}>
-                    {isPending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Rocket className="mr-2 h-4 w-4" />}
-                    Confirm & Launch
-                  </Button>
                 </div>
               </div>
             )}
           </div>
         </DialogContent>
       </Dialog>
-
-      <CampaignSuccessCard
-        campaign={createdCampaign}
-        open={showSuccessCard}
-        onClose={() => {
-          setShowSuccessCard(false);
-          setCreatedCampaign(null);
-        }}
-      />
+      
+      {showSuccessCard && createdCampaign && (
+        <SuccessCard
+          campaign={createdCampaign}
+          onClose={() => setShowSuccessCard(false)}
+        />
+      )}
     </>
   );
 }
