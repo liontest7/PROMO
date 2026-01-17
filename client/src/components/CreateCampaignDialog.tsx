@@ -474,9 +474,9 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
                                 name="title"
                                 render={({ field }) => (
                                   <FormItem>
-                                    <FormLabel className="text-[10px] uppercase font-black opacity-40">Campaign Title</FormLabel>
+                                    <FormLabel className="text-[10px] uppercase font-black opacity-60 text-white">Campaign Title</FormLabel>
                                     <FormControl>
-                                      <Input placeholder="Enter title..." className="bg-white/5 border-white/10" {...field} />
+                                      <Input placeholder="Enter title..." className="bg-white/5 border-white/10 text-white" {...field} />
                                     </FormControl>
                                     <FormMessage />
                                   </FormItem>
@@ -487,9 +487,9 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
                                 name="tokenName"
                                 render={({ field }) => (
                                   <FormItem>
-                                    <FormLabel className="text-[10px] uppercase font-black opacity-40">Token Symbol</FormLabel>
+                                    <FormLabel className="text-[10px] uppercase font-black opacity-60 text-white">Token Symbol</FormLabel>
                                     <FormControl>
-                                      <Input placeholder="e.g. SOL" className="bg-white/5 border-white/10" {...field} />
+                                      <Input placeholder="e.g. SOL" className="bg-white/5 border-white/10 text-white" {...field} />
                                     </FormControl>
                                     <FormMessage />
                                   </FormItem>
@@ -502,9 +502,9 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
                               name="description"
                               render={({ field }) => (
                                 <FormItem>
-                                  <FormLabel className="text-[10px] uppercase font-black opacity-40">Description</FormLabel>
+                                  <FormLabel className="text-[10px] uppercase font-black opacity-60 text-white">Description</FormLabel>
                                   <FormControl>
-                                    <Textarea placeholder="Tell users about your project..." className="bg-white/5 border-white/10 min-h-[100px]" {...field} />
+                                    <Textarea placeholder="Tell users about your project..." className="bg-white/5 border-white/10 min-h-[100px] text-white" {...field} />
                                   </FormControl>
                                   <FormMessage />
                                 </FormItem>
