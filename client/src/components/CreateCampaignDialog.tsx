@@ -159,7 +159,8 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
       minHoldingAmount: 0,
       minHoldingDuration: 0,
       rewardPerWallet: 0,
-      maxClaims: 0
+      maxClaims: 0,
+      initialMarketCap: ""
     },
   });
 
@@ -454,108 +455,114 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
 
                   {watchedType && (
                     <div className="space-y-8 animate-in fade-in slide-in-from-top-4 duration-500">
-                      {/* Requirements Section - Integrated Anti-Bot */}
-                      <div className="p-6 bg-orange-500/5 border border-orange-500/20 rounded-3xl space-y-4">
-                        <div className="flex items-center gap-3">
-                          <Shield className="w-5 h-5 text-orange-500" />
-                          <span className="font-black uppercase tracking-widest text-xs text-orange-500">Anti-Bot & Quality Controls</span>
-                        </div>
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                          <FormField
-                            control={form.control}
-                            name="minSolBalance"
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel className="text-[10px] uppercase font-black opacity-60 text-white">Min SOL Balance</FormLabel>
-                                <FormControl>
-                                  <Input type="number" step="0.01" className="bg-white/5 border-white/10 text-white" {...field} />
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-                          <FormField
-                            control={form.control}
-                            name="minWalletAgeDays"
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel className="text-[10px] uppercase font-black opacity-60 text-white">Min Wallet Age (Days)</FormLabel>
-                                <FormControl>
-                                  <Input type="number" className="bg-white/5 border-white/10 text-white" {...field} />
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-                          <FormField
-                            control={form.control}
-                            name="minXAccountAgeDays"
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel className="text-[10px] uppercase font-black opacity-60 text-white">Min X Account Age (Days)</FormLabel>
-                                <FormControl>
-                                  <Input type="number" className="bg-white/5 border-white/10 text-white" {...field} />
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-                          <FormField
-                            control={form.control}
-                            name="minXFollowers"
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel className="text-[10px] uppercase font-black opacity-60 text-white">Min X Followers</FormLabel>
-                                <FormControl>
-                                  <Input type="number" className="bg-white/5 border-white/10 text-white" {...field} />
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-                          <FormField
-                            control={form.control}
-                            name="minFollowDurationDays"
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel className="text-[10px] uppercase font-black opacity-60 text-white">Min Follow Hold (Days)</FormLabel>
-                                <FormControl>
-                                  <Input type="number" className="bg-white/5 border-white/10 text-white" {...field} />
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-                          <div className="grid grid-cols-2 gap-2">
-                            <FormField
-                              control={form.control}
-                              name="multiDaySolAmount"
-                              render={({ field }) => (
-                                <FormItem>
-                                  <FormLabel className="text-[10px] uppercase font-black opacity-60 text-white">SOL Amount</FormLabel>
-                                  <FormControl>
-                                    <Input type="number" step="0.01" className="bg-white/5 border-white/10 text-white" {...field} />
-                                  </FormControl>
-                                  <FormMessage />
-                                </FormItem>
-                              )}
-                            />
-                            <FormField
-                              control={form.control}
-                              name="multiDaySolDays"
-                              render={({ field }) => (
-                                <FormItem>
-                                  <FormLabel className="text-[10px] uppercase font-black opacity-60 text-white">Days</FormLabel>
-                                  <FormControl>
-                                    <Input type="number" className="bg-white/5 border-white/10 text-white" {...field} />
-                                  </FormControl>
-                                  <FormMessage />
-                                </FormItem>
-                              )}
-                            />
-                          </div>
-                        </div>
-                      </div>
+                      {/* Anti-Bot Protection Accordion */}
+                      <Accordion type="single" collapsible className="w-full">
+                        <AccordionItem value="protection" className="border-none">
+                          <AccordionTrigger className="p-6 bg-orange-500/5 border border-orange-500/20 rounded-3xl hover:no-underline group">
+                            <div className="flex items-center gap-3">
+                              <Shield className="w-5 h-5 text-orange-500" />
+                              <span className="font-black uppercase tracking-widest text-xs text-orange-500">Anti-Bot & Quality Controls</span>
+                            </div>
+                          </AccordionTrigger>
+                          <AccordionContent className="pt-4 space-y-4 px-6 pb-6 bg-orange-500/5 border-x border-b border-orange-500/20 rounded-b-3xl -mt-4">
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                              <FormField
+                                control={form.control}
+                                name="minSolBalance"
+                                render={({ field }) => (
+                                  <FormItem>
+                                    <FormLabel className="text-[10px] uppercase font-black opacity-60 text-white">Min SOL Balance</FormLabel>
+                                    <FormControl>
+                                      <Input type="number" step="0.01" className="bg-white/5 border-white/10 text-white" {...field} />
+                                    </FormControl>
+                                    <FormMessage />
+                                  </FormItem>
+                                )}
+                              />
+                              <FormField
+                                control={form.control}
+                                name="minWalletAgeDays"
+                                render={({ field }) => (
+                                  <FormItem>
+                                    <FormLabel className="text-[10px] uppercase font-black opacity-60 text-white">Min Wallet Age (Days)</FormLabel>
+                                    <FormControl>
+                                      <Input type="number" className="bg-white/5 border-white/10 text-white" {...field} />
+                                    </FormControl>
+                                    <FormMessage />
+                                  </FormItem>
+                                )}
+                              />
+                              <FormField
+                                control={form.control}
+                                name="minXAccountAgeDays"
+                                render={({ field }) => (
+                                  <FormItem>
+                                    <FormLabel className="text-[10px] uppercase font-black opacity-60 text-white">Min X Account Age (Days)</FormLabel>
+                                    <FormControl>
+                                      <Input type="number" className="bg-white/5 border-white/10 text-white" {...field} />
+                                    </FormControl>
+                                    <FormMessage />
+                                  </FormItem>
+                                )}
+                              />
+                              <FormField
+                                control={form.control}
+                                name="minXFollowers"
+                                render={({ field }) => (
+                                  <FormItem>
+                                    <FormLabel className="text-[10px] uppercase font-black opacity-60 text-white">Min X Followers</FormLabel>
+                                    <FormControl>
+                                      <Input type="number" className="bg-white/5 border-white/10 text-white" {...field} />
+                                    </FormControl>
+                                    <FormMessage />
+                                  </FormItem>
+                                )}
+                              />
+                              <FormField
+                                control={form.control}
+                                name="minFollowDurationDays"
+                                render={({ field }) => (
+                                  <FormItem>
+                                    <FormLabel className="text-[10px] uppercase font-black opacity-60 text-white">Min Follow Hold (Days)</FormLabel>
+                                    <FormControl>
+                                      <Input type="number" className="bg-white/5 border-white/10 text-white" {...field} />
+                                    </FormControl>
+                                    <FormMessage />
+                                  </FormItem>
+                                )}
+                              />
+                              <div className="grid grid-cols-2 gap-2">
+                                <FormField
+                                  control={form.control}
+                                  name="multiDaySolAmount"
+                                  render={({ field }) => (
+                                    <FormItem>
+                                      <FormLabel className="text-[10px] uppercase font-black opacity-60 text-white">SOL Amount</FormLabel>
+                                      <FormControl>
+                                        <Input type="number" step="0.01" className="bg-white/5 border-white/10 text-white" {...field} />
+                                      </FormControl>
+                                      <FormMessage />
+                                    </FormItem>
+                                  )}
+                                />
+                                <FormField
+                                  control={form.control}
+                                  name="multiDaySolDays"
+                                  render={({ field }) => (
+                                    <FormItem>
+                                      <FormLabel className="text-[10px] uppercase font-black opacity-60 text-white">Days</FormLabel>
+                                      <FormControl>
+                                        <Input type="number" className="bg-white/5 border-white/10 text-white" {...field} />
+                                      </FormControl>
+                                      <FormMessage />
+                                    </FormItem>
+                                  )}
+                                />
+                              </div>
+                            </div>
+                          </AccordionContent>
+                        </AccordionItem>
+                      </Accordion>
 
                       <div className="space-y-6">
                         <div className="flex items-center gap-3 py-4 border-b border-white/5 mb-4">
