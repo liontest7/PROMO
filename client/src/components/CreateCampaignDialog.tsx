@@ -15,6 +15,7 @@ import {
   DialogTitle,
   DialogTrigger,
   DialogDescription,
+  DialogClose,
 } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
