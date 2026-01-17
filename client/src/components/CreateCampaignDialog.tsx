@@ -229,9 +229,9 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
           amount: values.multiDaySolAmount,
           days: values.multiDaySolDays
         } : undefined,
-        minProjectTokenHolding: values.minHoldingAmount > 0 ? {
-          amount: values.minHoldingAmount,
-          days: values.minHoldingDuration
+        minProjectTokenHolding: (values.minHoldingAmount || 0) > 0 ? {
+          amount: values.minHoldingAmount || 0,
+          days: values.minHoldingDuration || 0
         } : undefined
       },
       actions: values.campaignType === "holder_qualification" || !values.actions ? [] : values.actions.map(a => ({

@@ -63,7 +63,7 @@ export function CampaignPreview({
                   <h3 className="font-display font-black text-2xl text-white italic tracking-tighter uppercase drop-shadow-lg">
                     {values.title}
                   </h3>
-                  <Badge variant="primary" className="text-[10px] h-5 bg-primary text-primary-foreground font-black shadow-lg shadow-primary/30">PREVIEW</Badge>
+                  <Badge variant="default" className="text-[10px] h-5 bg-primary text-primary-foreground font-black shadow-lg shadow-primary/30">PREVIEW</Badge>
                 </div>
                 <div className="flex items-center gap-4">
                   <span className="text-primary font-mono text-base font-black tracking-[0.2em] drop-shadow-md">${values.tokenName}</span>

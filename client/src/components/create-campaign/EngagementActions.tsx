@@ -54,9 +54,9 @@ export function EngagementActions({ form, gasFeeSol }: EngagementActionsProps) {
             </div>
             <Button
               type="button"
-              variant="primary"
+              variant="default"
               size="sm"
-              className="font-black uppercase tracking-widest text-[10px] shadow-lg shadow-primary/20 rounded-xl"
+              className="font-black uppercase tracking-widest text-[10px] shadow-lg shadow-primary/20 rounded-xl bg-primary text-primary-foreground hover:bg-primary/90"
               onClick={() =>
                 append({
                   type: "website",
