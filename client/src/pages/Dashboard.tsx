@@ -34,9 +34,27 @@ export default function Dashboard() {
     queryKey: ["/api/users", walletAddress],
     enabled: !!walletAddress,
     retry: false,
-    staleTime: 30000, // Increase staleTime to avoid constant background refreshes
-    refetchOnWindowFocus: false, // Prevent refresh when switching tabs
+    staleTime: 30000, 
+    refetchOnWindowFocus: false, 
   });
+
+  const { toast } = useToast();
+  const [prevLevel, setPrevLevel] = useState<number | null>(null);
+
+  useEffect(() => {
+    if (user?.reputationScore !== undefined) {
+      const currentLevel = Math.floor(user.reputationScore / 100) + 1;
+      if (prevLevel !== null && currentLevel > prevLevel) {
+        toast({
+          title: "LEVEL UP! 🚀",
+          description: `Congratulations! You've reached Level ${currentLevel}. New tier unlocked!`,
+          variant: "default",
+          className: "bg-[#22c55e] text-white border-none font-black uppercase tracking-widest shadow-[0_0_30px_rgba(34,197,94,0.6)]"
+        });
+      }
+      setPrevLevel(currentLevel);
+    }
+  }, [user?.reputationScore, prevLevel, toast]);
 
   const { data: executions } = useQuery({
     queryKey: [api.users.executions.path, walletAddress],

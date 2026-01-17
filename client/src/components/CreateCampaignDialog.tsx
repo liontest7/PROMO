@@ -412,18 +412,18 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
 
             {step === "edit" ? (
               <Form {...form}>
-                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-6 bg-white/[0.02] border border-white/5 rounded-3xl">
                     <FormField
                       control={form.control}
                       name="tokenAddress"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="text-primary font-bold">Token Contract Address</FormLabel>
+                          <FormLabel className="text-primary font-black uppercase tracking-widest text-[10px]">Token Mint Address</FormLabel>
                           <FormControl>
                             <Input 
                               placeholder="Enter Solana Mint Address..." 
-                              className="bg-primary/5 border-primary/20 focus:border-primary"
+                              className="bg-primary/5 border-primary/20 focus:border-primary h-12 font-mono text-xs"
                               {...field} 
                               onChange={(e) => { 
                                 field.onChange(e); 
@@ -440,20 +440,15 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
                       name="campaignType"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Campaign Category</FormLabel>
+                          <FormLabel className="text-primary font-black uppercase tracking-widest text-[10px]">Campaign Category</FormLabel>
                           <Select onValueChange={(value) => { field.onChange(value); if (value === "holder_qualification") { form.setValue("actions", []); } else { form.setValue("actions", [{ type: "website", title: "Visit Website", url: "", rewardAmount: 0.01, maxExecutions: 10 }]); } }} value={field.value}>
-                            <FormControl><SelectTrigger><SelectValue placeholder="Select type" /></SelectTrigger></FormControl>
-                            <SelectContent>
-                              <SelectItem value="holder_qualification" disabled={isHolderDisabled || loadingSettings}>
+                            <FormControl><SelectTrigger className="h-12 bg-primary/5 border-primary/20 font-black uppercase tracking-widest text-xs"><SelectValue placeholder="Select type" /></SelectTrigger></FormControl>
+                            <SelectContent className="bg-black border-white/10">
+                              <SelectItem value="holder_qualification" disabled={isHolderDisabled || loadingSettings} className="font-black uppercase tracking-widest text-xs py-3">
                                 Holder Qualification {getCampaignStatusLabel("holder_qualification")}
                               </SelectItem>
-                              <SelectItem value="engagement" disabled={isSocialDisabled || loadingSettings}>
+                              <SelectItem value="engagement" disabled={isSocialDisabled || loadingSettings} className="font-black uppercase tracking-widest text-xs py-3">
                                 Social Engagement {getCampaignStatusLabel("engagement")}
-                                {settings?.twitterApiStatus !== 'active' && settings?.socialEngagementEnabled && (
-                                  <span className="block text-[10px] text-yellow-500 font-medium mt-0.5">
-                                    Verification delayed: Twitter API Disconnected
-                                  </span>
-                                )}
                               </SelectItem>
                             </SelectContent>
                           </Select>
@@ -464,43 +459,55 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
                   </div>
 
                   {watchedType && (
-                    <div className="space-y-6 animate-in fade-in slide-in-from-top-4 duration-300">
-                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <FormField control={form.control} name="websiteUrl" render={({ field }) => (
-                          <FormItem><FormLabel>Website</FormLabel><FormControl><Input placeholder="https://..." {...field} /></FormControl><FormMessage /></FormItem>
-                        )} />
-                        <FormField control={form.control} name="twitterUrl" render={({ field }) => (
-                          <FormItem><FormLabel>Twitter</FormLabel><FormControl><Input placeholder="https://x.com/..." {...field} /></FormControl><FormMessage /></FormItem>
-                        )} />
-                        <FormField control={form.control} name="telegramUrl" render={({ field }) => (
-                          <FormItem><FormLabel>Telegram</FormLabel><FormControl><Input placeholder="https://t.me/..." {...field} /></FormControl><FormMessage /></FormItem>
-                        )} />
-                      </div>
+                    <div className="space-y-8 animate-in fade-in slide-in-from-top-4 duration-500">
+                      <Accordion type="single" collapsible defaultValue="details" className="space-y-4">
+                        <AccordionItem value="details" className="border border-white/10 bg-white/[0.02] rounded-3xl overflow-hidden px-6">
+                          <AccordionTrigger className="hover:no-underline py-4">
+                            <div className="flex items-center gap-3">
+                              <Globe className="w-5 h-5 text-primary" />
+                              <span className="font-black uppercase tracking-widest text-xs">Project Details</span>
+                            </div>
+                          </AccordionTrigger>
+                          <AccordionContent className="pt-2 pb-6 space-y-6">
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                              <FormField control={form.control} name="websiteUrl" render={({ field }) => (
+                                <FormItem><FormLabel className="text-[10px] uppercase font-black opacity-40">Website</FormLabel><FormControl><Input placeholder="https://..." className="bg-white/5 border-white/10" {...field} /></FormControl><FormMessage /></FormItem>
+                              )} />
+                              <FormField control={form.control} name="twitterUrl" render={({ field }) => (
+                                <FormItem><FormLabel className="text-[10px] uppercase font-black opacity-40">Twitter</FormLabel><FormControl><Input placeholder="https://x.com/..." className="bg-white/5 border-white/10" {...field} /></FormControl><FormMessage /></FormItem>
+                              )} />
+                              <FormField control={form.control} name="telegramUrl" render={({ field }) => (
+                                <FormItem><FormLabel className="text-[10px] uppercase font-black opacity-40">Telegram</FormLabel><FormControl><Input placeholder="https://t.me/..." className="bg-white/5 border-white/10" {...field} /></FormControl><FormMessage /></FormItem>
+                              )} />
+                            </div>
 
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <FormField
-                          control={form.control}
-                          name="title"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Campaign Title</FormLabel>
-                              <FormControl><Input placeholder="e.g. Community Growth" {...field} /></FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                        <FormField
-                          control={form.control}
-                          name="tokenName"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Token Symbol</FormLabel>
-                              <FormControl><Input placeholder="e.g. SOL" {...field} /></FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                      </div>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                              <FormField
+                                control={form.control}
+                                name="title"
+                                render={({ field }) => (
+                                  <FormItem>
+                                    <FormLabel className="text-[10px] uppercase font-black opacity-40">Campaign Title</FormLabel>
+                                    <FormControl><Input placeholder="e.g. Community Growth" className="bg-white/5 border-white/10" {...field} /></FormControl>
+                                    <FormMessage />
+                                  </FormItem>
+                                )}
+                              />
+                              <FormField
+                                control={form.control}
+                                name="tokenName"
+                                render={({ field }) => (
+                                  <FormItem>
+                                    <FormLabel className="text-[10px] uppercase font-black opacity-40">Token Symbol</FormLabel>
+                                    <FormControl><Input placeholder="e.g. SOL" className="bg-white/5 border-white/10" {...field} /></FormControl>
+                                    <FormMessage />
+                                  </FormItem>
+                                )}
+                              />
+                            </div>
+                          </AccordionContent>
+                        </AccordionItem>
+                      </Accordion>
 
                       <FormField
                         control={form.control}

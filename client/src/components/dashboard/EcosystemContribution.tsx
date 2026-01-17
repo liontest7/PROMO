@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -17,6 +18,18 @@ export function EcosystemContribution({ reputationScore, level, progress }: Ecos
     if (lvl >= 2) return "SENTINEL";
     return "INITIATE";
   };
+
+  const getLabelColor = (lvl: number) => {
+    if (lvl >= 10) return "bg-purple-500/20 text-purple-500 border-purple-500/30";
+    if (lvl >= 5) return "bg-red-500/20 text-red-500 border-red-500/30";
+    if (lvl >= 2) return "bg-yellow-500/20 text-yellow-500 border-yellow-500/30";
+    return "bg-primary/20 text-primary border-primary/30";
+  };
+
+  const prevLevel = level;
+  const nextLevel = level + 1;
+  const prevLabel = getLevelLabel(prevLevel);
+  const nextLabel = getLevelLabel(nextLevel);
 
   return (
     <Card className="glass-card border border-primary/30 bg-primary/5 rounded-[2rem] overflow-visible relative group p-0.5 shadow-xl lg:max-w-md ml-auto">
@@ -86,9 +99,15 @@ export function EcosystemContribution({ reputationScore, level, progress }: Ecos
             </div>
           </div>
           <div className="flex justify-between items-center text-[10px] font-black uppercase tracking-widest text-white/60">
-            <span className="flex items-center gap-2 bg-white/5 px-2 py-1 rounded-md border border-white/10"><Badge className="h-4 px-2 bg-white/10 text-white border-white/20 text-[9px]">LVL {level}</Badge> {getLevelLabel(level)}</span>
+            <span className="flex items-center gap-2 bg-white/5 px-2 py-1 rounded-md border border-white/10">
+              <Badge className={cn("h-4 px-2 text-[9px] border-none", getLabelColor(prevLevel))}>LVL {prevLevel}</Badge> 
+              {prevLabel}
+            </span>
             <ArrowUpRight className="w-5 h-5 text-primary/40" />
-            <span className="flex items-center gap-2 bg-primary/10 px-2 py-1 rounded-md border border-primary/20">{getLevelLabel(level + 1)} <Badge className="h-4 px-2 bg-primary text-primary-foreground border-none text-[9px]">LVL {level + 1}</Badge></span>
+            <span className="flex items-center gap-2 bg-primary/10 px-2 py-1 rounded-md border border-primary/20">
+              {nextLabel} 
+              <Badge className={cn("h-4 px-2 text-primary-foreground border-none text-[9px]", getLabelColor(nextLevel))}>LVL {nextLevel}</Badge>
+            </span>
           </div>
         </div>
       </CardContent>

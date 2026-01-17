@@ -67,12 +67,23 @@ export function setupCampaignRoutes(app: Express) {
       
       // Calculate real gas budget based on actions and max claims
       // 0.000005 SOL per interaction is a very safe estimate for transaction fees
-      const totalPotentialExecutions = (req.body.actions || []).reduce((acc: number, action: any) => acc + (action.maxExecutions || 100), 0);
+      const totalPotentialExecutions = (req.body.actions || []).reduce((acc: number, action: any) => acc + (Number(action.maxExecutions) || 100), 0);
       const gasBudgetSol = (totalPotentialExecutions * 0.000005).toFixed(6); 
+
+      // Calculation check: Ensure only advertisers can create
+      const creator = await storage.getUser(body.creatorId);
+      if (!creator || creator.role !== 'advertiser') {
+        return res.status(403).json({ message: "Only registered advertisers can launch campaigns." });
+      }
+
+      // Budget sanity check
+      if (Number(body.totalBudget) <= 0) {
+        return res.status(400).json({ message: "Campaign budget must be greater than zero." });
+      }
 
       const campaign = await storage.createCampaign({
         ...campaignData,
-        gasBudgetSol
+        gasBudgetSol: gasBudgetSol.toString()
       } as any);
 
       // Create actions
