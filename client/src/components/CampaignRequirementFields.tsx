@@ -22,7 +22,7 @@ export function CampaignRequirementFields({ form }: CampaignRequirementFieldsPro
             render={({ field }) => (
               <FormItem>
                 <FormLabel className="text-[10px] uppercase font-black text-white/60">Min SOL Balance</FormLabel>
-                <FormControl><Input type="number" step="0.01" className="bg-white/5 border-white/10 h-11" {...field} /></FormControl>
+                <FormControl><Input type="number" step="0.01" className="bg-white/5 border-white/10 h-11" {...field} value={field.value ?? 0} /></FormControl>
                 <FormDescription className="text-[9px] text-white/30">User must hold at least this much SOL.</FormDescription>
               </FormItem>
             )}
@@ -33,7 +33,27 @@ export function CampaignRequirementFields({ form }: CampaignRequirementFieldsPro
             render={({ field }) => (
               <FormItem>
                 <FormLabel className="text-[10px] uppercase font-black text-white/60">Min Wallet Age (Days)</FormLabel>
-                <FormControl><Input type="number" className="bg-white/5 border-white/10 h-11" {...field} /></FormControl>
+                <FormControl><Input type="number" className="bg-white/5 border-white/10 h-11" {...field} value={field.value ?? 0} /></FormControl>
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="minXAccountAgeDays"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="text-[10px] uppercase font-black text-white/60">Min X Account Age (Days)</FormLabel>
+                <FormControl><Input type="number" className="bg-white/5 border-white/10 h-11" {...field} value={field.value ?? 0} /></FormControl>
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="minXFollowers"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="text-[10px] uppercase font-black text-white/60">Min X Followers</FormLabel>
+                <FormControl><Input type="number" className="bg-white/5 border-white/10 h-11" {...field} value={field.value ?? 0} /></FormControl>
               </FormItem>
             )}
           />

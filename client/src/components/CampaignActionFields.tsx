@@ -94,6 +94,8 @@ export function CampaignActionFields({ form }: CampaignActionFieldsProps) {
                           <SelectItem value="website">Website Visit</SelectItem>
                           <SelectItem value="twitter_follow">X (Twitter) Follow</SelectItem>
                           <SelectItem value="twitter_retweet">X (Twitter) Retweet</SelectItem>
+                          <SelectItem value="twitter_like">X (Twitter) Like</SelectItem>
+                          <SelectItem value="twitter_comment">X (Twitter) Comment</SelectItem>
                           <SelectItem value="telegram_join">Telegram Join</SelectItem>
                           <SelectItem value="custom">Custom Task</SelectItem>
                         </SelectContent>
