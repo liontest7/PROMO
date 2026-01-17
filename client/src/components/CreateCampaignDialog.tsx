@@ -336,9 +336,9 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
               });
               localStorage.removeItem("campaign_draft");
             }}
-            className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground z-50"
+            className="absolute right-6 top-6 rounded-sm opacity-70 transition-opacity hover:opacity-100 focus:outline-none disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground z-[100]"
           >
-            <X className="h-4 w-4" />
+            <X className="h-6 w-6 text-white" />
             <span className="sr-only">Close</span>
           </DialogClose>
           <div className="relative flex-1 flex flex-col min-h-0 overflow-hidden">
@@ -347,7 +347,7 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
             </div>
 
             <div className="px-10 pt-6 shrink-0">
-              <DialogHeader className="space-y-3">
+              <DialogHeader className="space-y-4">
                 <div className="flex items-center gap-4">
                   <div className="p-2 bg-primary/20 rounded-xl border border-primary/30 shadow-[0_0_15px_rgba(34,197,94,0.2)]">
                     <Rocket className="h-6 w-6 text-primary" />
@@ -365,7 +365,7 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
               </DialogHeader>
 
               {step === "initial" && (
-                <div className="space-y-6 animate-in fade-in slide-in-from-bottom-12 duration-700 py-2">
+                <div className="space-y-6 animate-in fade-in slide-in-from-bottom-12 duration-700 py-6">
                   <div className="grid grid-cols-1 gap-6">
                     <div className="space-y-3">
                       <div className="flex items-center justify-between px-2">
@@ -446,7 +446,7 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
                   <Form {...form}>
                     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
                       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-                        <TabsList className="grid grid-cols-3 mb-6 bg-primary/5 border-2 border-primary/10 p-1.5 h-14 rounded-[20px] shadow-inner shrink-0 sticky top-0 z-50 bg-background/80 backdrop-blur-md">
+                        <TabsList className="grid grid-cols-3 mb-10 bg-primary/5 border-2 border-primary/10 p-1.5 h-14 rounded-[20px] shadow-inner shrink-0 sticky top-0 z-50 bg-background/80 backdrop-blur-md">
                           <TabsTrigger value="general" className="rounded-xl data-[state=active]:bg-primary data-[state=active]:!text-primary-foreground font-black text-[13px] uppercase tracking-[0.2em] gap-3 transition-all shadow-sm text-white hover:text-white">
                             <Layout className="h-4 w-4" /> BRANDING
                           </TabsTrigger>
@@ -468,7 +468,7 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
                                 setStep("initial");
                                 setActiveTab("general");
                               }} 
-                              className="h-16 px-10 rounded-2xl font-black uppercase tracking-[0.2em] text-xs border-2 hover:bg-white/5"
+                              className="h-16 px-10 rounded-2xl font-black uppercase tracking-[0.2em] text-xs border-2 hover:bg-white/5 mb-4"
                             >
                               BACK
                             </Button>
