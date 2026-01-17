@@ -22,10 +22,19 @@ import { formSchema, type FormValues } from "./create-campaign/schema";
 import { CampaignEditStep } from "./create-campaign/CampaignEditStep";
 import { CampaignPreviewStep } from "./create-campaign/CampaignPreviewStep";
 
-export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: controlledOnOpenChange }: { open?: boolean; onOpenChange?: (open: boolean) => void }) {
+export function CreateCampaignDialog({
+  open: controlledOpen,
+  onOpenChange: controlledOnOpenChange,
+}: {
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
+}) {
   const [internalOpen, setInternalOpen] = useState(false);
   const open = controlledOpen !== undefined ? controlledOpen : internalOpen;
-  const setOpen = controlledOnOpenChange !== undefined ? controlledOnOpenChange : setInternalOpen;
+  const setOpen =
+    controlledOnOpenChange !== undefined
+      ? controlledOnOpenChange
+      : setInternalOpen;
   const [step, setStep] = useState<"edit" | "preview">("edit");
   const [createdCampaign, setCreatedCampaign] = useState<any>(null);
   const [showSuccessCard, setShowSuccessCard] = useState(false);
@@ -50,7 +59,7 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
       toast({
         title: "Maintenance",
         description: "Campaign creation is temporarily disabled.",
-        variant: "destructive"
+        variant: "destructive",
       });
       return;
     }
@@ -58,10 +67,11 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
       e.preventDefault();
       toast({
         title: "Connection Required",
-        description: "Please connect your wallet as an advertiser to create campaigns.",
-        variant: "destructive"
+        description:
+          "Please connect your wallet as an advertiser to create campaigns.",
+        variant: "destructive",
       });
-      connect('advertiser');
+      connect("advertiser");
       return;
     }
   };
@@ -89,17 +99,16 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
       campaignType: undefined,
       actions: [],
       creatorId: userId || undefined,
-      minHoldingAmount: 0,
-      minHoldingDuration: 0,
-      rewardPerWallet: 0,
-      maxClaims: 0,
-      initialMarketCap: ""
     },
   });
 
   function onSubmit(values: FormValues) {
     if (!userId) {
-      toast({ title: "User Error", description: "Please reconnect your wallet.", variant: "destructive" });
+      toast({
+        title: "User Error",
+        description: "Please reconnect your wallet.",
+        variant: "destructive",
+      });
       return;
     }
 
@@ -113,9 +122,12 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
       initialMarketCap: values.initialMarketCap || "0",
       currentMarketCap: values.initialMarketCap || "0",
       creatorId: userId,
-      totalBudget: values.campaignType === 'holder_qualification' 
-        ? (Number(values.rewardPerWallet || 0) * Number(values.maxClaims || 0)).toString()
-        : (values.totalBudget || 0).toString(),
+      totalBudget:
+        values.campaignType === "holder_qualification"
+          ? (
+              Number(values.rewardPerWallet || 0) * Number(values.maxClaims || 0)
+            ).toString()
+          : (values.totalBudget || 0).toString(),
       minHoldingAmount: values.minHoldingAmount?.toString() || null,
       rewardPerWallet: values.rewardPerWallet?.toString() || null,
       requirements: {
@@ -124,16 +136,22 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
         minXAccountAgeDays: values.minXAccountAgeDays,
         minXFollowers: values.minXFollowers,
         minFollowDurationDays: values.minFollowDurationDays,
-        multiDaySolHolding: values.multiDaySolAmount > 0 && values.multiDaySolDays > 0 ? {
-          amount: values.multiDaySolAmount,
-          days: values.multiDaySolDays
-        } : undefined
+        multiDaySolHolding:
+          values.multiDaySolAmount > 0 && values.multiDaySolDays > 0
+            ? {
+                amount: values.minSolBalance,
+                days: values.minWalletAgeDays,
+              }
+            : undefined,
       },
-      actions: (values.campaignType === 'holder_qualification' || !values.actions) ? [] : values.actions.map(a => ({
-        ...a,
-        rewardAmount: a.rewardAmount.toString(),
-        maxExecutions: a.maxExecutions ? Number(a.maxExecutions) : null
-      }))
+      actions:
+        values.campaignType === "holder_qualification" || !values.actions
+          ? []
+          : values.actions.map((a) => ({
+              ...a,
+              rewardAmount: a.rewardAmount.toString(),
+              maxExecutions: a.maxExecutions ? Number(a.maxExecutions) : null,
+            })),
     };
 
     createCampaign(formattedValues as any, {
@@ -147,23 +165,38 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
             particleCount: 150,
             spread: 70,
             origin: { y: 0.6 },
-            colors: ['#22c55e', '#16a34a', '#ffffff']
+            colors: ["#22c55e", "#16a34a", "#ffffff"],
           });
         });
         setShowSuccessCard(true);
-        window.dispatchEvent(new CustomEvent('campaign-created', { detail: data }));
+        window.dispatchEvent(
+          new CustomEvent("campaign-created", { detail: data }),
+        );
       },
       onError: (error: any) => {
-        toast({ title: "Launch Failed", description: error.message || "Something went wrong.", variant: "destructive" });
-      }
+        toast({
+          title: "Launch Failed",
+          description: error.message || "Something went wrong.",
+          variant: "destructive",
+        });
+      },
     });
   }
 
   return (
     <>
-      <Dialog open={open} onOpenChange={(o) => { setOpen(o); if(!o) setStep("edit"); }}>
+      <Dialog
+        open={open}
+        onOpenChange={(o) => {
+          setOpen(o);
+          if (!o) setStep("edit");
+        }}
+      >
         <DialogTrigger asChild>
-          <Button onClick={handleOpenClick} className="bg-primary text-primary-foreground font-bold hover:shadow-[0_0_20px_rgba(34,197,94,0.4)] transition-all">
+          <Button
+            onClick={handleOpenClick}
+            className="bg-primary text-primary-foreground font-bold hover:shadow-[0_0_20px_rgba(34,197,94,0.4)] transition-all"
+          >
             <Rocket className="mr-2 h-4 w-4" /> Launch Campaign
           </Button>
         </DialogTrigger>
@@ -171,25 +204,36 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
           <div className="p-6">
             <DialogHeader className="mb-6">
               <DialogTitle className="text-2xl font-display text-primary">
-                {step === "preview" ? "Preview Your Campaign" : "Create New Campaign"}
+                {step === "preview"
+                  ? "Preview Your Campaign"
+                  : "Create New Campaign"}
               </DialogTitle>
               <DialogDescription className="text-white/80 text-base">
-                {step === "preview" ? "Review all details before publishing." : "Set up a new Pay-Per-Action campaign to boost your project."}
+                {step === "preview"
+                  ? "Review all details before publishing."
+                  : "Set up a new Pay-Per-Action campaign to boost your project."}
               </DialogDescription>
             </DialogHeader>
 
             {step === "edit" ? (
               <Form {...form}>
-                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-                  <CampaignEditStep form={form} settings={settings} loadingSettings={loadingSettings} />
+                <form
+                  onSubmit={form.handleSubmit(onSubmit)}
+                  className="space-y-8"
+                >
+                  <CampaignEditStep
+                    form={form}
+                    settings={settings}
+                    loadingSettings={loadingSettings}
+                  />
                 </form>
               </Form>
             ) : (
-              <CampaignPreviewStep 
-                form={form} 
-                isPending={isPending} 
-                onBack={() => setStep("edit")} 
-                onSubmit={form.handleSubmit(onSubmit)} 
+              <CampaignPreviewStep
+                form={form}
+                isPending={isPending}
+                onBack={() => setStep("edit")}
+                onSubmit={form.handleSubmit(onSubmit)}
               />
             )}
           </div>
