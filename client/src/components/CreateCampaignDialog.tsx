@@ -353,20 +353,35 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
                     <Rocket className="h-6 w-6 text-primary" />
                   </div>
                   <div className="space-y-0.5">
-                    <DialogTitle className="text-3xl font-black text-white uppercase tracking-tighter italic leading-none flex items-center gap-2">
-                      {step === "initial" ? "Initialize Mission" : step === "preview" ? "Preview Mission" : "Strategic Override"}
+                    <DialogTitle className="text-3xl font-black uppercase tracking-tighter italic leading-none flex items-center gap-2">
+                      {step === "initial" ? (
+                        <>
+                          <span className="text-white">INITIALIZE</span>
+                          <span className="text-primary">MISSION</span>
+                        </>
+                      ) : step === "preview" ? (
+                        <>
+                          <span className="text-white">PREVIEW</span>
+                          <span className="text-primary">MISSION</span>
+                        </>
+                      ) : (
+                        <>
+                          <span className="text-white">STRATEGIC</span>
+                          <span className="text-primary">OVERRIDE</span>
+                        </>
+                      )}
                     </DialogTitle>
-                    <div className="h-1 w-20 bg-primary mt-1 rounded-full" />
+                    <div className="h-1 w-full bg-primary mt-1 rounded-full" />
                   </div>
                 </div>
-                <DialogDescription className="text-white font-bold tracking-[0.1em] uppercase text-sm opacity-90">
+                <DialogDescription className="text-white font-bold tracking-[0.1em] uppercase text-sm opacity-90 pb-2">
                   {step === "initial" ? "Input Token Signature (CA) to begin protocol." : step === "preview" ? "Verify all mission parameters before deployment." : "Override settings for maximum project impact."}
                 </DialogDescription>
               </DialogHeader>
 
               {step === "initial" && (
                 <div className="space-y-6 animate-in fade-in slide-in-from-bottom-12 duration-700 py-6">
-                  <div className="grid grid-cols-1 gap-6">
+                  <div className="grid grid-cols-1 gap-6 pb-4">
                     <div className="space-y-3">
                       <div className="flex items-center justify-between px-2">
                         <label className="text-xs font-black text-primary uppercase tracking-[0.3em]">Token Address (CA)</label>
@@ -446,7 +461,7 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
                   <Form {...form}>
                     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
                       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-                        <TabsList className="grid grid-cols-3 mb-10 bg-primary/5 border-2 border-primary/10 p-1.5 h-14 rounded-[20px] shadow-inner shrink-0 sticky top-0 z-50 bg-background/80 backdrop-blur-md">
+                        <TabsList className="grid grid-cols-3 mb-10 mt-4 bg-primary/5 border-2 border-primary/10 p-1.5 h-14 rounded-[20px] shadow-inner shrink-0 sticky top-0 z-50 bg-background/80 backdrop-blur-md">
                           <TabsTrigger value="general" className="rounded-xl data-[state=active]:bg-primary data-[state=active]:!text-primary-foreground font-black text-[13px] uppercase tracking-[0.2em] gap-3 transition-all shadow-sm text-white hover:text-white">
                             <Layout className="h-4 w-4" /> BRANDING
                           </TabsTrigger>
@@ -460,7 +475,7 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
 
                         <TabsContent value="general" className="mt-0 space-y-8 animate-in fade-in slide-in-from-left-8 duration-500">
                           <BasicSettings form={form} fetchTokenMetadata={fetchTokenMetadata} />
-                          <div className="flex justify-between pt-6 gap-4">
+                          <div className="flex justify-between pt-6 gap-4 pb-4">
                             <Button 
                               type="button" 
                               variant="outline" 
@@ -468,7 +483,7 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
                                 setStep("initial");
                                 setActiveTab("general");
                               }} 
-                              className="h-16 px-10 rounded-2xl font-black uppercase tracking-[0.2em] text-xs border-2 hover:bg-white/5 mb-4"
+                              className="h-16 px-10 rounded-2xl font-black uppercase tracking-[0.2em] text-xs border-2 hover:bg-white/5"
                             >
                               BACK
                             </Button>
