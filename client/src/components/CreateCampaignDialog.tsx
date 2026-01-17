@@ -289,7 +289,25 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
 
   return (
     <>
-      <Dialog open={open} onOpenChange={o => { setOpen(o); if (!o) { setStep("initial"); setActiveTab("general"); } }}>
+      <Dialog open={open} onOpenChange={o => { 
+        if (!o) {
+          // If closing via X or background, we only reset if it wasn't a manual "X" close intent
+          // But user wants X to reset. Standard Dialog X trigger doesn't distinguish easily,
+          // so we'll implement a reset on close as requested for "X".
+          setStep("initial"); 
+          setActiveTab("general");
+          form.reset({
+            title: "", description: "", tokenName: "", tokenAddress: "", totalBudget: 0.1,
+            bannerUrl: "", logoUrl: "", websiteUrl: "", twitterUrl: "", telegramUrl: "",
+            minSolBalance: 0, minWalletAgeDays: 0, minXAccountAgeDays: 0, minXFollowers: 0,
+            minFollowDurationDays: 0, multiDaySolAmount: 0, multiDaySolDays: 0,
+            minHoldingAmount: 0, minHoldingDuration: 0,
+            campaignType: undefined, actions: [], creatorId: userId || undefined,
+          });
+          localStorage.removeItem("campaign_draft");
+        }
+        setOpen(o); 
+      }}>
         <DialogTrigger asChild>
           <Button onClick={e => {
             if (!isConnected) { e.preventDefault(); connect("advertiser"); return; }
@@ -308,7 +326,7 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
               <Zap className="h-64 w-64 rotate-12 animate-pulse" />
             </div>
 
-            <div className="px-10 pt-4 shrink-0">
+            <div className="px-10 pt-6 shrink-0">
               <DialogHeader className="space-y-1">
                 <div className="flex items-center gap-4">
                   <div className="p-2 bg-primary/20 rounded-xl border border-primary/30 shadow-[0_0_15px_rgba(34,197,94,0.2)]">
@@ -422,7 +440,8 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
 
                         <TabsContent value="general" className="mt-0 space-y-8 animate-in fade-in slide-in-from-left-8 duration-500">
                           <BasicSettings form={form} fetchTokenMetadata={fetchTokenMetadata} />
-                          <div className="flex justify-end pt-6">
+                          <div className="flex justify-between pt-6 gap-4">
+                            <Button type="button" variant="outline" onClick={() => setStep("initial")} className="h-16 px-10 rounded-2xl font-black uppercase tracking-[0.2em] text-xs border-2 hover:bg-white/5">BACK</Button>
                             <Button type="button" onClick={() => setActiveTab("protections")} className="h-16 px-10 rounded-2xl font-black uppercase tracking-[0.2em] text-xs gap-3 shadow-[0_0_30px_rgba(34,197,94,0.2)] hover:scale-105 transition-all">
                               CONFIGURE SECURITY <ChevronRight className="h-5 w-5" />
                             </Button>

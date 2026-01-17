@@ -16,7 +16,7 @@ interface BasicSettingsProps {
   fetchTokenMetadata: (address: string) => Promise<void>;
 }
 
-export function BasicSettings({ form, fetchTokenMetadata }: BasicSettingsProps) {
+export function BasicSettings({ form, fetchTokenMetadata, onBack }: { form: any, fetchTokenMetadata: any, onBack?: () => void }) {
   const tokenName = form.watch("tokenName");
   
   return (
@@ -32,7 +32,7 @@ export function BasicSettings({ form, fetchTokenMetadata }: BasicSettingsProps) 
                 {form.watch("tokenName") || "Target Asset"}
               </h3>
               <p className="text-[11px] text-white font-bold uppercase tracking-widest mt-1 opacity-90">
-                {form.watch("tokenAddress") ? `$${form.watch("tokenName")} • ${form.watch("tokenAddress").slice(0, 6)}...${form.watch("tokenAddress").slice(-4)}` : "No Token Loaded"}
+                {form.watch("tokenAddress") ? `$${form.watch("tokenSymbol") || form.watch("tokenName")} • ${form.watch("tokenAddress").slice(0, 6)}...${form.watch("tokenAddress").slice(-4)}` : "No Token Loaded"}
               </p>
             </div>
           </div>
