@@ -69,22 +69,23 @@ export default function Landing() {
     queryKey: ["/api/stats/global"],
     queryFn: async () => {
       const res = await fetch("/api/stats/global");
-      if (!res.ok) return null;
+      if (!res.ok) throw new Error("Failed to fetch stats");
       return res.json();
     },
-    refetchInterval: 5000, // Refresh every 5 seconds for near real-time updates
-    staleTime: 0, // Always consider data stale to ensure fresh fetches
+    refetchInterval: 10000, 
+    staleTime: 5000,
+    retry: 3,
   });
 
   const { data: settings } = useQuery({
-    queryKey: ["/api/admin/settings"],
+    queryKey: ["/api/public/settings"],
     queryFn: async () => {
-      const res = await fetch("/api/admin/settings");
-      if (!res.ok) return null;
+      const res = await fetch("/api/public/settings");
+      if (!res.ok) throw new Error("Failed to fetch settings");
       return res.json();
     },
-    refetchInterval: 1000,
-    staleTime: 0,
+    refetchInterval: 30000,
+    staleTime: 10000,
   });
 
   const creationFee = settings?.creationFee || PLATFORM_CONFIG.TOKENOMICS.CREATION_FEE;

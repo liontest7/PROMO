@@ -10,20 +10,20 @@ import { db } from "./db";
 const app = express();
 const httpServer = createServer(app);
 
-// Advanced Rate limiting
+// Advanced Rate limiting - Adjusted for smoother dev experience
 const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100,
+  windowMs: 5 * 60 * 1000, // Reduced to 5 minutes
+  max: 500, // Increased to 500
   message: { message: "Too many requests from this IP, please try again later." },
   standardHeaders: true,
   legacyHeaders: false,
-  skip: (req) => req.path.startsWith('/api/public'), // Skip public routes if needed
+  skip: (req) => req.path.startsWith('/api/public') || req.path.startsWith('/api/stats'), 
 });
 
 const strictLimiter = rateLimit({
-  windowMs: 60 * 60 * 1000, // 1 hour
-  max: 10, // Strict for sensitive ops
-  message: { message: "Too many attempts, please try again in an hour." },
+  windowMs: 15 * 60 * 1000, // Reduced to 15 minutes
+  max: 50, // Increased to 50
+  message: { message: "Too many attempts, please try again soon." },
   standardHeaders: true,
   legacyHeaders: false,
 });
