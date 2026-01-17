@@ -321,18 +321,25 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
                     <div className="h-1 w-20 bg-primary mt-2 rounded-full" />
                   </div>
                 </div>
-                <DialogDescription className="text-muted-foreground font-bold tracking-[0.1em] uppercase text-xs opacity-80">
+                <DialogDescription className="text-white font-bold tracking-[0.1em] uppercase text-sm opacity-90">
                   {step === "initial" ? "Input Token Signature (CA) to begin protocol." : step === "preview" ? "Verify all mission parameters before deployment." : "Override settings for maximum project impact."}
                 </DialogDescription>
               </DialogHeader>
 
               {step === "initial" && (
-                <div className="space-y-10 animate-in fade-in slide-in-from-bottom-12 duration-700 py-6">
-                  <div className="grid grid-cols-1 gap-8">
-                    <div className="space-y-4">
+                <div className="space-y-6 animate-in fade-in slide-in-from-bottom-12 duration-700 py-2">
+                  <div className="grid grid-cols-1 gap-6">
+                    <div className="space-y-3">
                       <div className="flex items-center justify-between px-2">
-                        <label className="text-[11px] font-black text-primary uppercase tracking-[0.4em]">Token Address (CA)</label>
-                        <Badge variant="outline" className="text-[9px] font-black border-primary/20 text-primary/60 tracking-widest uppercase">Solana Mainnet</Badge>
+                        <label className="text-xs font-black text-primary uppercase tracking-[0.3em]">Token Address (CA)</label>
+                        {form.watch("tokenName") && (
+                          <Badge variant="outline" className="text-[10px] font-black border-primary text-primary tracking-widest uppercase bg-primary/10 animate-in fade-in zoom-in">
+                            LOADED: ${form.watch("tokenName")}
+                          </Badge>
+                        )}
+                        {!form.watch("tokenName") && (
+                          <Badge variant="outline" className="text-[9px] font-black border-primary/20 text-primary/60 tracking-widest uppercase">Solana Mainnet</Badge>
+                        )}
                       </div>
                       <div className="relative group">
                         <div className="absolute left-5 top-1/2 -translate-y-1/2 h-6 w-6 text-primary opacity-40 group-focus-within:opacity-100 transition-all duration-500">
@@ -340,39 +347,43 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
                         </div>
                         <Input 
                           placeholder="Paste Contract Address..." 
-                          className="h-20 pl-14 bg-primary/5 border-2 border-primary/10 focus:border-primary/50 rounded-[28px] text-xl font-mono tracking-tighter transition-all shadow-inner group-hover:border-primary/30"
+                          className="h-16 pl-14 bg-primary/5 border-2 border-primary/10 focus:border-primary/50 rounded-2xl text-lg font-mono tracking-tighter transition-all shadow-inner group-hover:border-primary/30 text-white"
                           value={form.watch("tokenAddress")}
                           autoComplete="on"
                           name="tokenAddress"
                           id="tokenAddress"
-                          onChange={e => form.setValue("tokenAddress", e.target.value)}
+                          onChange={e => {
+                            const val = e.target.value;
+                            form.setValue("tokenAddress", val);
+                            if (val.length >= 32) fetchTokenMetadata(val);
+                          }}
                         />
                       </div>
                     </div>
 
-                    <div className="space-y-4">
-                      <label className="text-[11px] font-black text-primary uppercase tracking-[0.4em] px-2">Mission Objective</label>
-                      <div className="grid grid-cols-2 gap-6">
+                    <div className="space-y-3">
+                      <label className="text-xs font-black text-primary uppercase tracking-[0.3em] px-2">Mission Objective</label>
+                      <div className="grid grid-cols-2 gap-4">
                         <button 
                           onClick={() => form.setValue("campaignType", "engagement")}
-                          className={`flex flex-col items-center justify-center p-8 rounded-[32px] border-4 transition-all gap-4 relative overflow-hidden group/btn ${watchedType === 'engagement' ? 'bg-primary/20 border-primary shadow-[0_0_40px_rgba(34,197,94,0.3)]' : 'bg-white/5 border-white/10 hover:border-white/20'}`}
+                          className={`flex flex-col items-center justify-center p-6 rounded-[24px] border-4 transition-all gap-3 relative overflow-hidden group/btn ${watchedType === 'engagement' ? 'bg-primary/20 border-primary shadow-[0_0_30px_rgba(34,197,94,0.3)]' : 'bg-white/5 border-white/10 hover:border-white/20'}`}
                         >
                           <div className={`absolute inset-0 bg-primary/5 -translate-x-full group-hover/btn:translate-x-0 transition-transform duration-700`} />
-                          <Zap className={`h-12 w-12 relative z-10 ${watchedType === 'engagement' ? 'text-primary scale-110' : 'text-white/20'} transition-all`} />
+                          <Zap className={`h-10 w-10 relative z-10 ${watchedType === 'engagement' ? 'text-primary scale-110' : 'text-white/40'} transition-all`} />
                           <div className="text-center relative z-10">
-                            <p className="text-[13px] font-black uppercase tracking-[0.2em] text-white leading-none mb-1.5">Social Growth</p>
-                            <p className="text-[10px] text-muted-foreground font-black italic uppercase tracking-widest opacity-60">Engagement</p>
+                            <p className="text-[12px] font-black uppercase tracking-[0.15em] text-white leading-none mb-1">Social Growth</p>
+                            <p className="text-[9px] text-white font-black italic uppercase tracking-widest opacity-80">Engagement</p>
                           </div>
                         </button>
                         <button 
                           onClick={() => form.setValue("campaignType", "holder_qualification")}
-                          className={`flex flex-col items-center justify-center p-8 rounded-[32px] border-4 transition-all gap-4 relative overflow-hidden group/btn ${watchedType === 'holder_qualification' ? 'bg-primary/20 border-primary shadow-[0_0_40px_rgba(34,197,94,0.3)]' : 'bg-white/5 border-white/10 hover:border-white/20'}`}
+                          className={`flex flex-col items-center justify-center p-6 rounded-[24px] border-4 transition-all gap-3 relative overflow-hidden group/btn ${watchedType === 'holder_qualification' ? 'bg-primary/20 border-primary shadow-[0_0_30px_rgba(34,197,94,0.3)]' : 'bg-white/5 border-white/10 hover:border-white/20'}`}
                         >
                           <div className={`absolute inset-0 bg-primary/5 -translate-x-full group-hover/btn:translate-x-0 transition-transform duration-700`} />
-                          <Coins className={`h-12 w-12 relative z-10 ${watchedType === 'holder_qualification' ? 'text-primary scale-110' : 'text-white/20'} transition-all`} />
+                          <Coins className={`h-10 w-10 relative z-10 ${watchedType === 'holder_qualification' ? 'text-primary scale-110' : 'text-white/40'} transition-all`} />
                           <div className="text-center relative z-10">
-                            <p className="text-[13px] font-black uppercase tracking-[0.2em] text-white leading-none mb-1.5">Holder Reward</p>
-                            <p className="text-[10px] text-muted-foreground font-black italic uppercase tracking-widest opacity-60">Retention</p>
+                            <p className="text-[12px] font-black uppercase tracking-[0.15em] text-white leading-none mb-1">Holder Reward</p>
+                            <p className="text-[9px] text-white font-black italic uppercase tracking-widest opacity-80">Retention</p>
                           </div>
                         </button>
                       </div>
@@ -381,11 +392,11 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
 
                   <Button 
                     onClick={handleInitialSubmit}
-                    disabled={isFetchingMetadata}
-                    className="w-full h-20 rounded-[32px] font-black text-xl uppercase tracking-[0.4em] bg-primary hover:bg-primary/90 shadow-[0_0_50px_rgba(34,197,94,0.4)] transition-all group relative overflow-hidden active:scale-[0.98]"
+                    disabled={isFetchingMetadata || !form.watch("tokenAddress")}
+                    className="w-full h-16 rounded-[24px] font-black text-lg uppercase tracking-[0.3em] bg-primary hover:bg-primary/90 shadow-[0_0_40px_rgba(34,197,94,0.4)] transition-all group relative overflow-hidden active:scale-[0.98]"
                   >
                     <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:animate-[shimmer_2s_infinite]" />
-                    {isFetchingMetadata ? <Loader2 className="animate-spin h-8 w-8" /> : <div className="flex items-center gap-3">INITIALIZE <ChevronRight className="h-7 w-7 group-hover:translate-x-2 transition-transform" /></div>}
+                    {isFetchingMetadata ? <Loader2 className="animate-spin h-7 w-7" /> : <div className="flex items-center gap-3 text-white">INITIALIZE <ChevronRight className="h-6 w-6 group-hover:translate-x-2 transition-transform" /></div>}
                   </Button>
                 </div>
               )}
@@ -395,17 +406,17 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
               <div className="flex-1 overflow-y-auto px-10 pb-10 custom-scrollbar animate-in fade-in duration-500">
                 {step === "edit" ? (
                   <Form {...form}>
-                    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-10">
+                    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
                       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-                        <TabsList className="grid grid-cols-3 mb-10 bg-primary/5 border-2 border-primary/10 p-2 h-16 rounded-[28px] shadow-inner shrink-0 sticky top-0 z-50 bg-background/80 backdrop-blur-md">
-                          <TabsTrigger value="general" className="rounded-2xl data-[state=active]:bg-primary data-[state=active]:text-primary-foreground font-black text-[11px] uppercase tracking-[0.2em] gap-3 transition-all shadow-sm">
-                            <Layout className="h-4.5 w-4.5" /> BRANDING
+                        <TabsList className="grid grid-cols-3 mb-6 bg-primary/5 border-2 border-primary/10 p-1.5 h-14 rounded-[20px] shadow-inner shrink-0 sticky top-0 z-50 bg-background/80 backdrop-blur-md">
+                          <TabsTrigger value="general" className="rounded-xl data-[state=active]:bg-primary data-[state=active]:text-primary-foreground font-black text-[11px] uppercase tracking-[0.2em] gap-3 transition-all shadow-sm">
+                            <Layout className="h-4 w-4" /> BRANDING
                           </TabsTrigger>
-                          <TabsTrigger value="protections" className="rounded-2xl data-[state=active]:bg-primary data-[state=active]:text-primary-foreground font-black text-[11px] uppercase tracking-[0.2em] gap-3 transition-all shadow-sm">
-                            <ShieldCheck className="h-4.5 w-4.5" /> SHIELD
+                          <TabsTrigger value="protections" className="rounded-xl data-[state=active]:bg-primary data-[state=active]:text-primary-foreground font-black text-[11px] uppercase tracking-[0.2em] gap-3 transition-all shadow-sm">
+                            <ShieldCheck className="h-4 w-4" /> SHIELD
                           </TabsTrigger>
-                          <TabsTrigger value="actions" className="rounded-2xl data-[state=active]:bg-primary data-[state=active]:text-primary-foreground font-black text-[11px] uppercase tracking-[0.2em] gap-3 transition-all shadow-sm">
-                            <ListChecks className="h-4.5 w-4.5" /> REWARDS
+                          <TabsTrigger value="actions" className="rounded-xl data-[state=active]:bg-primary data-[state=active]:text-primary-foreground font-black text-[11px] uppercase tracking-[0.2em] gap-3 transition-all shadow-sm">
+                            <ListChecks className="h-4 w-4" /> REWARDS
                           </TabsTrigger>
                         </TabsList>
 
