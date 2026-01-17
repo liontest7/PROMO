@@ -16,33 +16,46 @@ export function setupUserRoutes(app: Express) {
   app.post('/api/users/auth', async (req, res) => {
     try {
       const input = api.users.getOrCreate.input.parse(req.body);
+      console.log(`[Auth API] Authenticating wallet: ${input.walletAddress}, Role: ${input.role}`);
+      
       let user = await storage.getUserByWallet(input.walletAddress);
       
       if (!user) {
+        console.log(`[Auth API] Creating new user for: ${input.walletAddress}`);
         const isSuperAdmin = ADMIN_CONFIG.superAdminWallets.includes(input.walletAddress);
         const userData = { 
           walletAddress: input.walletAddress,
           role: isSuperAdmin ? "admin" : (input.role || "user"),
           balance: "0",
-          reputationScore: 0
+          reputationScore: 0,
+          status: "active",
+          acceptedTerms: false
         };
         // @ts-ignore
         user = await storage.createUser(userData);
+        console.log(`[Auth API] User created successfully: ${user.id}`);
         res.status(201).json(user);
       } else {
+        console.log(`[Auth API] User found: ${user.id}, Status: ${user.status}`);
+        if (user.status !== 'active') {
+          return res.status(403).json({ 
+            message: `Your account is ${user.status}. Please contact support.`,
+            status: user.status
+          });
+        }
+
         if (ADMIN_CONFIG.superAdminWallets.includes(user.walletAddress) && user.role !== "admin") {
           user = await storage.updateUserRole(user.id, "admin");
         }
         
-        // If they haven't accepted terms, they're not fully "onboarded" for stats
         res.json(user);
       }
     } catch (err) {
-      console.error("Auth error:", err);
+      console.error("[Auth API] Error during authentication:", err);
       if (err instanceof z.ZodError) {
         return res.status(400).json({ message: err.errors[0].message });
       }
-      res.status(500).json({ message: "Internal Server Error" });
+      res.status(500).json({ message: "Authentication failed on server" });
     }
   });
 

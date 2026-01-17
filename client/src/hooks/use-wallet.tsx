@@ -156,13 +156,21 @@ export function WalletProvider({ children }: { children: ReactNode }) {
       });
       
       if (!res.ok) {
-        const errorData = await res.json();
+        const errorText = await res.text();
+        console.error("Auth API error:", res.status, errorText);
+        let errorData;
+        try {
+          errorData = JSON.parse(errorText);
+        } catch (e) {
+          errorData = { message: errorText };
+        }
+
         if (res.status === 403 && (errorData.status === 'blocked' || errorData.status === 'suspended')) {
           setAccountStatus(errorData.status);
           localStorage.setItem("user_status", errorData.status);
           throw new Error(errorData.message);
         }
-        throw new Error("Backend authentication failed");
+        throw new Error(errorData.message || "Backend authentication failed");
       }
       
       const user = await res.json();
