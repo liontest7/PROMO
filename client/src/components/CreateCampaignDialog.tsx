@@ -114,9 +114,7 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
   const watchedType = form.watch("campaignType");
   const watchedActions = form.watch("actions") || [];
   const watchedMaxClaims = form.watch("maxClaims") || 0;
-  const watchedTokenAddress = form.watch("tokenAddress");
 
-  const platformFee = 0.5; 
   const baseGasFee = 0.005;
   const perRewardGasFee = 0.0015;
 
@@ -271,8 +269,8 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
             <Rocket className="mr-3 h-6 w-6 animate-bounce group-hover:animate-pulse transition-all" /> LAUNCH CAMPAIGN
           </Button>
         </DialogTrigger>
-        <DialogContent className="max-w-3xl max-h-[95vh] overflow-hidden glass-card border-primary/20 p-0 shadow-[0_0_50px_rgba(0,0,0,0.5)] border-2">
-          <div className="relative h-full flex flex-col">
+        <DialogContent className="max-w-3xl max-h-[95vh] flex flex-col glass-card border-primary/20 p-0 shadow-[0_0_50px_rgba(0,0,0,0.5)] border-2">
+          <div className="relative flex-1 flex flex-col min-h-0 overflow-hidden">
             <div className="absolute top-0 right-0 p-16 text-primary/5 pointer-events-none overflow-hidden">
               <Zap className="h-64 w-64 rotate-12 animate-pulse" />
             </div>
@@ -295,7 +293,7 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
                 </DialogDescription>
               </DialogHeader>
 
-              {step === "initial" ? (
+              {step === "initial" && (
                 <div className="space-y-10 animate-in fade-in slide-in-from-bottom-12 duration-700 py-6">
                   <div className="grid grid-cols-1 gap-8">
                     <div className="space-y-4">
@@ -354,7 +352,7 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
                     {isFetchingMetadata ? <Loader2 className="animate-spin h-8 w-8" /> : <div className="flex items-center gap-3">INITIALIZE <ChevronRight className="h-7 w-7 group-hover:translate-x-2 transition-transform" /></div>}
                   </Button>
                 </div>
-              ) : null}
+              )}
             </div>
 
             {step !== "initial" && (
@@ -363,7 +361,7 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
                   <Form {...form}>
                     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-10">
                       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-                        <TabsList className="grid grid-cols-3 mb-10 bg-primary/5 border-2 border-primary/10 p-2 h-16 rounded-[28px] shadow-inner">
+                        <TabsList className="grid grid-cols-3 mb-10 bg-primary/5 border-2 border-primary/10 p-2 h-16 rounded-[28px] shadow-inner shrink-0 sticky top-0 z-50 bg-background/80 backdrop-blur-md">
                           <TabsTrigger value="general" className="rounded-2xl data-[state=active]:bg-primary data-[state=active]:text-primary-foreground font-black text-[11px] uppercase tracking-[0.2em] gap-3 transition-all shadow-sm">
                             <Layout className="h-4.5 w-4.5" /> BRANDING
                           </TabsTrigger>

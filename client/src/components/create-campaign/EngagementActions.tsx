@@ -7,7 +7,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Plus, Trash2, Globe, Twitter, Send, Coins, Zap, Timer } from "lucide-react";
+import { Plus, Trash2, Globe, Twitter, Send, Coins, Zap, Timer, Shield } from "lucide-react";
 import {
   Select,
   SelectContent,

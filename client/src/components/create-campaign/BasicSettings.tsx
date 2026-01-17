@@ -23,9 +23,18 @@ export function BasicSettings({ form, fetchTokenMetadata }: BasicSettingsProps) 
     <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
       <div className="p-4 bg-primary/10 rounded-2xl border border-primary/20 mb-6">
         <div className="flex items-center justify-between mb-4">
-          <div>
-            <h3 className="text-lg font-black text-white uppercase tracking-tighter italic">Target Asset</h3>
-            <p className="text-[10px] text-primary font-bold uppercase tracking-widest">{tokenName ? `${tokenName} - ${form.watch("tokenAddress")}` : "No Token Loaded"}</p>
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 rounded-xl overflow-hidden bg-primary/10 border border-primary/20">
+              <img src={form.watch("logoUrl")} alt="Token Logo" className="w-full h-full object-cover" />
+            </div>
+            <div>
+              <h3 className="text-xl font-black text-white uppercase tracking-tighter italic leading-none">
+                {form.watch("tokenName") || "Target Asset"}
+              </h3>
+              <p className="text-[10px] text-primary font-bold uppercase tracking-widest mt-1">
+                {form.watch("tokenAddress") ? `$${form.watch("tokenName")} • ${form.watch("tokenAddress").slice(0, 6)}...${form.watch("tokenAddress").slice(-4)}` : "No Token Loaded"}
+              </p>
+            </div>
           </div>
           <FormField
             control={form.control}
