@@ -479,11 +479,13 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
                             <Button 
                               type="button" 
                               variant="outline" 
-                              onClick={() => {
+                              onPointerDown={(e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
                                 setStep("initial");
                                 setActiveTab("general");
-                              }} 
-                              className="h-16 px-10 rounded-2xl font-black uppercase tracking-[0.2em] text-xs border-2 hover:bg-white/5 relative z-[100] cursor-pointer"
+                              }}
+                              className="h-16 px-10 rounded-2xl font-black uppercase tracking-[0.2em] text-xs border-2 hover:bg-white/5 relative z-[100] cursor-pointer touch-none"
                             >
                               BACK
                             </Button>
@@ -499,8 +501,12 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
                             <Button 
                               type="button" 
                               variant="outline" 
-                              onClick={() => setActiveTab("general")} 
-                              className="h-16 px-10 rounded-2xl font-black uppercase tracking-[0.2em] text-xs border-2 hover:bg-white/5 relative z-[100]"
+                              onPointerDown={(e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                setActiveTab("general");
+                              }}
+                              className="h-16 px-10 rounded-2xl font-black uppercase tracking-[0.2em] text-xs border-2 hover:bg-white/5 relative z-[100] cursor-pointer touch-none"
                             >
                               BACK
                             </Button>
@@ -516,8 +522,12 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
                             <Button 
                               type="button" 
                               variant="outline" 
-                              onClick={() => setActiveTab("protections")} 
-                              className="h-16 px-10 rounded-2xl font-black uppercase tracking-[0.2em] text-xs border-2 hover:bg-white/5 relative z-[100]"
+                              onPointerDown={(e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                setActiveTab("protections");
+                              }}
+                              className="h-16 px-10 rounded-2xl font-black uppercase tracking-[0.2em] text-xs border-2 hover:bg-white/5 relative z-[100] cursor-pointer touch-none"
                             >
                               BACK
                             </Button>
