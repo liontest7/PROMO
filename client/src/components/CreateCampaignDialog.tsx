@@ -93,6 +93,24 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
   const { isConnected, userId, connect } = useWallet();
   const { toast } = useToast();
 
+  const { data: settings } = useQuery<any>({ 
+    queryKey: ["/api/public/settings"], 
+    refetchInterval: 1000,
+    staleTime: 0,
+  });
+
+  const form = useForm<FormValues>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      title: "", description: "", tokenName: "", tokenAddress: "", totalBudget: 0.1,
+      bannerUrl: "", logoUrl: "", websiteUrl: "", twitterUrl: "", telegramUrl: "",
+      minSolBalance: 0, minWalletAgeDays: 0, minXAccountAgeDays: 0, minXFollowers: 0,
+      minFollowDurationDays: 0, multiDaySolAmount: 0, multiDaySolDays: 0,
+      minHoldingAmount: 0, minHoldingDuration: 0,
+      campaignType: undefined, actions: [], creatorId: userId || undefined,
+    },
+  });
+
   // Drafts system
   useEffect(() => {
     if (open && step === "initial") {
@@ -112,7 +130,7 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
         }
       }
     }
-  }, [open]);
+  }, [open, step, form]);
 
   useEffect(() => {
     const subscription = form.watch((value) => {
@@ -125,24 +143,6 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
     });
     return () => subscription.unsubscribe();
   }, [form]);
-
-  const { data: settings } = useQuery<any>({ 
-    queryKey: ["/api/public/settings"], 
-    refetchInterval: 1000,
-    staleTime: 0,
-  });
-
-  const form = useForm<FormValues>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      title: "", description: "", tokenName: "", tokenAddress: "", totalBudget: 0.1,
-      bannerUrl: "", logoUrl: "", websiteUrl: "", twitterUrl: "", telegramUrl: "",
-      minSolBalance: 0, minWalletAgeDays: 0, minXAccountAgeDays: 0, minXFollowers: 0,
-      minFollowDurationDays: 0, multiDaySolAmount: 0, multiDaySolDays: 0,
-      minHoldingAmount: 0, minHoldingDuration: 0,
-      campaignType: undefined, actions: [], creatorId: userId || undefined,
-    },
-  });
 
   const watchedType = form.watch("campaignType");
   const watchedActions = form.watch("actions") || [];
