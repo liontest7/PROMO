@@ -956,8 +956,12 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
       
       {showSuccessCard && createdCampaign && (
         <SuccessCard
-          campaign={createdCampaign}
+          isOpen={showSuccessCard}
           onClose={() => setShowSuccessCard(false)}
+          campaignTitle={createdCampaign.title}
+          rewardAmount={createdCampaign.rewardPerWallet || "0"}
+          tokenName={createdCampaign.tokenName}
+          actionTitle={createdCampaign.campaignType === 'engagement' ? "Social Engagement" : "Holder Qualification"}
         />
       )}
     </>
