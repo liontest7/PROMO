@@ -76,6 +76,7 @@ export function BasicSettings({ form, fetchTokenMetadata }: BasicSettingsProps) 
               <Input 
                 placeholder="e.g. My Project Growth Campaign" 
                 className="bg-primary/5 border-primary/20 focus:border-primary h-12 rounded-xl"
+                autoComplete="organization-title"
                 {...field} 
               />
             </FormControl>
@@ -110,7 +111,7 @@ export function BasicSettings({ form, fetchTokenMetadata }: BasicSettingsProps) 
             <FormItem>
               <FormLabel className="text-primary font-bold uppercase tracking-widest text-[10px]">Logo Image URL</FormLabel>
               <FormControl>
-                <Input placeholder="https://..." className="bg-primary/5 border-primary/20 h-12 rounded-xl" {...field} />
+                <Input placeholder="https://..." className="bg-primary/5 border-primary/20 h-12 rounded-xl" autoComplete="url" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -123,7 +124,7 @@ export function BasicSettings({ form, fetchTokenMetadata }: BasicSettingsProps) 
             <FormItem>
               <FormLabel className="text-primary font-bold uppercase tracking-widest text-[10px]">Banner Header URL</FormLabel>
               <FormControl>
-                <Input placeholder="https://..." className="bg-primary/5 border-primary/20 h-12 rounded-xl" {...field} />
+                <Input placeholder="https://..." className="bg-primary/5 border-primary/20 h-12 rounded-xl" autoComplete="url" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>

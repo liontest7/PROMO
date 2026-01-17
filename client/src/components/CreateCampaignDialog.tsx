@@ -93,6 +93,39 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
   const { isConnected, userId, connect } = useWallet();
   const { toast } = useToast();
 
+  // Drafts system
+  useEffect(() => {
+    if (open && step === "initial") {
+      const draft = localStorage.getItem("campaign_draft");
+      if (draft) {
+        try {
+          const parsed = JSON.parse(draft);
+          // Only restore if it's less than 24h old
+          if (Date.now() - parsed.timestamp < 24 * 60 * 60 * 1000) {
+            form.reset(parsed.data);
+            if (parsed.data.tokenAddress && parsed.data.campaignType) {
+              setStep("edit");
+            }
+          }
+        } catch (e) {
+          console.error("Draft restoration failed", e);
+        }
+      }
+    }
+  }, [open]);
+
+  useEffect(() => {
+    const subscription = form.watch((value) => {
+      if (value) {
+        localStorage.setItem("campaign_draft", JSON.stringify({
+          data: value,
+          timestamp: Date.now()
+        }));
+      }
+    });
+    return () => subscription.unsubscribe();
+  }, [form.watch]);
+
   const { data: settings } = useQuery<any>({ 
     queryKey: ["/api/public/settings"], 
     refetchInterval: 1000,
@@ -309,6 +342,9 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
                           placeholder="Paste Contract Address..." 
                           className="h-20 pl-14 bg-primary/5 border-2 border-primary/10 focus:border-primary/50 rounded-[28px] text-xl font-mono tracking-tighter transition-all shadow-inner group-hover:border-primary/30"
                           value={form.watch("tokenAddress")}
+                          autoComplete="on"
+                          name="tokenAddress"
+                          id="tokenAddress"
                           onChange={e => form.setValue("tokenAddress", e.target.value)}
                         />
                       </div>

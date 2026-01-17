@@ -143,7 +143,7 @@ export function EngagementActions({ form, gasFeeSol }: EngagementActionsProps) {
                     <FormItem className="mb-4">
                       <FormLabel className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground">Destination Link</FormLabel>
                       <FormControl>
-                        <Input placeholder="https://..." {...field} className="bg-background/50 border-primary/10 h-11 rounded-xl font-mono text-sm" />
+                        <Input placeholder="https://..." {...field} className="bg-background/50 border-primary/10 h-11 rounded-xl font-mono text-sm" autoComplete="url" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
