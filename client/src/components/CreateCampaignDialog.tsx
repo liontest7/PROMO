@@ -308,17 +308,17 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
               <Zap className="h-64 w-64 rotate-12 animate-pulse" />
             </div>
 
-            <div className="p-10 pb-6 shrink-0">
-              <DialogHeader className="mb-8">
-                <div className="flex items-center gap-4 mb-3">
-                  <div className="p-3 bg-primary/20 rounded-2xl shadow-inner border border-primary/20">
-                    <Rocket className="h-8 w-8 text-primary" />
+            <div className="px-10 pt-4 shrink-0">
+              <DialogHeader className="space-y-1">
+                <div className="flex items-center gap-4">
+                  <div className="p-2 bg-primary/20 rounded-xl border border-primary/30 shadow-[0_0_15px_rgba(34,197,94,0.2)]">
+                    <Rocket className="h-6 w-6 text-primary" />
                   </div>
-                  <div>
-                    <DialogTitle className="text-4xl font-display text-white italic tracking-tighter uppercase leading-none drop-shadow-md">
-                      {step === "initial" ? "INITIALIZE MISSION" : step === "preview" ? "FINAL CLEARANCE" : "STRATEGIC OVERRIDE"}
+                  <div className="space-y-0.5">
+                    <DialogTitle className="text-3xl font-black text-white uppercase tracking-tighter italic leading-none flex items-center gap-2">
+                      {step === "initial" ? "Initialize Mission" : step === "preview" ? "Preview Mission" : "Strategic Override"}
                     </DialogTitle>
-                    <div className="h-1 w-20 bg-primary mt-2 rounded-full" />
+                    <div className="h-1 w-20 bg-primary mt-1 rounded-full" />
                   </div>
                 </div>
                 <DialogDescription className="text-white font-bold tracking-[0.1em] uppercase text-sm opacity-90">
@@ -409,13 +409,13 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
                     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
                       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
                         <TabsList className="grid grid-cols-3 mb-4 bg-primary/5 border-2 border-primary/10 p-1.5 h-14 rounded-[20px] shadow-inner shrink-0 sticky top-0 z-50 bg-background/80 backdrop-blur-md">
-                          <TabsTrigger value="general" className="rounded-xl data-[state=active]:bg-primary data-[state=active]:text-primary-foreground font-black text-[11px] uppercase tracking-[0.2em] gap-3 transition-all shadow-sm">
+                          <TabsTrigger value="general" className="rounded-xl data-[state=active]:bg-primary data-[state=active]:!text-primary-foreground font-black text-[11px] uppercase tracking-[0.2em] gap-3 transition-all shadow-sm text-white/90 hover:text-white">
                             <Layout className="h-4 w-4" /> BRANDING
                           </TabsTrigger>
-                          <TabsTrigger value="protections" className="rounded-xl data-[state=active]:bg-primary data-[state=active]:text-primary-foreground font-black text-[11px] uppercase tracking-[0.2em] gap-3 transition-all shadow-sm">
+                          <TabsTrigger value="protections" className="rounded-xl data-[state=active]:bg-primary data-[state=active]:!text-primary-foreground font-black text-[11px] uppercase tracking-[0.2em] gap-3 transition-all shadow-sm text-white/90 hover:text-white">
                             <ShieldCheck className="h-4 w-4" /> SHIELD
                           </TabsTrigger>
-                          <TabsTrigger value="actions" className="rounded-xl data-[state=active]:bg-primary data-[state=active]:text-primary-foreground font-black text-[11px] uppercase tracking-[0.2em] gap-3 transition-all shadow-sm">
+                          <TabsTrigger value="actions" className="rounded-xl data-[state=active]:bg-primary data-[state=active]:!text-primary-foreground font-black text-[11px] uppercase tracking-[0.2em] gap-3 transition-all shadow-sm text-white/90 hover:text-white">
                             <ListChecks className="h-4 w-4" /> REWARDS
                           </TabsTrigger>
                         </TabsList>
