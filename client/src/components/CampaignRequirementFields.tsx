@@ -57,6 +57,16 @@ export function CampaignRequirementFields({ form }: CampaignRequirementFieldsPro
               </FormItem>
             )}
           />
+          <FormField
+            control={form.control}
+            name="minFollowDurationDays"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="text-[10px] uppercase font-black text-white/60">Min Follow Duration (Days)</FormLabel>
+                <FormControl><Input type="number" className="bg-white/5 border-white/10 h-11" {...field} value={field.value ?? 0} /></FormControl>
+              </FormItem>
+            )}
+          />
         </div>
       </div>
 
@@ -72,7 +82,7 @@ export function CampaignRequirementFields({ form }: CampaignRequirementFieldsPro
             render={({ field }) => (
               <FormItem>
                 <FormLabel className="text-[10px] uppercase font-black text-white/60">Avg. SOL Amount</FormLabel>
-                <FormControl><Input type="number" step="0.1" className="bg-white/5 border-white/10 h-11" {...field} /></FormControl>
+                <FormControl><Input type="number" step="0.1" className="bg-white/5 border-white/10 h-11" {...field} value={field.value ?? 0} /></FormControl>
                 <FormDescription className="text-[9px] text-white/30">Average balance required over period.</FormDescription>
               </FormItem>
             )}
@@ -83,7 +93,7 @@ export function CampaignRequirementFields({ form }: CampaignRequirementFieldsPro
             render={({ field }) => (
               <FormItem>
                 <FormLabel className="text-[10px] uppercase font-black text-white/60">Verification Days</FormLabel>
-                <FormControl><Input type="number" className="bg-white/5 border-white/10 h-11" {...field} /></FormControl>
+                <FormControl><Input type="number" className="bg-white/5 border-white/10 h-11" {...field} value={field.value ?? 0} /></FormControl>
               </FormItem>
             )}
           />

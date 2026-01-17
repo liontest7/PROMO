@@ -92,6 +92,20 @@ export function ProjectDetailsFields({ form }: ProjectDetailsProps) {
               )}
             />
           </div>
+
+          <FormField
+            control={form.control}
+            name="initialMarketCap"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="text-[10px] uppercase font-black text-white">Initial Market Cap (USD)</FormLabel>
+                <FormControl>
+                  <Input placeholder="e.g. 50000" className="bg-white/5 border-white/10 text-white text-base h-11" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
         </div>
       </div>
     </div>
