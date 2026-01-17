@@ -16,6 +16,7 @@ import {
   DialogTrigger,
   DialogDescription,
 } from "@/components/ui/dialog";
+import { Badge } from "@/components/ui/badge";
 import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import { Rocket, Sparkles, ChevronRight, Layout, ShieldCheck, ListChecks, Coins, Search, Zap, Loader2, Info } from "lucide-react";
