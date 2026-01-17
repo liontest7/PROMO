@@ -1,11 +1,10 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQuery } from "@tanstack/react-query";
 import { useCreateCampaign } from "@/hooks/use-campaigns";
 import { useWallet } from "@/hooks/use-wallet";
 import { useToast } from "@/hooks/use-toast";
-import { PLATFORM_CONFIG } from "@shared/config";
 import {
   Dialog,
   DialogContent,
