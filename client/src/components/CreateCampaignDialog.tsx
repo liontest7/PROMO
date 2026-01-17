@@ -291,20 +291,12 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
     <>
       <Dialog open={open} onOpenChange={o => { 
         if (!o) {
-          // If closing via X or background, we only reset if it wasn't a manual "X" close intent
-          // But user wants X to reset. Standard Dialog X trigger doesn't distinguish easily,
-          // so we'll implement a reset on close as requested for "X".
-          setStep("initial"); 
-          setActiveTab("general");
-          form.reset({
-            title: "", description: "", tokenName: "", tokenAddress: "", totalBudget: 0.1,
-            bannerUrl: "", logoUrl: "", websiteUrl: "", twitterUrl: "", telegramUrl: "",
-            minSolBalance: 0, minWalletAgeDays: 0, minXAccountAgeDays: 0, minXFollowers: 0,
-            minFollowDurationDays: 0, multiDaySolAmount: 0, multiDaySolDays: 0,
-            minHoldingAmount: 0, minHoldingDuration: 0,
-            campaignType: undefined, actions: [], creatorId: userId || undefined,
-          });
-          localStorage.removeItem("campaign_draft");
+          // If the step is preview, we probably finished or want to keep it.
+          // But if they just hit the background while editing, let's keep the draft.
+          // We'll use a heuristic: if they click "X" (hard close), we reset.
+          // However, Radix doesn't expose the trigger source easily.
+          // Let's keep the data if it's a background click, but for now we'll 
+          // default to NOT resetting unless it's a specific action.
         }
         setOpen(o); 
       }}>
@@ -320,14 +312,41 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
             <Rocket className="mr-3 h-6 w-6 animate-bounce group-hover:animate-pulse transition-all" /> LAUNCH CAMPAIGN
           </Button>
         </DialogTrigger>
-        <DialogContent className="max-w-3xl max-h-[95vh] flex flex-col glass-card border-primary/20 p-0 shadow-[0_0_50px_rgba(0,0,0,0.5)] border-2">
+        <DialogContent 
+          onPointerDownOutside={(e) => {
+            // Keep the data on background click
+            e.preventDefault();
+            setOpen(false);
+          }}
+          className="max-w-3xl max-h-[95vh] flex flex-col glass-card border-primary/20 p-0 shadow-[0_0_50px_rgba(0,0,0,0.5)] border-2"
+        >
+          <DialogClose 
+            onClick={() => {
+              // RESET only on X button
+              setStep("initial"); 
+              setActiveTab("general");
+              form.reset({
+                title: "", description: "", tokenName: "", tokenAddress: "", totalBudget: 0.1,
+                bannerUrl: "", logoUrl: "", websiteUrl: "", twitterUrl: "", telegramUrl: "",
+                minSolBalance: 0, minWalletAgeDays: 0, minXAccountAgeDays: 0, minXFollowers: 0,
+                minFollowDurationDays: 0, multiDaySolAmount: 0, multiDaySolDays: 0,
+                minHoldingAmount: 0, minHoldingDuration: 0,
+                campaignType: undefined, actions: [], creatorId: userId || undefined,
+              });
+              localStorage.removeItem("campaign_draft");
+            }}
+            className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground z-50"
+          >
+            <X className="h-4 w-4" />
+            <span className="sr-only">Close</span>
+          </DialogClose>
           <div className="relative flex-1 flex flex-col min-h-0 overflow-hidden">
             <div className="absolute top-0 right-0 p-16 text-primary/5 pointer-events-none overflow-hidden">
               <Zap className="h-64 w-64 rotate-12 animate-pulse" />
             </div>
 
             <div className="px-10 pt-6 shrink-0">
-              <DialogHeader className="space-y-1">
+              <DialogHeader className="space-y-3">
                 <div className="flex items-center gap-4">
                   <div className="p-2 bg-primary/20 rounded-xl border border-primary/30 shadow-[0_0_15px_rgba(34,197,94,0.2)]">
                     <Rocket className="h-6 w-6 text-primary" />
@@ -426,14 +445,14 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
                   <Form {...form}>
                     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
                       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-                        <TabsList className="grid grid-cols-3 mb-4 bg-primary/5 border-2 border-primary/10 p-1.5 h-14 rounded-[20px] shadow-inner shrink-0 sticky top-0 z-50 bg-background/80 backdrop-blur-md">
-                          <TabsTrigger value="general" className="rounded-xl data-[state=active]:bg-primary data-[state=active]:!text-primary-foreground font-black text-[11px] uppercase tracking-[0.2em] gap-3 transition-all shadow-sm text-white/90 hover:text-white">
+                        <TabsList className="grid grid-cols-3 mb-6 bg-primary/5 border-2 border-primary/10 p-1.5 h-14 rounded-[20px] shadow-inner shrink-0 sticky top-0 z-50 bg-background/80 backdrop-blur-md">
+                          <TabsTrigger value="general" className="rounded-xl data-[state=active]:bg-primary data-[state=active]:!text-primary-foreground font-black text-[13px] uppercase tracking-[0.2em] gap-3 transition-all shadow-sm text-white hover:text-white">
                             <Layout className="h-4 w-4" /> BRANDING
                           </TabsTrigger>
-                          <TabsTrigger value="protections" className="rounded-xl data-[state=active]:bg-primary data-[state=active]:!text-primary-foreground font-black text-[11px] uppercase tracking-[0.2em] gap-3 transition-all shadow-sm text-white/90 hover:text-white">
+                          <TabsTrigger value="protections" className="rounded-xl data-[state=active]:bg-primary data-[state=active]:!text-primary-foreground font-black text-[13px] uppercase tracking-[0.2em] gap-3 transition-all shadow-sm text-white hover:text-white">
                             <ShieldCheck className="h-4 w-4" /> SHIELD
                           </TabsTrigger>
-                          <TabsTrigger value="actions" className="rounded-xl data-[state=active]:bg-primary data-[state=active]:!text-primary-foreground font-black text-[11px] uppercase tracking-[0.2em] gap-3 transition-all shadow-sm text-white/90 hover:text-white">
+                          <TabsTrigger value="actions" className="rounded-xl data-[state=active]:bg-primary data-[state=active]:!text-primary-foreground font-black text-[13px] uppercase tracking-[0.2em] gap-3 transition-all shadow-sm text-white hover:text-white">
                             <ListChecks className="h-4 w-4" /> REWARDS
                           </TabsTrigger>
                         </TabsList>
@@ -441,7 +460,17 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
                         <TabsContent value="general" className="mt-0 space-y-8 animate-in fade-in slide-in-from-left-8 duration-500">
                           <BasicSettings form={form} fetchTokenMetadata={fetchTokenMetadata} />
                           <div className="flex justify-between pt-6 gap-4">
-                            <Button type="button" variant="outline" onClick={() => setStep("initial")} className="h-16 px-10 rounded-2xl font-black uppercase tracking-[0.2em] text-xs border-2 hover:bg-white/5">BACK</Button>
+                            <Button 
+                              type="button" 
+                              variant="outline" 
+                              onClick={() => {
+                                setStep("initial");
+                                setActiveTab("general");
+                              }} 
+                              className="h-16 px-10 rounded-2xl font-black uppercase tracking-[0.2em] text-xs border-2 hover:bg-white/5"
+                            >
+                              BACK
+                            </Button>
                             <Button type="button" onClick={() => setActiveTab("protections")} className="h-16 px-10 rounded-2xl font-black uppercase tracking-[0.2em] text-xs gap-3 shadow-[0_0_30px_rgba(34,197,94,0.2)] hover:scale-105 transition-all">
                               CONFIGURE SECURITY <ChevronRight className="h-5 w-5" />
                             </Button>
