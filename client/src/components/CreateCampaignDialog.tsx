@@ -241,9 +241,35 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
     setActiveTab("general");
   };
 
-  const onSubmit = (values: FormValues) => {
+  const onSubmit = async (values: FormValues) => {
     if (!userId) { toast({ title: "User Error", description: "Please reconnect your wallet.", variant: "destructive" }); return; }
-    if (step === "edit") { setStep("preview"); return; }
+    
+    if (step === "edit") {
+      const isValid = await form.trigger();
+      if (!isValid) {
+        const errors = form.formState.errors;
+        const missingFields: string[] = [];
+        
+        if (errors.title) missingFields.push("Campaign Title");
+        if (errors.description) missingFields.push("Description");
+        if (errors.logoUrl) missingFields.push("Logo Image");
+        if (errors.campaignType) missingFields.push("Campaign Category");
+        if (errors.actions) missingFields.push("Engagement Tasks");
+        if (errors.rewardPerWallet) missingFields.push("Reward Amount");
+        if (errors.maxClaims) missingFields.push("Participant Cap");
+
+        toast({
+          title: "Mission Calibration Required",
+          description: missingFields.length > 0 
+            ? `Missing sectors: ${missingFields.join(", ")}` 
+            : "Please review the form for highlighted errors.",
+          variant: "destructive"
+        });
+        return;
+      }
+      setStep("preview");
+      return;
+    }
     
     const formattedValues = {
       ...values,
@@ -479,13 +505,13 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
                             <Button 
                               type="button" 
                               variant="outline" 
-                              onPointerDown={(e) => {
+                              onClick={(e) => {
                                 e.preventDefault();
                                 e.stopPropagation();
                                 setStep("initial");
                                 setActiveTab("general");
                               }}
-                              className="h-16 px-10 rounded-2xl font-black uppercase tracking-[0.2em] text-xs border-2 hover:bg-white/5 relative z-[100] cursor-pointer touch-none"
+                              className="h-16 px-10 rounded-2xl font-black uppercase tracking-[0.2em] text-xs border-2 hover:bg-white/5 relative z-[100] cursor-pointer"
                             >
                               BACK
                             </Button>
@@ -501,12 +527,12 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
                             <Button 
                               type="button" 
                               variant="outline" 
-                              onPointerDown={(e) => {
+                              onClick={(e) => {
                                 e.preventDefault();
                                 e.stopPropagation();
                                 setActiveTab("general");
                               }}
-                              className="h-16 px-10 rounded-2xl font-black uppercase tracking-[0.2em] text-xs border-2 hover:bg-white/5 relative z-[100] cursor-pointer touch-none"
+                              className="h-16 px-10 rounded-2xl font-black uppercase tracking-[0.2em] text-xs border-2 hover:bg-white/5 relative z-[100] cursor-pointer"
                             >
                               BACK
                             </Button>
@@ -522,12 +548,12 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
                             <Button 
                               type="button" 
                               variant="outline" 
-                              onPointerDown={(e) => {
+                              onClick={(e) => {
                                 e.preventDefault();
                                 e.stopPropagation();
                                 setActiveTab("protections");
                               }}
-                              className="h-16 px-10 rounded-2xl font-black uppercase tracking-[0.2em] text-xs border-2 hover:bg-white/5 relative z-[100] cursor-pointer touch-none"
+                              className="h-16 px-10 rounded-2xl font-black uppercase tracking-[0.2em] text-xs border-2 hover:bg-white/5 relative z-[100] cursor-pointer"
                             >
                               BACK
                             </Button>
