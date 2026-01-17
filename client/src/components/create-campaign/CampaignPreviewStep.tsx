@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { UseFormReturn } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Eye, CheckCircle2, Loader2, Coins, ChevronDown, ChevronUp } from "lucide-react";
+import { Eye, CheckCircle2, Loader2, Coins } from "lucide-react";
 import { PLATFORM_CONFIG } from "@shared/config";
 import { type FormValues } from "./schema";
 

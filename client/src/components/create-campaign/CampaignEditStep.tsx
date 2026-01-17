@@ -120,6 +120,8 @@ export function CampaignEditStep({ form, settings, loadingSettings }: CampaignEd
         }
 
         toast({ title: "Metadata Loaded", description: `Successfully retrieved token details.` });
+      } else {
+        toast({ title: "Limited Data", description: "Found token but could not retrieve full metadata.", variant: "default" });
       }
     } catch (error) {
       console.error("Error fetching metadata:", error);
@@ -164,6 +166,11 @@ export function CampaignEditStep({ form, settings, loadingSettings }: CampaignEd
                   </SelectItem>
                   <SelectItem value="engagement" disabled={isSocialDisabled || loadingSettings} className="font-black uppercase tracking-widest text-xs py-3 text-white">
                     Social Engagement {getCampaignStatusLabel("engagement")}
+                    {settings?.twitterApiStatus !== 'active' && settings?.socialEngagementEnabled && (
+                      <span className="block text-[10px] text-yellow-500 font-medium mt-0.5">
+                        Verification delayed: Twitter API Disconnected
+                      </span>
+                    )}
                   </SelectItem>
                 </SelectContent>
               </Select>
