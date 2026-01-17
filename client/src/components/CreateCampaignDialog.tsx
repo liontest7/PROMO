@@ -489,7 +489,8 @@ export function CreateCampaignDialog({
       totalBudget:
         values.campaignType === "holder_qualification"
           ? (
-              Number(values.rewardPerWallet || 0) * Number(values.maxClaims || 0)
+              Number(values.rewardPerWallet || 0) *
+              Number(values.maxClaims || 0)
             ).toString()
           : (values.totalBudget || 0).toString(),
       minHoldingAmount: values.minHoldingAmount?.toString() || null,
@@ -666,11 +667,13 @@ export function CreateCampaignDialog({
                                 value="engagement"
                                 disabled={isSocialDisabled || loadingSettings}
                               >
-                                Social Engagement {getCampaignStatusLabel("engagement")}
+                                Social Engagement{" "}
+                                {getCampaignStatusLabel("engagement")}
                                 {settings?.twitterApiStatus !== "active" &&
                                   settings?.socialEngagementEnabled && (
                                     <span className="block text-[10px] text-yellow-500 font-medium mt-0.5">
-                                      Verification delayed: Twitter API Disconnected
+                                      Verification delayed: Twitter API
+                                      Disconnected
                                     </span>
                                   )}
                               </SelectItem>
@@ -1035,7 +1038,9 @@ export function CreateCampaignDialog({
                                   name="minWalletAgeDays"
                                   render={({ field }) => (
                                     <FormItem>
-                                      <FormLabel>Min Wallet Age (Days)</FormLabel>
+                                      <FormLabel>
+                                        Min Wallet Age (Days)
+                                      </FormLabel>
                                       <FormControl>
                                         <Input type="number" {...field} />
                                       </FormControl>
@@ -1061,7 +1066,9 @@ export function CreateCampaignDialog({
                                   name="minXAccountAgeDays"
                                   render={({ field }) => (
                                     <FormItem>
-                                      <FormLabel>Min X Account Age (Days)</FormLabel>
+                                      <FormLabel>
+                                        Min X Account Age (Days)
+                                      </FormLabel>
                                       <FormControl>
                                         <Input type="number" {...field} />
                                       </FormControl>
@@ -1094,7 +1101,9 @@ export function CreateCampaignDialog({
                     </p>
                   </div>
                   <div className="p-4 border rounded-lg bg-primary/5">
-                    <p className="text-sm text-muted-foreground">Creation Fee</p>
+                    <p className="text-sm text-muted-foreground">
+                      Creation Fee
+                    </p>
                     <p className="text-2xl font-bold">
                       {platformFee} {form.getValues("tokenName") || "Tokens"}
                     </p>
