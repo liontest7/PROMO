@@ -483,7 +483,7 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
                                 setStep("initial");
                                 setActiveTab("general");
                               }} 
-                              className="h-16 px-10 rounded-2xl font-black uppercase tracking-[0.2em] text-xs border-2 hover:bg-white/5 relative z-[100]"
+                              className="h-16 px-10 rounded-2xl font-black uppercase tracking-[0.2em] text-xs border-2 hover:bg-white/5 relative z-[100] cursor-pointer"
                             >
                               BACK
                             </Button>
