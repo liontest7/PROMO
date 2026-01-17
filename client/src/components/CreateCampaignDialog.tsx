@@ -20,7 +20,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
-import { Rocket, Sparkles, ChevronRight, Layout, ShieldCheck, ListChecks, Coins, Search, Zap, Loader2, Info } from "lucide-react";
+import { Rocket, Sparkles, ChevronRight, Layout, ShieldCheck, ListChecks, Coins, Search, Zap, Loader2, Info, X } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
