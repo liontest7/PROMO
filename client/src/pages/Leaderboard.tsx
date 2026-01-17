@@ -1,7 +1,7 @@
 import { Navigation } from "@/components/Navigation";
 import { Trophy, Star, Medal, Crown, Calendar, Globe, Clock, Loader2, History, ExternalLink as ExternalLinkIcon, ChevronDown, ChevronUp, ArrowUp, ArrowDown, Minus } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { PLATFORM_CONFIG } from "@shared/config";
 import { useQuery } from "@tanstack/react-query";
 import { cn } from "@/lib/utils";
