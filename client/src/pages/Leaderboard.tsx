@@ -140,6 +140,33 @@ export default function Leaderboard() {
     );
   };
 
+  const getLevelLabel = (score: number) => {
+    const lvl = Math.floor(Number(score) / 100) + 1;
+    if (lvl >= 10) return "LEGEND";
+    if (lvl >= 5) return "ELITE";
+    if (lvl >= 2) return "SENTINEL";
+    return "INITIATE";
+  };
+
+  const getLabelColor = (label: string) => {
+    if (label === "LEGEND") return "bg-purple-500/20 text-purple-500 border-purple-500/30 shadow-[0_0_10px_rgba(168,85,247,0.2)]";
+    if (label === "ELITE") return "bg-red-500/20 text-red-500 border-red-500/30 shadow-[0_0_10px_rgba(239,68,68,0.2)]";
+    if (label === "SENTINEL") return "bg-yellow-500/20 text-yellow-500 border-yellow-500/30 shadow-[0_0_10px_rgba(234,179,8,0.2)]";
+    return "bg-primary/20 text-primary border-primary/30 shadow-[0_0_10px_rgba(34,197,94,0.2)]";
+  };
+
+  const Top3RankBadge = ({ score }: { score: number }) => {
+    const label = getLevelLabel(score);
+    return (
+      <div className={cn(
+        "inline-flex items-center px-2 py-0.5 rounded-full border text-[8px] font-black uppercase tracking-widest italic mt-1 ml-2",
+        getLabelColor(label)
+      )}>
+        {label}
+      </div>
+    );
+  };
+
   return (
     <div className="min-h-screen bg-[#050505] text-white">
       <Navigation />
@@ -275,6 +302,7 @@ export default function Leaderboard() {
                   </div>
                   <h3 className="text-2xl font-black font-display uppercase italic tracking-tight text-white truncate w-full px-2">
                     {activeLeaders?.[1]?.username || activeLeaders?.[1]?.name || '---'}
+                    {activeLeaders?.[1] && <Top3RankBadge score={activeLeaders[1].points || 0} />}
                     {activeLeaders?.[1] && activeLeaders[1].points === 0 && (
                       <span className="block text-[8px] text-red-400 not-italic mt-1">NOT ELIGIBLE</span>
                     )}
@@ -303,6 +331,7 @@ export default function Leaderboard() {
                   </div>
                   <h3 className="text-3xl font-black font-display uppercase italic tracking-tighter text-white truncate w-full px-2">
                     {activeLeaders?.[0]?.username || activeLeaders?.[0]?.name || '---'}
+                    {activeLeaders?.[0] && <Top3RankBadge score={activeLeaders[0].points || 0} />}
                     {activeLeaders?.[0] && activeLeaders[0].points === 0 && (
                       <span className="block text-[10px] text-red-400 not-italic mt-1">NOT ELIGIBLE</span>
                     )}
@@ -330,6 +359,7 @@ export default function Leaderboard() {
                   </div>
                   <h3 className="text-2xl font-black font-display uppercase italic tracking-tight text-white truncate w-full px-2">
                     {activeLeaders?.[2]?.username || activeLeaders?.[2]?.name || '---'}
+                    {activeLeaders?.[2] && <Top3RankBadge score={activeLeaders[2].points || 0} />}
                     {activeLeaders?.[2] && activeLeaders[2].points === 0 && (
                       <span className="block text-[8px] text-red-400 not-italic mt-1">NOT ELIGIBLE</span>
                     )}

@@ -84,7 +84,7 @@ export function ProfileHeader({
   };
 
   const getLevelInfo = (score: number) => {
-    const lvl = Math.floor(score / 100) + 1;
+    const lvl = Math.floor(Number(score) / 100) + 1;
     let label = "INITIATE";
     if (lvl >= 2) label = "SENTINEL";
     if (lvl >= 5) label = "ELITE";
@@ -93,6 +93,13 @@ export function ProfileHeader({
   };
 
   const levelInfo = getLevelInfo(reputationScore);
+
+  const getLabelColor = (label: string) => {
+    if (label === "LEGEND") return "bg-purple-500/20 text-purple-500 border-purple-500/30 shadow-[0_0_10px_rgba(168,85,247,0.2)]";
+    if (label === "ELITE") return "bg-red-500/20 text-red-500 border-red-500/30 shadow-[0_0_10px_rgba(239,68,68,0.2)]";
+    if (label === "SENTINEL") return "bg-yellow-500/20 text-yellow-500 border-yellow-500/30 shadow-[0_0_10px_rgba(234,179,8,0.2)]";
+    return "bg-primary/20 text-primary border-primary/30 shadow-[0_0_10px_rgba(34,197,94,0.2)]";
+  };
 
   return (
     <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 p-8 rounded-[2.5rem] bg-white/[0.04] border border-white/10 backdrop-blur-3xl relative overflow-hidden group shadow-xl">
@@ -162,7 +169,10 @@ export function ProfileHeader({
                 )}
               </div>
             )}
-            <Badge className="bg-yellow-500/20 text-yellow-500 border border-yellow-500/30 text-[11px] font-black uppercase px-3 py-1 tracking-[0.2em] rounded-full italic shadow-[0_0_10px_rgba(234,179,8,0.2)]">
+            <Badge className={cn(
+              "text-[11px] font-black uppercase px-3 py-1 tracking-[0.2em] rounded-full italic border",
+              getLabelColor(levelInfo.label)
+            )}>
               {levelInfo.label} RANK
             </Badge>
           </div>

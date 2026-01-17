@@ -10,6 +10,7 @@ interface EcosystemContributionProps {
   progress: number;
 }
 
+export function EcosystemContribution({ reputationScore, level, progress }: EcosystemContributionProps) {
   const getLevelLabel = (lvl: number) => {
     if (lvl >= 10) return "LEGEND";
     if (lvl >= 5) return "ELITE";
@@ -93,3 +94,4 @@ interface EcosystemContributionProps {
       </CardContent>
     </Card>
   );
+}

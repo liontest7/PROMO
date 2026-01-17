@@ -1,4 +1,4 @@
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -10,6 +10,7 @@ import { TokenPortfolios } from "@/components/dashboard/TokenPortfolios";
 import { EcosystemContribution } from "@/components/dashboard/EcosystemContribution";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { PLATFORM_CONFIG } from "@shared/config";
 
 interface UserProfileDialogProps {
   walletAddress: string | null;
@@ -29,7 +30,7 @@ export function UserProfileDialog({ walletAddress, isOpen, onOpenChange }: UserP
 
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-5xl max-h-[95vh] p-0 border-white/10 bg-[#050505] overflow-hidden rounded-[2.5rem] shadow-[0_0_100px_rgba(0,0,0,0.8)]">
+      <DialogContent className="max-w-6xl max-h-[95vh] p-0 border-white/10 bg-[#050505] overflow-hidden rounded-[2.5rem] shadow-[0_0_100px_rgba(0,0,0,0.8)]">
         <DialogHeader className="p-8 border-b border-white/5 flex flex-row items-center justify-between">
           <DialogTitle className="text-3xl font-black italic uppercase tracking-tighter text-white">
             USER <span className="text-primary">PROFILE</span>
