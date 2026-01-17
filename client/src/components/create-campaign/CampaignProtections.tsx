@@ -24,17 +24,17 @@ export function CampaignProtections({ form }: CampaignProtectionsProps) {
 
   return (
     <div className="space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-500">
-      <div className="p-3 bg-primary/10 rounded-2xl border border-primary/20 mb-2">
-        <h3 className="text-xs font-black text-primary uppercase tracking-widest flex items-center gap-2">
-          <Shield className="h-4 w-4" /> Security & Anti-Bot Configuration
+      <div className="p-4 bg-primary/10 rounded-2xl border border-primary/20 mb-2">
+        <h3 className="text-sm font-black text-primary uppercase tracking-widest flex items-center gap-3">
+          <Shield className="h-6 w-6" /> SECURITY & ANTI-BOT CONFIGURATION
         </h3>
-        <p className="text-[10px] text-white font-bold mt-1 opacity-90">Configure entry requirements for participants.</p>
+        <p className="text-[13px] text-white font-bold mt-1.5 opacity-100">Configure entry requirements for participants.</p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div className="space-y-3 p-4 bg-white/5 rounded-[20px] border border-white/10">
-          <div className="flex items-center gap-2 text-[10px] font-black text-primary uppercase tracking-widest mb-1">
-            <Wallet className="h-3.5 w-3.5" /> Wallet Verification
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="space-y-4 p-6 bg-white/5 rounded-[24px] border border-white/10">
+          <div className="flex items-center gap-3 text-sm font-black text-primary uppercase tracking-widest mb-2">
+            <Wallet className="h-5 w-5" /> Wallet Verification
           </div>
           <FormField
             control={form.control}
@@ -63,9 +63,9 @@ export function CampaignProtections({ form }: CampaignProtectionsProps) {
         </div>
 
         {isEngagement && (
-          <div className="space-y-3 p-4 bg-white/5 rounded-[20px] border border-white/10 animate-in fade-in duration-300">
-            <div className="flex items-center gap-2 text-[10px] font-black text-primary uppercase tracking-widest mb-1">
-              <Twitter className="h-3.5 w-3.5" /> Social Proof
+          <div className="space-y-4 p-6 bg-white/5 rounded-[24px] border border-white/10 animate-in fade-in duration-300">
+            <div className="flex items-center gap-3 text-sm font-black text-primary uppercase tracking-widest mb-2">
+              <Twitter className="h-5 w-5" /> Social Proof
             </div>
             <FormField
               control={form.control}
@@ -99,11 +99,11 @@ export function CampaignProtections({ form }: CampaignProtectionsProps) {
         <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:rotate-12 transition-transform duration-700">
           <Lock className="h-16 w-16" />
         </div>
-        <h4 className="text-xs font-black uppercase tracking-[0.2em] mb-3 flex items-center gap-2 text-primary">
-          <div className="w-1.5 h-1.5 bg-primary rounded-full animate-pulse" />
+        <h4 className="text-sm font-black uppercase tracking-[0.2em] mb-4 flex items-center gap-3 text-primary">
+          <div className="w-2 h-2 bg-primary rounded-full animate-pulse" />
           SOL Balance Holding Period
         </h4>
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-2 gap-6">
           <FormField
             control={form.control}
             name="multiDaySolAmount"
@@ -129,7 +129,7 @@ export function CampaignProtections({ form }: CampaignProtectionsProps) {
             )}
           />
         </div>
-        <p className="mt-3 text-[9px] text-white font-bold italic leading-relaxed opacity-90">
+        <p className="mt-4 text-[11px] text-white font-black italic leading-relaxed opacity-100 uppercase tracking-wider">
           Security protocol: Ensures participants are genuine long-term holders by verifying their SOL balance consistency over the selected period.
         </p>
       </div>
