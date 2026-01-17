@@ -83,9 +83,16 @@ export function ProfileHeader({
     return `${address.slice(0, 4)}...${address.slice(-4)}`;
   };
 
-  const calculateLevel = (score: number) => {
-    return Math.floor(score / 100) + 1;
+  const getLevelInfo = (score: number) => {
+    const lvl = Math.floor(score / 100) + 1;
+    let label = "INITIATE";
+    if (lvl >= 2) label = "SENTINEL";
+    if (lvl >= 5) label = "ELITE";
+    if (lvl >= 10) label = "LEGEND";
+    return { lvl, label };
   };
+
+  const levelInfo = getLevelInfo(reputationScore);
 
   return (
     <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 p-8 rounded-[2.5rem] bg-white/[0.04] border border-white/10 backdrop-blur-3xl relative overflow-hidden group shadow-xl">
@@ -106,7 +113,7 @@ export function ProfileHeader({
             </div>
           </div>
           <Badge className="absolute -bottom-3 left-1/2 -translate-x-1/2 px-5 py-2 bg-primary text-primary-foreground font-black text-xs rounded-full border-4 border-background shadow-xl uppercase tracking-widest">
-            LVL {calculateLevel(reputationScore)}
+            LVL {levelInfo.lvl}
           </Badge>
         </div>
         
@@ -156,7 +163,7 @@ export function ProfileHeader({
               </div>
             )}
             <Badge className="bg-yellow-500/20 text-yellow-500 border border-yellow-500/30 text-[11px] font-black uppercase px-3 py-1 tracking-[0.2em] rounded-full italic shadow-[0_0_10px_rgba(234,179,8,0.2)]">
-              SENTINEL RANK
+              {levelInfo.label} RANK
             </Badge>
           </div>
 
