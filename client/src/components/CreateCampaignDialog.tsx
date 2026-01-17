@@ -461,7 +461,7 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
                   <Form {...form}>
                     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
                       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-                        <TabsList className="grid grid-cols-3 mb-10 mt-4 bg-primary/5 border-2 border-primary/10 p-1.5 h-14 rounded-[20px] shadow-inner shrink-0 sticky top-0 z-50 bg-background/80 backdrop-blur-md">
+                        <TabsList className="grid grid-cols-3 mb-6 mt-4 bg-primary/5 border-2 border-primary/10 p-1.5 h-14 rounded-[20px] shadow-inner shrink-0 sticky top-0 z-50 bg-background/80 backdrop-blur-md">
                           <TabsTrigger value="general" className="rounded-xl data-[state=active]:bg-primary data-[state=active]:!text-primary-foreground font-black text-[13px] uppercase tracking-[0.2em] gap-3 transition-all shadow-sm text-white hover:text-white">
                             <Layout className="h-4 w-4" /> BRANDING
                           </TabsTrigger>
@@ -473,7 +473,7 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
                           </TabsTrigger>
                         </TabsList>
 
-                        <TabsContent value="general" className="mt-0 space-y-8 animate-in fade-in slide-in-from-left-8 duration-500">
+                        <TabsContent value="general" className="mt-0 space-y-6 animate-in fade-in slide-in-from-left-8 duration-500">
                           <BasicSettings form={form} fetchTokenMetadata={fetchTokenMetadata} />
                           <div className="flex justify-between pt-6 gap-4 pb-4">
                             <Button 
@@ -483,7 +483,7 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
                                 setStep("initial");
                                 setActiveTab("general");
                               }} 
-                              className="h-16 px-10 rounded-2xl font-black uppercase tracking-[0.2em] text-xs border-2 hover:bg-white/5"
+                              className="h-16 px-10 rounded-2xl font-black uppercase tracking-[0.2em] text-xs border-2 hover:bg-white/5 relative z-[100]"
                             >
                               BACK
                             </Button>
@@ -493,20 +493,34 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
                           </div>
                         </TabsContent>
 
-                        <TabsContent value="protections" className="mt-0 space-y-8 animate-in fade-in slide-in-from-left-8 duration-500">
+                        <TabsContent value="protections" className="mt-0 space-y-6 animate-in fade-in slide-in-from-left-8 duration-500">
                           <CampaignProtections form={form} />
                           <div className="flex justify-between pt-6 gap-4">
-                            <Button type="button" variant="outline" onClick={() => setActiveTab("general")} className="h-16 px-10 rounded-2xl font-black uppercase tracking-[0.2em] text-xs border-2 hover:bg-white/5">BACK</Button>
+                            <Button 
+                              type="button" 
+                              variant="outline" 
+                              onClick={() => setActiveTab("general")} 
+                              className="h-16 px-10 rounded-2xl font-black uppercase tracking-[0.2em] text-xs border-2 hover:bg-white/5 relative z-[100]"
+                            >
+                              BACK
+                            </Button>
                             <Button type="button" onClick={() => setActiveTab("actions")} className="h-16 px-10 rounded-2xl font-black uppercase tracking-[0.2em] text-xs gap-3 shadow-[0_0_30px_rgba(34,197,94,0.2)] hover:scale-105 transition-all">
                               DESIGN REWARDS <ChevronRight className="h-5 w-5" />
                             </Button>
                           </div>
                         </TabsContent>
 
-                        <TabsContent value="actions" className="mt-0 space-y-8 animate-in fade-in slide-in-from-left-8 duration-500">
+                        <TabsContent value="actions" className="mt-0 space-y-6 animate-in fade-in slide-in-from-left-8 duration-500">
                           <EngagementActions form={form} gasFeeSol={gasFeeSol} />
                           <div className="flex justify-between pt-6 gap-4">
-                            <Button type="button" variant="outline" onClick={() => setActiveTab("protections")} className="h-16 px-10 rounded-2xl font-black uppercase tracking-[0.2em] text-xs border-2 hover:bg-white/5">BACK</Button>
+                            <Button 
+                              type="button" 
+                              variant="outline" 
+                              onClick={() => setActiveTab("protections")} 
+                              className="h-16 px-10 rounded-2xl font-black uppercase tracking-[0.2em] text-xs border-2 hover:bg-white/5 relative z-[100]"
+                            >
+                              BACK
+                            </Button>
                             <Button type="submit" className="h-16 px-12 rounded-2xl font-black uppercase tracking-[0.3em] text-sm bg-primary shadow-[0_0_40px_rgba(34,197,94,0.4)] hover:scale-105 transition-all">
                               REVIEW MISSION <Sparkles className="h-5 w-5 ml-2" />
                             </Button>
