@@ -130,7 +130,7 @@ export function CampaignActionFields({ form }: CampaignActionFieldsProps) {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel className="text-[10px] uppercase font-black text-white/60">Reward (SOL)</FormLabel>
-                      <FormControl><Input type="number" step="0.001" className="bg-white/5 border-white/10 h-10" {...field} /></FormControl>
+                      <FormControl><Input type="number" step="0.001" className="bg-white/5 border-white/10 h-10" {...field} value={field.value ?? 0} /></FormControl>
                     </FormItem>
                   )}
                 />
@@ -140,7 +140,7 @@ export function CampaignActionFields({ form }: CampaignActionFieldsProps) {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel className="text-[10px] uppercase font-black text-white/60">Max Participants</FormLabel>
-                      <FormControl><Input type="number" className="bg-white/5 border-white/10 h-10" {...field} /></FormControl>
+                      <FormControl><Input type="number" className="bg-white/5 border-white/10 h-10" {...field} value={field.value ?? 0} /></FormControl>
                     </FormItem>
                   )}
                 />

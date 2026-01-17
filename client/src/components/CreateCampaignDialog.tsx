@@ -450,7 +450,7 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
                             render={({ field }) => (
                               <FormItem>
                                 <FormLabel className="text-[10px] uppercase font-black text-white">Reward per Holder</FormLabel>
-                                <FormControl><Input type="number" step="0.001" className="bg-white/5 border-white/10 text-white h-11" {...field} /></FormControl>
+                                <FormControl><Input type="number" step="0.001" className="bg-white/5 border-white/10 text-white h-11" {...field} value={field.value ?? 0} /></FormControl>
                                 <FormMessage />
                               </FormItem>
                             )}
@@ -461,7 +461,7 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
                             render={({ field }) => (
                               <FormItem>
                                 <FormLabel className="text-[10px] uppercase font-black text-white">Max Holders</FormLabel>
-                                <FormControl><Input type="number" className="bg-white/5 border-white/10 text-white h-11" {...field} /></FormControl>
+                                <FormControl><Input type="number" className="bg-white/5 border-white/10 text-white h-11" {...field} value={field.value ?? 0} /></FormControl>
                                 <FormMessage />
                               </FormItem>
                             )}
