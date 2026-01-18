@@ -108,7 +108,7 @@ export function AdminAnalytics() {
           <CardHeader className="pb-3">
             <CardDescription className="text-xs uppercase font-black tracking-[0.2em] text-primary/80">Treasury</CardDescription>
             <CardTitle className="text-4xl font-display font-black text-white italic tracking-tighter">
-              {(treasury?.totalBurned || 15000).toLocaleString()}
+              {(treasury?.totalBurned || stats?.totalBurned || 0).toLocaleString()}
             </CardTitle>
           </CardHeader>
           <CardContent>
