@@ -394,19 +394,17 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
       minHoldingAmount: (values.minHoldingAmount || 0).toString(),
       rewardPerWallet: (values.rewardPerWallet || 0).toString(),
       requirements: {
-        minSolBalance: values.minSolBalance,
-        minWalletAgeDays: values.minWalletAgeDays,
-        minXAccountAgeDays: values.minXAccountAgeDays,
-        minXFollowers: values.minXFollowers,
-        minFollowDurationDays: values.minFollowDurationDays,
-        multiDaySolHolding: values.multiDaySolAmount > 0 ? {
-          amount: values.multiDaySolAmount,
-          days: values.multiDaySolDays
+        minSolBalance: Number(values.minSolBalance),
+        minWalletAgeDays: Number(values.minWalletAgeDays),
+        minXAccountAgeDays: Number(values.minXAccountAgeDays),
+        minXFollowers: Number(values.minXFollowers),
+        minFollowDurationDays: Number(values.minFollowDurationDays),
+        multiDaySolHolding: Number(values.multiDaySolAmount) > 0 ? {
+          amount: Number(values.multiDaySolAmount),
+          days: Number(values.multiDaySolDays)
         } : undefined,
-        minProjectTokenHolding: (values.minHoldingAmount || 0) > 0 ? {
-          amount: Number(values.minHoldingAmount || 0),
-          days: values.minHoldingDuration || 0
-        } : undefined
+        minProjectTokenHolding: Number(values.minHoldingAmount || 0),
+        projectTokenAddress: values.tokenAddress
       },
       actions: values.campaignType === "holder_qualification" || !values.actions ? [] : values.actions.map(a => ({
         ...a, 
