@@ -197,6 +197,7 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
       const moralisData = results[3].status === 'fulfilled' ? results[3].value : null;
 
       let found = false;
+      let description = "";
 
       if (pumpData?.success && pumpData.result) {
         const res = pumpData.result;
@@ -204,7 +205,7 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
         form.setValue("title", `${res.name} Growth Campaign`);
         form.setValue("logoUrl", `https://imagedelivery.net/WL1JOIJiM_NAChp6rtB6Cw/coin-image/${address}/86x86?alpha=true`);
         
-        const description = res.description || 
+        description = res.description || 
                            res.about || 
                            res.project_description || 
                            res.desc || 
@@ -214,12 +215,6 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
                            res.description_text || 
                            res.metadata?.description_text || 
                            res.metadata?.about || "";
-        
-        if (description) {
-          console.log("Setting description from Pump.fun:", description);
-          // Update immediately AND with a timeout to be safe
-          form.setValue("description", description, { shouldValidate: true, shouldDirty: true });
-        }
         found = true;
       } else if (dexData?.pairs?.[0]) {
         const p = dexData.pairs[0];
@@ -227,17 +222,12 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
         form.setValue("title", `${p.baseToken.name} Growth Campaign`);
         if (p.info?.imageUrl) form.setValue("logoUrl", p.info.imageUrl);
         if (p.info?.header) form.setValue("bannerUrl", p.info.header);
-
-        const dexDesc = p.info?.description ||
-                        p.info?.summary ||
-                        p.info?.about ||
-                        p.description ||
+        
+        description = p.info?.description || 
+                        p.info?.summary || 
+                        p.info?.about || 
+                        p.description || 
                         (p.info?.socials?.find((s: any) => s.type === "twitter")?.description) || "";
-
-        if (dexDesc) {
-          console.log("Setting description from DexScreener:", dexDesc);
-          form.setValue("description", dexDesc, { shouldValidate: true, shouldDirty: true });
-        }
         
         if (p.info?.websites?.[0]?.url) form.setValue("websiteUrl", p.info.websites[0].url);
         const twitter = p.info?.socials?.find((s: any) => s.type === "twitter");
@@ -247,20 +237,18 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
       } else if (jupData) {
         form.setValue("tokenName", jupData.symbol);
         form.setValue("logoUrl", jupData.logoURI);
-        if (jupData.description) {
-          console.log("Setting description from Jupiter:", jupData.description);
-          form.setValue("description", jupData.description, { shouldValidate: true, shouldDirty: true });
-        }
+        description = jupData.description || "";
         found = true;
       } else if (moralisData) {
         if (moralisData.symbol) form.setValue("tokenName", moralisData.symbol);
-        const moralisDesc = moralisData.description || moralisData.metadata?.description;
-        if (moralisDesc) {
-          console.log("Setting description from Moralis:", moralisDesc);
-          form.setValue("description", moralisDesc, { shouldValidate: true, shouldDirty: true });
-        }
+        description = moralisData.description || moralisData.metadata?.description || "";
         if (moralisData.logo) form.setValue("logoUrl", moralisData.logo);
         found = true;
+      }
+
+      if (description) {
+        console.log("Setting description from metadata:", description);
+        form.setValue("description", description, { shouldValidate: true, shouldDirty: true });
       }
       
       if (found) toast({ title: "Metadata Loaded", description: "Project details retrieved successfully." });
@@ -294,10 +282,10 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
       const errors = form.formState.errors;
       console.log("Validation errors:", errors);
 
-      setStep("edit");
-
-      // Small delay to ensure state update (setStep) propagates
+      // Small delay to ensure step and tab updates propagate
       setTimeout(() => {
+        setStep("edit");
+        
         // Navigate to error tab
         if (errors.tokenAddress || errors.title || errors.description || errors.logoUrl) {
           setActiveTab("general");
@@ -583,7 +571,7 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
                               BACK
                             </Button>
                             <Button type="button" onClick={() => setActiveTab("protections")} className="h-16 px-10 rounded-2xl font-black uppercase tracking-[0.2em] text-xs gap-3 shadow-[0_0_30px_rgba(34,197,94,0.2)] hover:scale-105 transition-all">
-                              CONFIGURE SECURITY <ChevronRight className="h-5 w-5" />
+                              CONTINUE TO SECURITY <ChevronRight className="h-5 w-5" />
                             </Button>
                           </div>
                         </TabsContent>
@@ -604,7 +592,7 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
                               BACK
                             </Button>
                             <Button type="button" onClick={() => setActiveTab("actions")} className="h-16 px-10 rounded-2xl font-black uppercase tracking-[0.2em] text-xs gap-3 shadow-[0_0_30px_rgba(34,197,94,0.2)] hover:scale-105 transition-all">
-                              DESIGN REWARDS <ChevronRight className="h-5 w-5" />
+                              CONTINUE TO REWARDS <ChevronRight className="h-5 w-5" />
                             </Button>
                           </div>
                         </TabsContent>
@@ -625,7 +613,7 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
                               BACK
                             </Button>
                             <Button type="submit" className="h-16 px-12 rounded-2xl font-black uppercase tracking-[0.3em] text-sm bg-primary shadow-[0_0_40px_rgba(34,197,94,0.4)] hover:scale-105 transition-all">
-                              REVIEW MISSION <Sparkles className="h-5 w-5 ml-2" />
+                              PREVIEW CAMPAIGN <Sparkles className="h-5 w-5 ml-2" />
                             </Button>
                           </div>
                         </TabsContent>
