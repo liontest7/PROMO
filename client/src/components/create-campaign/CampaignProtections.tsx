@@ -65,8 +65,8 @@ export function CampaignProtections({ form }: CampaignProtectionsProps) {
         </div>
 
         {isEngagement && (
-          <div className="space-y-4 p-6 bg-white/5 rounded-[24px] border border-white/10 animate-in fade-in duration-300">
-            <div className="flex items-center gap-3 text-sm font-black text-primary uppercase tracking-widest mb-2">
+          <div className="space-y-4 p-6 bg-white/5 rounded-[24px] border border-[#1DA1F2]/20 animate-in fade-in duration-300">
+            <div className="flex items-center gap-3 text-sm font-black text-[#1DA1F2] uppercase tracking-widest mb-2">
               <Twitter className="h-5 w-5 text-[#1DA1F2]" /> Social Proof
             </div>
             <FormField
@@ -74,9 +74,9 @@ export function CampaignProtections({ form }: CampaignProtectionsProps) {
               name="minXAccountAgeDays"
               render={({ field }) => (
                 <FormItem className="space-y-1">
-                  <FormLabel className="text-primary font-black uppercase tracking-[0.2em] text-xs">X Account Age (Days)</FormLabel>
+                  <FormLabel className="text-[#1DA1F2] font-black uppercase tracking-[0.2em] text-xs">X Account Age (Days)</FormLabel>
                   <FormControl>
-                    <Input type="number" {...field} className="bg-background/50 border-primary/30 h-10 rounded-xl font-mono text-white font-bold text-center" />
+                    <Input type="number" {...field} className="bg-background/50 border-[#1DA1F2]/30 h-10 rounded-xl font-mono text-white font-bold text-center focus-visible:ring-[#1DA1F2]/50" />
                   </FormControl>
                 </FormItem>
               )}
@@ -86,9 +86,9 @@ export function CampaignProtections({ form }: CampaignProtectionsProps) {
               name="minXFollowers"
               render={({ field }) => (
                 <FormItem className="space-y-1">
-                  <FormLabel className="text-primary font-black uppercase tracking-[0.2em] text-xs">Min X Followers</FormLabel>
+                  <FormLabel className="text-[#1DA1F2] font-black uppercase tracking-[0.2em] text-xs">Min X Followers</FormLabel>
                   <FormControl>
-                    <Input type="number" {...field} className="bg-background/50 border-primary/30 h-10 rounded-xl font-mono text-white font-bold text-center" />
+                    <Input type="number" {...field} className="bg-background/50 border-[#1DA1F2]/30 h-10 rounded-xl font-mono text-white font-bold text-center focus-visible:ring-[#1DA1F2]/50" />
                   </FormControl>
                 </FormItem>
               )}

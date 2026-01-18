@@ -212,9 +212,14 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
                            res.info?.description || 
                            res.content || 
                            res.description_text || 
-                           res.metadata?.description_text || "";
+                           res.metadata?.description_text || 
+                           res.metadata?.about || "";
         
-        if (description) form.setValue("description", description);
+        if (description) {
+          form.setValue("description", description);
+          // Trigger validation manually to clear errors if description was missing
+          form.trigger("description");
+        }
         found = true;
       } else if (dexData?.pairs?.[0]) {
         const p = dexData.pairs[0];
@@ -229,7 +234,10 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
                         p.description || 
                         (p.info?.socials?.find((s: any) => s.type === "twitter")?.description) || "";
         
-        if (dexDesc) form.setValue("description", dexDesc);
+        if (dexDesc) {
+          form.setValue("description", dexDesc);
+          form.trigger("description");
+        }
         
         if (p.info?.websites?.[0]?.url) form.setValue("websiteUrl", p.info.websites[0].url);
         const twitter = p.info?.socials?.find((s: any) => s.type === "twitter");
@@ -239,12 +247,16 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
       } else if (jupData) {
         form.setValue("tokenName", jupData.symbol);
         form.setValue("logoUrl", jupData.logoURI);
-        if (jupData.description) form.setValue("description", jupData.description);
+        if (jupData.description) {
+          form.setValue("description", jupData.description);
+          form.trigger("description");
+        }
         found = true;
       } else if (moralisData) {
         if (moralisData.symbol) form.setValue("tokenName", moralisData.symbol);
         if (moralisData.description || moralisData.metadata?.description) {
           form.setValue("description", moralisData.description || moralisData.metadata.description);
+          form.trigger("description");
         }
         if (moralisData.logo) form.setValue("logoUrl", moralisData.logo);
         found = true;
@@ -280,12 +292,13 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
       const errors = form.formState.errors;
       const missingFields: string[] = [];
       
-      if (errors.title || errors.description || errors.logoUrl || errors.tokenAddress) {
+      // Force navigation back to the first tab with errors
+      if (errors.tokenAddress || errors.title || errors.description || errors.logoUrl) {
+        setStep("edit");
         setActiveTab("general");
-        setStep("edit");
       } else if (errors.actions || errors.rewardPerWallet || errors.maxClaims) {
-        setActiveTab("rewards");
         setStep("edit");
+        setActiveTab("rewards");
       }
 
       if (errors.tokenAddress) missingFields.push("Token Address");
