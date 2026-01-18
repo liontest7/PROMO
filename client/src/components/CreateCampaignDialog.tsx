@@ -196,14 +196,23 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
       const jupData = results[2].status === 'fulfilled' ? results[2].value : null;
       const moralisData = results[3].status === 'fulfilled' ? results[3].value : null;
 
-      let found = false;
+      // In CreateCampaignDialog.tsx, inside handleAddressSearch
       if (pumpData?.success && pumpData.result) {
         const res = pumpData.result;
         form.setValue("tokenName", res.symbol);
         form.setValue("title", `${res.name} Growth Campaign`);
         form.setValue("logoUrl", `https://imagedelivery.net/WL1JOIJiM_NAChp6rtB6Cw/coin-image/${address}/86x86?alpha=true`);
-        // Handle all possible description fields from various pump.fun API versions/proxies
-        const description = res.description || res.about || res.project_description || res.desc || res.metadata?.description || "";
+        
+        // Comprehensive fallback for description across all possible pump.fun API structures
+        const description = res.description || 
+                           res.about || 
+                           res.project_description || 
+                           res.desc || 
+                           res.metadata?.description || 
+                           res.info?.description || 
+                           res.content || 
+                           res.description_text || "";
+        
         form.setValue("description", description);
         found = true;
       } else if (dexData?.pairs?.[0]) {
@@ -213,8 +222,13 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
         if (p.info?.imageUrl) form.setValue("logoUrl", p.info.imageUrl);
         if (p.info?.header) form.setValue("bannerUrl", p.info.header);
         
-        // DEXScreener sometimes nests description in info or metadata
-        const dexDesc = p.info?.description || p.info?.summary || "";
+        // Robust DEXScreener description extraction
+        const dexDesc = p.info?.description || 
+                        p.info?.summary || 
+                        p.info?.about || 
+                        p.description || 
+                        (p.info?.socials?.find((s: any) => s.type === "twitter")?.description) || "";
+        
         if (dexDesc) form.setValue("description", dexDesc);
         
         if (p.info?.websites?.[0]?.url) form.setValue("websiteUrl", p.info.websites[0].url);
