@@ -441,8 +441,8 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
                           <div className={`absolute inset-0 bg-primary/5 -translate-x-full group-hover/btn:translate-x-0 transition-transform duration-700`} />
                           <Zap className={`h-12 w-12 relative z-10 ${watchedType === 'engagement' ? 'text-primary scale-110' : 'text-white'} transition-all`} />
                           <div className="text-center relative z-10">
-                            <p className="text-[14px] font-black uppercase tracking-[0.15em] text-white leading-none mb-1">Social Growth</p>
-                            <p className={`text-[11px] font-black italic uppercase tracking-widest ${isSocialDisabled ? 'text-red-500 opacity-100' : 'text-white opacity-80'}`}>
+                            <p className="text-[16px] font-black uppercase tracking-[0.15em] text-white leading-none mb-1">Social Growth</p>
+                            <p className={`text-[12px] font-black italic uppercase tracking-widest ${isSocialDisabled ? 'text-red-500 opacity-100' : 'text-white opacity-80'}`}>
                               {isSocialDisabled ? 'DISABLED' : 'Engagement'}
                             </p>
                           </div>
@@ -455,12 +455,10 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
                           <div className={`absolute inset-0 bg-primary/5 -translate-x-full group-hover/btn:translate-x-0 transition-transform duration-700`} />
                           <Coins className={`h-12 w-12 relative z-10 ${watchedType === 'holder_qualification' ? 'text-primary scale-110' : 'text-white'} transition-all`} />
                           <div className="text-center relative z-10">
-                            <p className="text-[14px] font-black uppercase tracking-[0.15em] text-white leading-none mb-1">Holder Reward</p>
-                            <p className={`text-[11px] font-black italic uppercase tracking-widest ${isHolderDisabled ? 'text-red-500 opacity-100' : 'text-white opacity-80'}`}>
+                            <p className="text-[16px] font-black uppercase tracking-[0.15em] text-white leading-none mb-1">Holder Reward</p>
+                            <p className={`text-[12px] font-black italic uppercase tracking-widest ${isHolderDisabled ? 'text-red-500 opacity-100' : 'text-white opacity-80'}`}>
                               {isHolderDisabled ? 'DISABLED' : 'Retention'}
                             </p>
-                          </div>
-                        </button>
                           </div>
                         </button>
                       </div>
