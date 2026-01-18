@@ -144,17 +144,6 @@ export function setupAdminRoutes(app: Express) {
   app.patch("/api/admin/settings", async (req, res) => {
     try {
       const settings = await storage.updateSystemSettings(req.body);
-      
-      // If global campaign status is disabled, pause all active campaigns
-      if (req.body.campaignsEnabled === false) {
-        const campaignsList = await storage.getAllCampaigns();
-        for (const campaign of campaignsList) {
-          if (campaign.status === 'active') {
-            await storage.updateCampaign(campaign.id, { status: 'paused' });
-          }
-        }
-      }
-      
       res.json(settings);
     } catch (err) {
       console.error("[Admin Settings Update] Error:", err);

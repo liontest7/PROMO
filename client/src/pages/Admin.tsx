@@ -274,9 +274,7 @@ export default function AdminDashboard() {
                         checked={settings?.campaignsEnabled ?? true} 
                         onCheckedChange={(checked) => {
                           updateSettingsMutation.mutate({ 
-                            campaignsEnabled: checked,
-                            holderQualificationEnabled: checked,
-                            socialEngagementEnabled: checked
+                            campaignsEnabled: checked
                           });
                         }}
                       />
