@@ -130,13 +130,13 @@ export function CampaignSuccessCard({ campaign, open, onOpenChange }: CampaignSu
           >
             <div 
               id="campaign-card-capture-area"
-              className="relative bg-[#0a0a0a] border border-white/20 rounded-[32px] overflow-hidden shadow-2xl w-full max-w-[440px]"
+              className="relative bg-[#0a0a0a] border border-white/20 rounded-[40px] overflow-hidden shadow-2xl w-full max-w-[500px]"
             >
-              <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-primary/20 to-transparent opacity-50" />
-              <div className="absolute -top-20 -right-20 w-40 h-40 bg-primary/10 blur-[80px] rounded-full" />
+              <div className="absolute top-0 left-0 w-full h-40 bg-gradient-to-b from-primary/30 to-transparent opacity-60" />
+              <div className="absolute -top-20 -right-20 w-48 h-48 bg-primary/20 blur-[100px] rounded-full" />
               
-              <div className="relative z-10 p-6 flex flex-col items-center">
-                <div className="w-32 h-32 mb-3 overflow-hidden flex items-center justify-center">
+              <div className="relative z-10 p-8 flex flex-col items-center">
+                <div className="w-40 h-40 mb-4 overflow-hidden flex items-center justify-center">
                   <img 
                     src="https://i.ibb.co/xtwDPsFy/20260112-1450-Image-Generation-remix-01kes42kp5ft5r4tfh6znvs9c0-1.png" 
                     crossOrigin="anonymous"
@@ -147,20 +147,20 @@ export function CampaignSuccessCard({ campaign, open, onOpenChange }: CampaignSu
                   />
                 </div>
                 
-                <h2 className="text-3xl font-black font-display text-white mb-1 uppercase tracking-tighter italic text-center">
+                <h2 className="text-4xl font-black font-display text-white mb-1 uppercase tracking-tighter italic text-center">
                   CAMPAIGN <span className="text-primary">LIVE!</span>
                 </h2>
-                <div className="flex items-center gap-2 mb-4">
-                  <div className="h-[1px] w-6 bg-white/40" />
-                  <span className="text-[10px] uppercase font-bold tracking-[0.2em] text-white">Broadcasted to Solana</span>
-                  <div className="h-[1px] w-6 bg-white/40" />
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="h-[1px] w-8 bg-white/40" />
+                  <span className="text-[12px] uppercase font-bold tracking-[0.25em] text-white">Broadcasted to Solana</span>
+                  <div className="h-[1px] w-8 bg-white/40" />
                 </div>
 
-                <div className="w-full bg-white/[0.05] border border-white/20 rounded-3xl p-5 mb-4 backdrop-blur-md">
-                  <div className="flex items-center gap-4 mb-4">
+                <div className="w-full bg-white/[0.08] border border-white/25 rounded-[32px] p-6 mb-2 backdrop-blur-xl">
+                  <div className="flex items-center gap-5 mb-6">
                     <div className="relative group">
-                      <div className="absolute -inset-1 bg-gradient-to-r from-primary to-emerald-500 rounded-2xl blur opacity-40 group-hover:opacity-60 transition duration-1000" />
-                      <div className="relative w-20 h-20 rounded-xl bg-black border border-white/20 overflow-hidden shadow-2xl flex items-center justify-center z-[100]">
+                      <div className="absolute -inset-1.5 bg-gradient-to-r from-primary to-emerald-500 rounded-2xl blur opacity-50 group-hover:opacity-75 transition duration-1000" />
+                      <div className="relative w-24 h-24 rounded-2xl bg-black border border-white/20 overflow-hidden shadow-2xl flex items-center justify-center z-[100]">
                         <img 
                           key={campaign.logoUrl}
                           src={campaign.logoUrl} 
@@ -190,76 +190,89 @@ export function CampaignSuccessCard({ campaign, open, onOpenChange }: CampaignSu
                       </div>
                     </div>
                     <div className="flex-1 min-w-0">
-                      <h3 className="font-black text-base leading-tight text-white uppercase tracking-tight break-words">{campaign.title}</h3>
-                      <div className="mt-1 flex items-center">
-                        <Badge variant="outline" className="campaign-ticker-badge bg-primary/20 border-primary/40 text-primary text-[11px] font-black py-0 px-2.5 h-5">
+                      <h3 className="font-black text-xl leading-tight text-white uppercase tracking-tight break-words mb-1">{campaign.title}</h3>
+                      <div className="flex items-center">
+                        <Badge variant="outline" className="campaign-ticker-badge bg-primary/20 border-primary/40 text-primary text-[13px] font-black py-0.5 px-3 h-6">
                           ${campaign.tokenName}
                         </Badge>
                       </div>
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-2 gap-2.5">
-                    <div className="bg-white/[0.05] border border-white/10 rounded-2xl p-3.5 flex flex-col gap-0.5">
-                      <div className="flex items-center gap-1 text-white/90">
-                        <Trophy className="w-3.5 h-3.5 text-primary" />
-                        <span className="text-[10.5px] uppercase font-black tracking-widest whitespace-nowrap">Total Reward</span>
+                  <div className="grid grid-cols-2 gap-3.5 mb-5">
+                    <div className="bg-white/[0.05] border border-white/10 rounded-2xl p-4 flex flex-col gap-1">
+                      <div className="flex items-center gap-1.5 text-white/90">
+                        <Trophy className="w-4 h-4 text-primary" />
+                        <span className="text-[11px] uppercase font-black tracking-widest whitespace-nowrap">Total Pool</span>
                       </div>
-                      <p className="text-xl font-black text-white">
-                        {Number(campaign.totalBudget).toLocaleString()} <span className="text-primary text-xs tracking-normal">${campaign.tokenName}</span>
+                      <p className="text-2xl font-black text-white leading-none">
+                        {Number(campaign.totalBudget).toLocaleString()}
                       </p>
+                      <span className="text-primary text-[10px] font-black uppercase tracking-wider">${campaign.tokenName}</span>
                     </div>
-                    <div className="bg-white/[0.05] border border-white/10 rounded-2xl p-3.5 flex flex-col gap-0.5">
-                      <div className="flex items-center gap-1 text-white/90">
-                        <Users className="w-3.5 h-3.5 text-primary" />
-                        <span className="text-[10.5px] uppercase font-black tracking-widest whitespace-nowrap">Participants</span>
+                    <div className="bg-white/[0.05] border border-white/10 rounded-2xl p-4 flex flex-col gap-1">
+                      <div className="flex items-center gap-1.5 text-white/90">
+                        <Users className="w-4 h-4 text-primary" />
+                        <span className="text-[11px] uppercase font-black tracking-widest whitespace-nowrap">Participants</span>
                       </div>
-                      <p className="text-xl font-black text-white">
+                      <p className="text-2xl font-black text-white leading-none">
                         {campaign.maxClaims || (campaign.actions?.reduce((acc: number, a: any) => acc + (a.maxExecutions || 0), 0)) || 0}
-                        <span className="text-white/60 text-[10px] ml-1 font-black uppercase">Slots</span>
                       </p>
+                      <span className="text-white/60 text-[10px] font-black uppercase tracking-wider">Available Slots</span>
                     </div>
                   </div>
 
-                  {campaign.campaignType === 'holder_qualification' ? (
-                    <div className="mt-3.5 p-4 bg-primary/10 border border-primary/20 rounded-2xl">
-                      <div className="flex items-center gap-1.5 mb-1.5">
-                        <CheckCircle2 className="w-3.5 h-3.5 text-primary" />
-                        <span className="text-[9px] uppercase font-black tracking-widest text-primary">Requirement</span>
+                  <div className="space-y-3">
+                    {campaign.campaignType === 'holder_qualification' ? (
+                      <div className="p-4 bg-primary/10 border border-primary/20 rounded-2xl">
+                        <div className="flex items-center gap-2 mb-2">
+                          <CheckCircle2 className="w-4 h-4 text-primary" />
+                          <span className="text-[10px] uppercase font-black tracking-widest text-primary">Requirement</span>
+                        </div>
+                        <p className="text-[13px] text-white font-bold leading-tight">
+                          Hold {Number(campaign.minHoldingAmount).toLocaleString()} ${campaign.tokenName} for {campaign.minHoldingDuration} days to qualify.
+                        </p>
                       </div>
-                      <p className="text-[12px] text-white font-black leading-tight">
-                        Hold {Number(campaign.minHoldingAmount).toLocaleString()} ${campaign.tokenName} for {campaign.minHoldingDuration} days to qualify.
-                      </p>
-                    </div>
-                  ) : null}
+                    ) : (
+                      <div className="p-4 bg-primary/10 border border-primary/20 rounded-2xl">
+                        <div className="flex items-center gap-2 mb-2">
+                          <Rocket className="w-4 h-4 text-primary" />
+                          <span className="text-[10px] uppercase font-black tracking-widest text-primary">Active Mission</span>
+                        </div>
+                        <p className="text-[13px] text-white font-bold leading-tight">
+                          {campaign.actions?.length || 0} tasks configured. Complete them to earn shared rewards from the pool.
+                        </p>
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
             </div>
 
-            <div className="w-full max-w-[440px] mt-6 flex flex-col gap-3">
-              <div className="grid grid-cols-2 gap-3">
+            <div className="w-full max-w-[500px] mt-8 flex flex-col gap-4">
+              <div className="grid grid-cols-2 gap-4">
                 <Button 
                   onClick={handleDownload}
                   disabled={isExporting}
-                  className="h-12 rounded-2xl bg-white/10 hover:bg-white/20 text-white border border-white/10 font-black uppercase tracking-widest text-xs"
+                  className="h-14 rounded-[20px] bg-white/15 hover:bg-white/25 text-white border border-white/20 font-black uppercase tracking-[0.15em] text-sm shadow-xl transition-all"
                 >
-                  <Download className="w-4 h-4 mr-2" />
+                  <Download className="w-5 h-5 mr-3" />
                   {isExporting ? "Capturing..." : "Save Card"}
                 </Button>
                 <Button 
                   onClick={handleShare}
-                  className="h-12 rounded-2xl bg-[#1DA1F2] hover:bg-[#1DA1F2]/90 text-white font-black uppercase tracking-widest text-xs"
+                  className="h-14 rounded-[20px] bg-[#1DA1F2] hover:bg-[#1DA1F2]/90 text-white font-black uppercase tracking-[0.15em] text-sm shadow-[0_0_20px_rgba(29,161,242,0.3)] transition-all"
                 >
-                  <Share2 className="w-4 h-4 mr-2" />
+                  <Share2 className="w-5 h-5 mr-3" />
                   Share Link
                 </Button>
               </div>
               <Button 
                 variant="ghost" 
-                className="text-white/40 hover:text-white font-black uppercase tracking-widest text-xs"
+                className="text-white font-black uppercase tracking-[0.2em] text-sm py-4 hover:bg-white/5 transition-colors"
                 onClick={() => onOpenChange(false)}
               >
-                GO TO DASHBOARD <ArrowRight className="w-3 h-3 ml-2" />
+                GO TO DASHBOARD <ArrowRight className="w-4 h-4 ml-3" />
               </Button>
             </div>
           </motion.div>
