@@ -306,7 +306,7 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
       setTimeout(() => {
         if (errors.tokenAddress || errors.title || errors.description || errors.logoUrl) {
           setActiveTab("general");
-        } else if (errors.actions || errors.rewardPerWallet || errors.maxClaims) {
+        } else if (errors.actions || errors.rewardPerWallet || errors.maxClaims || errors.minHoldingAmount || errors.minHoldingDuration) {
           setActiveTab("actions");
         } else {
           setActiveTab("protections");
@@ -324,6 +324,8 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
       if (errors.actions) missingFields.push("Engagement Tasks");
       if (errors.rewardPerWallet) missingFields.push("Reward Amount");
       if (errors.maxClaims) missingFields.push("Participant Cap");
+      if (errors.minHoldingAmount) missingFields.push("Min Holding Amount");
+      if (errors.minHoldingDuration) missingFields.push("Holding Duration");
 
       toast({
         title: "Mission Calibration Required",
