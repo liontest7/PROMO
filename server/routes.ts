@@ -202,12 +202,12 @@ export async function registerRoutes(
           throw new Error("System wallet not configured");
         }
 
-        const fromKeypair = Keypair.fromSecretKey(bs58.decode(systemKeypairString));
+        const fromKeypair = Keypair.fromSecretKey(bs58.decode(systemKeypairString.trim()));
         const signatures: string[] = [];
 
         for (const reward of filteredPending) {
           const sig = await transferTokens(
-            user.walletAddress,
+            user.walletAddress.trim(),
             parseFloat(reward.amount),
             reward.tokenAddress,
             fromKeypair

@@ -121,7 +121,7 @@ export class AutomationService {
 
       const winners = weeklyRankings.slice(0, 3).map((user, index) => {
         const prizeWeight = index === 0 ? 0.5 : index === 1 ? 0.3 : 0.2;
-        const prizeAmount = (weeklyPrizePool * prizeWeight).toFixed(2);
+        const prizeAmount = (weeklyPrizePool * prizeWeight).toFixed(6);
 
         return {
           userId: user.id,

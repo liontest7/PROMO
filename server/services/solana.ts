@@ -73,7 +73,7 @@ export async function transferTokens(
         fromTokenAccount.address,
         toTokenAccount.address,
         fromKeypair.publicKey,
-        amount * Math.pow(10, 6), // Assuming 6 decimals for common SPL tokens
+        BigInt(Math.round(amount * Math.pow(10, 6))), // Fixed decimal handling with BigInt
         [],
         TOKEN_PROGRAM_ID
       )

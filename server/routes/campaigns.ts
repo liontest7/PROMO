@@ -71,7 +71,7 @@ export function setupCampaignRoutes(app: Express) {
       const gasBudgetSol = (totalPotentialExecutions * 0.000005).toFixed(6); 
 
       // Calculation check: Ensure only advertisers or admins can create
-      const creator = await storage.getUser(body.creatorId);
+      const creator = await storage.getUser(Number(body.creatorId));
       if (!creator || (creator.role !== 'advertiser' && creator.role !== 'admin')) {
         return res.status(403).json({ message: "Only registered advertisers or admins can launch campaigns." });
       }
