@@ -343,13 +343,41 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
         setStep("preview");
       } else {
         const errors = form.formState.errors;
-        if (errors.tokenAddress || errors.title || errors.description || errors.logoUrl) {
+        console.log("Validation errors details:", errors);
+        
+        // Map fields to tabs
+        const isGeneralError = !!(errors.tokenAddress || errors.title || errors.description || errors.logoUrl);
+        const isRewardsError = !!(errors.actions || errors.rewardPerWallet || errors.maxClaims);
+        
+        // Priority navigation
+        if (isGeneralError) {
           setActiveTab("general");
-        } else if (errors.actions || errors.rewardPerWallet || errors.maxClaims) {
+        } else if (isRewardsError) {
           setActiveTab("actions");
         } else {
           setActiveTab("protections");
         }
+
+        // Use a longer timeout to ensure UI state transitions are complete
+        setTimeout(async () => {
+          await form.trigger();
+          
+          const missing = [];
+          if (errors.title) missing.push("Campaign Title");
+          if (errors.description) missing.push("Description");
+          if (errors.logoUrl) missing.push("Logo");
+          if (errors.actions) missing.push("Tasks");
+          if (errors.rewardPerWallet) missing.push("Reward");
+          if (errors.maxClaims) missing.push("Cap");
+
+          toast({
+            title: "Validation Check",
+            description: missing.length > 0 
+              ? `Required fields missing: ${missing.join(", ")}` 
+              : "Please check all fields for errors.",
+            variant: "destructive"
+          });
+        }, 150);
       }
       return;
     }
@@ -641,7 +669,14 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
                             >
                               BACK
                             </Button>
-                            <Button type="submit" className="h-16 px-12 rounded-2xl font-black uppercase tracking-[0.3em] text-sm bg-primary shadow-[0_0_40px_rgba(34,197,94,0.4)] hover:scale-105 transition-all">
+                            <Button 
+                              type="button"
+                              onClick={(e) => {
+                                e.preventDefault();
+                                onSubmit(form.getValues());
+                              }}
+                              className="h-16 px-12 rounded-2xl font-black uppercase tracking-[0.3em] text-sm bg-primary shadow-[0_0_40px_rgba(34,197,94,0.4)] hover:scale-105 transition-all"
+                            >
                               PREVIEW CAMPAIGN <Sparkles className="h-5 w-5 ml-2" />
                             </Button>
                           </div>
