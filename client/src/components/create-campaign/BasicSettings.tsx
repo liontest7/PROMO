@@ -10,6 +10,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { UseFormReturn } from "react-hook-form";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Rocket, Coins } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
 
 interface BasicSettingsProps {
   form: UseFormReturn<any>;
@@ -19,6 +20,15 @@ interface BasicSettingsProps {
 export function BasicSettings({ form, fetchTokenMetadata, onBack }: { form: any, fetchTokenMetadata: any, onBack?: () => void }) {
   const tokenName = form.watch("tokenName");
   
+  const { data: settings } = useQuery<any>({ 
+    queryKey: ["/api/public/settings"], 
+    staleTime: 0,
+    refetchOnWindowFocus: true
+  });
+
+  const isHolderDisabled = settings?.campaignsEnabled === false || settings?.holderQualificationEnabled === false;
+  const isSocialDisabled = settings?.campaignsEnabled === false || settings?.socialEngagementEnabled === false;
+
   return (
     <div className="space-y-5 animate-in fade-in slide-in-from-bottom-4 duration-500">
       <div className="p-4 bg-primary/10 rounded-2xl border border-primary/20 mb-2">
@@ -48,14 +58,14 @@ export function BasicSettings({ form, fetchTokenMetadata, onBack }: { form: any,
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent className="bg-background border-primary/40">
-                    <SelectItem value="engagement">
+                    <SelectItem value="engagement" disabled={isSocialDisabled}>
                       <div className="flex items-center gap-2 font-bold text-white">
-                        <Rocket className="h-3.5 w-3.5 text-primary" /> Social Growth
+                        <Rocket className="h-3.5 w-3.5 text-primary" /> Social Growth {isSocialDisabled && "(DISABLED)"}
                       </div>
                     </SelectItem>
-                    <SelectItem value="holder_qualification">
+                    <SelectItem value="holder_qualification" disabled={isHolderDisabled}>
                       <div className="flex items-center gap-2 font-bold text-white">
-                        <Coins className="h-3.5 w-3.5 text-primary" /> Holder Airdrop
+                        <Coins className="h-3.5 w-3.5 text-primary" /> Holder Airdrop {isHolderDisabled && "(DISABLED)"}
                       </div>
                     </SelectItem>
                   </SelectContent>

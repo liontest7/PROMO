@@ -165,7 +165,7 @@ export default function Earn() {
             <CreateCampaignDialog open={isCreateOpen} onOpenChange={setIsCreateOpen} />
 
             <div className="flex gap-3 w-full sm:w-auto">
-              <div className="relative flex-1 md:w-80">
+              <div className="relative flex-1 md:w-64">
                 <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-white/40" />
                 <Input 
                   placeholder="Search projects..." 
