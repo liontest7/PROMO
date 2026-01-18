@@ -35,7 +35,7 @@ export function CampaignPreview({
   const totalCostSol = Number((platformFee + gasFeeSol).toFixed(4));
 
   return (
-    <div className="space-y-8 animate-in fade-in zoom-in duration-500 max-h-[70vh] overflow-y-auto pl-2 custom-scrollbar" dir="rtl">
+    <div className="space-y-8 animate-in fade-in zoom-in duration-500 max-h-[70vh] overflow-y-auto pr-2 custom-scrollbar">
       {/* Banner & Brand Card */}
       <div className="relative group p-1">
         <div className="relative h-56 rounded-[32px] overflow-hidden bg-primary/10 border-4 border-primary/20 shadow-2xl">
@@ -48,30 +48,30 @@ export function CampaignPreview({
           ) : (
             <div className="w-full h-full flex flex-col items-center justify-center text-primary/20 space-y-2 bg-gradient-to-br from-primary/5 to-primary/20">
               <Eye className="h-16 w-16 opacity-20" />
-              <span className="text-xs font-black uppercase tracking-widest opacity-40">תצוגה מקדימה של הבאנר</span>
+              <span className="text-xs font-black uppercase tracking-widest opacity-40">Campaign Banner Preview</span>
             </div>
           )}
           <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
           
-          <div className="absolute bottom-6 left-6 right-6 flex items-end justify-between flex-row-reverse">
-            <div className="flex items-center gap-5 flex-row-reverse">
+          <div className="absolute bottom-6 left-6 right-6 flex items-end justify-between">
+            <div className="flex items-center gap-5">
               <div className="w-20 h-20 rounded-[24px] overflow-hidden bg-background/40 border-4 border-white/30 shadow-2xl backdrop-blur-xl group-hover:scale-105 transition-transform duration-500">
                 <img src={values.logoUrl} alt="Logo" className="w-full h-full object-cover" />
               </div>
-              <div className="space-y-1 text-right">
-                <div className="flex items-center gap-3 justify-end">
-                  <Badge variant="default" className="text-[10px] h-5 bg-primary text-primary-foreground font-black shadow-lg shadow-primary/30">תצוגה מקדימה</Badge>
+              <div className="space-y-1">
+                <div className="flex items-center gap-3">
                   <h3 className="font-display font-black text-2xl text-white italic tracking-tighter uppercase drop-shadow-lg">
                     {values.title}
                   </h3>
+                  <Badge variant="default" className="text-[10px] h-5 bg-primary text-primary-foreground font-black shadow-lg shadow-primary/30">PREVIEW</Badge>
                 </div>
-                <div className="flex items-center gap-4 justify-end">
-                  <div className="flex items-center gap-2">
-                    {values.telegramUrl && <Send className="h-3.5 w-3.5 text-white/60 hover:text-white transition-colors cursor-pointer" />}
-                    {values.twitterUrl && <Twitter className="h-3.5 w-3.5 text-white/60 hover:text-white transition-colors cursor-pointer" />}
-                    {values.websiteUrl && <Globe className="h-3.5 w-3.5 text-white/60 hover:text-white transition-colors cursor-pointer" />}
-                  </div>
+                <div className="flex items-center gap-4">
                   <span className="text-primary font-mono text-base font-black tracking-[0.2em] drop-shadow-md">${values.tokenName}</span>
+                  <div className="flex items-center gap-2">
+                    {values.websiteUrl && <Globe className="h-3.5 w-3.5 text-white/60 hover:text-white transition-colors cursor-pointer" />}
+                    {values.twitterUrl && <Twitter className="h-3.5 w-3.5 text-white/60 hover:text-white transition-colors cursor-pointer" />}
+                    {values.telegramUrl && <Send className="h-3.5 w-3.5 text-white/60 hover:text-white transition-colors cursor-pointer" />}
+                  </div>
                 </div>
               </div>
             </div>
@@ -79,31 +79,31 @@ export function CampaignPreview({
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-right">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div className="space-y-6">
           <section className="space-y-3">
-            <div className="flex items-center gap-2 px-1 justify-end">
-              <h4 className="text-[10px] font-black text-primary uppercase tracking-[0.3em]">ליבת הקמפיין</h4>
+            <div className="flex items-center gap-2 px-1">
               <Rocket className="h-3.5 w-3.5 text-primary" />
+              <h4 className="text-[10px] font-black text-primary uppercase tracking-[0.3em]">Campaign Core</h4>
             </div>
             <div className="p-6 bg-primary/5 rounded-[28px] border border-primary/10 backdrop-blur-xl relative overflow-hidden group">
-              <div className="absolute top-0 left-0 p-4 opacity-5 group-hover:scale-110 transition-transform duration-700">
+              <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:scale-110 transition-transform duration-700">
                 <Rocket className="h-24 w-24" />
               </div>
               <div className="space-y-5 relative z-10">
-                <div className="flex justify-between items-center border-b border-white/5 pb-4 flex-row-reverse">
-                  <span className="text-xs text-muted-foreground uppercase font-black tracking-widest">סוג</span>
+                <div className="flex justify-between items-center border-b border-white/5 pb-4">
+                  <span className="text-xs text-muted-foreground uppercase font-black tracking-widest">Type</span>
                   <Badge variant="outline" className="text-[10px] uppercase font-black tracking-widest py-1.5 border-primary/30 text-primary bg-primary/5">
-                    {values.campaignType === "holder_qualification" ? "איירדרופ למחזיקים" : "מעורבות חברתית"}
+                    {values.campaignType?.replace("_", " ")}
                   </Badge>
                 </div>
-                <div className="flex justify-between items-center flex-row-reverse">
-                  <span className="text-xs text-muted-foreground uppercase font-black tracking-widest">מאגר איירדרופ</span>
-                  <div className="text-left">
+                <div className="flex justify-between items-center">
+                  <span className="text-xs text-muted-foreground uppercase font-black tracking-widest">Airdrop Pool</span>
+                  <div className="text-right">
                     <span className="block text-2xl font-mono font-black text-primary leading-none tracking-tighter">
                       {values.totalBudget?.toLocaleString()}
                     </span>
-                    <span className="text-[10px] font-black uppercase text-muted-foreground tracking-widest block">${values.tokenName}</span>
+                    <span className="text-[10px] font-black uppercase text-muted-foreground tracking-widest">${values.tokenName}</span>
                   </div>
                 </div>
               </div>
@@ -111,38 +111,38 @@ export function CampaignPreview({
           </section>
 
           <section className="space-y-3">
-            <div className="flex items-center gap-2 px-1 justify-end">
-              <h4 className="text-[10px] font-black text-primary uppercase tracking-[0.3em]">אבטחה פעילה</h4>
+            <div className="flex items-center gap-2 px-1">
               <Shield className="h-3.5 w-3.5 text-primary" />
+              <h4 className="text-[10px] font-black text-primary uppercase tracking-[0.3em]">Active Security</h4>
             </div>
             <div className="p-6 bg-white/5 rounded-[28px] border border-white/10 space-y-4 shadow-inner">
               {[
-                { label: `מינימום ${values.minSolBalance} SOL בארנק`, active: values.minSolBalance > 0 },
-                { label: `ותק ארנק של ${values.minWalletAgeDays} ימים`, active: values.minWalletAgeDays > 0 },
-                { label: `מינימום ${values.minXFollowers} עוקבים ב-X`, active: values.minXFollowers > 0 },
-                { label: `ותק חשבון X של ${values.minXAccountAgeDays} ימים`, active: values.minXAccountAgeDays > 0 },
-                { label: `החזקה של ${values.minHoldingAmount} $${values.tokenName}`, active: values.minHoldingAmount > 0 },
-                { label: `משך החזקה: ${values.minHoldingDuration} ימים`, active: values.minHoldingDuration > 0 },
+                { label: `Min ${values.minSolBalance} SOL Balance`, active: values.minSolBalance > 0 },
+                { label: `Min ${values.minWalletAgeDays}d Wallet Age`, active: values.minWalletAgeDays > 0 },
+                { label: `Min ${values.minXFollowers} X Followers`, active: values.minXFollowers > 0 },
+                { label: `Min ${values.minXAccountAgeDays}d X Age`, active: values.minXAccountAgeDays > 0 },
+                { label: `Hold ${values.minHoldingAmount} $${values.tokenName}`, active: values.minHoldingAmount > 0 },
+                { label: `Hold Duration: ${values.minHoldingDuration}d`, active: values.minHoldingDuration > 0 },
               ].filter(p => p.active).length > 0 ? (
                 <div className="grid grid-cols-1 gap-2.5">
                   {[
-                    { label: `מינימום ${values.minSolBalance} SOL בארנק`, active: values.minSolBalance > 0 },
-                    { label: `ותק ארנק של ${values.minWalletAgeDays} ימים`, active: values.minWalletAgeDays > 0 },
-                    { label: `מינימום ${values.minXFollowers} עוקבים ב-X`, active: values.minXFollowers > 0 },
-                    { label: `ותק חשבון X של ${values.minXAccountAgeDays} ימים`, active: values.minXAccountAgeDays > 0 },
-                    { label: `החזקה של ${values.minHoldingAmount} $${values.tokenName}`, active: (values.minHoldingAmount || 0) > 0 },
-                    { label: `משך החזקה: ${values.minHoldingDuration} ימים`, active: (values.minHoldingDuration || 0) > 0 },
+                    { label: `Min ${values.minSolBalance} SOL Balance`, active: values.minSolBalance > 0 },
+                    { label: `Min ${values.minWalletAgeDays}d Wallet Age`, active: values.minWalletAgeDays > 0 },
+                    { label: `Min ${values.minXFollowers} X Followers`, active: values.minXFollowers > 0 },
+                    { label: `Min ${values.minXAccountAgeDays}d X Age`, active: values.minXAccountAgeDays > 0 },
+                    { label: `Hold ${values.minHoldingAmount} $${values.tokenName}`, active: (values.minHoldingAmount || 0) > 0 },
+                    { label: `Hold Duration: ${values.minHoldingDuration}d`, active: (values.minHoldingDuration || 0) > 0 },
                   ].map((p, i) => p.active && (
-                    <div key={i} className="flex items-center gap-3 text-[11px] font-black text-white/90 py-2.5 px-4 bg-white/5 rounded-2xl border border-white/5 hover:bg-white/10 transition-colors flex-row-reverse">
+                    <div key={i} className="flex items-center gap-3 text-[11px] font-black text-white/90 py-2.5 px-4 bg-white/5 rounded-2xl border border-white/5 hover:bg-white/10 transition-colors">
                       <CheckCircle2 className="h-3.5 w-3.5 text-primary shrink-0" />
-                      <span className="truncate flex-1">{p.label}</span>
+                      <span className="truncate">{p.label}</span>
                     </div>
                   ))}
                 </div>
               ) : (
                 <div className="flex flex-col items-center justify-center py-4 space-y-2 opacity-40">
                   <AlertCircle className="h-8 w-8 text-muted-foreground" />
-                  <span className="text-[10px] font-black uppercase tracking-widest italic">הגנות סטנדרטיות בלבד</span>
+                  <span className="text-[10px] font-black uppercase tracking-widest italic">Standard Protections Only</span>
                 </div>
               )}
             </div>
@@ -151,39 +151,39 @@ export function CampaignPreview({
 
         <div className="space-y-6">
           <section className="space-y-3">
-            <div className="flex items-center gap-2 px-1 justify-end">
-              <h4 className="text-[10px] font-black text-primary uppercase tracking-[0.3em]">תוכנית מעורבות</h4>
+            <div className="flex items-center gap-2 px-1">
               <Coins className="h-3.5 w-3.5 text-primary" />
+              <h4 className="text-[10px] font-black text-primary uppercase tracking-[0.3em]">Engagement Plan</h4>
             </div>
-            <div className="p-6 bg-primary/5 rounded-[28px] border border-primary/10 space-y-3 max-h-[220px] overflow-y-auto custom-scrollbar shadow-inner text-right">
+            <div className="p-6 bg-primary/5 rounded-[28px] border border-primary/10 space-y-3 max-h-[220px] overflow-y-auto custom-scrollbar shadow-inner">
               {isHolder ? (
                 <div className="flex flex-col items-center justify-center py-8 space-y-4">
                   <div className="p-4 bg-primary/20 rounded-full animate-pulse shadow-[0_0_20px_rgba(34,197,94,0.2)]">
                     <Coins className="h-10 w-10 text-primary" />
                   </div>
                   <div className="text-center space-y-1">
-                    <p className="text-[10px] font-black uppercase tracking-[0.2em] text-white/60">תגמול לכל משתתף</p>
+                    <p className="text-[10px] font-black uppercase tracking-[0.2em] text-white/60">Reward Per Participant</p>
                     <p className="text-2xl font-mono font-black text-primary leading-tight">
                       {values.rewardPerWallet?.toLocaleString()}
                     </p>
-                    <p className="text-[10px] font-black uppercase text-muted-foreground tracking-widest block">${values.tokenName}</p>
+                    <p className="text-[10px] font-black uppercase text-muted-foreground tracking-widest">${values.tokenName}</p>
                   </div>
                 </div>
               ) : (
                 values.actions?.map((action: any, i: number) => (
-                  <div key={i} className="group flex items-center gap-4 p-3.5 bg-white/5 rounded-[20px] border border-white/5 hover:border-primary/40 hover:bg-white/10 transition-all duration-500 flex-row-reverse">
+                  <div key={i} className="group flex items-center gap-4 p-3.5 bg-white/5 rounded-[20px] border border-white/5 hover:border-primary/40 hover:bg-white/10 transition-all duration-500">
                     <div className="p-2.5 bg-primary/10 rounded-xl group-hover:bg-primary/20 group-hover:scale-110 transition-all shadow-inner">
                       {action.type === 'twitter_follow' || action.type === 'twitter_retweet' ? <Twitter className="h-4 w-4 text-[#1DA1F2]" /> :
                        action.type === 'telegram_join' ? <Send className="h-4 w-4 text-[#0088cc]" /> :
                        <Globe className="h-4 w-4 text-blue-400" />}
                     </div>
-                    <div className="flex-1 min-w-0 text-right">
+                    <div className="flex-1 min-w-0">
                       <p className="text-[11px] font-black text-white truncate uppercase tracking-tight group-hover:text-primary transition-colors">{action.title}</p>
                       <p className="text-[9px] text-muted-foreground truncate italic font-medium">{action.url}</p>
                     </div>
-                    <div className="text-left shrink-0">
+                    <div className="text-right shrink-0">
                       <p className="text-xs font-mono font-black text-primary leading-none">+{action.rewardAmount}</p>
-                      <p className="text-[8px] font-black text-muted-foreground uppercase tracking-tighter mt-1">{action.maxExecutions} מקומות</p>
+                      <p className="text-[8px] font-black text-muted-foreground uppercase tracking-tighter mt-1">{action.maxExecutions} SLOTS</p>
                     </div>
                   </div>
                 ))
@@ -192,31 +192,31 @@ export function CampaignPreview({
           </section>
 
           <section className="space-y-3">
-            <div className="flex items-center gap-2 px-1 justify-end">
-              <h4 className="text-[10px] font-black text-primary uppercase tracking-[0.3em]">הסדר פיננסי</h4>
+            <div className="flex items-center gap-2 px-1">
               <Wallet className="h-3.5 w-3.5 text-primary" />
+              <h4 className="text-[10px] font-black text-primary uppercase tracking-[0.3em]">Financial Settlement</h4>
             </div>
-            <div className="p-6 bg-white/5 rounded-[28px] border border-white/10 space-y-5 shadow-2xl relative overflow-hidden text-right">
-              <div className="absolute -bottom-4 -left-4 p-2 opacity-5">
+            <div className="p-6 bg-white/5 rounded-[28px] border border-white/10 space-y-5 shadow-2xl relative overflow-hidden">
+              <div className="absolute -bottom-4 -right-4 p-2 opacity-5">
                 <Shield className="h-20 w-20" />
               </div>
               <div className="space-y-3.5 relative z-10">
-                <div className="flex justify-between text-[11px] font-black py-1.5 border-b border-white/5 group flex-row-reverse">
-                  <span className="text-muted-foreground uppercase tracking-[0.15em] group-hover:text-white transition-colors">עמלת יצירה</span>
+                <div className="flex justify-between text-[11px] font-black py-1.5 border-b border-white/5 group">
+                  <span className="text-muted-foreground uppercase tracking-[0.15em] group-hover:text-white transition-colors">Creation Fee</span>
                   <span className="text-white group-hover:text-primary transition-colors font-mono">0.5000 SOL</span>
                 </div>
-                <div className="flex justify-between text-[11px] font-black py-1.5 border-b border-white/5 group flex-row-reverse">
-                  <span className="text-muted-foreground uppercase tracking-[0.15em] group-hover:text-white transition-colors">הקצאת גז</span>
+                <div className="flex justify-between text-[11px] font-black py-1.5 border-b border-white/5 group">
+                  <span className="text-muted-foreground uppercase tracking-[0.15em] group-hover:text-white transition-colors">Gas Allocation</span>
                   <span className="text-white group-hover:text-primary transition-colors font-mono">{gasFeeSol} SOL</span>
                 </div>
-                <div className="flex justify-between items-center pt-4 flex-row-reverse">
-                  <div className="space-y-0.5 text-right">
-                    <span className="block text-[10px] font-black text-primary uppercase tracking-[0.3em] leading-none">סה"כ פירעון</span>
-                    <span className="text-[8px] font-bold text-muted-foreground uppercase italic tracking-widest block">(מאובטח בנאמנות)</span>
+                <div className="flex justify-between items-center pt-4">
+                  <div className="space-y-0.5">
+                    <span className="block text-[10px] font-black text-primary uppercase tracking-[0.3em] leading-none">Total Settlement</span>
+                    <span className="text-[8px] font-bold text-muted-foreground uppercase italic tracking-widest">(Secured in Escrow)</span>
                   </div>
-                  <div className="px-5 py-2.5 bg-primary/20 rounded-2xl border-2 border-primary/40 shadow-[0_0_20px_rgba(34,197,94,0.2)] group hover:scale-105 transition-transform text-left">
+                  <div className="px-5 py-2.5 bg-primary/20 rounded-2xl border-2 border-primary/40 shadow-[0_0_20px_rgba(34,197,94,0.2)] group hover:scale-105 transition-transform">
                     <span className="font-mono font-black text-primary text-2xl tracking-tighter group-hover:drop-shadow-[0_0_8px_rgba(34,197,94,0.6)]">{totalCostSol}</span>
-                    <span className="text-[10px] font-black text-primary/60 mr-1">SOL</span>
+                    <span className="text-[10px] font-black text-primary/60 ml-1">SOL</span>
                   </div>
                 </div>
               </div>
@@ -225,14 +225,14 @@ export function CampaignPreview({
         </div>
       </div>
 
-      <div className="flex gap-4 pt-8 mt-6 border-t border-white/10 relative z-20 pb-2 flex-row-reverse">
+      <div className="flex gap-4 pt-8 mt-6 border-t border-white/10 relative z-20 pb-2">
         <Button 
           variant="outline" 
           className="flex-1 h-16 rounded-[20px] font-black uppercase tracking-[0.2em] text-[10px] border-2 hover:bg-white/5 border-white/10 transition-all hover:scale-[1.02] active:scale-[0.98]"
           onClick={onBack} 
           disabled={isPending}
         >
-          שנה הגדרות <ChevronLeft className="w-4 h-4 mr-2 rotate-180" />
+          <ChevronLeft className="w-4 h-4 mr-2" /> Adjust Settings
         </Button>
         <Button 
           className="flex-[1.8] h-16 rounded-[20px] font-black uppercase tracking-[0.3em] text-sm bg-primary hover:bg-primary/90 text-primary-foreground hover:scale-[1.02] active:scale-[0.98] shadow-[0_0_40px_rgba(34,197,94,0.4)] transition-all relative overflow-hidden group"
@@ -243,11 +243,11 @@ export function CampaignPreview({
           {isPending ? (
             <div className="flex items-center gap-3">
               <div className="h-5 w-5 border-3 border-white/30 border-t-white rounded-full animate-spin" />
-              פורס חוזה חכם...
+              DEPLOYING SMART CONTRACT...
             </div>
           ) : (
             <div className="flex items-center gap-3">
-              הפעל קמפיין <Rocket className="h-6 w-6 animate-bounce" />
+              LAUNCH CAMPAIGN <Rocket className="h-6 w-6 animate-bounce" />
             </div>
           )}
         </Button>
