@@ -199,56 +199,61 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
       let found = false;
       let description = "";
 
+      // 1. PumpFun - Highest priority as it usually has descriptions
       if (pumpData?.success && pumpData.result) {
         const res = pumpData.result;
         form.setValue("tokenName", res.symbol);
         form.setValue("title", `${res.name} Growth Campaign`);
         form.setValue("logoUrl", `https://imagedelivery.net/WL1JOIJiM_NAChp6rtB6Cw/coin-image/${address}/86x86?alpha=true`);
         
-        description = res.description || 
-                           res.about || 
-                           res.project_description || 
-                           res.desc || 
-                           res.metadata?.description || 
-                           res.info?.description || 
-                           res.content || 
-                           res.description_text || 
-                           res.metadata?.description_text || 
-                           res.metadata?.about || "";
+        description = res.description || res.about || res.desc || "";
         found = true;
-      } else if (dexData?.pairs?.[0]) {
+      } 
+      
+      // 2. DexScreener
+      if (dexData?.pairs?.[0]) {
         const p = dexData.pairs[0];
-        form.setValue("tokenName", p.baseToken.symbol);
-        form.setValue("title", `${p.baseToken.name} Growth Campaign`);
-        if (p.info?.imageUrl) form.setValue("logoUrl", p.info.imageUrl);
-        if (p.info?.header) form.setValue("bannerUrl", p.info.header);
+        if (!form.getValues("tokenName")) form.setValue("tokenName", p.baseToken.symbol);
+        if (!form.getValues("title")) form.setValue("title", `${p.baseToken.name} Growth Campaign`);
+        if (!form.getValues("logoUrl") && p.info?.imageUrl) form.setValue("logoUrl", p.info.imageUrl);
+        if (!form.getValues("bannerUrl") && p.info?.header) form.setValue("bannerUrl", p.info.header);
         
-        description = p.info?.description || 
-                        p.info?.summary || 
-                        p.info?.about || 
-                        p.description || 
-                        (p.info?.socials?.find((s: any) => s.type === "twitter")?.description) || "";
+        if (!description) {
+          description = p.info?.description || p.info?.summary || p.description || "";
+        }
         
-        if (p.info?.websites?.[0]?.url) form.setValue("websiteUrl", p.info.websites[0].url);
+        if (!form.getValues("websiteUrl") && p.info?.websites?.[0]?.url) form.setValue("websiteUrl", p.info.websites[0].url);
         const twitter = p.info?.socials?.find((s: any) => s.type === "twitter");
-        if (twitter?.url) form.setValue("twitterUrl", twitter.url);
+        if (!form.getValues("twitterUrl") && twitter?.url) form.setValue("twitterUrl", twitter.url);
         if (p.marketCap) form.setValue("initialMarketCap", p.marketCap.toString());
         found = true;
-      } else if (jupData) {
-        form.setValue("tokenName", jupData.symbol);
-        form.setValue("logoUrl", jupData.logoURI);
-        description = jupData.description || "";
+      } 
+      
+      // 3. Jupiter
+      if (jupData) {
+        if (!form.getValues("tokenName")) form.setValue("tokenName", jupData.symbol);
+        if (!form.getValues("logoUrl")) form.setValue("logoUrl", jupData.logoURI);
+        if (!description) description = jupData.description || "";
         found = true;
-      } else if (moralisData) {
-        if (moralisData.symbol) form.setValue("tokenName", moralisData.symbol);
-        description = moralisData.description || moralisData.metadata?.description || "";
-        if (moralisData.logo) form.setValue("logoUrl", moralisData.logo);
+      } 
+      
+      // 4. Moralis
+      if (moralisData) {
+        if (!form.getValues("tokenName") && moralisData.symbol) form.setValue("tokenName", moralisData.symbol);
+        if (!description) description = moralisData.description || moralisData.metadata?.description || "";
+        if (!form.getValues("logoUrl") && moralisData.logo) form.setValue("logoUrl", moralisData.logo);
         found = true;
       }
 
+      // Final population with validation bypass for length if needed (handled by form error display)
       if (description) {
         console.log("Setting description from metadata:", description);
-        form.setValue("description", description, { shouldValidate: true, shouldDirty: true });
+        // We set it regardless of length so the user can see it and truncate if necessary
+        form.setValue("description", description, { shouldDirty: true });
+        // Small delay to trigger validation so errors appear if it's too long
+        setTimeout(() => {
+          form.trigger("description");
+        }, 100);
       }
       
       if (found) toast({ title: "Metadata Loaded", description: "Project details retrieved successfully." });
@@ -282,21 +287,22 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
       const errors = form.formState.errors;
       console.log("Validation errors:", errors);
 
-      // Small delay to ensure step and tab updates propagate
-      setTimeout(() => {
-        setStep("edit");
-        
-        // Navigate to error tab
+      // Reset to edit mode so we can show the error tabs
+      setStep("edit");
+
+      // Small delay to ensure state update propagates, then switch tab and re-trigger
+      setTimeout(async () => {
+        // Navigate to the tab with the error
         if (errors.tokenAddress || errors.title || errors.description || errors.logoUrl) {
           setActiveTab("general");
         } else if (errors.actions || errors.rewardPerWallet || errors.maxClaims) {
-          setActiveTab("rewards");
+          setActiveTab("actions");
         } else {
-          setActiveTab("shield");
+          setActiveTab("protections");
         }
-
+        
         // Re-trigger validation for UI feedback
-        form.trigger();
+        await form.trigger();
       }, 50);
 
       const missingFields: string[] = [];
@@ -571,7 +577,7 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
                               BACK
                             </Button>
                             <Button type="button" onClick={() => setActiveTab("protections")} className="h-16 px-10 rounded-2xl font-black uppercase tracking-[0.2em] text-xs gap-3 shadow-[0_0_30px_rgba(34,197,94,0.2)] hover:scale-105 transition-all">
-                              CONTINUE TO SECURITY <ChevronRight className="h-5 w-5" />
+                              CONTINUE TO SHIELD <ChevronRight className="h-5 w-5" />
                             </Button>
                           </div>
                         </TabsContent>
