@@ -217,9 +217,11 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
         
         if (description) {
           console.log("Setting description from Pump.fun:", description);
+          // Update immediately AND with a timeout to be safe
+          form.setValue("description", description, { shouldValidate: true, shouldDirty: true });
           setTimeout(() => {
             form.setValue("description", description, { shouldValidate: true, shouldDirty: true });
-          }, 100);
+          }, 50);
         }
         found = true;
       } else if (dexData?.pairs?.[0]) {
@@ -299,28 +301,25 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
     
     if (!isValid) {
       const errors = form.formState.errors;
-      console.log("Validation errors:", errors); // Debugging
+      console.log("Validation errors:", errors);
       
       setStep("edit");
       
-      // Ensure state updates before switching tabs
+      // Navigate to error tab immediately
+      if (errors.tokenAddress || errors.title || errors.description || errors.logoUrl) {
+        setActiveTab("general");
+      } else if (errors.actions || errors.rewardPerWallet || errors.maxClaims) {
+        setActiveTab("rewards");
+      } else {
+        setActiveTab("shield");
+      }
+      
+      // Small delay to ensure state update propagates before re-triggering validation for UI feedback
       setTimeout(() => {
-        const currentErrors = form.formState.errors;
-        if (currentErrors.tokenAddress || currentErrors.title || currentErrors.description || currentErrors.logoUrl) {
-          setActiveTab("general");
-        } else if (currentErrors.actions || currentErrors.rewardPerWallet || currentErrors.maxClaims) {
-          setActiveTab("rewards");
-        } else {
-          setActiveTab("shield");
-        }
-        
-        // Force a small delay then re-trigger validation to show labels in red
-        setTimeout(() => {
-          form.trigger();
-        }, 150);
+        form.trigger();
       }, 50);
 
-      if (errors.tokenAddress) missingFields.push("Token Address");
+      const missingFields: string[] = [];
       if (errors.title) missingFields.push("Campaign Title");
       if (errors.description) missingFields.push("Description");
       if (errors.logoUrl) missingFields.push("Logo Image");

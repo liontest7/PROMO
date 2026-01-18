@@ -87,8 +87,8 @@ export function EngagementActions({ form, gasFeeSol }: EngagementActionsProps) {
   };
 
   return (
-    <div className="flex flex-col h-full overflow-hidden">
-      <div className="flex-1 overflow-y-auto custom-scrollbar pr-2 space-y-4 pb-[240px]">
+    <div className="flex flex-col h-full overflow-hidden relative">
+      <div className="flex-1 overflow-y-auto custom-scrollbar pr-2 space-y-4 pb-4">
         {isEngagement ? (
           <>
             <div className="flex items-center justify-between p-3 bg-primary/10 rounded-2xl border border-primary/20 shadow-sm sticky top-0 z-20 backdrop-blur-md">
@@ -353,13 +353,13 @@ export function EngagementActions({ form, gasFeeSol }: EngagementActionsProps) {
         )}
       </div>
 
-      {/* Dynamic Real-time Pricing Summary - FIXED at bottom ABOVE action buttons */}
-      <div className="absolute bottom-[80px] left-0 right-0 px-6 py-4 bg-background/80 backdrop-blur-xl border-t border-white/10 shadow-[0_-10px_30px_rgba(0,0,0,0.3)] z-30">
-        <div className="max-w-2xl mx-auto space-y-3">
+      {/* Dynamic Real-time Pricing Summary - Inline in scroll content */}
+      <div className="mt-auto pt-6 space-y-4 border-t border-white/10">
+        <div className="space-y-3">
           <div className="flex justify-between items-center group/item">
             <div className="space-y-0.5">
               <span className="block text-xs font-black text-white uppercase tracking-[0.2em]">Airdrop Allocation</span>
-              <span className="text-[10px] font-bold text-primary uppercase italic tracking-widest italic">Calculated Budget</span>
+              <span className="text-[10px] font-bold text-primary uppercase italic tracking-widest">Calculated Budget</span>
             </div>
             <div className="text-right">
               <div className="flex items-center gap-2 justify-end">
