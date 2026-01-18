@@ -71,6 +71,56 @@ export function setupAdminRoutes(app: Express) {
     }
   });
 
+  app.get("/api/admin/users", async (req, res) => {
+    try {
+      const users = await storage.getAllUsers();
+      res.json(users);
+    } catch (err) {
+      console.error("[Admin Users] Error:", err);
+      res.status(500).json({ message: "Failed to fetch users" });
+    }
+  });
+
+  app.post("/api/admin/users/:id/role", async (req, res) => {
+    try {
+      const user = await storage.updateUser(parseInt(req.params.id), { role: req.body.role });
+      res.json(user);
+    } catch (err) {
+      res.status(500).json({ message: "Failed to update role" });
+    }
+  });
+
+  app.post("/api/admin/users/:id/status", async (req, res) => {
+    try {
+      const user = await storage.updateUser(parseInt(req.params.id), { status: req.body.status });
+      res.json(user);
+    } catch (err) {
+      res.status(500).json({ message: "Failed to update status" });
+    }
+  });
+
+  // Campaigns
+  app.get("/api/admin/campaigns", async (req, res) => {
+    try {
+      const campaigns = await storage.getAllCampaigns();
+      res.json(campaigns);
+    } catch (err) {
+      console.error("[Admin Campaigns] Error:", err);
+      res.status(500).json({ message: "Failed to fetch campaigns" });
+    }
+  });
+
+  // Executions
+  app.get("/api/admin/executions", async (req, res) => {
+    try {
+      const executions = await storage.getAllExecutions();
+      res.json(executions);
+    } catch (err) {
+      console.error("[Admin Executions] Error:", err);
+      res.status(500).json({ message: "Failed to fetch executions" });
+    }
+  });
+
   app.get("/api/admin/settings", async (req, res) => {
     try {
       const settings = await storage.getSystemSettings();
