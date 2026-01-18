@@ -74,7 +74,9 @@ export default function AdminDashboard() {
   const { data: settings, isLoading: loadingSettings } = useQuery<any>({
     queryKey: ["/api/admin/settings"],
     queryFn: fetchAdmin,
-    staleTime: 60000,
+    staleTime: 0,
+    refetchOnMount: "always",
+    refetchOnWindowFocus: true,
     enabled: !!currentWallet,
   });
 
