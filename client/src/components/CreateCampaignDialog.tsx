@@ -386,11 +386,13 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
     const formattedValues = {
       ...values,
       creatorId: userId,
-      initialMarketCap: values.initialMarketCap || "0",
-      currentMarketCap: values.initialMarketCap || "0",
+      initialMarketCap: (values.initialMarketCap || "0").toString(),
+      currentMarketCap: (values.initialMarketCap || "0").toString(),
       totalBudget: values.campaignType === "holder_qualification" 
         ? (Number(values.rewardPerWallet || 0) * Number(values.maxClaims || 0)).toString()
         : (values.totalBudget || 0).toString(),
+      minHoldingAmount: (values.minHoldingAmount || 0).toString(),
+      rewardPerWallet: (values.rewardPerWallet || 0).toString(),
       requirements: {
         minSolBalance: values.minSolBalance,
         minWalletAgeDays: values.minWalletAgeDays,
@@ -402,12 +404,14 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
           days: values.multiDaySolDays
         } : undefined,
         minProjectTokenHolding: (values.minHoldingAmount || 0) > 0 ? {
-          amount: values.minHoldingAmount || 0,
+          amount: Number(values.minHoldingAmount || 0),
           days: values.minHoldingDuration || 0
         } : undefined
       },
       actions: values.campaignType === "holder_qualification" || !values.actions ? [] : values.actions.map(a => ({
-        ...a, rewardAmount: a.rewardAmount.toString(), maxExecutions: a.maxExecutions ? Number(a.maxExecutions) : null
+        ...a, 
+        rewardAmount: a.rewardAmount.toString(), 
+        maxExecutions: a.maxExecutions ? Number(a.maxExecutions) : null
       }))
     };
 
