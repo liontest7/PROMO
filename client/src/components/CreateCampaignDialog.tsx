@@ -434,25 +434,27 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
                       <label className="text-xs font-black text-primary uppercase tracking-[0.3em] px-2">Mission Objective</label>
                       <div className="grid grid-cols-2 gap-4">
                         <button 
-                          onClick={() => form.setValue("campaignType", "engagement")}
-                          className={`flex flex-col items-center justify-center p-6 rounded-[24px] border-4 transition-all gap-3 relative overflow-hidden group/btn ${watchedType === 'engagement' ? 'bg-primary/20 border-primary shadow-[0_0_30px_rgba(34,197,94,0.3)]' : 'bg-white/5 border-white/10 hover:border-white/20'}`}
+                          onClick={() => !isSocialDisabled && form.setValue("campaignType", "engagement")}
+                          disabled={isSocialDisabled}
+                          className={`flex flex-col items-center justify-center p-6 rounded-[24px] border-4 transition-all gap-3 relative overflow-hidden group/btn ${watchedType === 'engagement' ? 'bg-primary/20 border-primary shadow-[0_0_30px_rgba(34,197,94,0.3)]' : 'bg-white/5 border-white/10 hover:border-white/20'} ${isSocialDisabled ? 'opacity-50 cursor-not-allowed grayscale' : ''}`}
                         >
                           <div className={`absolute inset-0 bg-primary/5 -translate-x-full group-hover/btn:translate-x-0 transition-transform duration-700`} />
                           <Zap className={`h-10 w-10 relative z-10 ${watchedType === 'engagement' ? 'text-primary scale-110' : 'text-white/40'} transition-all`} />
                           <div className="text-center relative z-10">
                             <p className="text-[12px] font-black uppercase tracking-[0.15em] text-white leading-none mb-1">Social Growth</p>
-                            <p className="text-[9px] text-white font-black italic uppercase tracking-widest opacity-80">Engagement</p>
+                            <p className="text-[9px] text-white font-black italic uppercase tracking-widest opacity-80">{isSocialDisabled ? 'Disabled' : 'Engagement'}</p>
                           </div>
                         </button>
                         <button 
-                          onClick={() => form.setValue("campaignType", "holder_qualification")}
-                          className={`flex flex-col items-center justify-center p-6 rounded-[24px] border-4 transition-all gap-3 relative overflow-hidden group/btn ${watchedType === 'holder_qualification' ? 'bg-primary/20 border-primary shadow-[0_0_30px_rgba(34,197,94,0.3)]' : 'bg-white/5 border-white/10 hover:border-white/20'}`}
+                          onClick={() => !isHolderDisabled && form.setValue("campaignType", "holder_qualification")}
+                          disabled={isHolderDisabled}
+                          className={`flex flex-col items-center justify-center p-6 rounded-[24px] border-4 transition-all gap-3 relative overflow-hidden group/btn ${watchedType === 'holder_qualification' ? 'bg-primary/20 border-primary shadow-[0_0_30px_rgba(34,197,94,0.3)]' : 'bg-white/5 border-white/10 hover:border-white/20'} ${isHolderDisabled ? 'opacity-50 cursor-not-allowed grayscale' : ''}`}
                         >
                           <div className={`absolute inset-0 bg-primary/5 -translate-x-full group-hover/btn:translate-x-0 transition-transform duration-700`} />
                           <Coins className={`h-10 w-10 relative z-10 ${watchedType === 'holder_qualification' ? 'text-primary scale-110' : 'text-white/40'} transition-all`} />
                           <div className="text-center relative z-10">
                             <p className="text-[12px] font-black uppercase tracking-[0.15em] text-white leading-none mb-1">Holder Reward</p>
-                            <p className="text-[9px] text-white font-black italic uppercase tracking-widest opacity-80">Retention</p>
+                            <p className="text-[9px] text-white font-black italic uppercase tracking-widest opacity-80">{isHolderDisabled ? 'Disabled' : 'Retention'}</p>
                           </div>
                         </button>
                       </div>
