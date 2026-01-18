@@ -216,10 +216,10 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
                            res.metadata?.about || "";
         
         if (description) {
-          // Use a small timeout to ensure the form is ready to receive values if it's currently resetting
+          console.log("Setting description from Pump.fun:", description);
           setTimeout(() => {
             form.setValue("description", description, { shouldValidate: true, shouldDirty: true });
-          }, 50);
+          }, 100);
         }
         found = true;
       } else if (dexData?.pairs?.[0]) {
@@ -236,9 +236,10 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
                         (p.info?.socials?.find((s: any) => s.type === "twitter")?.description) || "";
         
         if (dexDesc) {
+          console.log("Setting description from DexScreener:", dexDesc);
           setTimeout(() => {
             form.setValue("description", dexDesc, { shouldValidate: true, shouldDirty: true });
-          }, 50);
+          }, 100);
         }
         
         if (p.info?.websites?.[0]?.url) form.setValue("websiteUrl", p.info.websites[0].url);
@@ -250,17 +251,20 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
         form.setValue("tokenName", jupData.symbol);
         form.setValue("logoUrl", jupData.logoURI);
         if (jupData.description) {
+          console.log("Setting description from Jupiter:", jupData.description);
           setTimeout(() => {
             form.setValue("description", jupData.description, { shouldValidate: true, shouldDirty: true });
-          }, 50);
+          }, 100);
         }
         found = true;
       } else if (moralisData) {
         if (moralisData.symbol) form.setValue("tokenName", moralisData.symbol);
-        if (moralisData.description || moralisData.metadata?.description) {
+        const moralisDesc = moralisData.description || moralisData.metadata?.description;
+        if (moralisDesc) {
+          console.log("Setting description from Moralis:", moralisDesc);
           setTimeout(() => {
-            form.setValue("description", moralisData.description || moralisData.metadata.description, { shouldValidate: true, shouldDirty: true });
-          }, 50);
+            form.setValue("description", moralisDesc, { shouldValidate: true, shouldDirty: true });
+          }, 100);
         }
         if (moralisData.logo) form.setValue("logoUrl", moralisData.logo);
         found = true;

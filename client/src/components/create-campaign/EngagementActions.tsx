@@ -52,7 +52,12 @@ export function EngagementActions({ form, gasFeeSol }: EngagementActionsProps) {
     }
   }, [fields, openItems]);
 
-  const toggleItem = (id: string) => {
+  const toggleItem = async (id: string, index: number) => {
+    // If we're trying to close/save an item, validate it first
+    if (openItems[id]) {
+      const result = await form.trigger(`actions.${index}`);
+      if (!result) return; // Don't collapse if there are errors
+    }
     setOpenItems(prev => ({ ...prev, [id]: !prev[id] }));
   };
 
@@ -82,8 +87,8 @@ export function EngagementActions({ form, gasFeeSol }: EngagementActionsProps) {
   };
 
   return (
-    <div className="flex flex-col h-full min-h-0">
-      <div className="flex-1 overflow-y-auto custom-scrollbar pr-2 space-y-4 pb-32">
+    <div className="flex flex-col h-full overflow-hidden">
+      <div className="flex-1 overflow-y-auto custom-scrollbar pr-2 space-y-4 pb-[240px]">
         {isEngagement ? (
           <>
             <div className="flex items-center justify-between p-3 bg-primary/10 rounded-2xl border border-primary/20 shadow-sm sticky top-0 z-20 backdrop-blur-md">
@@ -123,7 +128,7 @@ export function EngagementActions({ form, gasFeeSol }: EngagementActionsProps) {
                   <div key={field.id} className="group border-2 border-primary/10 rounded-[20px] bg-primary/5 overflow-hidden transition-all duration-300">
                     <div 
                       className={`flex items-center justify-between p-4 cursor-pointer hover:bg-primary/10 transition-colors ${!isOpen ? 'bg-primary/5' : 'border-b-2 border-primary/10'}`}
-                      onClick={() => toggleItem(field.id)}
+                      onClick={() => toggleItem(field.id, index)}
                     >
                       <div className="flex items-center gap-3">
                         <div className="p-2 bg-background/50 rounded-lg border border-primary/20">
@@ -257,7 +262,7 @@ export function EngagementActions({ form, gasFeeSol }: EngagementActionsProps) {
                           type="button" 
                           variant="outline" 
                           className="w-full h-10 rounded-xl border-primary/20 text-primary font-black uppercase tracking-widest text-[10px] hover:bg-primary/10"
-                          onClick={() => toggleItem(field.id)}
+                          onClick={() => toggleItem(field.id, index)}
                         >
                           <CheckCircle2 className="h-3.5 w-3.5 mr-2" /> Save Task Settings
                         </Button>
@@ -348,9 +353,9 @@ export function EngagementActions({ form, gasFeeSol }: EngagementActionsProps) {
         )}
       </div>
 
-      {/* Dynamic Real-time Pricing Summary - FIXED at bottom */}
-      <div className="absolute bottom-0 left-0 right-0 p-6 bg-background/80 backdrop-blur-xl border-t border-white/10 shadow-[0_-20px_50px_rgba(0,0,0,0.5)] z-30">
-        <div className="max-w-2xl mx-auto space-y-4">
+      {/* Dynamic Real-time Pricing Summary - FIXED at bottom ABOVE action buttons */}
+      <div className="absolute bottom-[80px] left-0 right-0 px-6 py-4 bg-background/80 backdrop-blur-xl border-t border-white/10 shadow-[0_-10px_30px_rgba(0,0,0,0.3)] z-30">
+        <div className="max-w-2xl mx-auto space-y-3">
           <div className="flex justify-between items-center group/item">
             <div className="space-y-0.5">
               <span className="block text-xs font-black text-white uppercase tracking-[0.2em]">Airdrop Allocation</span>
