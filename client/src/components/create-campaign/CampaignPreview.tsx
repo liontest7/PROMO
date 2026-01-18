@@ -92,18 +92,18 @@ export function CampaignPreview({
               </div>
               <div className="space-y-5 relative z-10">
                 <div className="flex justify-between items-center border-b border-white/5 pb-4">
-                  <span className="text-xs text-muted-foreground uppercase font-black tracking-widest">Type</span>
-                  <Badge variant="outline" className="text-[10px] uppercase font-black tracking-widest py-1.5 border-primary/30 text-primary bg-primary/5">
+                  <span className="text-sm text-white uppercase font-black tracking-widest">Type</span>
+                  <Badge variant="outline" className="text-xs uppercase font-black tracking-widest py-1.5 border-primary/30 text-primary bg-primary/5">
                     {values.campaignType?.replace("_", " ")}
                   </Badge>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-xs text-muted-foreground uppercase font-black tracking-widest">Airdrop Pool</span>
+                  <span className="text-sm text-white uppercase font-black tracking-widest">Airdrop Pool</span>
                   <div className="text-right">
-                    <span className="block text-2xl font-mono font-black text-primary leading-none tracking-tighter">
+                    <span className="block text-3xl font-mono font-black text-primary leading-none tracking-tighter">
                       {values.totalBudget?.toLocaleString()}
                     </span>
-                    <span className="text-[10px] font-black uppercase text-muted-foreground tracking-widest">${values.tokenName}</span>
+                    <span className="text-xs font-black uppercase text-white tracking-widest">${values.tokenName}</span>
                   </div>
                 </div>
               </div>
@@ -133,16 +133,16 @@ export function CampaignPreview({
                     { label: `Hold ${values.minHoldingAmount} $${values.tokenName}`, active: (values.minHoldingAmount || 0) > 0 },
                     { label: `Hold Duration: ${values.minHoldingDuration}d`, active: (values.minHoldingDuration || 0) > 0 },
                   ].map((p, i) => p.active && (
-                    <div key={i} className="flex items-center gap-3 text-[11px] font-black text-white/90 py-2.5 px-4 bg-white/5 rounded-2xl border border-white/5 hover:bg-white/10 transition-colors">
-                      <CheckCircle2 className="h-3.5 w-3.5 text-primary shrink-0" />
+                    <div key={i} className="flex items-center gap-3 text-xs font-black text-white py-2.5 px-4 bg-white/5 rounded-2xl border border-white/10 hover:bg-white/10 transition-colors">
+                      <CheckCircle2 className="h-4 w-4 text-primary shrink-0" />
                       <span className="truncate">{p.label}</span>
                     </div>
                   ))}
                 </div>
               ) : (
-                <div className="flex flex-col items-center justify-center py-4 space-y-2 opacity-40">
-                  <AlertCircle className="h-8 w-8 text-muted-foreground" />
-                  <span className="text-[10px] font-black uppercase tracking-widest italic">Standard Protections Only</span>
+                <div className="flex flex-col items-center justify-center py-4 space-y-2 opacity-60">
+                  <AlertCircle className="h-10 w-10 text-white" />
+                  <span className="text-xs font-black uppercase tracking-widest italic text-white">Standard Protections Only</span>
                 </div>
               )}
             </div>
@@ -159,31 +159,31 @@ export function CampaignPreview({
               {isHolder ? (
                 <div className="flex flex-col items-center justify-center py-8 space-y-4">
                   <div className="p-4 bg-primary/20 rounded-full animate-pulse shadow-[0_0_20px_rgba(34,197,94,0.2)]">
-                    <Coins className="h-10 w-10 text-primary" />
+                    <Coins className="h-12 w-12 text-primary" />
                   </div>
-                  <div className="text-center space-y-1">
-                    <p className="text-[10px] font-black uppercase tracking-[0.2em] text-white/60">Reward Per Participant</p>
-                    <p className="text-2xl font-mono font-black text-primary leading-tight">
+                  <div className="text-center space-y-2">
+                    <p className="text-xs font-black uppercase tracking-[0.2em] text-white">Reward Per Participant</p>
+                    <p className="text-3xl font-mono font-black text-primary leading-tight">
                       {values.rewardPerWallet?.toLocaleString()}
                     </p>
-                    <p className="text-[10px] font-black uppercase text-muted-foreground tracking-widest">${values.tokenName}</p>
+                    <p className="text-xs font-black uppercase text-white tracking-widest">${values.tokenName}</p>
                   </div>
                 </div>
               ) : (
                 values.actions?.map((action: any, i: number) => (
-                  <div key={i} className="group flex items-center gap-4 p-3.5 bg-white/5 rounded-[20px] border border-white/5 hover:border-primary/40 hover:bg-white/10 transition-all duration-500">
-                    <div className="p-2.5 bg-primary/10 rounded-xl group-hover:bg-primary/20 group-hover:scale-110 transition-all shadow-inner">
-                      {action.type === 'twitter_follow' || action.type === 'twitter_retweet' ? <Twitter className="h-4 w-4 text-[#1DA1F2]" /> :
-                       action.type === 'telegram_join' ? <Send className="h-4 w-4 text-[#0088cc]" /> :
-                       <Globe className="h-4 w-4 text-blue-400" />}
+                  <div key={i} className="group flex items-center gap-4 p-4 bg-white/10 rounded-[20px] border border-white/10 hover:border-primary/40 hover:bg-white/20 transition-all duration-500">
+                    <div className="p-3 bg-primary/20 rounded-xl group-hover:bg-primary/30 group-hover:scale-110 transition-all shadow-inner">
+                      {action.type === 'twitter_follow' || action.type === 'twitter_retweet' ? <Twitter className="h-5 w-5 text-[#1DA1F2]" /> :
+                       action.type === 'telegram_join' ? <Send className="h-5 w-5 text-[#0088cc]" /> :
+                       <Globe className="h-5 w-5 text-blue-400" />}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="text-[11px] font-black text-white truncate uppercase tracking-tight group-hover:text-primary transition-colors">{action.title}</p>
-                      <p className="text-[9px] text-muted-foreground truncate italic font-medium">{action.url}</p>
+                      <p className="text-sm font-black text-white truncate uppercase tracking-tight group-hover:text-primary transition-colors">{action.title}</p>
+                      <p className="text-xs text-white/60 truncate italic font-medium">{action.url}</p>
                     </div>
                     <div className="text-right shrink-0">
-                      <p className="text-xs font-mono font-black text-primary leading-none">+{action.rewardAmount}</p>
-                      <p className="text-[8px] font-black text-muted-foreground uppercase tracking-tighter mt-1">{action.maxExecutions} SLOTS</p>
+                      <p className="text-sm font-mono font-black text-primary leading-none">+{action.rewardAmount}</p>
+                      <p className="text-[10px] font-black text-white uppercase tracking-tighter mt-1.5">{action.maxExecutions} SLOTS</p>
                     </div>
                   </div>
                 ))
@@ -201,22 +201,22 @@ export function CampaignPreview({
                 <Shield className="h-20 w-20" />
               </div>
               <div className="space-y-3.5 relative z-10">
-                <div className="flex justify-between text-[11px] font-black py-1.5 border-b border-white/5 group">
-                  <span className="text-muted-foreground uppercase tracking-[0.15em] group-hover:text-white transition-colors">Creation Fee</span>
+                <div className="flex justify-between text-xs font-black py-2 border-b border-white/10 group">
+                  <span className="text-white uppercase tracking-[0.15em] group-hover:text-primary transition-colors">Creation Fee</span>
                   <span className="text-white group-hover:text-primary transition-colors font-mono">0.5000 SOL</span>
                 </div>
-                <div className="flex justify-between text-[11px] font-black py-1.5 border-b border-white/5 group">
-                  <span className="text-muted-foreground uppercase tracking-[0.15em] group-hover:text-white transition-colors">Gas Allocation</span>
+                <div className="flex justify-between text-xs font-black py-2 border-b border-white/10 group">
+                  <span className="text-white uppercase tracking-[0.15em] group-hover:text-white transition-colors">Gas Allocation</span>
                   <span className="text-white group-hover:text-primary transition-colors font-mono">{gasFeeSol} SOL</span>
                 </div>
                 <div className="flex justify-between items-center pt-4">
-                  <div className="space-y-0.5">
-                    <span className="block text-[10px] font-black text-primary uppercase tracking-[0.3em] leading-none">Total Settlement</span>
-                    <span className="text-[8px] font-bold text-muted-foreground uppercase italic tracking-widest">(Secured in Escrow)</span>
+                  <div className="space-y-1">
+                    <span className="block text-xs font-black text-primary uppercase tracking-[0.3em] leading-none">Total Settlement</span>
+                    <span className="text-[10px] font-bold text-white/60 uppercase italic tracking-widest">(Secured in Escrow)</span>
                   </div>
                   <div className="px-5 py-2.5 bg-primary/20 rounded-2xl border-2 border-primary/40 shadow-[0_0_20px_rgba(34,197,94,0.2)] group hover:scale-105 transition-transform">
-                    <span className="font-mono font-black text-primary text-2xl tracking-tighter group-hover:drop-shadow-[0_0_8px_rgba(34,197,94,0.6)]">{totalCostSol}</span>
-                    <span className="text-[10px] font-black text-primary/60 ml-1">SOL</span>
+                    <span className="font-mono font-black text-primary text-3xl tracking-tighter group-hover:drop-shadow-[0_0_8px_rgba(34,197,94,0.6)]">{totalCostSol}</span>
+                    <span className="text-xs font-black text-primary/60 ml-1">SOL</span>
                   </div>
                 </div>
               </div>

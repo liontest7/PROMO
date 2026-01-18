@@ -196,14 +196,14 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
       const jupData = results[2].status === 'fulfilled' ? results[2].value : null;
       const moralisData = results[3].status === 'fulfilled' ? results[3].value : null;
 
-      // In CreateCampaignDialog.tsx, inside handleAddressSearch
+      let found = false;
+
       if (pumpData?.success && pumpData.result) {
         const res = pumpData.result;
         form.setValue("tokenName", res.symbol);
         form.setValue("title", `${res.name} Growth Campaign`);
         form.setValue("logoUrl", `https://imagedelivery.net/WL1JOIJiM_NAChp6rtB6Cw/coin-image/${address}/86x86?alpha=true`);
         
-        // Comprehensive fallback for description across all possible pump.fun API structures
         const description = res.description || 
                            res.about || 
                            res.project_description || 
@@ -222,7 +222,6 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
         if (p.info?.imageUrl) form.setValue("logoUrl", p.info.imageUrl);
         if (p.info?.header) form.setValue("bannerUrl", p.info.header);
         
-        // Robust DEXScreener description extraction
         const dexDesc = p.info?.description || 
                         p.info?.summary || 
                         p.info?.about || 
@@ -239,11 +238,9 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
       } else if (jupData) {
         form.setValue("tokenName", jupData.symbol);
         form.setValue("logoUrl", jupData.logoURI);
-        // Jupiter sometimes provides description in extended metadata
         if (jupData.description) form.setValue("description", jupData.description);
         found = true;
       } else if (moralisData) {
-        // Moralis metadata structure
         if (moralisData.symbol) form.setValue("tokenName", moralisData.symbol);
         if (moralisData.description) form.setValue("description", moralisData.description);
         if (moralisData.logo) form.setValue("logoUrl", moralisData.logo);
@@ -281,6 +278,12 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
         const errors = form.formState.errors;
         const missingFields: string[] = [];
         
+        if (errors.title || errors.description || errors.logoUrl) {
+          setActiveTab("general");
+        } else if (errors.actions) {
+          setActiveTab("rewards");
+        }
+
         if (errors.title) missingFields.push("Campaign Title");
         if (errors.description) missingFields.push("Description");
         if (errors.logoUrl) missingFields.push("Logo Image");
@@ -330,7 +333,12 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
       }))
     };
 
-    createCampaign(formattedValues as any, {
+    const finalPayload = {
+      ...formattedValues,
+      totalBudget: formattedValues.totalBudget.toString()
+    };
+
+    createCampaign(finalPayload as any, {
       onSuccess: (data) => {
         setCreatedCampaign(data);
         setOpen(false);
