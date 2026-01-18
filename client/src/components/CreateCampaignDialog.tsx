@@ -121,9 +121,17 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
           const parsed = JSON.parse(draft);
           // Only restore if it's less than 24h old
           if (Date.now() - parsed.timestamp < 24 * 60 * 60 * 1000) {
-            form.reset(parsed.data);
-            if (parsed.data.tokenAddress && parsed.data.campaignType) {
-              setStep("edit");
+            // Check if this is a fresh open and not a "Back" button click
+            // We can detect "Back" by checking if we were just in "edit"
+            const wasEditing = localStorage.getItem("was_editing") === "true";
+            if (!wasEditing) {
+              form.reset(parsed.data);
+              if (parsed.data.tokenAddress && parsed.data.campaignType) {
+                setStep("edit");
+              }
+            } else {
+              // Clear the flag after handling
+              localStorage.removeItem("was_editing");
             }
           }
         } catch (e) {
@@ -382,38 +390,38 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
                     <DialogTitle className="text-3xl font-black uppercase tracking-tighter italic leading-none flex items-center gap-2">
                       {step === "initial" ? (
                         <>
-                          <span className="text-white">INITIALIZE</span>
-                          <span className="text-primary">MISSION</span>
+                          <span className="text-white">אתחול</span>
+                          <span className="text-primary">משימה</span>
                         </>
                       ) : step === "preview" ? (
                         <>
-                          <span className="text-white">PREVIEW</span>
-                          <span className="text-primary">MISSION</span>
+                          <span className="text-white">תצוגה</span>
+                          <span className="text-primary">מקדימה</span>
                         </>
                       ) : (
                         <>
-                          <span className="text-white">STRATEGIC</span>
-                          <span className="text-primary">OVERRIDE</span>
+                          <span className="text-white">עריכת</span>
+                          <span className="text-primary">קמפיין</span>
                         </>
                       )}
                     </DialogTitle>
                     <div className="h-1 w-full bg-primary mt-1 rounded-full" />
                   </div>
                 </div>
-                <DialogDescription className="text-white font-bold tracking-[0.1em] uppercase text-sm opacity-90 pb-2">
-                  {step === "initial" ? "Input Token Signature (CA) to begin protocol." : step === "preview" ? "Verify all mission parameters before deployment." : "Override settings for maximum project impact."}
+                <DialogDescription className="text-white font-bold tracking-[0.1em] uppercase text-sm opacity-90 pb-2 text-right">
+                  {step === "initial" ? "הזן כתובת חוזה (CA) כדי להתחיל בתהליך." : step === "preview" ? "אמת את כל פרמטרי המשימה לפני הפריסה." : "הגדר את המשימה להשפעה מקסימלית."}
                 </DialogDescription>
               </DialogHeader>
 
               {step === "initial" && (
-                <div className="space-y-6 animate-in fade-in slide-in-from-bottom-12 duration-700 py-6">
+                <div className="space-y-6 animate-in fade-in slide-in-from-bottom-12 duration-700 py-6" dir="rtl">
                   <div className="grid grid-cols-1 gap-6 pb-4">
                     <div className="space-y-3">
                       <div className="flex items-center justify-between px-2">
-                        <label className="text-xs font-black text-primary uppercase tracking-[0.3em]">Token Address (CA)</label>
+                        <label className="text-xs font-black text-primary uppercase tracking-[0.3em]">כתובת הטוקן (CA)</label>
                         {form.watch("tokenName") && (
                           <Badge variant="outline" className="text-[10px] font-black border-primary text-primary tracking-widest uppercase bg-primary/10 animate-in fade-in zoom-in">
-                            LOADED: ${form.watch("tokenName")}
+                            נטען: ${form.watch("tokenName")}
                           </Badge>
                         )}
                         {!form.watch("tokenName") && (
@@ -425,8 +433,8 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
                           {isFetchingMetadata ? <Loader2 className="animate-spin" /> : <Search />}
                         </div>
                         <Input 
-                          placeholder="Paste Contract Address..." 
-                          className="h-16 pl-14 bg-primary/5 border-2 border-primary/10 focus:border-primary/50 rounded-2xl text-lg font-mono tracking-tighter transition-all shadow-inner group-hover:border-primary/30 text-white"
+                          placeholder="הדבק כתובת חוזה..." 
+                          className="h-16 pl-14 bg-primary/5 border-2 border-primary/10 focus:border-primary/50 rounded-2xl text-lg font-mono tracking-tighter transition-all shadow-inner group-hover:border-primary/30 text-white text-right"
                           value={form.watch("tokenAddress")}
                           autoComplete="on"
                           name="tokenAddress"
@@ -441,7 +449,7 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
                     </div>
 
                     <div className="space-y-3">
-                      <label className="text-xs font-black text-primary uppercase tracking-[0.3em] px-2">Mission Objective</label>
+                      <label className="text-xs font-black text-primary uppercase tracking-[0.3em] px-2 text-right">מטרת המשימה</label>
                       <div className="grid grid-cols-2 gap-4">
                         <button 
                           onClick={() => form.setValue("campaignType", "engagement")}
@@ -450,8 +458,8 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
                           <div className={`absolute inset-0 bg-primary/5 -translate-x-full group-hover/btn:translate-x-0 transition-transform duration-700`} />
                           <Zap className={`h-10 w-10 relative z-10 ${watchedType === 'engagement' ? 'text-primary scale-110' : 'text-white/40'} transition-all`} />
                           <div className="text-center relative z-10">
-                            <p className="text-[12px] font-black uppercase tracking-[0.15em] text-white leading-none mb-1">Social Growth</p>
-                            <p className="text-[9px] text-white font-black italic uppercase tracking-widest opacity-80">Engagement</p>
+                            <p className="text-[12px] font-black uppercase tracking-[0.15em] text-white leading-none mb-1">צמיחה חברתית</p>
+                            <p className="text-[9px] text-white font-black italic uppercase tracking-widest opacity-80">מעורבות</p>
                           </div>
                         </button>
                         <button 
@@ -461,8 +469,8 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
                           <div className={`absolute inset-0 bg-primary/5 -translate-x-full group-hover/btn:translate-x-0 transition-transform duration-700`} />
                           <Coins className={`h-10 w-10 relative z-10 ${watchedType === 'holder_qualification' ? 'text-primary scale-110' : 'text-white/40'} transition-all`} />
                           <div className="text-center relative z-10">
-                            <p className="text-[12px] font-black uppercase tracking-[0.15em] text-white leading-none mb-1">Holder Reward</p>
-                            <p className="text-[9px] text-white font-black italic uppercase tracking-widest opacity-80">Retention</p>
+                            <p className="text-[12px] font-black uppercase tracking-[0.15em] text-white leading-none mb-1">איירדרופ למחזיקים</p>
+                            <p className="text-[9px] text-white font-black italic uppercase tracking-widest opacity-80">תגמול</p>
                           </div>
                         </button>
                       </div>
@@ -472,10 +480,18 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
                   <Button 
                     onClick={handleInitialSubmit}
                     disabled={isFetchingMetadata || !form.watch("tokenAddress")}
-                    className="w-full h-16 rounded-[24px] font-black text-lg uppercase tracking-[0.3em] bg-primary hover:bg-primary/90 shadow-[0_0_40px_rgba(34,197,94,0.4)] transition-all group relative overflow-hidden active:scale-[0.98]"
+                    className="w-full h-16 rounded-[24px] bg-primary hover:bg-primary/90 text-primary-foreground font-black uppercase tracking-[0.2em] shadow-[0_0_30px_rgba(34,197,94,0.3)] transition-all relative overflow-hidden group"
                   >
-                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:animate-[shimmer_2s_infinite]" />
-                    {isFetchingMetadata ? <Loader2 className="animate-spin h-7 w-7" /> : <div className="flex items-center gap-3 text-white">INITIALIZE <ChevronRight className="h-6 w-6 group-hover:translate-x-2 transition-transform" /></div>}
+                    {isFetchingMetadata ? (
+                      <div className="flex items-center gap-3">
+                        <Loader2 className="h-5 w-5 animate-spin" />
+                        טוען נתוני טוקן...
+                      </div>
+                    ) : (
+                      <div className="flex items-center gap-3">
+                        התחל משימה <ChevronRight className="h-6 w-6 group-hover:translate-x-1 transition-transform" />
+                      </div>
+                    )}
                   </Button>
                 </div>
               )}
@@ -486,44 +502,52 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
                 {step === "edit" ? (
                   <Form {...form}>
                     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-                      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+                      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full" dir="rtl">
                         <TabsList className="grid grid-cols-3 mb-6 mt-4 bg-primary/5 border-2 border-primary/10 p-1.5 h-14 rounded-[20px] shadow-inner shrink-0 sticky top-0 z-50 bg-background/80 backdrop-blur-md">
                           <TabsTrigger value="general" className="rounded-xl data-[state=active]:bg-primary data-[state=active]:!text-primary-foreground font-black text-[13px] uppercase tracking-[0.2em] gap-3 transition-all shadow-sm text-white hover:text-white">
-                            <Layout className="h-4 w-4" /> BRANDING
+                            <Layout className="h-4 w-4" /> מיתוג
                           </TabsTrigger>
                           <TabsTrigger value="protections" className="rounded-xl data-[state=active]:bg-primary data-[state=active]:!text-primary-foreground font-black text-[13px] uppercase tracking-[0.2em] gap-3 transition-all shadow-sm text-white hover:text-white">
-                            <ShieldCheck className="h-4 w-4" /> SHIELD
+                            <ShieldCheck className="h-4 w-4" /> הגנות
                           </TabsTrigger>
                           <TabsTrigger value="actions" className="rounded-xl data-[state=active]:bg-primary data-[state=active]:!text-primary-foreground font-black text-[13px] uppercase tracking-[0.2em] gap-3 transition-all shadow-sm text-white hover:text-white">
-                            <ListChecks className="h-4 w-4" /> REWARDS
+                            <ListChecks className="h-4 w-4" /> תגמולים
                           </TabsTrigger>
                         </TabsList>
 
-                        <TabsContent value="general" className="mt-0 space-y-6 animate-in fade-in slide-in-from-left-8 duration-500">
-                          <BasicSettings form={form} fetchTokenMetadata={fetchTokenMetadata} />
-                          <div className="flex justify-between pt-6 gap-4 pb-4">
+                        <TabsContent value="general" className="mt-0 space-y-6 animate-in fade-in slide-in-from-left-8 duration-500 text-right">
+                          <BasicSettings 
+                            form={form} 
+                            fetchTokenMetadata={fetchTokenMetadata} 
+                            onBack={() => {
+                              localStorage.setItem("was_editing", "true");
+                              setStep("initial");
+                            }}
+                          />
+                          <div className="flex justify-between pt-6 gap-4 pb-4 flex-row-reverse">
                             <Button 
                               type="button" 
                               variant="outline" 
                               onClick={(e) => {
                                 e.preventDefault();
                                 e.stopPropagation();
+                                localStorage.setItem("was_editing", "true");
                                 setStep("initial");
                                 setActiveTab("general");
                               }}
                               className="h-16 px-10 rounded-2xl font-black uppercase tracking-[0.2em] text-xs border-2 hover:bg-white/5 relative z-[100] cursor-pointer"
                             >
-                              BACK
+                              חזור
                             </Button>
                             <Button type="button" onClick={() => setActiveTab("protections")} className="h-16 px-10 rounded-2xl font-black uppercase tracking-[0.2em] text-xs gap-3 shadow-[0_0_30px_rgba(34,197,94,0.2)] hover:scale-105 transition-all">
-                              CONFIGURE SECURITY <ChevronRight className="h-5 w-5" />
+                              הגדר אבטחה <ChevronRight className="h-5 w-5" />
                             </Button>
                           </div>
                         </TabsContent>
 
-                        <TabsContent value="protections" className="mt-0 space-y-6 animate-in fade-in slide-in-from-left-8 duration-500">
+                        <TabsContent value="protections" className="mt-0 space-y-6 animate-in fade-in slide-in-from-left-8 duration-500 text-right">
                           <CampaignProtections form={form} />
-                          <div className="flex justify-between pt-6 gap-4">
+                          <div className="flex justify-between pt-6 gap-4 flex-row-reverse">
                             <Button 
                               type="button" 
                               variant="outline" 
@@ -534,17 +558,17 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
                               }}
                               className="h-16 px-10 rounded-2xl font-black uppercase tracking-[0.2em] text-xs border-2 hover:bg-white/5 relative z-[100] cursor-pointer"
                             >
-                              BACK
+                              חזור
                             </Button>
                             <Button type="button" onClick={() => setActiveTab("actions")} className="h-16 px-10 rounded-2xl font-black uppercase tracking-[0.2em] text-xs gap-3 shadow-[0_0_30px_rgba(34,197,94,0.2)] hover:scale-105 transition-all">
-                              DESIGN REWARDS <ChevronRight className="h-5 w-5" />
+                              עצב תגמולים <ChevronRight className="h-5 w-5" />
                             </Button>
                           </div>
                         </TabsContent>
 
-                        <TabsContent value="actions" className="mt-0 space-y-6 animate-in fade-in slide-in-from-left-8 duration-500">
+                        <TabsContent value="actions" className="mt-0 space-y-6 animate-in fade-in slide-in-from-left-8 duration-500 text-right">
                           <EngagementActions form={form} gasFeeSol={gasFeeSol} />
-                          <div className="flex justify-between pt-6 gap-4">
+                          <div className="flex justify-between pt-6 gap-4 flex-row-reverse">
                             <Button 
                               type="button" 
                               variant="outline" 
@@ -555,10 +579,10 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
                               }}
                               className="h-16 px-10 rounded-2xl font-black uppercase tracking-[0.2em] text-xs border-2 hover:bg-white/5 relative z-[100] cursor-pointer"
                             >
-                              BACK
+                              חזור
                             </Button>
                             <Button type="submit" className="h-16 px-12 rounded-2xl font-black uppercase tracking-[0.3em] text-sm bg-primary shadow-[0_0_40px_rgba(34,197,94,0.4)] hover:scale-105 transition-all">
-                              REVIEW MISSION <Sparkles className="h-5 w-5 ml-2" />
+                              סקירת משימה <Sparkles className="h-5 w-5 ml-2" />
                             </Button>
                           </div>
                         </TabsContent>
