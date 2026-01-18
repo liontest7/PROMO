@@ -75,7 +75,6 @@ export default function AdminDashboard() {
     queryKey: ["/api/admin/settings"],
     queryFn: fetchAdmin,
     staleTime: 0,
-    refetchOnMount: "always",
     refetchOnWindowFocus: true,
     enabled: !!currentWallet,
   });

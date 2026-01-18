@@ -96,9 +96,12 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
 
   const { data: settings } = useQuery<any>({ 
     queryKey: ["/api/public/settings"], 
-    refetchInterval: 1000,
     staleTime: 0,
+    refetchOnWindowFocus: true
   });
+
+  const isHolderDisabled = settings?.campaignsEnabled === false || settings?.holderQualificationEnabled === false;
+  const isSocialDisabled = settings?.campaignsEnabled === false || settings?.socialEngagementEnabled === false;
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),

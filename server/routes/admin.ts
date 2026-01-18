@@ -144,15 +144,6 @@ export function setupAdminRoutes(app: Express) {
   app.patch("/api/admin/settings", async (req, res) => {
     try {
       const settings = await storage.updateSystemSettings(req.body);
-      
-      // If global campaign status is disabled, also disable the category controls
-      if (req.body.campaignsEnabled === false) {
-        await storage.updateSystemSettings({
-          holderQualificationEnabled: false,
-          socialEngagementEnabled: false
-        });
-      }
-      
       res.json(settings);
     } catch (err) {
       console.error("[Admin Settings Update] Error:", err);
