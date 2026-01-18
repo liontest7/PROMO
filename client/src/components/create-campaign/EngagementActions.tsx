@@ -187,7 +187,7 @@ export function EngagementActions({ form, gasFeeSol }: EngagementActionsProps) {
             <div className="p-4 bg-primary/20 rounded-[20px] w-fit mx-auto shadow-2xl border-2 border-primary/40"><Coins className="h-10 w-10 text-primary animate-bounce" /></div>
             <div className="space-y-1">
               <h3 className="text-xl font-black uppercase tracking-tighter text-white italic">Airdrop Settlement</h3>
-              <p className="text-[9px] text-white font-black uppercase tracking-[0.3em] italic opacity-80">Project Token Incentive Protocol</p>
+              <p className="text-[12px] text-white font-black uppercase tracking-[0.3em] italic opacity-100">Project Token Incentive Protocol</p>
             </div>
             
             <div className="grid grid-cols-2 gap-4 pt-4">
@@ -196,7 +196,7 @@ export function EngagementActions({ form, gasFeeSol }: EngagementActionsProps) {
                 name="rewardPerWallet"
                 render={({ field }) => (
                   <FormItem className="space-y-1.5">
-                    <FormLabel className="text-primary font-black uppercase tracking-[0.2em] text-xs">Reward Per Wallet</FormLabel>
+                    <FormLabel className="text-primary font-black uppercase tracking-[0.2em] text-sm">Reward Per Wallet</FormLabel>
                     <FormControl>
                       <Input type="number" step="0.00001" {...field} className="h-12 bg-background/50 border-2 border-primary/30 focus:border-primary/60 rounded-xl text-center font-mono text-xl font-black text-primary shadow-inner" />
                     </FormControl>
@@ -208,7 +208,7 @@ export function EngagementActions({ form, gasFeeSol }: EngagementActionsProps) {
                 name="maxClaims"
                 render={({ field }) => (
                   <FormItem className="space-y-1.5">
-                    <FormLabel className="text-primary font-black uppercase tracking-[0.2em] text-xs">Participant Cap</FormLabel>
+                    <FormLabel className="text-primary font-black uppercase tracking-[0.2em] text-sm">Participant Cap</FormLabel>
                     <FormControl>
                       <Input type="number" {...field} className="h-12 bg-background/50 border-2 border-primary/30 focus:border-primary/60 rounded-xl text-center font-mono text-xl font-black text-white shadow-inner" />
                     </FormControl>
@@ -221,8 +221,8 @@ export function EngagementActions({ form, gasFeeSol }: EngagementActionsProps) {
               <div className="flex items-center gap-3 p-3 bg-primary/5 rounded-xl border border-primary/10 group-hover:bg-primary/10 transition-colors shadow-inner">
                 <Timer className="h-5 w-5 text-primary animate-pulse" />
                 <div className="text-left flex-1">
-                  <span className="block text-[10px] font-black text-primary uppercase tracking-widest leading-none mb-1">Incentive Lock</span>
-                  <span className="block text-[9px] text-white font-bold uppercase tracking-tighter italic opacity-90">Required holding duration</span>
+                  <span className="block text-sm font-black text-primary uppercase tracking-widest leading-none mb-1">Incentive Lock</span>
+                  <span className="block text-[11px] text-white font-bold uppercase tracking-tighter italic opacity-100">Required holding duration</span>
                 </div>
                 <FormField
                   control={form.control}
@@ -230,8 +230,8 @@ export function EngagementActions({ form, gasFeeSol }: EngagementActionsProps) {
                   render={({ field }) => (
                     <FormControl>
                       <div className="flex items-center gap-2">
-                        <Input type="number" {...field} className="w-16 h-8 bg-background/50 border-primary/30 rounded-lg text-center font-mono font-black text-white text-xs" />
-                        <span className="text-[10px] font-black text-white/40 uppercase">Days</span>
+                        <Input type="number" {...field} className="w-20 h-9 bg-background/50 border-primary/30 rounded-lg text-center font-mono font-black text-white text-sm" />
+                        <span className="text-xs font-black text-white uppercase">Days</span>
                       </div>
                     </FormControl>
                   )}
@@ -241,15 +241,15 @@ export function EngagementActions({ form, gasFeeSol }: EngagementActionsProps) {
               <div className="flex items-center gap-3 p-3 bg-primary/5 rounded-xl border border-primary/10 group-hover:bg-primary/10 transition-colors shadow-inner">
                 <Coins className="h-5 w-5 text-primary" />
                 <div className="text-left flex-1">
-                  <span className="block text-[10px] font-black text-primary uppercase tracking-widest leading-none mb-1">Minimum Hold</span>
-                  <span className="block text-[9px] text-white font-bold uppercase tracking-tighter italic opacity-90">Token balance required</span>
+                  <span className="block text-sm font-black text-primary uppercase tracking-widest leading-none mb-1">Minimum Hold</span>
+                  <span className="block text-[11px] text-white font-bold uppercase tracking-tighter italic opacity-100">Token balance required</span>
                 </div>
                 <FormField
                   control={form.control}
                   name="minHoldingAmount"
                   render={({ field }) => (
                     <FormControl>
-                      <Input type="number" {...field} className="w-24 h-8 bg-background/50 border-primary/30 rounded-lg text-center font-mono font-black text-white text-xs" />
+                      <Input type="number" {...field} className="w-28 h-9 bg-background/50 border-primary/30 rounded-lg text-center font-mono font-black text-white text-sm" />
                     </FormControl>
                   )}
                 />

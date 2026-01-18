@@ -202,8 +202,8 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
         form.setValue("tokenName", res.symbol);
         form.setValue("title", `${res.name} Growth Campaign`);
         form.setValue("logoUrl", `https://imagedelivery.net/WL1JOIJiM_NAChp6rtB6Cw/coin-image/${address}/86x86?alpha=true`);
-        // Improve description extraction: handle different possible property names
-        const description = res.description || res.about || res.project_description || "";
+        // Handle all possible description fields from various pump.fun API versions/proxies
+        const description = res.description || res.about || res.project_description || res.desc || res.metadata?.description || "";
         form.setValue("description", description);
         found = true;
       } else if (dexData?.pairs?.[0]) {
@@ -212,7 +212,11 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
         form.setValue("title", `${p.baseToken.name} Growth Campaign`);
         if (p.info?.imageUrl) form.setValue("logoUrl", p.info.imageUrl);
         if (p.info?.header) form.setValue("bannerUrl", p.info.header);
-        if (p.info?.description) form.setValue("description", p.info.description);
+        
+        // DEXScreener sometimes nests description in info or metadata
+        const dexDesc = p.info?.description || p.info?.summary || "";
+        if (dexDesc) form.setValue("description", dexDesc);
+        
         if (p.info?.websites?.[0]?.url) form.setValue("websiteUrl", p.info.websites[0].url);
         const twitter = p.info?.socials?.find((s: any) => s.type === "twitter");
         if (twitter?.url) form.setValue("twitterUrl", twitter.url);
@@ -221,6 +225,14 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
       } else if (jupData) {
         form.setValue("tokenName", jupData.symbol);
         form.setValue("logoUrl", jupData.logoURI);
+        // Jupiter sometimes provides description in extended metadata
+        if (jupData.description) form.setValue("description", jupData.description);
+        found = true;
+      } else if (moralisData) {
+        // Moralis metadata structure
+        if (moralisData.symbol) form.setValue("tokenName", moralisData.symbol);
+        if (moralisData.description) form.setValue("description", moralisData.description);
+        if (moralisData.logo) form.setValue("logoUrl", moralisData.logo);
         found = true;
       }
       
