@@ -219,9 +219,6 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
           console.log("Setting description from Pump.fun:", description);
           // Update immediately AND with a timeout to be safe
           form.setValue("description", description, { shouldValidate: true, shouldDirty: true });
-          setTimeout(() => {
-            form.setValue("description", description, { shouldValidate: true, shouldDirty: true });
-          }, 50);
         }
         found = true;
       } else if (dexData?.pairs?.[0]) {
@@ -230,18 +227,16 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
         form.setValue("title", `${p.baseToken.name} Growth Campaign`);
         if (p.info?.imageUrl) form.setValue("logoUrl", p.info.imageUrl);
         if (p.info?.header) form.setValue("bannerUrl", p.info.header);
-        
-        const dexDesc = p.info?.description || 
-                        p.info?.summary || 
-                        p.info?.about || 
-                        p.description || 
+
+        const dexDesc = p.info?.description ||
+                        p.info?.summary ||
+                        p.info?.about ||
+                        p.description ||
                         (p.info?.socials?.find((s: any) => s.type === "twitter")?.description) || "";
-        
+
         if (dexDesc) {
           console.log("Setting description from DexScreener:", dexDesc);
-          setTimeout(() => {
-            form.setValue("description", dexDesc, { shouldValidate: true, shouldDirty: true });
-          }, 100);
+          form.setValue("description", dexDesc, { shouldValidate: true, shouldDirty: true });
         }
         
         if (p.info?.websites?.[0]?.url) form.setValue("websiteUrl", p.info.websites[0].url);
@@ -254,9 +249,7 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
         form.setValue("logoUrl", jupData.logoURI);
         if (jupData.description) {
           console.log("Setting description from Jupiter:", jupData.description);
-          setTimeout(() => {
-            form.setValue("description", jupData.description, { shouldValidate: true, shouldDirty: true });
-          }, 100);
+          form.setValue("description", jupData.description, { shouldValidate: true, shouldDirty: true });
         }
         found = true;
       } else if (moralisData) {
@@ -264,9 +257,7 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
         const moralisDesc = moralisData.description || moralisData.metadata?.description;
         if (moralisDesc) {
           console.log("Setting description from Moralis:", moralisDesc);
-          setTimeout(() => {
-            form.setValue("description", moralisDesc, { shouldValidate: true, shouldDirty: true });
-          }, 100);
+          form.setValue("description", moralisDesc, { shouldValidate: true, shouldDirty: true });
         }
         if (moralisData.logo) form.setValue("logoUrl", moralisData.logo);
         found = true;
@@ -302,20 +293,21 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
     if (!isValid) {
       const errors = form.formState.errors;
       console.log("Validation errors:", errors);
-      
+
       setStep("edit");
-      
-      // Navigate to error tab immediately
-      if (errors.tokenAddress || errors.title || errors.description || errors.logoUrl) {
-        setActiveTab("general");
-      } else if (errors.actions || errors.rewardPerWallet || errors.maxClaims) {
-        setActiveTab("rewards");
-      } else {
-        setActiveTab("shield");
-      }
-      
-      // Small delay to ensure state update propagates before re-triggering validation for UI feedback
+
+      // Small delay to ensure state update (setStep) propagates
       setTimeout(() => {
+        // Navigate to error tab
+        if (errors.tokenAddress || errors.title || errors.description || errors.logoUrl) {
+          setActiveTab("general");
+        } else if (errors.actions || errors.rewardPerWallet || errors.maxClaims) {
+          setActiveTab("rewards");
+        } else {
+          setActiveTab("shield");
+        }
+
+        // Re-trigger validation for UI feedback
         form.trigger();
       }, 50);
 
