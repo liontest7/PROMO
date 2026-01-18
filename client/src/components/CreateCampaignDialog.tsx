@@ -33,7 +33,7 @@ import { CampaignSuccessCard } from "./CampaignSuccessCard";
 
 const formSchema = insertCampaignSchema.extend({
   title: z.string().min(3, "Campaign title must be at least 3 characters").max(50, "Title too long"),
-  description: z.string().min(10, "Description must be at least 10 characters").max(500, "Description too long"),
+  description: z.string().min(10, "Description must be at least 10 characters").max(2000, "Description too long"),
   tokenName: z.string().min(1, "Token symbol is required").max(10, "Symbol too long"),
   tokenAddress: z.string().min(32, "Invalid Solana address").max(44, "Invalid Solana address"),
   campaignType: z.enum(["engagement", "holder_qualification"], {
@@ -181,6 +181,18 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
   const fetchTokenMetadata = async (address: string) => {
     if (!address || address.length < 32) return;
     setIsFetchingMetadata(true);
+    
+    // Clear previous metadata to avoid mixing data between tokens
+    form.setValue("tokenName", "");
+    form.setValue("title", "");
+    form.setValue("logoUrl", "");
+    form.setValue("bannerUrl", "");
+    form.setValue("description", "");
+    form.setValue("websiteUrl", "");
+    form.setValue("twitterUrl", "");
+    form.setValue("telegramUrl", "");
+    form.setValue("initialMarketCap", "");
+
     try {
       const results = await Promise.allSettled([
         fetch(`https://api.dexscreener.com/latest/dex/tokens/${address}`).then(r => r.json()),
