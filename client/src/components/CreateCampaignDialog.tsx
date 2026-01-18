@@ -216,7 +216,10 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
                            res.metadata?.about || "";
         
         if (description) {
-          form.setValue("description", description, { shouldValidate: true, shouldDirty: true });
+          // Use a small timeout to ensure the form is ready to receive values if it's currently resetting
+          setTimeout(() => {
+            form.setValue("description", description, { shouldValidate: true, shouldDirty: true });
+          }, 50);
         }
         found = true;
       } else if (dexData?.pairs?.[0]) {
@@ -233,7 +236,9 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
                         (p.info?.socials?.find((s: any) => s.type === "twitter")?.description) || "";
         
         if (dexDesc) {
-          form.setValue("description", dexDesc, { shouldValidate: true, shouldDirty: true });
+          setTimeout(() => {
+            form.setValue("description", dexDesc, { shouldValidate: true, shouldDirty: true });
+          }, 50);
         }
         
         if (p.info?.websites?.[0]?.url) form.setValue("websiteUrl", p.info.websites[0].url);
@@ -245,13 +250,17 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
         form.setValue("tokenName", jupData.symbol);
         form.setValue("logoUrl", jupData.logoURI);
         if (jupData.description) {
-          form.setValue("description", jupData.description, { shouldValidate: true, shouldDirty: true });
+          setTimeout(() => {
+            form.setValue("description", jupData.description, { shouldValidate: true, shouldDirty: true });
+          }, 50);
         }
         found = true;
       } else if (moralisData) {
         if (moralisData.symbol) form.setValue("tokenName", moralisData.symbol);
         if (moralisData.description || moralisData.metadata?.description) {
-          form.setValue("description", moralisData.description || moralisData.metadata.description, { shouldValidate: true, shouldDirty: true });
+          setTimeout(() => {
+            form.setValue("description", moralisData.description || moralisData.metadata.description, { shouldValidate: true, shouldDirty: true });
+          }, 50);
         }
         if (moralisData.logo) form.setValue("logoUrl", moralisData.logo);
         found = true;
@@ -282,24 +291,30 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
   const onSubmit = async (values: FormValues) => {
     if (!userId) { toast({ title: "User Error", description: "Please reconnect your wallet.", variant: "destructive" }); return; }
     
-    // Always trigger validation to ensure we catch everything
     const isValid = await form.trigger();
     
     if (!isValid) {
       const errors = form.formState.errors;
-      const missingFields: string[] = [];
+      console.log("Validation errors:", errors); // Debugging
       
-      // FORCE navigation back to the edit step and the first tab with errors
       setStep("edit");
       
-      if (errors.tokenAddress || errors.title || errors.description || errors.logoUrl) {
-        setActiveTab("general");
-      } else if (errors.actions || errors.rewardPerWallet || errors.maxClaims) {
-        setActiveTab("rewards");
-      } else {
-        // Fallback to shield if errors are there
-        setActiveTab("shield");
-      }
+      // Ensure state updates before switching tabs
+      setTimeout(() => {
+        const currentErrors = form.formState.errors;
+        if (currentErrors.tokenAddress || currentErrors.title || currentErrors.description || currentErrors.logoUrl) {
+          setActiveTab("general");
+        } else if (currentErrors.actions || currentErrors.rewardPerWallet || currentErrors.maxClaims) {
+          setActiveTab("rewards");
+        } else {
+          setActiveTab("shield");
+        }
+        
+        // Force a small delay then re-trigger validation to show labels in red
+        setTimeout(() => {
+          form.trigger();
+        }, 150);
+      }, 50);
 
       if (errors.tokenAddress) missingFields.push("Token Address");
       if (errors.title) missingFields.push("Campaign Title");
