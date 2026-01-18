@@ -262,41 +262,41 @@ export function EngagementActions({ form, gasFeeSol }: EngagementActionsProps) {
       {/* Dynamic Real-time Pricing Summary */}
       <div className="p-6 bg-white/5 rounded-[24px] border-2 border-white/10 space-y-5 shadow-2xl relative overflow-hidden group animate-in fade-in slide-in-from-bottom-6 duration-700">
         <div className="absolute top-0 right-0 p-3 opacity-5 group-hover:scale-110 transition-transform duration-1000"><Shield className="h-20 w-20 text-primary" /></div>
-        <div className="space-y-4 relative z-10">
+            <div className="space-y-4 relative z-10">
           <div className="flex justify-between items-center group/item pb-3 border-b border-white/10">
             <div className="space-y-1">
-              <span className="block text-xs font-black text-white uppercase tracking-[0.2em] group-hover/item:text-primary transition-colors">Airdrop Allocation</span>
-              <span className="text-[10px] font-bold text-primary uppercase italic tracking-widest opacity-80">Calculated Budget</span>
+              <span className="block text-sm font-black text-white uppercase tracking-[0.2em] group-hover/item:text-primary transition-colors">Airdrop Allocation</span>
+              <span className="text-[12px] font-bold text-white uppercase italic tracking-widest">Calculated Budget</span>
             </div>
             <div className="text-right">
               <span className="font-mono text-primary font-black text-2xl tracking-tighter block leading-none">{totalBudget?.toLocaleString() || 0}</span>
-              <span className="text-xs font-black text-white uppercase tracking-widest opacity-100">${tokenName || 'TOKEN'}</span>
+              <span className="text-sm font-black text-white uppercase tracking-widest opacity-100">${tokenName || 'TOKEN'}</span>
             </div>
           </div>
           
-          <div className="grid grid-cols-2 gap-4 text-xs font-black uppercase tracking-widest text-white">
+          <div className="grid grid-cols-2 gap-4 text-sm font-black uppercase tracking-widest text-white">
             <div className="flex flex-col gap-1.5 p-3.5 bg-white/5 rounded-xl border border-white/10">
               <div className="flex justify-between items-center">
-                <span className="opacity-70">Platform Fee</span>
-                <span className="text-white font-mono text-sm">0.50 SOL</span>
+                <span className="text-white">Platform Fee</span>
+                <span className="text-white font-mono text-base">0.50 SOL</span>
               </div>
             </div>
             <div className="flex flex-col gap-1.5 p-3.5 bg-white/5 rounded-xl border border-white/10">
               <div className="flex justify-between items-center">
-                <span className="opacity-70">Gas (Escrow)</span>
-                <span className="text-white font-mono text-sm">{gasFeeSol} SOL</span>
+                <span className="text-white">Gas (Escrow)</span>
+                <span className="text-white font-mono text-base">{gasFeeSol} SOL</span>
               </div>
             </div>
           </div>
 
           <div className="flex justify-between items-center pt-2 bg-primary/10 p-5 rounded-[20px] border border-primary/20 shadow-inner group-hover:bg-primary/15 transition-all">
             <div className="space-y-1">
-              <span className="block text-xs font-black text-primary uppercase tracking-[0.3em] leading-none">Settlement Amount</span>
-              <span className="text-[10px] font-bold text-white uppercase italic tracking-widest opacity-80">Total SOL Required</span>
+              <span className="block text-sm font-black text-primary uppercase tracking-[0.3em] leading-none">Settlement Amount</span>
+              <span className="text-[12px] font-bold text-white uppercase italic tracking-widest">Total SOL Required</span>
             </div>
             <div className="flex items-baseline gap-1.5">
               <span className="font-mono font-black text-primary text-2xl tracking-tighter">{(0.5 + gasFeeSol).toFixed(4)}</span>
-              <span className="text-[12px] font-black text-primary/60 uppercase">SOL</span>
+              <span className="text-[14px] font-black text-primary/60 uppercase">SOL</span>
             </div>
           </div>
         </div>

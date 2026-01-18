@@ -202,7 +202,9 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
         form.setValue("tokenName", res.symbol);
         form.setValue("title", `${res.name} Growth Campaign`);
         form.setValue("logoUrl", `https://imagedelivery.net/WL1JOIJiM_NAChp6rtB6Cw/coin-image/${address}/86x86?alpha=true`);
-        form.setValue("description", res.description || "");
+        // Improve description extraction: handle different possible property names
+        const description = res.description || res.about || res.project_description || "";
+        form.setValue("description", description);
         found = true;
       } else if (dexData?.pairs?.[0]) {
         const p = dexData.pairs[0];
@@ -210,6 +212,7 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
         form.setValue("title", `${p.baseToken.name} Growth Campaign`);
         if (p.info?.imageUrl) form.setValue("logoUrl", p.info.imageUrl);
         if (p.info?.header) form.setValue("bannerUrl", p.info.header);
+        if (p.info?.description) form.setValue("description", p.info.description);
         if (p.info?.websites?.[0]?.url) form.setValue("websiteUrl", p.info.websites[0].url);
         const twitter = p.info?.socials?.find((s: any) => s.type === "twitter");
         if (twitter?.url) form.setValue("twitterUrl", twitter.url);
