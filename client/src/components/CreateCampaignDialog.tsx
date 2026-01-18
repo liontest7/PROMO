@@ -358,13 +358,9 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
             <span className="sr-only">Close</span>
           </DialogClose>
           <div className="relative flex-1 flex flex-col min-h-0 overflow-hidden">
-            <div 
-              className="absolute inset-0 w-full h-full pointer-events-none overflow-hidden opacity-[0.03] grayscale bg-no-repeat bg-center bg-cover"
-              style={{ 
-                backgroundImage: 'url(https://i.ibb.co/ccK0Q6Pc/20260115-1234-Image-Generation-remix-01kf0kdn4hf1mszp9benyvv6mm.png)',
-                backgroundPosition: '50% 50%'
-              }}
-            />
+            <div className="absolute top-0 right-0 p-16 text-primary/5 pointer-events-none overflow-hidden">
+              <Zap className="h-64 w-64 rotate-12 animate-pulse" />
+            </div>
 
             <div className="px-10 pt-6 shrink-0">
               <DialogHeader className="space-y-4">
