@@ -358,33 +358,33 @@ export function EngagementActions({ form, gasFeeSol }: EngagementActionsProps) {
         <div className="space-y-3">
           <div className="flex justify-between items-center group/item">
             <div className="space-y-0.5">
-              <span className="block text-xs font-black text-white uppercase tracking-[0.2em]">Airdrop Allocation</span>
-              <span className="text-[10px] font-bold text-primary uppercase italic tracking-widest">Calculated Budget</span>
+              <span className="block text-sm font-black text-white uppercase tracking-[0.2em]">Airdrop Allocation</span>
+              <span className="text-[11px] font-bold text-primary uppercase italic tracking-widest">Calculated Budget</span>
             </div>
             <div className="text-right">
               <div className="flex items-center gap-2 justify-end">
-                <span className="font-mono text-primary font-black text-xl tracking-tighter block leading-none">{totalBudget?.toLocaleString() || 0}</span>
+                <span className="font-mono text-primary font-black text-2xl tracking-tighter block leading-none">{totalBudget?.toLocaleString() || 0}</span>
                 <span className="text-xs font-black text-white uppercase tracking-widest">${tokenName || 'TOKEN'}</span>
               </div>
             </div>
           </div>
           
-          <div className="grid grid-cols-2 gap-3 text-[10px] font-black uppercase tracking-widest">
-            <div className="flex justify-between items-center px-3 py-2 bg-white/5 rounded-lg border border-white/10">
-              <span className="text-white/60">Fee</span>
-              <span className="text-white">0.50 SOL</span>
+          <div className="grid grid-cols-2 gap-3 text-[11px] font-black uppercase tracking-widest">
+            <div className="flex justify-between items-center px-3 py-2.5 bg-white/5 rounded-lg border border-white/10">
+              <span className="text-white">Fee</span>
+              <span className="text-white font-mono font-black">0.50 SOL</span>
             </div>
-            <div className="flex justify-between items-center px-3 py-2 bg-white/5 rounded-lg border border-white/10">
-              <span className="text-white/60">Gas</span>
-              <span className="text-white">{gasFeeSol} SOL</span>
+            <div className="flex justify-between items-center px-3 py-2.5 bg-white/5 rounded-lg border border-white/10">
+              <span className="text-white">Gas</span>
+              <span className="text-white font-mono font-black">{gasFeeSol} SOL</span>
             </div>
           </div>
 
-          <div className="flex justify-between items-center bg-primary/10 px-4 py-3 rounded-xl border border-primary/30">
-            <span className="text-xs font-black text-primary uppercase tracking-[0.3em]">Total Settlement</span>
+          <div className="flex justify-between items-center bg-primary/10 px-4 py-4 rounded-xl border border-primary/30">
+            <span className="text-sm font-black text-primary uppercase tracking-[0.3em]">Total Settlement</span>
             <div className="flex items-baseline gap-1">
-              <span className="font-mono font-black text-primary text-xl tracking-tighter">{(0.5 + gasFeeSol).toFixed(4)}</span>
-              <span className="text-[10px] font-black text-primary/60 uppercase">SOL</span>
+              <span className="font-mono font-black text-primary text-2xl tracking-tighter">{(0.5 + gasFeeSol).toFixed(4)}</span>
+              <span className="text-[11px] font-black text-primary/60 uppercase">SOL</span>
             </div>
           </div>
         </div>

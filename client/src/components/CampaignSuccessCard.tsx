@@ -25,9 +25,9 @@ export function CampaignSuccessCard({ campaign, open, onOpenChange }: CampaignSu
 
   useEffect(() => {
     if (open) {
-      const duration = 3 * 1000;
+      const duration = 5 * 1000;
       const animationEnd = Date.now() + duration;
-      const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
+      const defaults = { startVelocity: 45, spread: 360, ticks: 100, zIndex: 9999, gravity: 0.8, scalar: 1.2 };
 
       const randomInRange = (min: number, max: number) => Math.random() * (max - min) + min;
 
@@ -38,18 +38,18 @@ export function CampaignSuccessCard({ campaign, open, onOpenChange }: CampaignSu
           return clearInterval(interval);
         }
 
-        const particleCount = 50 * (timeLeft / duration);
+        const particleCount = 150 * (timeLeft / duration);
         confetti({ 
           ...defaults, 
           particleCount, 
           origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 },
-          colors: ['#22c55e', '#10b981', '#ffffff']
+          colors: ['#22c55e', '#10b981', '#ffffff', '#fbbf24', '#3b82f6', '#ff0000', '#00ff00', '#0000ff']
         });
         confetti({ 
           ...defaults, 
           particleCount, 
           origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 },
-          colors: ['#22c55e', '#10b981', '#ffffff']
+          colors: ['#22c55e', '#10b981', '#ffffff', '#fbbf24', '#3b82f6', '#ff0000', '#00ff00', '#0000ff']
         });
       }, 250);
 
@@ -197,7 +197,7 @@ export function CampaignSuccessCard({ campaign, open, onOpenChange }: CampaignSu
                   <div className="h-[1px] w-8 bg-white/40" />
                 </div>
 
-                <div className="w-full bg-[#111111] border border-white/20 rounded-[32px] p-6 mb-2 backdrop-blur-xl">
+                <div className="w-full bg-[#111111] border border-white/20 rounded-[32px] p-6 mb-2 backdrop-blur-none">
                   <div className="flex items-center gap-5 mb-6">
                     <div className="relative group">
                       <div className="absolute -inset-1.5 bg-gradient-to-r from-primary to-emerald-500 rounded-2xl blur opacity-50 group-hover:opacity-75 transition duration-1000" />
@@ -328,7 +328,7 @@ export function CampaignSuccessCard({ campaign, open, onOpenChange }: CampaignSu
                 className="text-white font-black uppercase tracking-[0.2em] text-sm py-4 hover:bg-white/5 transition-colors mt-2"
                 onClick={() => {
                   onOpenChange(false);
-                  setLocation(`/campaigns/${campaign.id}`);
+                  setLocation(`/c/${campaign.tokenName.toLowerCase()}`);
                 }}
               >
                 GO TO DASHBOARD <ArrowRight className="w-4 h-4 ml-3" />

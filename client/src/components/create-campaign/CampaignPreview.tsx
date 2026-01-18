@@ -202,21 +202,21 @@ export function CampaignPreview({
               </div>
               <div className="space-y-4 relative z-10">
                 <div className="flex justify-between items-center py-2 border-b border-white/10 group">
-                  <span className="text-base font-black text-white uppercase tracking-[0.15em] group-hover:text-primary transition-colors">Creation Fee</span>
-                  <span className="text-base font-mono font-black text-white group-hover:text-primary transition-colors">0.5000 SOL</span>
+                  <span className="text-xs font-black text-white/60 uppercase tracking-[0.15em] group-hover:text-primary transition-colors">Creation Fee</span>
+                  <span className="text-xs font-mono font-black text-white/60 group-hover:text-primary transition-colors">0.5000 SOL</span>
                 </div>
                 <div className="flex justify-between items-center py-2 border-b border-white/10 group">
-                  <span className="text-base font-black text-white uppercase tracking-[0.15em] group-hover:text-white transition-colors">Gas Allocation</span>
-                  <span className="text-base font-mono font-black text-white group-hover:text-primary transition-colors">{gasFeeSol} SOL</span>
+                  <span className="text-xs font-black text-white/60 uppercase tracking-[0.15em] group-hover:text-white transition-colors">Gas Allocation</span>
+                  <span className="text-xs font-mono font-black text-white/60 group-hover:text-primary transition-colors">{gasFeeSol} SOL</span>
                 </div>
                 <div className="flex justify-between items-center pt-4">
                   <div className="space-y-1">
-                    <span className="block text-base font-black text-primary uppercase tracking-[0.3em] leading-none">Total Settlement</span>
-                    <span className="text-[12px] font-bold text-white uppercase italic tracking-widest">(Secured in Escrow)</span>
+                    <span className="block text-xs font-black text-primary uppercase tracking-[0.3em] leading-none">Total Settlement</span>
+                    <span className="text-[10px] font-bold text-white/40 uppercase italic tracking-widest">(Secured in Escrow)</span>
                   </div>
-                  <div className="px-6 py-3 bg-primary/20 rounded-2xl border-2 border-primary/40 shadow-[0_0_25px_rgba(34,197,94,0.3)] group hover:scale-105 transition-transform">
-                    <span className="font-mono font-black text-primary text-4xl tracking-tighter group-hover:drop-shadow-[0_0_8px_rgba(34,197,94,0.6)]">{totalCostSol}</span>
-                    <span className="text-base font-black text-primary ml-1">SOL</span>
+                  <div className="px-5 py-2.5 bg-primary/20 rounded-2xl border-2 border-primary/40 shadow-[0_0_20px_rgba(34,197,94,0.2)] group hover:scale-105 transition-transform">
+                    <span className="font-mono font-black text-primary text-3xl tracking-tighter group-hover:drop-shadow-[0_0_8px_rgba(34,197,94,0.6)]">{totalCostSol}</span>
+                    <span className="text-xs font-black text-primary/60 ml-1">SOL</span>
                   </div>
                 </div>
               </div>
