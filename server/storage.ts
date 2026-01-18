@@ -199,6 +199,11 @@ export class DatabaseStorage implements IStorage {
     return action;
   }
 
+  async updateCampaign(id: number, data: Partial<Campaign>): Promise<Campaign> {
+    const [campaign] = await db.update(campaigns).set(data).where(eq(campaigns.id, id)).returning();
+    return campaign;
+  }
+
   async incrementActionExecution(id: number): Promise<void> {
     const action = await this.getAction(id);
     if (action) await db.update(actions).set({ currentExecutions: (action.currentExecutions || 0) + 1 }).where(eq(actions.id, id));

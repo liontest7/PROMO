@@ -121,6 +121,16 @@ export function setupAdminRoutes(app: Express) {
     }
   });
 
+  app.patch("/api/admin/campaigns/:id/status", async (req, res) => {
+    try {
+      const campaign = await storage.updateCampaign(parseInt(req.params.id), { status: req.body.status });
+      res.json(campaign);
+    } catch (err) {
+      console.error("[Admin Campaign Status Update] Error:", err);
+      res.status(500).json({ message: "Failed to update campaign status" });
+    }
+  });
+
   app.get("/api/admin/settings", async (req, res) => {
     try {
       const settings = await storage.getSystemSettings();
@@ -134,6 +144,17 @@ export function setupAdminRoutes(app: Express) {
   app.patch("/api/admin/settings", async (req, res) => {
     try {
       const settings = await storage.updateSystemSettings(req.body);
+      
+      // If global campaign status is disabled, pause all active campaigns
+      if (req.body.campaignsEnabled === false) {
+        const campaignsList = await storage.getAllCampaigns();
+        for (const campaign of campaignsList) {
+          if (campaign.status === 'active') {
+            await storage.updateCampaign(campaign.id, { status: 'paused' });
+          }
+        }
+      }
+      
       res.json(settings);
     } catch (err) {
       console.error("[Admin Settings Update] Error:", err);

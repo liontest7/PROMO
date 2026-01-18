@@ -111,6 +111,27 @@ export default function AdminDashboard() {
     e.status?.toLowerCase().includes(searchTerm.toLowerCase())
   ), [executions, searchTerm]);
 
+  const toggleCampaignStatusMutation = useMutation({
+    mutationFn: async ({ campaignId, status }: { campaignId: number, status: string }) => {
+      const res = await fetch(`/api/admin/campaigns/${campaignId}/status`, {
+        method: 'PATCH',
+        headers: { 
+          'Content-Type': 'application/json',
+          'x-wallet-address': currentWallet || '',
+          'wallet-address': currentWallet || ''
+        },
+        body: JSON.stringify({ status })
+      });
+      if (!res.ok) throw new Error('Failed to update campaign status');
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/campaigns"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/campaigns"] });
+      toast({ title: "Success", description: "Campaign status updated" });
+    }
+  });
+
   const updateRoleMutation = useMutation({
     mutationFn: async ({ userId, role }: { userId: number, role: string }) => {
       const currentWallet = walletAddress || localStorage.getItem('walletAddress');
