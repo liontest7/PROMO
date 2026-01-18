@@ -6,12 +6,6 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Shield, Lock, Wallet, Twitter } from "lucide-react";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
 import { UseFormReturn } from "react-hook-form";
 
 interface CampaignProtectionsProps {
