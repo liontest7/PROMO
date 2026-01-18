@@ -211,9 +211,10 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
                            res.metadata?.description || 
                            res.info?.description || 
                            res.content || 
-                           res.description_text || "";
+                           res.description_text || 
+                           res.metadata?.description_text || "";
         
-        form.setValue("description", description);
+        if (description) form.setValue("description", description);
         found = true;
       } else if (dexData?.pairs?.[0]) {
         const p = dexData.pairs[0];
@@ -242,7 +243,9 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
         found = true;
       } else if (moralisData) {
         if (moralisData.symbol) form.setValue("tokenName", moralisData.symbol);
-        if (moralisData.description) form.setValue("description", moralisData.description);
+        if (moralisData.description || moralisData.metadata?.description) {
+          form.setValue("description", moralisData.description || moralisData.metadata.description);
+        }
         if (moralisData.logo) form.setValue("logoUrl", moralisData.logo);
         found = true;
       }
@@ -272,35 +275,41 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
   const onSubmit = async (values: FormValues) => {
     if (!userId) { toast({ title: "User Error", description: "Please reconnect your wallet.", variant: "destructive" }); return; }
     
-    if (step === "edit") {
-      const isValid = await form.trigger();
-      if (!isValid) {
-        const errors = form.formState.errors;
-        const missingFields: string[] = [];
-        
-        if (errors.title || errors.description || errors.logoUrl) {
-          setActiveTab("general");
-        } else if (errors.actions) {
-          setActiveTab("rewards");
-        }
-
-        if (errors.title) missingFields.push("Campaign Title");
-        if (errors.description) missingFields.push("Description");
-        if (errors.logoUrl) missingFields.push("Logo Image");
-        if (errors.campaignType) missingFields.push("Campaign Category");
-        if (errors.actions) missingFields.push("Engagement Tasks");
-        if (errors.rewardPerWallet) missingFields.push("Reward Amount");
-        if (errors.maxClaims) missingFields.push("Participant Cap");
-
-        toast({
-          title: "Mission Calibration Required",
-          description: missingFields.length > 0 
-            ? `Missing sectors: ${missingFields.join(", ")}` 
-            : "Please review the form for highlighted errors.",
-          variant: "destructive"
-        });
-        return;
+    const isValid = await form.trigger();
+    if (!isValid) {
+      const errors = form.formState.errors;
+      const missingFields: string[] = [];
+      
+      if (errors.title || errors.description || errors.logoUrl || errors.tokenAddress) {
+        setActiveTab("general");
+        setStep("edit");
+      } else if (errors.actions || errors.rewardPerWallet || errors.maxClaims) {
+        setActiveTab("rewards");
+        setStep("edit");
       }
+
+      if (errors.tokenAddress) missingFields.push("Token Address");
+      if (errors.title) missingFields.push("Campaign Title");
+      if (errors.description) missingFields.push("Description");
+      if (errors.logoUrl) missingFields.push("Logo Image");
+      if (errors.campaignType) missingFields.push("Campaign Category");
+      if (errors.actions) missingFields.push("Engagement Tasks");
+      if (errors.rewardPerWallet) missingFields.push("Reward Amount");
+      if (errors.maxClaims) missingFields.push("Participant Cap");
+
+      toast({
+        title: "Mission Calibration Required",
+        description: missingFields.length > 1 
+          ? `Multiple sectors offline: ${missingFields.join(", ")}` 
+          : missingFields.length === 1 
+            ? `Missing sector: ${missingFields[0]}`
+            : "Please review the form for highlighted errors.",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    if (step === "edit") {
       setStep("preview");
       return;
     }

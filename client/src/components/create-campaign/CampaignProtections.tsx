@@ -32,40 +32,42 @@ export function CampaignProtections({ form }: CampaignProtectionsProps) {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="space-y-4 p-6 bg-white/5 rounded-[24px] border border-white/10">
+        <div className={`space-y-4 p-6 bg-white/5 rounded-[24px] border border-white/10 ${!isEngagement ? 'md:col-span-2' : ''}`}>
           <div className="flex items-center gap-3 text-sm font-black text-primary uppercase tracking-widest mb-2">
             <Wallet className="h-5 w-5" /> Wallet Verification
           </div>
-          <FormField
-            control={form.control}
-            name="minSolBalance"
-            render={({ field }) => (
-              <FormItem className="space-y-1">
-                <FormLabel className="text-primary font-black uppercase tracking-[0.2em] text-xs">Min SOL Balance</FormLabel>
-                <FormControl>
-                  <Input type="number" step="0.1" {...field} className="bg-background/50 border-primary/30 h-10 rounded-xl font-mono text-white font-bold text-center" />
-                </FormControl>
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="minWalletAgeDays"
-            render={({ field }) => (
-              <FormItem className="space-y-1">
-                <FormLabel className="text-primary font-black uppercase tracking-[0.2em] text-xs">Min Wallet Age (Days)</FormLabel>
-                <FormControl>
-                  <Input type="number" {...field} className="bg-background/50 border-primary/30 h-10 rounded-xl font-mono text-white font-bold text-center" />
-                </FormControl>
-              </FormItem>
-            )}
-          />
+          <div className={!isEngagement ? 'grid grid-cols-1 md:grid-cols-2 gap-6' : 'space-y-4'}>
+            <FormField
+              control={form.control}
+              name="minSolBalance"
+              render={({ field }) => (
+                <FormItem className="space-y-1">
+                  <FormLabel className="text-primary font-black uppercase tracking-[0.2em] text-xs">Min SOL Balance</FormLabel>
+                  <FormControl>
+                    <Input type="number" step="0.1" {...field} className="bg-background/50 border-primary/30 h-10 rounded-xl font-mono text-white font-bold text-center" />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="minWalletAgeDays"
+              render={({ field }) => (
+                <FormItem className="space-y-1">
+                  <FormLabel className="text-primary font-black uppercase tracking-[0.2em] text-xs">Min Wallet Age (Days)</FormLabel>
+                  <FormControl>
+                    <Input type="number" {...field} className="bg-background/50 border-primary/30 h-10 rounded-xl font-mono text-white font-bold text-center" />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+          </div>
         </div>
 
         {isEngagement && (
           <div className="space-y-4 p-6 bg-white/5 rounded-[24px] border border-white/10 animate-in fade-in duration-300">
             <div className="flex items-center gap-3 text-sm font-black text-primary uppercase tracking-widest mb-2">
-              <Twitter className="h-5 w-5" /> Social Proof
+              <Twitter className="h-5 w-5 text-[#1DA1F2]" /> Social Proof
             </div>
             <FormField
               control={form.control}
