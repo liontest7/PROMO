@@ -7,7 +7,10 @@ const getSolanaConnectionRaw = async () => {
   const endpoints = CONFIG.SOLANA_RPC_ENDPOINTS || ["https://api.mainnet-beta.solana.com"];
   for (const endpoint of endpoints) {
     try {
-      const connection = new Connection(endpoint, 'confirmed');
+      const connection = new Connection(endpoint, {
+        commitment: 'confirmed',
+        confirmTransactionInitialTimeout: 30000
+      });
       await connection.getSlot();
       return connection;
     } catch (err) {

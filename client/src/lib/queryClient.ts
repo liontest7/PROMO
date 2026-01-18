@@ -48,6 +48,7 @@ export const getQueryFn: <T>(options: {
       headers: {
         ...headers,
         'x-wallet-address': walletAddress || '',
+        'wallet-address': walletAddress || '',
       }
     });
 
