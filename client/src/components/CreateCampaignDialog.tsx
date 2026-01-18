@@ -299,12 +299,11 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
       const errors = form.formState.errors;
       console.log("Validation errors:", errors);
 
-      // Reset to edit mode so we can show the error tabs
+      // Return to edit mode
       setStep("edit");
 
-      // Small delay to ensure state update propagates, then switch tab and re-trigger
-      setTimeout(async () => {
-        // Navigate to the tab with the error
+      // Give state a moment to update then switch tab and focus error
+      setTimeout(() => {
         if (errors.tokenAddress || errors.title || errors.description || errors.logoUrl) {
           setActiveTab("general");
         } else if (errors.actions || errors.rewardPerWallet || errors.maxClaims) {
@@ -313,9 +312,9 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
           setActiveTab("protections");
         }
         
-        // Re-trigger validation for UI feedback
-        await form.trigger();
-      }, 50);
+        // Trigger validation again so the red error messages are visible
+        form.trigger();
+      }, 100);
 
       const missingFields: string[] = [];
       if (errors.title) missingFields.push("Campaign Title");
@@ -339,7 +338,19 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
     }
 
     if (step === "edit") {
-      setStep("preview");
+      const isValid = await form.trigger();
+      if (isValid) {
+        setStep("preview");
+      } else {
+        const errors = form.formState.errors;
+        if (errors.tokenAddress || errors.title || errors.description || errors.logoUrl) {
+          setActiveTab("general");
+        } else if (errors.actions || errors.rewardPerWallet || errors.maxClaims) {
+          setActiveTab("actions");
+        } else {
+          setActiveTab("protections");
+        }
+      }
       return;
     }
     
