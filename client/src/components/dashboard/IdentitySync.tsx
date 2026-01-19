@@ -140,14 +140,14 @@ export const IdentitySync = ({ user, walletAddress }: IdentitySyncProps) => {
                 </div>
                 <span className="text-[13px] font-black uppercase tracking-widest text-white italic">X Identity Sync</span>
               </div>
-              <p className="text-[12px] text-white/50 font-bold uppercase tracking-widest leading-relaxed max-w-[90%]">
+              <p className="text-[13px] text-white font-bold uppercase tracking-widest leading-relaxed max-w-[90%]">
                 Verify your X account to unlock high-yield engagement campaigns.
               </p>
               <div className="flex flex-col gap-2 pt-2">
                 <Button 
                   onClick={handleConnect}
                   disabled={syncMutation.isPending}
-                  className="w-full bg-blue-500 hover:bg-blue-600 text-white gap-3 font-black text-[11px] h-11 rounded-lg shadow-md transition-all active-elevate-2 uppercase tracking-widest relative overflow-hidden group/btn"
+                  className="w-full bg-blue-500 hover:bg-blue-600 text-white gap-3 font-black text-[13px] h-12 rounded-lg shadow-md transition-all active-elevate-2 uppercase tracking-widest relative overflow-hidden group/btn"
                 >
                   <span className="relative z-10">{syncMutation.isPending ? 'Syncing...' : 'Connect Protocol Node'}</span>
                   <div className="absolute inset-0 bg-white/10 opacity-0 group-hover/btn:opacity-100 transition-opacity" />
@@ -196,13 +196,13 @@ export const IdentitySync = ({ user, walletAddress }: IdentitySyncProps) => {
                 </div>
                 <span className="text-[13px] font-black uppercase tracking-widest text-white italic">TG Identity</span>
               </div>
-              <p className="text-[12px] text-white/50 font-bold uppercase tracking-widest leading-relaxed max-w-[90%]">
+              <p className="text-[13px] text-white font-bold uppercase tracking-widest leading-relaxed max-w-[90%]">
                 Link your Telegram account to verify community group membership.
               </p>
               <div className="flex flex-col gap-2 pt-2">
                 <Button 
                   onClick={handleTGConnect}
-                  className="w-full bg-blue-600 hover:bg-blue-700 text-white gap-3 font-black text-[11px] h-11 rounded-lg shadow-md transition-all active-elevate-2 uppercase tracking-widest relative overflow-hidden group/btn"
+                  className="w-full bg-blue-600 hover:bg-blue-700 text-white gap-3 font-black text-[13px] h-12 rounded-lg shadow-md transition-all active-elevate-2 uppercase tracking-widest relative overflow-hidden group/btn"
                 >
                   <span className="relative z-10">Initiate Secure Link</span>
                 </Button>

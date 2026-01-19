@@ -79,9 +79,9 @@ export function EcosystemContribution({ reputationScore, level, progress }: Ecos
         
         <div className="space-y-4">
           <div className="flex justify-between items-end">
-            <span className="text-[11px] font-black text-white/40 uppercase tracking-widest">Protocol Evolution</span>
+            <span className="text-[12px] font-black text-white uppercase tracking-widest">Protocol Evolution</span>
             <div className="flex items-center gap-2">
-              <span className="text-[10px] font-black text-primary/60 uppercase tracking-widest">{100 - (reputationScore % 100)} XP to Next Level</span>
+              <span className="text-[12px] font-black text-primary uppercase tracking-widest">{100 - (reputationScore % 100)} XP to Next Level</span>
               <span className="text-xl font-black font-display text-primary italic tracking-tight drop-shadow-md">{progress}%</span>
             </div>
           </div>
@@ -98,15 +98,15 @@ export function EcosystemContribution({ reputationScore, level, progress }: Ecos
               </span>
             </div>
           </div>
-          <div className="flex justify-between items-center text-[10px] font-black uppercase tracking-widest text-white/60">
+          <div className="flex justify-between items-center text-[11px] font-black uppercase tracking-widest text-white">
             <span className="flex items-center gap-2 bg-white/5 px-2 py-1 rounded-md border border-white/10">
-              <Badge className={cn("h-4 px-2 text-[9px] border-none", getLabelColor(prevLevel))}>LVL {prevLevel}</Badge> 
+              <Badge className={cn("h-4 px-2 text-[10px] border-none", getLabelColor(prevLevel))}>LVL {prevLevel}</Badge> 
               {prevLabel}
             </span>
             <ArrowUpRight className="w-5 h-5 text-primary/40" />
             <span className="flex items-center gap-2 bg-primary/10 px-2 py-1 rounded-md border border-primary/20">
               {nextLabel} 
-              <Badge className={cn("h-4 px-2 text-primary-foreground border-none text-[9px]", getLabelColor(nextLevel))}>LVL {nextLevel}</Badge>
+              <Badge className={cn("h-4 px-2 text-primary-foreground border-none text-[10px]", getLabelColor(nextLevel))}>LVL {nextLevel}</Badge>
             </span>
           </div>
         </div>
