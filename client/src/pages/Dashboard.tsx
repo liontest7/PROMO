@@ -66,6 +66,15 @@ export default function Dashboard() {
     }
   });
 
+  const { data: leaderboard } = useQuery({
+    queryKey: ["/api/leaderboard"],
+    queryFn: async () => {
+      const res = await fetch("/api/leaderboard");
+      if (!res.ok) throw new Error("Failed to fetch leaderboard");
+      return res.json();
+    }
+  });
+
   if (statsLoading || userLoading) {
     return (
       <div className="min-h-screen bg-background">
@@ -81,30 +90,6 @@ export default function Dashboard() {
       </div>
     );
   }
-
-  if (!walletAddress) {
-    return (
-      <div className="min-h-screen bg-background">
-        <Navigation />
-        <div className="flex items-center justify-center h-[80vh]">
-          <p className="text-white font-medium">Please connect your wallet to view your dashboard.</p>
-        </div>
-      </div>
-    );
-  }
-
-  const tasksCompleted = stats?.tasksCompleted || 0;
-  const reputationScore = user?.reputationScore || 0;
-  const level = Math.floor(reputationScore / 100) + 1;
-  const progress = reputationScore % 100;
-  const { data: leaderboard } = useQuery({
-    queryKey: ["/api/leaderboard"],
-    queryFn: async () => {
-      const res = await fetch("/api/leaderboard");
-      if (!res.ok) throw new Error("Failed to fetch leaderboard");
-      return res.json();
-    }
-  });
 
   const rank = leaderboard?.findIndex((u: any) => u.walletAddress === walletAddress) + 1 || stats?.totalUsers || 100;
   const rankChange = tasksCompleted > 0 ? "up" : "stable";
