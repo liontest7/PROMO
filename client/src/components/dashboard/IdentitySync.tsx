@@ -104,6 +104,26 @@ export const IdentitySync = ({ user, walletAddress }: IdentitySyncProps) => {
     );
   };
 
+  const handleTGConnect = () => {
+    const username = prompt("Please enter your Telegram username (without @):");
+    if (!username) return;
+    
+    syncMutation.mutate({
+      walletAddress,
+      twitterHandle: user?.twitterHandle || "",
+      // @ts-ignore
+      telegramHandle: username.replace('@', '')
+    }, {
+      onSuccess: (data) => {
+        queryClient.invalidateQueries({ queryKey: ["/api/users", walletAddress] });
+        toast({ 
+          title: "Telegram Identity Synced", 
+          description: `Your Telegram account @${data.telegramHandle} has been verified.` 
+        });
+      }
+    });
+  };
+
   const handleUnlink = () => {
     unlinkMutation.mutate();
   };
@@ -171,28 +191,61 @@ export const IdentitySync = ({ user, walletAddress }: IdentitySyncProps) => {
           </div>
         )}
 
-        <div className="p-5 rounded-xl bg-blue-600/5 border border-blue-600/10 relative overflow-hidden group shadow-lg opacity-60 grayscale hover:grayscale-0 transition-all">
-          <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-all duration-700">
-            <Send className="w-14 h-14" />
-          </div>
-          <div className="relative z-10 text-left space-y-4">
-            <div className="flex items-center gap-2 mb-1">
-              <div className="p-2 rounded-lg bg-blue-600/20 border border-blue-600/30">
-                <Send className="w-5 h-5 text-blue-500" />
+        {!user?.telegramHandle ? (
+          <div className="p-5 rounded-xl bg-blue-600/5 border border-blue-600/10 relative overflow-hidden group shadow-lg">
+            <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-all duration-700">
+              <Send className="w-14 h-14" />
+            </div>
+            <div className="relative z-10 text-left space-y-4">
+              <div className="flex items-center gap-2 mb-1">
+                <div className="p-2 rounded-lg bg-blue-600/20 border border-blue-600/30">
+                  <Send className="w-5 h-5 text-blue-500" />
+                </div>
+                <span className="text-[13px] font-black uppercase tracking-widest text-white italic">TG Identity</span>
               </div>
-              <span className="text-[13px] font-black uppercase tracking-widest text-white italic">TG Identity</span>
-            </div>
-            <div className="flex flex-col gap-2 pt-2">
-              <Button 
-                variant="outline"
-                disabled
-                className="w-full border-white/10 hover:bg-white/5 text-white/40 gap-3 font-black text-[11px] h-11 rounded-lg transition-all uppercase tracking-widest cursor-not-allowed"
-              >
-                Initiate Secure Link
-              </Button>
+              <p className="text-[12px] text-white/50 font-bold uppercase tracking-widest leading-relaxed max-w-[90%]">
+                Link your Telegram account to verify community group membership.
+              </p>
+              <div className="flex flex-col gap-2 pt-2">
+                <Button 
+                  onClick={handleTGConnect}
+                  className="w-full bg-blue-600 hover:bg-blue-700 text-white gap-3 font-black text-[11px] h-11 rounded-lg shadow-md transition-all active-elevate-2 uppercase tracking-widest relative overflow-hidden group/btn"
+                >
+                  <span className="relative z-10">Initiate Secure Link</span>
+                </Button>
+              </div>
             </div>
           </div>
-        </div>
+        ) : (
+          <div className="p-4 rounded-xl bg-[#0088cc]/10 border border-[#0088cc]/20 flex items-center gap-4 relative overflow-hidden group shadow-lg">
+            <div className="h-12 w-12 rounded-full bg-[#0088cc]/20 flex items-center justify-center border-2 border-background shadow-[0_0_20px_rgba(0,136,204,0.2)] relative z-10">
+              <Send className="w-6 h-6 text-[#0088cc] fill-[#0088cc]/20" />
+            </div>
+            <div className="flex-1 relative z-10">
+              <div className="flex items-center gap-2">
+                <Send className="w-3 h-3 text-[#0088cc]" />
+                <span className="text-[9px] font-black uppercase tracking-widest text-white/40">Verified Telegram</span>
+              </div>
+              <p className="text-base font-black font-display tracking-tight text-white uppercase italic">@{user.telegramHandle}</p>
+              <Badge className="bg-[#0088cc]/20 text-[#0088cc] border-none text-[8px] font-black mt-1 uppercase tracking-widest">Link Active</Badge>
+            </div>
+            <Button
+              size="icon"
+              variant="ghost"
+              className="h-8 w-8 rounded-lg text-white/30 hover:text-destructive hover:bg-destructive/10 relative z-[100] transition-all"
+              onClick={() => {
+                syncMutation.mutate({
+                  walletAddress,
+                  twitterHandle: user?.twitterHandle || "",
+                  // @ts-ignore
+                  telegramHandle: null
+                });
+              }}
+            >
+              <LogOut className="w-4 h-4" />
+            </Button>
+          </div>
+        )}
       </CardContent>
     </Card>
   );

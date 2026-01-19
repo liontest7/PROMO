@@ -14,7 +14,8 @@ export interface IStorage {
   getUserByTwitterHandle(handle: string): Promise<User | undefined>;
   createUser(user: InsertUser): Promise<User>;
   updateUserReputation(id: number, score: number): Promise<User>;
-  updateUserSocials(id: number, socials: { twitterHandle?: string; telegramHandle?: string }): Promise<User>;
+  updateUserSocials(id: number, socials: { twitterHandle?: string; telegramHandle?: string; profileImageUrl?: string }): Promise<User>;
+  updateUserProfile(walletAddress: string, data: { twitterHandle?: string, profileImageUrl?: string, telegramHandle?: string }): Promise<User>;
   updateUserRole(id: number, role: "user" | "advertiser" | "admin"): Promise<User>;
   updateUserStatus(id: number, status: "active" | "suspended" | "blocked"): Promise<User>;
   getSuspiciousUsers(): Promise<User[]>;
@@ -131,6 +132,18 @@ export class DatabaseStorage implements IStorage {
   async updateUserSocials(id: number, socials: any): Promise<User> {
     const [user] = await db.update(users).set(socials).where(eq(users.id, id)).returning();
     return user;
+  }
+
+  async updateUserProfile(walletAddress: string, data: { twitterHandle?: string, profileImageUrl?: string, telegramHandle?: string }): Promise<User> {
+    const [updatedUser] = await db.update(users)
+      .set({
+        twitterHandle: data.twitterHandle,
+        profileImageUrl: data.profileImageUrl,
+        telegramHandle: data.telegramHandle
+      })
+      .where(eq(users.walletAddress, walletAddress))
+      .returning();
+    return updatedUser;
   }
 
   async updateUserRole(id: number, role: any): Promise<User> {

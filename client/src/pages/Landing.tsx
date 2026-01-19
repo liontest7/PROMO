@@ -12,6 +12,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useQuery } from "@tanstack/react-query";
 
 import { PLATFORM_CONFIG } from "@shared/config";
+import { LiveActivityFeed } from "@/components/LiveActivityFeed";
 
 function EarnContentOnly({ settings }: { settings: any }) {
   const { data: campaigns, isLoading } = useCampaigns();
@@ -107,6 +108,8 @@ export default function Landing() {
       <div className="sticky top-0 z-50 w-full">
         <Navigation />
       </div>
+
+      <LiveActivityFeed />
 
       <div className="overflow-hidden">
         {/* Hero Section */}

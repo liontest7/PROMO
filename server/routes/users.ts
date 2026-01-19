@@ -59,6 +59,29 @@ export function setupUserRoutes(app: Express) {
     }
   });
 
+  app.patch("/api/users/profile", async (req, res) => {
+    try {
+      const { walletAddress, twitterHandle, profileImageUrl, telegramHandle } = req.body;
+      
+      if (!walletAddress) {
+        return res.status(400).json({ message: "Wallet address is required" });
+      }
+
+      const user = await storage.getUserByWallet(walletAddress);
+      if (!user) return res.status(404).json({ message: "User not found" });
+
+      const updatedUser = await storage.updateUserProfile(walletAddress, {
+        twitterHandle,
+        profileImageUrl,
+        telegramHandle: telegramHandle !== undefined ? telegramHandle : undefined,
+      });
+      res.json(updatedUser);
+    } catch (err) {
+      console.error("Update profile error:", err);
+      res.status(500).json({ message: "Error updating profile" });
+    }
+  });
+
   app.patch("/api/users/:walletAddress/profile", async (req, res) => {
     try {
       const { walletAddress } = req.params;
