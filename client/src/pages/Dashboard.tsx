@@ -66,7 +66,7 @@ export default function Dashboard() {
     }
   });
 
-  const { data: leaderboard, isLoading: leaderboardLoading } = useQuery({
+  const { data: leaderboardData, isLoading: leaderboardLoading } = useQuery({
     queryKey: ["/api/leaderboard"],
     queryFn: async () => {
       const res = await fetch("/api/leaderboard");
@@ -74,6 +74,8 @@ export default function Dashboard() {
       return res.json();
     }
   });
+
+  const leaderboard = leaderboardData?.ranking || [];
 
   if (statsLoading || userLoading || leaderboardLoading) {
     return (
