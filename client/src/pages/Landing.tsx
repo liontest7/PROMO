@@ -199,8 +199,6 @@ export default function Landing() {
           </div>
         </section>
 
-        <LiveActivityFeed />
-
         {/* Featured Campaigns Section - MOVED UP AS REQUESTED */}
         <section className="py-24 border-y border-white/5 bg-black/20" data-testid="section-active-campaigns">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -221,6 +219,8 @@ export default function Landing() {
             </div>
           </div>
         </section>
+
+        <LiveActivityFeed />
 
         {/* Features */}
         <section className="py-24">
