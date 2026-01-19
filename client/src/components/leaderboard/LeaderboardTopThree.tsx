@@ -22,7 +22,11 @@ export function LeaderboardTopThree({ leaders }: LeaderboardTopThreeProps) {
             </div>
             <div className="absolute -top-3 -right-3 w-12 h-12 rounded-full bg-white text-black flex items-center justify-center font-black text-sm shadow-2xl border-4 border-[#050505]">#2</div>
           </div>
-          <h3 className="text-3xl font-black font-display uppercase italic tracking-tight text-white truncate w-full px-2">{leaders?.[1]?.name || '---'}</h3>
+          <h3 className="text-3xl font-black font-display uppercase italic tracking-tight text-white truncate w-full px-2">
+            {leaders?.[1]?.name?.startsWith('USER ') 
+              ? leaders[1].fullWallet.slice(0, 4) + '...' + leaders[1].fullWallet.slice(-4) 
+              : leaders?.[1]?.name || '---'}
+          </h3>
           <div className="flex items-center gap-3 mt-4 bg-emerald-500/15 px-6 py-2 rounded-full border border-emerald-500/30">
             <Star className="w-5 h-5 text-emerald-500" />
             <span className="text-2xl font-black font-display text-emerald-500">{leaders?.[1]?.points?.toLocaleString() || 0}</span>
@@ -45,7 +49,9 @@ export function LeaderboardTopThree({ leaders }: LeaderboardTopThreeProps) {
             <Crown className="absolute -top-12 left-1/2 -translate-x-1/2 w-10 h-10 text-yellow-500 drop-shadow-[0_0_15px_rgba(234,179,8,0.6)]" />
           </div>
           <h3 className="text-4xl font-black font-display uppercase italic tracking-tighter text-white truncate w-full px-2">
-            {leaders?.[0]?.name || '---'}
+            {leaders?.[0]?.name?.startsWith('USER ') 
+              ? leaders[0].fullWallet.slice(0, 4) + '...' + leaders[0].fullWallet.slice(-4) 
+              : leaders?.[0]?.name || '---'}
           </h3>
           <div className="flex items-center gap-3 mt-5 bg-primary/25 px-8 py-3 rounded-full border border-primary/40 shadow-xl">
             <Star className="w-6 h-6 text-primary" />
@@ -66,7 +72,11 @@ export function LeaderboardTopThree({ leaders }: LeaderboardTopThreeProps) {
             </div>
             <div className="absolute -top-3 -right-3 w-12 h-12 rounded-full bg-amber-600 text-white flex items-center justify-center font-black text-sm shadow-2xl border-4 border-[#050505]">#3</div>
           </div>
-          <h3 className="text-3xl font-black font-display uppercase italic tracking-tight text-white truncate w-full px-2">{leaders?.[2]?.name || '---'}</h3>
+          <h3 className="text-3xl font-black font-display uppercase italic tracking-tight text-white truncate w-full px-2">
+            {leaders?.[2]?.name?.startsWith('USER ') 
+              ? leaders[2].fullWallet.slice(0, 4) + '...' + leaders[2].fullWallet.slice(-4) 
+              : leaders?.[2]?.name || '---'}
+          </h3>
           <div className="flex items-center gap-3 mt-4 bg-amber-600/15 px-6 py-2 rounded-full border border-amber-600/30">
             <Star className="w-5 h-5 text-amber-600" />
             <span className="text-2xl font-black font-display text-amber-600">{leaders?.[2]?.points?.toLocaleString() || 0}</span>

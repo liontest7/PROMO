@@ -42,7 +42,9 @@ export function LeaderboardTable({
                     <AvatarFallback className="text-base font-black bg-white/10">{user.avatar}</AvatarFallback>
                   </Avatar>
                   <div className="flex flex-col gap-1">
-                    <span className="font-black text-2xl font-display uppercase italic tracking-tight text-white group-hover:text-primary transition-colors">{user.name}</span>
+                    <span className="font-black text-2xl font-display uppercase italic tracking-tight text-white group-hover:text-primary transition-colors">
+                      {user.name.startsWith('USER ') ? user.fullWallet.slice(0, 4) + '...' + user.fullWallet.slice(-4) : user.name}
+                    </span>
                     <span className="text-xs font-mono text-white/40 truncate max-w-[250px]">{user.fullWallet}</span>
                   </div>
                 </div>
