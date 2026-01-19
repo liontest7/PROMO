@@ -1,10 +1,9 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Zap, ShieldCheck, ExternalLink, Clock, User, LayoutGrid, List, Search } from "lucide-react";
+import { Zap, ShieldCheck, ExternalLink, Clock, LayoutGrid, List, Search } from "lucide-react";
 import { PLATFORM_CONFIG } from "@shared/config";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { useQuery } from "@tanstack/react-query";
 import { Link } from "wouter";
 
 interface Activity {
@@ -29,21 +28,56 @@ interface Activity {
   createdAt: string;
 }
 
+const MOCK_AVATARS = [
+  "https://api.dicebear.com/7.x/avataaars/svg?seed=Felix",
+  "https://api.dicebear.com/7.x/avataaars/svg?seed=Aneka",
+  "https://api.dicebear.com/7.x/avataaars/svg?seed=Max",
+  "https://api.dicebear.com/7.x/avataaars/svg?seed=Zoe",
+];
+
+const MOCK_CAMPAIGNS = [
+  { name: "SOLANA", logo: "https://cryptologos.cc/logos/solana-sol-logo.png" },
+  { name: "PHANTOM", logo: "https://cryptologos.cc/logos/phantom-logo.png" },
+  { name: "JUPITER", logo: "https://cryptologos.cc/logos/jupiter-ag-jup-logo.png" },
+];
+
+const MOCK_ACTIONS = ["FOLLOW_X", "JOIN_TG", "HOLDER_VERIFY", "TASK_COMPLETE"];
+
 export function LiveActivityFeed() {
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
-  
-  const { data: allExecutions, isLoading } = useQuery<Activity[]>({
-    queryKey: ["/api/executions/recent"],
-    queryFn: async () => {
-      const res = await fetch("/api/admin/executions?limit=12");
-      if (!res.ok) throw new Error("Failed to fetch executions");
-      return res.json();
-    },
-    refetchInterval: 10000,
-    staleTime: 5000,
-  });
+  const [activities, setActivities] = useState<Activity[]>([]);
 
-  if (isLoading) return null;
+  useEffect(() => {
+    const generateActivity = () => ({
+      id: Math.random().toString(36).substr(2, 9),
+      user: {
+        walletAddress: "0x" + Math.random().toString(16).substr(2, 40),
+        username: `User_${Math.random().toString(36).substr(2, 4)}`,
+        profileImageUrl: MOCK_AVATARS[Math.floor(Math.random() * MOCK_AVATARS.length)],
+      },
+      action: {
+        type: MOCK_ACTIONS[Math.floor(Math.random() * MOCK_ACTIONS.length)],
+        rewardAmount: (Math.random() * 50 + 10).toFixed(1),
+      },
+      campaign: {
+        id: Math.floor(Math.random() * 1000),
+        tokenName: MOCK_CAMPAIGNS[Math.floor(Math.random() * MOCK_CAMPAIGNS.length)].name,
+        tokenAddress: "TokenAddr...",
+        tokenImageUrl: MOCK_CAMPAIGNS[Math.floor(Math.random() * MOCK_CAMPAIGNS.length)].logo,
+      },
+      status: "verified",
+      transactionSignature: "5xW...",
+      createdAt: new Date().toISOString(),
+    });
+
+    setActivities(Array.from({ length: 8 }).map(() => generateActivity()));
+
+    const interval = setInterval(() => {
+      setActivities(prev => [generateActivity(), ...prev].slice(0, 12));
+    }, 5000);
+
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <section className="py-24 relative overflow-hidden bg-black/60 border-y border-white/5">
@@ -80,7 +114,7 @@ export function LiveActivityFeed() {
                 <List className="w-4 h-4" />
               </Button>
             </div>
-            <Link href="/explorer">
+            <Link href="/earn">
               <Button variant="outline" size="sm" className="bg-white/5 border-white/10 hover:bg-white/10 text-white font-black uppercase tracking-widest text-[10px] h-11 rounded-xl px-6">
                 Explore All <Search className="ml-2 w-3 h-3" />
               </Button>
@@ -90,7 +124,7 @@ export function LiveActivityFeed() {
 
         <div className={viewMode === "grid" ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4" : "space-y-3"}>
           <AnimatePresence mode="popLayout" initial={false}>
-            {allExecutions?.slice(0, viewMode === "grid" ? 8 : 10).map((activity) => (
+            {activities.map((activity) => (
               <motion.div
                 key={activity.id}
                 layout
@@ -105,7 +139,6 @@ export function LiveActivityFeed() {
               >
                 <div className="absolute left-0 top-0 w-1 h-full bg-primary/40 opacity-0 group-hover:opacity-100 transition-opacity" />
                 
-                {/* User Profile */}
                 <div className={`flex items-center gap-3 ${viewMode === "grid" ? "mb-4 w-full justify-center" : "min-w-[180px]"}`}>
                   <Avatar className="h-10 w-10 border-2 border-background shadow-lg">
                     <AvatarImage src={activity.user.profileImageUrl} />
@@ -113,7 +146,7 @@ export function LiveActivityFeed() {
                   </Avatar>
                   <div className="flex flex-col items-start">
                     <span className="text-[12px] font-black text-white uppercase italic truncate max-w-[120px]">
-                      {activity.user.username || `${activity.user.walletAddress.slice(0,4)}...${activity.user.walletAddress.slice(-4)}`}
+                      {activity.user.username}
                     </span>
                     <div className="flex items-center gap-1 text-white/20">
                       <Clock className="w-2 h-2" />
@@ -122,7 +155,6 @@ export function LiveActivityFeed() {
                   </div>
                 </div>
 
-                {/* Campaign & Action */}
                 <div className={`flex-1 flex items-center ${viewMode === "grid" ? "flex-col mb-6" : "gap-6"}`}>
                   <div className={`flex items-center gap-3 ${viewMode === "grid" ? "mb-2" : ""}`}>
                     <img src={activity.campaign.tokenImageUrl} alt="" className="w-6 h-6 rounded-lg object-contain" />
@@ -140,7 +172,6 @@ export function LiveActivityFeed() {
                   </div>
                 </div>
 
-                {/* Reward & Link */}
                 <div className={`flex items-center gap-6 ${viewMode === "grid" ? "w-full justify-between mt-auto" : "min-w-[220px] justify-end"}`}>
                   <div className="flex flex-col items-end">
                     <span className="text-[9px] font-black text-white/20 uppercase tracking-widest">Reward</span>
@@ -150,16 +181,9 @@ export function LiveActivityFeed() {
                     </div>
                   </div>
                   
-                  {activity.transactionSignature && (
-                    <a 
-                      href={`https://solscan.io/tx/${activity.transactionSignature}`} 
-                      target="_blank" 
-                      rel="noreferrer"
-                      className="p-3 rounded-xl bg-white/5 border border-white/10 hover:bg-primary/20 hover:border-primary/40 transition-all text-white/40 hover:text-white shadow-xl"
-                    >
-                      <ExternalLink className="w-4 h-4" />
-                    </a>
-                  )}
+                  <div className="p-3 rounded-xl bg-white/5 border border-white/10 hover:bg-primary/20 hover:border-primary/40 transition-all text-white/40 hover:text-white shadow-xl cursor-pointer">
+                    <ExternalLink className="w-4 h-4" />
+                  </div>
                 </div>
               </motion.div>
             ))}
