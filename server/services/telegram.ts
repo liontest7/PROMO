@@ -32,9 +32,22 @@ export function startTelegramBot() {
 
           await storage.updateUserProfile(walletAddress, {
             telegramHandle: tgUser.username || tgUser.first_name,
+            profileImageUrl: tgUser.id ? `https://t.me/i/userpic/320/${tgUser.username || tgUser.id}.jpg` : undefined,
           });
 
-          return ctx.reply(`Identity @${tgUser.username || tgUser.first_name} successfully synced with wallet ${walletAddress.slice(0, 4)}...${walletAddress.slice(-4)}!`);
+          return ctx.reply(`🚀 *Connection Successful!*
+
+Welcome to the Dropy Protocol, agent. 
+
+Your identity @${tgUser.username || tgUser.first_name} is now securely linked to wallet:
+\`${walletAddress}\`
+
+You have unlocked:
+✅ Community Verification Nodes
+✅ Group Membership Tracking
+✅ High-Yield Engagement Access
+
+Return to your dashboard to see your updated status.`, { parse_mode: 'Markdown' });
         } catch (err) {
           console.error("[Telegram Bot] Connection error:", err);
           return ctx.reply("An error occurred while connecting your account. Please try again.");

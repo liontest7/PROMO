@@ -78,11 +78,13 @@ export function EcosystemContribution({ reputationScore, level, progress }: Ecos
         </div>
         
         <div className="space-y-4">
-          <div className="flex justify-between items-end">
-            <span className="text-[12px] font-black text-white uppercase tracking-widest">Protocol Evolution</span>
-            <div className="flex items-center gap-2">
-              <span className="text-[12px] font-black text-primary uppercase tracking-widest">{100 - (reputationScore % 100)} XP to Next Level</span>
-              <span className="text-xl font-black font-display text-primary italic tracking-tight drop-shadow-md">{progress}%</span>
+          <div className="flex flex-col gap-1">
+            <div className="flex justify-between items-center w-full gap-4">
+              <span className="text-[13px] font-black text-white uppercase tracking-widest whitespace-nowrap">Protocol Evolution</span>
+              <div className="flex items-center gap-3 shrink-0">
+                <span className="text-[13px] font-black text-primary uppercase tracking-widest whitespace-nowrap">{100 - (reputationScore % 100)} XP to Next Level</span>
+                <span className="text-xl font-black font-display text-primary italic tracking-tight drop-shadow-md">{progress}%</span>
+              </div>
             </div>
           </div>
           <div className="w-full h-8 rounded-full bg-black/90 overflow-hidden p-1.5 border border-white/10 shadow-inner relative">

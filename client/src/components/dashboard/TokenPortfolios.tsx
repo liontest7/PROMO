@@ -59,7 +59,7 @@ export const TokenPortfolios = ({ tokenBalances }: TokenPortfoliosProps) => (
           <Activity className="w-8 h-8 text-muted-foreground opacity-30 group-hover:text-primary group-hover:opacity-100 transition-all duration-500" />
         </div>
         <p className="text-base font-display font-black uppercase tracking-[0.2em] text-white/20 italic mb-6 text-center">Data Pipeline Empty</p>
-        <Button variant="default" className="bg-primary text-primary-foreground font-black uppercase tracking-widest text-[10px] h-10 px-6 rounded-lg shadow-lg hover:shadow-primary/40 transition-all transform hover:-translate-y-0.5" asChild>
+        <Button variant="default" className="bg-primary text-primary-foreground font-black uppercase tracking-widest text-[12px] h-12 px-8 rounded-lg shadow-lg hover:shadow-primary/40 transition-all transform hover:-translate-y-0.5" asChild>
           <Link href="/earn">Engage Network Tasks</Link>
         </Button>
       </div>
