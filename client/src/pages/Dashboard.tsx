@@ -102,7 +102,7 @@ export default function Dashboard() {
         .sort((a, b) => (Number(b.reputationScore) || 0) - (Number(a.reputationScore) || 0))
         .findIndex((u: any) => u.walletAddress === walletAddress) 
     : -1;
-  const rank = rankIndex !== -1 ? rankIndex + 1 : (stats?.totalUsers || 100);
+  const rank = rankIndex !== -1 ? rankIndex + 1 : (Number(stats?.totalUsers) || 100);
   const rankChange = tasksCompleted > 0 ? "up" : "stable";
 
   return (

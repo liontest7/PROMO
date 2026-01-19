@@ -48,21 +48,21 @@ export function UserProfileDialog({ walletAddress, isOpen, onOpenChange }: UserP
 
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-5xl max-h-[90vh] p-0 border-white/10 bg-[#050505] overflow-hidden rounded-[2.5rem] shadow-[0_0_100px_rgba(0,0,0,0.8)]">
-        <DialogHeader className="p-6 border-b border-white/5 flex flex-row items-center justify-between">
-          <DialogTitle className="text-2xl font-black italic uppercase tracking-tighter text-white">
+      <DialogContent className="max-w-2xl max-h-[85vh] p-0 border-white/10 bg-[#050505] overflow-hidden rounded-[2.5rem] shadow-[0_0_100px_rgba(0,0,0,0.8)]">
+        <DialogHeader className="p-4 border-b border-white/5 flex flex-row items-center justify-between">
+          <DialogTitle className="text-lg font-black italic uppercase tracking-tighter text-white">
             USER <span className="text-primary">PROFILE</span>
           </DialogTitle>
         </DialogHeader>
         
-        <ScrollArea className="h-full max-h-[calc(90vh-80px)]">
-          <div className="p-6 space-y-6 pb-12">
+        <ScrollArea className="h-full max-h-[calc(85vh-60px)]">
+          <div className="p-4 space-y-4 pb-6">
             {isLoading ? (
-              <div className="space-y-6">
-                <Skeleton className="h-48 w-full bg-white/5 rounded-[2.5rem]" />
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <Skeleton className="h-64 bg-white/5 rounded-3xl" />
-                  <Skeleton className="h-64 bg-white/5 rounded-3xl" />
+              <div className="space-y-4">
+                <Skeleton className="h-32 w-full bg-white/5 rounded-[1.5rem]" />
+                <div className="grid grid-cols-1 gap-4">
+                  <Skeleton className="h-40 bg-white/5 rounded-2xl" />
+                  <Skeleton className="h-40 bg-white/5 rounded-2xl" />
                 </div>
               </div>
             ) : walletAddress && user ? (
@@ -78,7 +78,7 @@ export function UserProfileDialog({ walletAddress, isOpen, onOpenChange }: UserP
                   isPublicView={true}
                 />
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 gap-4">
                   <TokenPortfolios tokenBalances={stats?.tokenBalances || []} />
                   <EcosystemContribution 
                     reputationScore={user.reputationScore || 0}
