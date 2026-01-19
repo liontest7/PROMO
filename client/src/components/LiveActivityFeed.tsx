@@ -1,3 +1,4 @@
+import { useQuery } from "@tanstack/react-query";
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Zap, ShieldCheck, ExternalLink, Clock, LayoutGrid, List, Search } from "lucide-react";
@@ -28,56 +29,18 @@ interface Activity {
   createdAt: string;
 }
 
-const MOCK_AVATARS = [
-  "https://api.dicebear.com/7.x/avataaars/svg?seed=Felix",
-  "https://api.dicebear.com/7.x/avataaars/svg?seed=Aneka",
-  "https://api.dicebear.com/7.x/avataaars/svg?seed=Max",
-  "https://api.dicebear.com/7.x/avataaars/svg?seed=Zoe",
-];
-
-const MOCK_CAMPAIGNS = [
-  { name: "SOLANA", logo: "https://cryptologos.cc/logos/solana-sol-logo.png" },
-  { name: "PHANTOM", logo: "https://cryptologos.cc/logos/phantom-logo.png" },
-  { name: "JUPITER", logo: "https://cryptologos.cc/logos/jupiter-ag-jup-logo.png" },
-];
-
-const MOCK_ACTIONS = ["FOLLOW_X", "JOIN_TG", "HOLDER_VERIFY", "TASK_COMPLETE"];
-
 export function LiveActivityFeed() {
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
-  const [activities, setActivities] = useState<Activity[]>([]);
 
-  useEffect(() => {
-    const generateActivity = () => ({
-      id: Math.random().toString(36).substr(2, 9),
-      user: {
-        walletAddress: "0x" + Math.random().toString(16).substr(2, 40),
-        username: `User_${Math.random().toString(36).substr(2, 4)}`,
-        profileImageUrl: MOCK_AVATARS[Math.floor(Math.random() * MOCK_AVATARS.length)],
-      },
-      action: {
-        type: MOCK_ACTIONS[Math.floor(Math.random() * MOCK_ACTIONS.length)],
-        rewardAmount: (Math.random() * 50 + 10).toFixed(1),
-      },
-      campaign: {
-        id: Math.floor(Math.random() * 1000),
-        tokenName: MOCK_CAMPAIGNS[Math.floor(Math.random() * MOCK_CAMPAIGNS.length)].name,
-        tokenAddress: "TokenAddr...",
-        tokenImageUrl: MOCK_CAMPAIGNS[Math.floor(Math.random() * MOCK_CAMPAIGNS.length)].logo,
-      },
-      status: "verified",
-      transactionSignature: "5xW...",
-      createdAt: new Date().toISOString(),
-    });
-
-    setActivities(Array.from({ length: 8 }).map(() => generateActivity()));
-
-    const interval = setInterval(() => {
-      setActivities(prev => [generateActivity(), ...prev].slice(0, 12));
-    }, 5000);
-
-    return () => clearInterval(interval);
-  }, []);
+  const { data: activities = [] } = useQuery<Activity[]>({
+    queryKey: ["/api/public/executions"],
+    queryFn: async () => {
+      const res = await fetch("/api/public/executions?limit=12");
+      if (!res.ok) throw new Error("Failed to fetch executions");
+      return res.json();
+    },
+    refetchInterval: 5000,
+  });
 
   return (
     <section className="py-24 relative overflow-hidden bg-black/60 border-y border-white/5">
