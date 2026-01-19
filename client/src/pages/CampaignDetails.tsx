@@ -608,7 +608,7 @@ export default function CampaignDetails() {
                   <div className="flex justify-between items-center">
                     <span className="text-white/40 text-sm font-black uppercase tracking-wider">Network</span>
                     <span className="font-black text-white text-base flex items-center gap-2">
-                      <img src={CONFIG.ui.walletIcons.solana} alt="Solana" className="w-4 h-4" />
+                      <img src={CONFIG.ui.walletIcons.solana} alt="Solana" className="w-4 h-4 rounded-full" />
                       SOLANA
                     </span>
                   </div>

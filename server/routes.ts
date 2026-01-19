@@ -399,6 +399,19 @@ export async function registerRoutes(
           }
         }
 
+        // Telegram API Verification
+        if (action.type === 'telegram') {
+          if (!user.telegramHandle) {
+            return res.status(400).json({ message: "Please link your Telegram account in dashboard first." });
+          }
+          const groupId = action.url.split('/').pop() || "";
+          const { verifyTelegramMembership } = await import("./services/telegram");
+          const isMember = await verifyTelegramMembership(user.telegramHandle, groupId);
+          if (!isMember) {
+            return res.status(403).json({ message: "Telegram verification failed: Group membership not found." });
+          }
+        }
+
         // Verification logic...
         await storage.createExecution({
           actionId: action.id,
@@ -443,6 +456,19 @@ export async function registerRoutes(
         } catch (error) {
           console.error("Twitter verification route error:", error);
           return res.status(500).json({ message: "Twitter verification service unavailable. Please try again later." });
+        }
+      }
+
+      // Telegram Verification for non-requirements case
+      if (action.type === 'telegram') {
+        if (!user.telegramHandle) {
+          return res.status(400).json({ message: "Please link your Telegram account in dashboard first." });
+        }
+        const groupId = action.url.split('/').pop() || "";
+        const { verifyTelegramMembership } = await import("./services/telegram");
+        const isMember = await verifyTelegramMembership(user.telegramHandle, groupId);
+        if (!isMember) {
+          return res.status(403).json({ message: "Telegram verification failed: Group membership not found." });
         }
       }
 

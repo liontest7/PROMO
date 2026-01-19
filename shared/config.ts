@@ -66,6 +66,7 @@ export const PLATFORM_CONFIG = {
     walletSelectorBg:
       "https://i.ibb.co/xq2jkksm/20260109-2047-Image-Generation-remix-01kej1a44aer6vxak4n8tx8e6j.png",
     walletIcons: {
+      solana: "https://cryptologos.cc/logos/solana-sol-logo.png",
       phantom:
         "https://play-lh.googleusercontent.com/obRvW02OTYLzJuvic1ZbVDVXLXzI0Vt_JGOjlxZ92XMdBF_i3kqU92u9SgHvJ5pySdM",
       solflare: "https://solflare.com/favicon.ico",
