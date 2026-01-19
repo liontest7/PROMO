@@ -74,9 +74,9 @@ export function VerifyActionDialog({ action, campaign, open, onOpenChange, onSuc
     }
   }, [open]);
 
-  const isHolderCampaign = campaign?.campaignType === 'holder_qualification' || action?.type === 'holder_verification';
+  const isHolderCampaign = campaign?.campaignType === 'holder_qualification' || (action && action.type === ('holder_verification' as any));
 
-  const { data: user } = useQuery({
+  const { data: user } = useQuery<any>({
     queryKey: [`/api/users/${walletAddress}`],
     enabled: !!walletAddress,
   });
@@ -86,6 +86,7 @@ export function VerifyActionDialog({ action, campaign, open, onOpenChange, onSuc
     
     setIsVerifying(true);
     if (!isAutoFetch && !turnstileToken && (isHolderCampaign || step === "verify")) {
+      setIsVerifying(false);
       toast({
         title: "Verification Required",
         description: "Please complete the security check.",
@@ -135,18 +136,23 @@ export function VerifyActionDialog({ action, campaign, open, onOpenChange, onSuc
                 if (onSuccess) onSuccess(0);
                 setTimeout(() => onOpenChange(false), 2000);
               }
-            }
+            },
+            onSettled: () => setIsVerifying(false)
           }
         );
         return;
       }
 
-      if (!action) return;
+      if (!action) {
+        setIsVerifying(false);
+        return;
+      }
 
       const isTwitterAction = action.type === 'twitter' || action.type.startsWith('twitter_');
       
       // Strict X Account Check
       if (isTwitterAction && !user?.twitterHandle) {
+        setIsVerifying(false);
         toast({
           title: "X Account Required",
           description: "Please connect your X account to proceed.",
@@ -155,8 +161,6 @@ export function VerifyActionDialog({ action, campaign, open, onOpenChange, onSuc
         return;
       }
       
-      setIsVerifying(true);
-
       const isWebsiteAction = action.type === "website";
       let proofData: any = { 
         proofText: isTwitterAction ? (user?.twitterHandle || proof) : proof, 
@@ -198,7 +202,7 @@ export function VerifyActionDialog({ action, campaign, open, onOpenChange, onSuc
           onSuccess: (data: any) => {
             if (data.status === "tracking") {
               setHoldingStatus(prev => ({
-                ...prev,
+                ...prev ? prev : { status: "tracking" },
                 status: "tracking",
                 followProgress: data.followProgress
               }));
@@ -221,17 +225,17 @@ export function VerifyActionDialog({ action, campaign, open, onOpenChange, onSuc
             toast({ title: "Action Verified!" });
             if (onSuccess) onSuccess(action.id);
             setTimeout(() => onOpenChange(false), 2000);
-          }
+          },
+          onSettled: () => setIsVerifying(false)
         }
       );
     } catch (err: any) {
+      setIsVerifying(false);
       toast({
         title: "Verification Failed",
         description: err.message,
         variant: "destructive"
       });
-    } finally {
-      setIsVerifying(false);
     }
   };
 
