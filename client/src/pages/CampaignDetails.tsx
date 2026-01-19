@@ -464,7 +464,7 @@ export default function CampaignDetails() {
                 <div className="flex flex-wrap gap-3">
                   <Button variant="outline" size="sm" className="h-10 text-xs font-black border-white/10 bg-white/5 hover:bg-[#FF8C00]/20 hover:border-[#FF8C00]/40 transition-all gap-2 text-white rounded-lg group" asChild>
                     <a href={`https://pump.fun/coin/${campaign.tokenAddress}`} target="_blank" rel="noreferrer">
-                      <img src={(CONFIG.ui.walletIcons as any)?.pumpfun || ""} className="w-4 h-4 rounded" />
+                      <img src={(CONFIG.ui.walletIcons as any)?.pumpfun || ""} className="w-4 h-4 rounded" alt="Pump.fun" />
                       PUMP.FUN
                     </a>
                   </Button>
