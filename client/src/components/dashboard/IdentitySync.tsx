@@ -105,29 +105,15 @@ export const IdentitySync = ({ user, walletAddress }: IdentitySyncProps) => {
   };
 
   const handleTGConnect = () => {
-    const width = 500;
-    const height = 600;
-    const left = window.screen.width / 2 - width / 2;
-    const top = window.screen.height / 2 - height / 2;
+    // Open Telegram Bot with Deep Link
+    // Format: t.me/bot_username?start=connect_<walletAddress>
+    const botUsername = "DropySentinelBot"; // User should replace this with their actual bot username
+    const deepLink = `https://t.me/${botUsername}?start=connect_${walletAddress}`;
+    window.open(deepLink, '_blank');
     
-    // In a real production app, this would open the Telegram Login Widget or a specialized bot deep link
-    // For now, we simulate the connection flow with a professional dialog
-    const username = prompt("Enter your Telegram username (without @):");
-    if (!username) return;
-    
-    syncMutation.mutate({
-      walletAddress,
-      twitterHandle: user?.twitterHandle || "",
-      // @ts-ignore
-      telegramHandle: username.replace('@', '')
-    }, {
-      onSuccess: (data) => {
-        queryClient.invalidateQueries({ queryKey: ["/api/users", walletAddress] });
-        toast({ 
-          title: "Telegram Node Synced", 
-          description: `Identity @${data.telegramHandle} verified through Dropy Sentinel.` 
-        });
-      }
+    toast({
+      title: "Telegram Bot Opened",
+      description: "Please click 'Start' in the Telegram bot to complete the verification.",
     });
   };
 
