@@ -191,7 +191,7 @@ export function ProfileHeader({
       
       <div className="relative z-10 grid grid-cols-2 gap-4 lg:min-w-[360px]">
         <div className="flex flex-col p-6 rounded-[2rem] bg-black/40 border border-white/10 hover:border-primary/50 transition-all group/card shadow-lg backdrop-blur-md">
-          <span className="text-[13px] font-black text-white uppercase tracking-[0.3em] mb-2 whitespace-nowrap">Protocol Reputation</span>
+          <span className="text-[13px] font-black text-white uppercase tracking-[0.3em] mb-2 whitespace-nowrap">Reputation</span>
           <div className="flex items-center gap-3">
             <span className="text-4xl font-black font-display text-primary drop-shadow-[0_0_15px_rgba(34,197,94,0.4)]">{reputationScore}</span>
             <Trophy className="w-5 h-5 text-primary opacity-50 group-hover/card:opacity-100 transition-opacity" />
@@ -199,7 +199,7 @@ export function ProfileHeader({
         </div>
         <div className="flex flex-col p-6 rounded-[2rem] bg-black/40 border border-white/10 hover:border-primary/50 transition-all group/card shadow-lg backdrop-blur-md">
           <div className="flex justify-between items-start mb-2">
-            <span className="text-[13px] font-black text-white uppercase tracking-[0.3em] whitespace-nowrap">Network Rank</span>
+            <span className="text-[13px] font-black text-white uppercase tracking-[0.3em] whitespace-nowrap">Week Rank</span>
             {rankChange === "up" && <ArrowUpRight className="w-5 h-5 text-primary animate-bounce-slow" />}
           </div>
           <div className="flex items-center gap-3">
