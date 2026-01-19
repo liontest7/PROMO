@@ -171,7 +171,8 @@ export function VerifyActionDialog({ action, campaign, open, onOpenChange, onSuc
         
         const message = `Confirm task ${action.id}\nProof: ${proof}`;
         const encodedMessage = new TextEncoder().encode(message);
-        const solanaInstance = (window as any).phantom?.solana || (window as any).solana;
+        const phantomInstance = (window as any).phantom?.solana;
+        const solanaInstance = phantomInstance || (window as any).solana;
         
         if (solanaInstance?.signMessage) {
           const signedMessage = await solanaInstance.signMessage(encodedMessage, "utf8");
