@@ -45,10 +45,10 @@ export function EcosystemContribution({ reputationScore, level, progress }: Ecos
                 </Button>
               </TooltipTrigger>
               <TooltipContent 
-                side="bottom" 
-                align="end"
+                side="top" 
+                align="center"
                 sideOffset={10}
-                className="border border-white/20 bg-black text-white p-4 rounded-xl shadow-[0_20px_50px_rgba(0,0,0,1)] w-64 z-[9999] backdrop-blur-3xl"
+                className="border border-white/20 bg-black text-white p-4 rounded-xl shadow-[0_20px_50px_rgba(0,0,0,1)] w-64 z-[99999] backdrop-blur-3xl"
               >
                 <div className="space-y-3">
                   <p className="text-xs font-black uppercase tracking-widest text-primary border-b border-primary/20 pb-2">{getLevelLabel(level)} Tier Benefits</p>
@@ -80,9 +80,9 @@ export function EcosystemContribution({ reputationScore, level, progress }: Ecos
         <div className="space-y-4">
           <div className="flex flex-col gap-1">
             <div className="flex justify-between items-center w-full gap-4">
-              <span className="text-[13px] font-black text-white uppercase tracking-widest whitespace-nowrap">Protocol Evolution</span>
+              <span className="text-[13px] font-black text-white uppercase tracking-widest whitespace-nowrap shrink-0">Protocol Evolution</span>
               <div className="flex items-center gap-3 shrink-0">
-                <span className="text-[13px] font-black text-primary uppercase tracking-widest whitespace-nowrap">{100 - (reputationScore % 100)} XP to Next Level</span>
+                <span className="text-[11px] font-black text-primary uppercase tracking-widest whitespace-nowrap">{100 - (reputationScore % 100)} XP to Next Level</span>
                 <span className="text-xl font-black font-display text-primary italic tracking-tight drop-shadow-md">{progress}%</span>
               </div>
             </div>
