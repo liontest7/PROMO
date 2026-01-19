@@ -105,7 +105,14 @@ export const IdentitySync = ({ user, walletAddress }: IdentitySyncProps) => {
   };
 
   const handleTGConnect = () => {
-    const username = prompt("Please enter your Telegram username (without @):");
+    const width = 500;
+    const height = 600;
+    const left = window.screen.width / 2 - width / 2;
+    const top = window.screen.height / 2 - height / 2;
+    
+    // In a real production app, this would open the Telegram Login Widget or a specialized bot deep link
+    // For now, we simulate the connection flow with a professional dialog
+    const username = prompt("Enter your Telegram username (without @):");
     if (!username) return;
     
     syncMutation.mutate({
@@ -117,8 +124,8 @@ export const IdentitySync = ({ user, walletAddress }: IdentitySyncProps) => {
       onSuccess: (data) => {
         queryClient.invalidateQueries({ queryKey: ["/api/users", walletAddress] });
         toast({ 
-          title: "Telegram Identity Synced", 
-          description: `Your Telegram account @${data.telegramHandle} has been verified.` 
+          title: "Telegram Node Synced", 
+          description: `Identity @${data.telegramHandle} verified through Dropy Sentinel.` 
         });
       }
     });

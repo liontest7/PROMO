@@ -31,13 +31,13 @@ interface Activity {
 
 export default function Explorer() {
   const { data: executions, isLoading } = useQuery<Activity[]>({
-    queryKey: ["/api/admin/executions"],
+    queryKey: ["/api/public/executions"],
     queryFn: async () => {
-      const res = await fetch("/api/admin/executions?limit=50");
+      const res = await fetch("/api/public/executions?limit=50");
       if (!res.ok) throw new Error("Failed to fetch executions");
       return res.json();
     },
-    refetchInterval: 15000,
+    refetchInterval: 10000,
   });
 
   return (
