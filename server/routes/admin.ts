@@ -113,8 +113,13 @@ export function setupAdminRoutes(app: Express) {
   // Executions
   app.get("/api/admin/executions", async (req, res) => {
     try {
-      const executions = await storage.getAllExecutions();
-      res.json(executions);
+      const limit = req.query.limit ? parseInt(req.query.limit as string) : 100;
+      const allExecutions = await storage.getAllExecutions();
+      // Sort by date descending
+      const sorted = allExecutions.sort((a, b) => 
+        new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime()
+      );
+      res.json(sorted.slice(0, limit));
     } catch (err) {
       console.error("[Admin Executions] Error:", err);
       res.status(500).json({ message: "Failed to fetch executions" });
