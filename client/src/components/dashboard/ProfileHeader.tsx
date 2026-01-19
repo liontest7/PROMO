@@ -157,7 +157,7 @@ export function ProfileHeader({
             ) : (
               <div className="flex items-center gap-2">
                 <h1 className="text-3xl font-display font-black tracking-tighter uppercase italic leading-none text-white drop-shadow-sm">
-                  {username || `USER ${formatWallet(walletAddress)}`}
+                  {username || formatWallet(walletAddress)}
                 </h1>
                 {!isPublicView && (
                   <Button size="icon" variant="ghost" className="h-8 w-8 opacity-50 hover:opacity-100" onClick={() => {

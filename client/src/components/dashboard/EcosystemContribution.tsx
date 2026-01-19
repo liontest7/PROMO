@@ -36,7 +36,7 @@ export function EcosystemContribution({ reputationScore, level, progress }: Ecos
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(34,197,94,0.3),transparent_70%)] opacity-70 rounded-[2rem]" />
       <CardHeader className="relative z-10 p-6 pb-2">
         <div className="flex items-center justify-between gap-3">
-          <CardTitle className="text-2xl font-black font-display uppercase leading-none italic tracking-tighter text-white">Protocol <span className="text-primary drop-shadow-[0_0_10px_rgba(34,197,94,0.4)]">Reputation</span></CardTitle>
+          <CardTitle className="text-2xl font-black font-display uppercase leading-none italic tracking-tighter text-white">Reputation <span className="text-primary drop-shadow-[0_0_10px_rgba(34,197,94,0.4)]">PROTOCOL</span></CardTitle>
           <TooltipProvider delayDuration={0}>
             <Tooltip>
               <TooltipTrigger asChild>

@@ -66,7 +66,7 @@ export default function Dashboard() {
     }
   });
 
-  const { data: leaderboard } = useQuery({
+  const { data: leaderboard, isLoading: leaderboardLoading } = useQuery({
     queryKey: ["/api/leaderboard"],
     queryFn: async () => {
       const res = await fetch("/api/leaderboard");
@@ -75,7 +75,7 @@ export default function Dashboard() {
     }
   });
 
-  if (statsLoading || userLoading) {
+  if (statsLoading || userLoading || leaderboardLoading) {
     return (
       <div className="min-h-screen bg-background">
         <Navigation />
