@@ -91,7 +91,7 @@ export default function Dashboard() {
     );
   }
 
-  const rank = leaderboard?.findIndex((u: any) => u.walletAddress === walletAddress) + 1 || stats?.totalUsers || 100;
+  const rank = (Array.isArray(leaderboard) ? leaderboard.findIndex((u: any) => u.walletAddress === walletAddress) : -1) + 1 || stats?.totalUsers || 100;
   const rankChange = tasksCompleted > 0 ? "up" : "stable";
 
   return (
