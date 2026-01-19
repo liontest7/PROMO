@@ -84,6 +84,7 @@ export function VerifyActionDialog({ action, campaign, open, onOpenChange, onSuc
   const handleVerify = async (isAutoFetch: boolean = false) => {
     if (!walletAddress || !campaign) return;
     
+    setIsVerifying(true);
     if (!isAutoFetch && !turnstileToken && (isHolderCampaign || step === "verify")) {
       toast({
         title: "Verification Required",
@@ -124,7 +125,8 @@ export function VerifyActionDialog({ action, campaign, open, onOpenChange, onSuc
                 return;
               }
 
-              if (!isAutoFetch && (data.status === 'ready' || data.status === 'verified')) {
+              if (data.status === 'ready' || data.status === 'verified') {
+                setIsVerifying(false);
                 setStep("success");
                 toast({
                   title: "Eligibility Verified!",

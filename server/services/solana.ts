@@ -37,6 +37,10 @@ export async function transferTokens(
 
   if (tokenAddress === "So11111111111111111111111111111111111111112") {
     // Native SOL transfer
+    const balance = await connection.getBalance(fromKeypair.publicKey);
+    if (balance < Math.round(amount * 1e9) + 5000) {
+      throw new Error("System wallet SOL balance too low for transfer and fees");
+    }
     const transaction = new Transaction().add(
       SystemProgram.transfer({
         fromPubkey: fromKeypair.publicKey,
@@ -67,6 +71,11 @@ export async function transferTokens(
       mintPublicKey,
       toPublicKey
     );
+
+    const balance = await connection.getBalance(fromKeypair.publicKey);
+    if (balance < 10000) { // Safety margin for SPL transfer fees
+      throw new Error("System wallet SOL balance too low for SPL transfer fees");
+    }
 
     const transaction = new Transaction().add(
       createTransferInstruction(
