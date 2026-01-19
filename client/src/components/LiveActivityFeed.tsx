@@ -114,7 +114,7 @@ export function LiveActivityFeed() {
                 <List className="w-4 h-4" />
               </Button>
             </div>
-            <Link href="/earn">
+            <Link href="/explorer">
               <Button variant="outline" size="sm" className="bg-white/5 border-white/10 hover:bg-white/10 text-white font-black uppercase tracking-widest text-[10px] h-11 rounded-xl px-6">
                 Explore All <Search className="ml-2 w-3 h-3" />
               </Button>

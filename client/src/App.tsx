@@ -17,6 +17,7 @@ import Dashboard from "@/pages/Dashboard";
 import About from "@/pages/About";
 import Leaderboard from "@/pages/Leaderboard";
 import CampaignDetails from "@/pages/CampaignDetails";
+import Explorer from "@/pages/Explorer";
 import Admin from "@/pages/Admin";
 import AdminPayouts from "@/pages/AdminPayouts";
 import NotFound from "@/pages/not-found";
@@ -97,6 +98,9 @@ function Router() {
         </Route>
         <Route path="/earn">
           <PageWrapper><Earn /></PageWrapper>
+        </Route>
+        <Route path="/explorer">
+          <PageWrapper><Explorer /></PageWrapper>
         </Route>
         <Route path="/terms">
           <PageWrapper><Terms /></PageWrapper>

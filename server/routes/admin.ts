@@ -126,6 +126,21 @@ export function setupAdminRoutes(app: Express) {
     }
   });
 
+  // Public recent executions for Landing and Explorer
+  app.get("/api/public/executions", async (req, res) => {
+    try {
+      const limit = req.query.limit ? parseInt(req.query.limit as string) : 50;
+      const allExecutions = await storage.getAllExecutions();
+      const sorted = allExecutions.sort((a, b) => 
+        new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime()
+      );
+      // Strip sensitive user data if any (though walletAddress is public)
+      res.json(sorted.slice(0, limit));
+    } catch (err) {
+      res.status(500).json({ message: "Internal server error" });
+    }
+  });
+
   app.patch("/api/admin/campaigns/:id/status", async (req, res) => {
     try {
       const campaign = await storage.updateCampaign(parseInt(req.params.id), { status: req.body.status });
