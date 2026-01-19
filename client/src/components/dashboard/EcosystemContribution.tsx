@@ -95,20 +95,20 @@ export function EcosystemContribution({ reputationScore, level, progress }: Ecos
               <div className="absolute inset-0 bg-[linear-gradient(90deg,transparent_0%,rgba(255,255,255,0.4)_50%,transparent_100%)] animate-shimmer" />
             </div>
             <div className="absolute inset-0 flex items-center justify-center">
-              <span className="text-[10px] font-black text-white uppercase tracking-[0.2em] drop-shadow-md">
+              <span className="text-[12px] font-black text-white uppercase tracking-[0.2em] drop-shadow-md">
                 {reputationScore % 100} / 100 XP
               </span>
             </div>
           </div>
-          <div className="flex justify-between items-center text-[11px] font-black uppercase tracking-widest text-white">
+          <div className="flex justify-between items-center text-[12px] font-black uppercase tracking-widest text-white">
             <span className="flex items-center gap-2 bg-white/5 px-2 py-1 rounded-md border border-white/10">
-              <Badge className={cn("h-4 px-2 text-[10px] border-none", getLabelColor(prevLevel))}>LVL {prevLevel}</Badge> 
+              <Badge className={cn("h-5 px-3 text-[12px] border-none", getLabelColor(prevLevel))}>LVL {prevLevel}</Badge> 
               {prevLabel}
             </span>
             <ArrowUpRight className="w-5 h-5 text-primary/40" />
             <span className="flex items-center gap-2 bg-primary/10 px-2 py-1 rounded-md border border-primary/20">
               {nextLabel} 
-              <Badge className={cn("h-4 px-2 text-primary-foreground border-none text-[10px]", getLabelColor(nextLevel))}>LVL {nextLevel}</Badge>
+              <Badge className={cn("h-5 px-3 text-primary-foreground border-none text-[12px]", getLabelColor(nextLevel))}>LVL {nextLevel}</Badge>
             </span>
           </div>
         </div>

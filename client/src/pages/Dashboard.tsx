@@ -95,7 +95,11 @@ export default function Dashboard() {
   const reputationScore = user?.reputationScore || 0;
   const level = Math.floor(reputationScore / 100) + 1;
   const progress = reputationScore % 100;
-  const rankIndex = Array.isArray(leaderboard) ? leaderboard.findIndex((u: any) => u.walletAddress === walletAddress) : -1;
+  const rankIndex = Array.isArray(leaderboard) 
+    ? [...leaderboard]
+        .sort((a, b) => (Number(b.reputationScore) || 0) - (Number(a.reputationScore) || 0))
+        .findIndex((u: any) => u.walletAddress === walletAddress) 
+    : -1;
   const rank = rankIndex !== -1 ? rankIndex + 1 : (stats?.totalUsers || 100);
   const rankChange = tasksCompleted > 0 ? "up" : "stable";
 
