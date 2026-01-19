@@ -109,8 +109,6 @@ export default function Landing() {
         <Navigation />
       </div>
 
-      <LiveActivityFeed />
-
       <div className="overflow-hidden">
         {/* Hero Section */}
         <section className="relative pt-20 pb-20 overflow-hidden">
@@ -200,6 +198,8 @@ export default function Landing() {
             </motion.div>
           </div>
         </section>
+
+        <LiveActivityFeed />
 
         {/* Featured Campaigns Section - MOVED UP AS REQUESTED */}
         <section className="py-24 border-y border-white/5 bg-black/20" data-testid="section-active-campaigns">
