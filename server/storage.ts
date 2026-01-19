@@ -248,7 +248,16 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getPendingRewards(userId: number): Promise<any[]> {
-    const pending = await db.select({ campaignId: executions.campaignId, rewardAmount: actions.rewardAmount, tokenName: campaigns.tokenName, tokenAddress: campaigns.tokenAddress }).from(executions).innerJoin(actions, eq(executions.actionId, actions.id)).innerJoin(campaigns, eq(executions.campaignId, campaigns.id)).where(sql`${executions.userId} = ${userId} AND ${executions.status} = 'verified' AND ${executions.withdrawn} = false`);
+    const pending = await db.select({ 
+      campaignId: executions.campaignId, 
+      rewardAmount: actions.rewardAmount, 
+      tokenName: campaigns.tokenName, 
+      tokenAddress: campaigns.tokenAddress 
+    }).from(executions)
+      .innerJoin(actions, eq(executions.actionId, actions.id))
+      .innerJoin(campaigns, eq(executions.campaignId, campaigns.id))
+      .where(sql`${executions.userId} = ${userId} AND ${executions.status} = 'verified' AND ${executions.withdrawn} = false`);
+    
     const grouped = pending.reduce((acc, curr) => {
       const key = curr.campaignId;
       if (!acc[key]) acc[key] = { campaignId: curr.campaignId, amount: "0", tokenName: curr.tokenName, tokenAddress: curr.tokenAddress };
@@ -282,7 +291,16 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getExecutionsByCampaign(campaignId: number): Promise<any[]> {
-    return await db.select({ id: executions.id, campaignId: executions.campaignId, userId: executions.userId, actionId: executions.actionId, status: executions.status, createdAt: executions.createdAt, transactionSignature: executions.transactionSignature, user: { walletAddress: users.walletAddress } }).from(executions).innerJoin(users, eq(executions.userId, users.id)).where(eq(executions.campaignId, campaignId)).orderBy(desc(executions.createdAt));
+    return await db.select({ 
+      id: executions.id, 
+      campaignId: executions.campaignId, 
+      userId: executions.userId, 
+      actionId: executions.actionId, 
+      status: executions.status, 
+      createdAt: executions.createdAt, 
+      transactionSignature: executions.transactionSignature, 
+      user: { walletAddress: users.walletAddress } 
+    }).from(executions).innerJoin(users, eq(executions.userId, users.id)).where(eq(executions.campaignId, campaignId)).orderBy(desc(executions.createdAt));
   }
 
   async getAllUsers(): Promise<User[]> {
@@ -294,7 +312,16 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getAllExecutions(): Promise<any[]> {
-    const results = await db.select({ execution: executions, user: users, campaign: campaigns, action: actions }).from(executions).innerJoin(users, eq(executions.userId, users.id)).innerJoin(campaigns, eq(executions.campaignId, campaigns.id)).innerJoin(actions, eq(executions.actionId, actions.id)).orderBy(desc(executions.createdAt));
+    const results = await db.select({ 
+      execution: executions, 
+      user: users, 
+      campaign: campaigns, 
+      action: actions 
+    }).from(executions)
+      .innerJoin(users, eq(executions.userId, users.id))
+      .innerJoin(campaigns, eq(executions.campaignId, campaigns.id))
+      .innerJoin(actions, eq(executions.actionId, actions.id))
+      .orderBy(desc(executions.createdAt));
     return results.map(r => ({ ...r.execution, user: r.user, campaign: r.campaign, action: r.action }));
   }
 

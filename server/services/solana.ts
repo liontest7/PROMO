@@ -38,14 +38,15 @@ export async function transferTokens(
   if (tokenAddress === "So11111111111111111111111111111111111111112") {
     // Native SOL transfer
     const balance = await connection.getBalance(fromKeypair.publicKey);
-    if (balance < Math.round(amount * 1e9) + 5000) {
+    const lamportsToSend = BigInt(Math.round(amount * 1e9));
+    if (BigInt(balance) < lamportsToSend + BigInt(5000)) {
       throw new Error("System wallet SOL balance too low for transfer and fees");
     }
     const transaction = new Transaction().add(
       SystemProgram.transfer({
         fromPubkey: fromKeypair.publicKey,
         toPubkey: toPublicKey,
-        lamports: Math.round(amount * 1e9),
+        lamports: Number(lamportsToSend),
       })
     );
     const { blockhash } = await connection.getLatestBlockhash('confirmed');

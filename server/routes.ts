@@ -115,8 +115,8 @@ export async function registerRoutes(
       const totalVerifiedProjects = Array.from(new Set(allCampaigns.map(c => c.creatorId))).length;
       
       // Calculate total rewards and burned amount using optimized logic
-      const executions = await storage.getAllExecutions();
-      const totalPaid = executions
+      const executionsData = await storage.getAllExecutions();
+      const totalPaid = executionsData
         .filter(e => e.status === 'paid')
         .reduce((sum, e) => sum + (parseFloat(e.action.rewardAmount) || 0), 0);
 
@@ -180,9 +180,9 @@ export async function registerRoutes(
       const user = await storage.getUserByWallet(req.body.wallet);
       if (!user) return res.status(404).json({ message: "User not found" });
       
-      const pending = await storage.getPendingRewards(user.id);
+      const pendingRewards = await storage.getPendingRewards(user.id);
       const campaignIds = req.body.campaignIds;
-      const filteredPending = pending.filter(r => campaignIds.includes(r.campaignId));
+      const filteredPending = pendingRewards.filter(r => campaignIds.includes(r.campaignId));
       
       if (filteredPending.length === 0) {
         return res.status(400).json({ message: "No pending rewards to claim for selected campaigns" });
