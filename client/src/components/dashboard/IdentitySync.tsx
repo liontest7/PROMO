@@ -212,7 +212,10 @@ export const IdentitySync = ({ user, walletAddress }: IdentitySyncProps) => {
         ) : (
           <div className="p-4 rounded-xl bg-[#0088cc]/10 border border-[#0088cc]/20 flex items-center gap-4 relative overflow-hidden group shadow-lg">
             <div className="h-12 w-12 rounded-full bg-[#0088cc]/20 flex items-center justify-center border-2 border-background shadow-[0_0_20px_rgba(0,136,204,0.2)] relative z-10">
-              <Send className="w-6 h-6 text-[#0088cc] fill-[#0088cc]/20" />
+              <Avatar className="h-full w-full">
+                <AvatarImage src={user?.profileImageUrl || ""} className="object-cover" />
+                <AvatarFallback className="bg-[#0088cc]/20"><Send className="w-6 h-6 text-[#0088cc]" /></AvatarFallback>
+              </Avatar>
             </div>
             <div className="flex-1 relative z-10">
               <div className="flex items-center gap-2">

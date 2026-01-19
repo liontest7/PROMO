@@ -97,7 +97,16 @@ export default function Dashboard() {
   const reputationScore = user?.reputationScore || 0;
   const level = Math.floor(reputationScore / 100) + 1;
   const progress = reputationScore % 100;
-  const rank = Math.max(1, (stats as any)?.totalUsers || 100) - reputationScore;
+  const { data: leaderboard } = useQuery({
+    queryKey: ["/api/leaderboard"],
+    queryFn: async () => {
+      const res = await fetch("/api/leaderboard");
+      if (!res.ok) throw new Error("Failed to fetch leaderboard");
+      return res.json();
+    }
+  });
+
+  const rank = leaderboard?.findIndex((u: any) => u.walletAddress === walletAddress) + 1 || stats?.totalUsers || 100;
   const rankChange = tasksCompleted > 0 ? "up" : "stable";
 
   return (

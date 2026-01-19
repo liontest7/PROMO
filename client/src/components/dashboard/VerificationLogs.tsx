@@ -51,8 +51,9 @@ export const VerificationLogs = ({ executions }: VerificationLogsProps) => (
             ))}
           </div>
         ) : (
-          <div className="p-16 text-center">
-            <p className="text-lg font-black font-display uppercase tracking-[0.3em] text-white/10 italic">Protocol Inactivity Detected</p>
+          <div className="p-16 text-center space-y-2">
+            <p className="text-xl font-black font-display uppercase tracking-[0.3em] text-white italic">Protocol Inactivity Detected</p>
+            <p className="text-xs font-black uppercase tracking-widest text-white/40 italic">System verification logs are currently empty</p>
           </div>
         )}
       </CardContent>
