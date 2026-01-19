@@ -37,7 +37,8 @@ export function LiveActivityFeed() {
     queryFn: async () => {
       const res = await fetch("/api/public/executions?limit=12");
       if (!res.ok) throw new Error("Failed to fetch executions");
-      return res.json();
+      const data = await res.json();
+      return Array.isArray(data) ? data : [];
     },
     refetchInterval: 5000,
   });

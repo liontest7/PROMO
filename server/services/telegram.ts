@@ -1,16 +1,13 @@
 import { storage } from "../storage";
 
-// Telegram Bot Service Placeholder
-// In a real production environment, this would use a library like 'telegraf' or 'node-telegram-bot-api'
-// to communicate with the Telegram Bot API and verify user actions.
+// Telegram Bot Service
+// To implement real verification, we would need a Telegram Bot Token
+// and use a library like 'telegraf' or 'node-telegram-bot-api'.
 
 export async function verifyTelegramMembership(telegramHandle: string, groupId: string): Promise<boolean> {
   try {
-    console.log(`[Telegram Service] Verifying membership for @${telegramHandle} in group ${groupId}`);
-    
-    // This is a simulation of a bot API call.
-    // In a real scenario, you'd check if the user is a member of the group.
-    // We'll return true for simulation purposes if a handle is provided.
+    const handle = telegramHandle.startsWith('@') ? telegramHandle.substring(1) : telegramHandle;
+    console.log(`[Telegram Service] Verifying membership for @${handle} in group ${groupId}`);
     
     const settings = await storage.getSystemSettings();
     if (!settings || !settings.socialEngagementEnabled) {
@@ -18,7 +15,12 @@ export async function verifyTelegramMembership(telegramHandle: string, groupId: 
       return false;
     }
 
-    return telegramHandle.length > 0;
+    // For now, we simulate success if the handle is valid and long enough.
+    // Real implementation would call: 
+    // https://api.telegram.org/bot<token>/getChatMember?chat_id=@<groupId>&user_id=<userId>
+    // This requires the user's numeric Telegram ID, not just handle.
+    
+    return handle.length >= 3;
   } catch (error) {
     console.error("[Telegram Service] Verification error:", error);
     return false;
