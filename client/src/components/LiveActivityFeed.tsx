@@ -22,7 +22,7 @@ interface Activity {
     id: number;
     tokenName: string;
     tokenAddress: string;
-    tokenImageUrl?: string;
+    logoUrl?: string; // Correct property name from schema
   };
   status: string;
   transactionSignature?: string;
@@ -121,7 +121,13 @@ export function LiveActivityFeed() {
 
                 <div className={`flex-1 flex items-center ${viewMode === "grid" ? "flex-col mb-6" : "gap-6"}`}>
                   <div className={`flex items-center gap-3 ${viewMode === "grid" ? "mb-2" : ""}`}>
-                    <img src={activity.campaign.tokenImageUrl} alt="" className="w-6 h-6 rounded-lg object-contain" />
+                    {activity.campaign.logoUrl ? (
+                      <img src={activity.campaign.logoUrl} alt="" className="w-6 h-6 rounded-lg object-contain" />
+                    ) : (
+                      <div className="w-6 h-6 rounded-lg bg-primary/20 flex items-center justify-center text-[8px] font-black text-primary uppercase">
+                        {activity.campaign.tokenName.slice(0, 2)}
+                      </div>
+                    )}
                     <div className="flex flex-col items-start">
                       <span className="text-[9px] font-black text-white/20 uppercase tracking-widest leading-none">Campaign</span>
                       <span className="text-[13px] font-black text-white uppercase italic">{activity.campaign.tokenName}</span>

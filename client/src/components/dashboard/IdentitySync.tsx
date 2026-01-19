@@ -107,7 +107,7 @@ export const IdentitySync = ({ user, walletAddress }: IdentitySyncProps) => {
   const handleTGConnect = () => {
     // Open Telegram Bot with Deep Link
     // Format: t.me/bot_username?start=connect_<walletAddress>
-    const botUsername = "DropySentinelBot"; // User should replace this with their actual bot username
+    const botUsername = "Dropy_VerifyBot"; // Updated to match user's actual bot
     const deepLink = `https://t.me/${botUsername}?start=connect_${walletAddress}`;
     window.open(deepLink, '_blank');
     
