@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Plus, Trash2, Globe, Twitter, Send, Coins, Zap, Timer, CheckCircle2, ChevronDown, ChevronUp, MessageSquare, Repeat } from "lucide-react";
+import { Plus, Trash2, Globe, Twitter, Send, Coins, Zap, Timer, CheckCircle2, ChevronDown, ChevronUp, MessageSquare, Repeat, Sparkles } from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -18,6 +18,8 @@ import {
 } from "@/components/ui/select";
 import { UseFormReturn, useFieldArray } from "react-hook-form";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { Switch } from "@/components/ui/switch";
+import { Badge } from "@/components/ui/badge";
 
 interface EngagementActionsProps {
   form: UseFormReturn<any>;
@@ -65,6 +67,7 @@ export function EngagementActions({ form, gasFeeSol }: EngagementActionsProps) {
   const isEngagement = watchedType === "engagement";
   const tokenName = form.watch("tokenName");
   const totalBudget = form.watch("totalBudget");
+  const isPremium = form.watch("isPremium");
 
   const getActionDefaultTitle = (type: string) => {
     switch (type) {
@@ -89,6 +92,8 @@ export function EngagementActions({ form, gasFeeSol }: EngagementActionsProps) {
       default: return <Zap className="h-4 w-4 text-primary" />;
     }
   };
+
+  const totalFee = 0.5 + (isPremium ? 0.1 : 0);
 
   return (
     <div className="flex flex-col h-full overflow-hidden relative">
@@ -363,6 +368,46 @@ export function EngagementActions({ form, gasFeeSol }: EngagementActionsProps) {
       </div>
 
       <div className="mt-auto pt-6 space-y-4 border-t border-white/10">
+        <div className="p-4 rounded-2xl border border-primary/20 bg-primary/5 space-y-4 mb-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <Zap className="w-5 h-5 text-yellow-500 fill-yellow-500" />
+              <div>
+                <h4 className="font-semibold text-white text-sm uppercase tracking-tight">Premium Promotion</h4>
+                <p className="text-[10px] text-muted-foreground italic uppercase">Boost visibility on X & Telegram</p>
+              </div>
+            </div>
+            <FormField
+              control={form.control}
+              name="isPremium"
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <Switch
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                      data-testid="switch-premium"
+                    />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+          </div>
+
+          {isPremium && (
+            <div className="grid grid-cols-2 gap-2 pt-1 animate-in zoom-in-95 duration-300">
+              <div className="flex items-center gap-2 p-2 rounded-lg bg-background/50 border border-primary/10">
+                <Sparkles className="w-3 h-3 text-primary" />
+                <span className="text-[9px] font-bold text-white uppercase">TG Push</span>
+              </div>
+              <div className="flex items-center gap-2 p-2 rounded-lg bg-background/50 border border-primary/10">
+                <Sparkles className="w-3 h-3 text-primary" />
+                <span className="text-[9px] font-bold text-white uppercase">X Featured</span>
+              </div>
+            </div>
+          )}
+        </div>
+
         <div className="space-y-3">
           <div className="flex justify-between items-center group/item">
             <div className="space-y-0.5">
@@ -379,19 +424,19 @@ export function EngagementActions({ form, gasFeeSol }: EngagementActionsProps) {
           
           <div className="grid grid-cols-2 gap-3 text-[11px] font-black uppercase tracking-widest">
             <div className="flex justify-between items-center px-3 py-2.5 bg-white/5 rounded-lg border border-white/10">
-              <span className="text-white">Fee</span>
+              <span className="text-white">Base Fee</span>
               <span className="text-white font-mono font-black">0.50 SOL</span>
             </div>
             <div className="flex justify-between items-center px-3 py-2.5 bg-white/5 rounded-lg border border-white/10">
-              <span className="text-white">Gas</span>
-              <span className="text-white font-mono font-black">{gasFeeSol} SOL</span>
+              <span className="text-white">Premium</span>
+              <span className="text-white font-mono font-black">{isPremium ? "0.10" : "0.00"} SOL</span>
             </div>
           </div>
 
           <div className="flex justify-between items-center bg-primary/10 px-4 py-4 rounded-xl border border-primary/30">
             <span className="text-sm font-black text-primary uppercase tracking-[0.3em]">Total Settlement</span>
             <div className="flex items-baseline gap-1">
-              <span className="font-mono font-black text-primary text-2xl tracking-tighter">{(0.5 + gasFeeSol).toFixed(4)}</span>
+              <span className="font-mono font-black text-primary text-2xl tracking-tighter">{(totalFee + gasFeeSol).toFixed(4)}</span>
               <span className="text-[11px] font-black text-primary/60 uppercase">SOL</span>
             </div>
           </div>

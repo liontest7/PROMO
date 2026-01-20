@@ -4,21 +4,15 @@ import {
   FormLabel,
   FormControl,
   FormMessage,
-  FormDescription,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { UseFormReturn } from "react-hook-form";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Rocket, Coins, Zap, Sparkles } from "lucide-react";
+import { Rocket, Coins } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
-import { Switch } from "@/components/ui/switch";
-import { Badge } from "@/components/ui/badge";
 
 export function BasicSettings({ form, fetchTokenMetadata, onBack }: { form: any, fetchTokenMetadata: any, onBack?: () => void }) {
-  const tokenName = form.watch("tokenName");
-  const isPremium = form.watch("isPremium");
-  
   const { data: settings } = useQuery<any>({ 
     queryKey: ["/api/public/settings"], 
     staleTime: 0,
@@ -73,56 +67,6 @@ export function BasicSettings({ form, fetchTokenMetadata, onBack }: { form: any,
             )}
           />
         </div>
-      </div>
-
-      <div className="p-4 rounded-2xl border border-primary/20 bg-primary/5 space-y-4">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <Zap className="w-5 h-5 text-yellow-500 fill-yellow-500" />
-            <div>
-              <h4 className="font-semibold text-white">Premium Promotion</h4>
-              <p className="text-xs text-muted-foreground italic">Boost visibility on X & Telegram</p>
-            </div>
-          </div>
-          <FormField
-            control={form.control}
-            name="isPremium"
-            render={({ field }) => (
-              <FormItem>
-                <FormControl>
-                  <Switch
-                    checked={field.value}
-                    onCheckedChange={field.onChange}
-                    data-testid="switch-premium"
-                  />
-                </FormControl>
-              </FormItem>
-            )}
-          />
-        </div>
-
-        {isPremium && (
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2 animate-in zoom-in-95 duration-300">
-            <div className="flex items-start gap-3 p-3 rounded-lg bg-background/50 border border-primary/10">
-              <Sparkles className="w-4 h-4 text-primary mt-1" />
-              <div>
-                <p className="text-sm font-bold text-white uppercase tracking-tight">Telegram Push</p>
-                <p className="text-[10px] text-muted-foreground italic">Broadcast to all bot users</p>
-              </div>
-            </div>
-            <div className="flex items-start gap-3 p-3 rounded-lg bg-background/50 border border-primary/10">
-              <Sparkles className="w-4 h-4 text-primary mt-1" />
-              <div>
-                <p className="text-sm font-bold text-white uppercase tracking-tight">X (Twitter) Post</p>
-                <p className="text-[10px] text-muted-foreground italic">Featured on @Dropy_ai</p>
-              </div>
-            </div>
-            <div className="col-span-full flex items-center justify-between p-2 bg-primary/10 rounded-md border border-primary/20">
-              <span className="text-xs font-black text-primary uppercase">Extra Fee: 0.1 SOL</span>
-              <Badge variant="outline" className="text-[9px] h-5 font-black uppercase border-primary/50 text-primary bg-primary/20">Premium Active</Badge>
-            </div>
-          </div>
-        )}
       </div>
 
       <FormField
