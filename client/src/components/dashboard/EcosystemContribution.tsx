@@ -32,11 +32,11 @@ export function EcosystemContribution({ reputationScore, level, progress }: Ecos
   const nextLabel = getLevelLabel(nextLevel);
 
   return (
-    <Card className="glass-card border border-primary/30 bg-primary/5 rounded-[2rem] overflow-visible relative group p-0.5 shadow-xl lg:max-w-md ml-auto">
+    <Card className="glass-card border border-primary/30 bg-primary/5 rounded-[2rem] overflow-visible relative group p-0.5 shadow-xl w-full">
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(34,197,94,0.3),transparent_70%)] opacity-70 rounded-[2rem]" />
-      <CardHeader className="relative z-10 p-6 pb-2">
+      <CardHeader className="relative z-10 p-5 pb-1">
         <div className="flex items-center justify-between gap-3">
-          <CardTitle className="text-2xl font-black font-display uppercase leading-none italic tracking-tighter text-white">Reputation <span className="text-primary drop-shadow-[0_0_10px_rgba(34,197,94,0.4)]">PROTOCOL</span></CardTitle>
+          <CardTitle className="text-xl font-black font-display uppercase leading-none italic tracking-tighter text-white">Reputation <span className="text-primary drop-shadow-[0_0_10px_rgba(34,197,94,0.4)]">PROTOCOL</span></CardTitle>
           <TooltipProvider delayDuration={0}>
             <Tooltip>
               <TooltipTrigger asChild>
@@ -71,13 +71,13 @@ export function EcosystemContribution({ reputationScore, level, progress }: Ecos
           </TooltipProvider>
         </div>
       </CardHeader>
-      <CardContent className="relative z-10 p-6 pt-0 space-y-6">
+      <CardContent className="relative z-10 p-5 pt-0 space-y-4">
         <div className="flex items-baseline gap-2">
-          <span className="text-[4rem] font-black font-display text-primary tracking-tighter leading-none drop-shadow-[0_0_15px_rgba(34,197,94,0.5)]">{reputationScore}</span>
-          <span className="text-lg font-black text-primary/60 uppercase italic tracking-widest">Score</span>
+          <span className="text-[3.5rem] font-black font-display text-primary tracking-tighter leading-none drop-shadow-[0_0_15px_rgba(34,197,94,0.5)]">{reputationScore}</span>
+          <span className="text-base font-black text-primary/60 uppercase italic tracking-widest">Score</span>
         </div>
         
-        <div className="space-y-4">
+        <div className="space-y-3">
           <div className="flex flex-col gap-1">
             <div className="flex justify-between items-center w-full gap-4">
               <span className="text-[13px] font-black text-white uppercase tracking-widest whitespace-nowrap shrink-0">Reputation</span>
@@ -87,7 +87,7 @@ export function EcosystemContribution({ reputationScore, level, progress }: Ecos
               </div>
             </div>
           </div>
-          <div className="w-full h-8 rounded-full bg-black/90 overflow-hidden p-1.5 border border-white/10 shadow-inner relative">
+          <div className="w-full h-7 rounded-full bg-black/90 overflow-hidden p-1 border border-white/10 shadow-inner relative">
             <div 
               className="h-full bg-primary shadow-[0_0_20px_rgba(34,197,94,0.8)] rounded-full transition-all duration-1000 relative overflow-hidden" 
               style={{ width: `${progress}%` }}
@@ -95,12 +95,12 @@ export function EcosystemContribution({ reputationScore, level, progress }: Ecos
               <div className="absolute inset-0 bg-[linear-gradient(90deg,transparent_0%,rgba(255,255,255,0.4)_50%,transparent_100%)] animate-shimmer" />
             </div>
             <div className="absolute inset-0 flex items-center justify-center">
-              <span className="text-[12px] font-black text-white uppercase tracking-[0.2em] drop-shadow-md">
+              <span className="text-[11px] font-black text-white uppercase tracking-[0.2em] drop-shadow-md">
                 {reputationScore % 100} / 100 XP
               </span>
             </div>
           </div>
-          <div className="flex justify-between items-center text-[12px] font-black uppercase tracking-widest text-white">
+          <div className="flex justify-between items-center text-[11px] font-black uppercase tracking-widest text-white">
             <span className="flex items-center gap-2 bg-white/5 px-2 py-1 rounded-md border border-white/10">
               <Badge className={cn("h-5 px-3 text-[12px] border-none", getLabelColor(prevLevel))}>LVL {prevLevel}</Badge> 
               {prevLabel}

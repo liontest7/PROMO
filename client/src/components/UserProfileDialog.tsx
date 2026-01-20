@@ -48,36 +48,38 @@ export function UserProfileDialog({ walletAddress, isOpen, onOpenChange }: UserP
 
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-4xl max-h-[95vh] p-0 border-white/10 bg-[#050505] overflow-hidden rounded-[2.5rem] shadow-[0_0_100px_rgba(0,0,0,0.8)]">
-        <DialogHeader className="p-8 border-b border-white/5 flex flex-row items-center justify-between">
-          <DialogTitle className="text-3xl font-black italic uppercase tracking-tighter text-white">
+      <DialogContent className="max-w-5xl max-h-[98vh] p-0 border-white/10 bg-[#050505] overflow-hidden rounded-[2.5rem] shadow-[0_0_100px_rgba(0,0,0,0.8)]">
+        <DialogHeader className="p-4 border-b border-white/5 flex flex-row items-center justify-between shrink-0">
+          <DialogTitle className="text-xl font-black italic uppercase tracking-tighter text-white">
             USER <span className="text-primary">PROFILE</span>
           </DialogTitle>
         </DialogHeader>
         
-        <div className="p-8 space-y-8 pb-12 overflow-visible">
+        <div className="p-4 space-y-3 pb-6 overflow-visible flex flex-col h-full">
           {isLoading ? (
-            <div className="space-y-6">
-              <Skeleton className="h-48 w-full bg-white/5 rounded-[2.5rem]" />
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <Skeleton className="h-64 bg-white/5 rounded-3xl" />
-                <Skeleton className="h-64 bg-white/5 rounded-3xl" />
+            <div className="space-y-3">
+              <Skeleton className="h-32 w-full bg-white/5 rounded-[2rem]" />
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <Skeleton className="h-52 bg-white/5 rounded-3xl" />
+                <Skeleton className="h-52 bg-white/5 rounded-3xl" />
               </div>
             </div>
           ) : walletAddress && user ? (
             <>
-              <ProfileHeader 
-                walletAddress={walletAddress}
-                username={user.username || undefined}
-                avatarUrl={user.profileImageUrl || undefined}
-                level={Math.floor((user.reputationScore || 0) / 100) + 1}
-                reputationScore={user.reputationScore || 0}
-                rank={rank}
-                rankChange="stable"
-                isPublicView={true}
-              />
+              <div className="shrink-0">
+                <ProfileHeader 
+                  walletAddress={walletAddress}
+                  username={user.username || undefined}
+                  avatarUrl={user.profileImageUrl || undefined}
+                  level={Math.floor((user.reputationScore || 0) / 100) + 1}
+                  reputationScore={user.reputationScore || 0}
+                  rank={rank}
+                  rankChange="stable"
+                  isPublicView={true}
+                />
+              </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 items-stretch flex-1">
                 <TokenPortfolios tokenBalances={stats?.tokenBalances || []} />
                 <EcosystemContribution 
                   reputationScore={user.reputationScore || 0}
