@@ -85,8 +85,15 @@ export function setupCampaignRoutes(app: Express) {
 
       const campaign = await storage.createCampaign({
         ...campaignData,
+        isPremium: req.body.isPremium === true,
         gasBudgetSol: gasBudgetSol.toString()
       } as any);
+
+      // Trigger premium broadcast if applicable
+      if (req.body.isPremium === true) {
+        const { broadcastPremiumCampaign } = await import("../services/telegram");
+        broadcastPremiumCampaign(campaign).catch(console.error);
+      }
 
       // Create actions
       if (actionsData.length > 0) {

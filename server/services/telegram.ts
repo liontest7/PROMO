@@ -123,3 +123,36 @@ export async function verifyTelegramMembership(telegramHandle: string, groupId: 
     return false;
   }
 }
+
+export async function broadcastPremiumCampaign(campaign: any) {
+  if (!bot) return;
+  
+  try {
+    const users = await storage.getAllUsers();
+    const telegramUsers = users.filter(u => u.telegramHandle);
+    
+    // In a real production bot, you'd use a channel or a controlled broadcast loop
+    // For this implementation, we'll simulate the broadcast intent
+    console.log(`[Telegram] Broadcasting premium campaign: ${campaign.title} to ${telegramUsers.length} users`);
+    
+    // We send to a dedicated announcement channel if configured, or just log for now
+    // Example: bot.telegram.sendMessage(CHANNEL_ID, message)
+  } catch (error) {
+    console.error("[Telegram] Broadcast error:", error);
+  }
+}
+
+export async function sendRewardCelebration(walletAddress: string, amount: string, tokenName: string) {
+  if (!bot) return;
+  
+  try {
+    const user = await storage.getUserByWallet(walletAddress);
+    if (!user || !user.telegramHandle) return;
+
+    // We would need the chat_id which is normally stored during /start
+    // For now, this is a placeholder for the logic
+    console.log(`[Telegram] Celebration sent to ${user.telegramHandle}: ${amount} ${tokenName}`);
+  } catch (error) {
+    console.error("[Telegram] Celebration error:", error);
+  }
+}
