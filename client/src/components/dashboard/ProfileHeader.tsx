@@ -188,20 +188,20 @@ export function ProfileHeader({
       
       <div className="relative z-10 grid grid-cols-2 gap-3 lg:min-w-[300px]">
         <div className="flex flex-col p-4 rounded-[1.5rem] bg-black/40 border border-white/10 hover:border-primary/50 transition-all group/card shadow-lg backdrop-blur-md">
-          <span className="text-[11px] font-black text-white/60 uppercase tracking-[0.2em] mb-1 whitespace-nowrap">Reputation</span>
+          <span className="text-[12px] font-black text-white uppercase tracking-[0.2em] mb-1 whitespace-nowrap">Reputation</span>
           <div className="flex items-center gap-2">
-            <span className="text-3xl font-black font-display text-primary drop-shadow-[0_0_10px_rgba(34,197,94,0.3)]">{reputationScore}</span>
-            <Trophy className="w-4 h-4 text-primary opacity-50 group-hover/card:opacity-100 transition-opacity" />
+            <span className="text-4xl font-black font-display text-primary drop-shadow-[0_0_10px_rgba(34,197,94,0.3)]">{reputationScore}</span>
+            <Trophy className="w-5 h-5 text-primary opacity-50 group-hover/card:opacity-100 transition-opacity" />
           </div>
         </div>
         <div className="flex flex-col p-4 rounded-[1.5rem] bg-black/40 border border-white/10 hover:border-primary/50 transition-all group/card shadow-lg backdrop-blur-md">
           <div className="flex justify-between items-start mb-1">
-            <span className="text-[11px] font-black text-white/60 uppercase tracking-[0.2em] whitespace-nowrap">Week Rank</span>
+            <span className="text-[12px] font-black text-white uppercase tracking-[0.2em] whitespace-nowrap">Week Rank</span>
             {rankChange === "up" && <ArrowUpRight className="w-4 h-4 text-primary animate-bounce-slow" />}
           </div>
           <div className="flex items-center gap-2">
-            <span className="text-3xl font-black font-display text-white">#{rank}</span>
-            {rankChange === "up" && <span className="text-[10px] font-black text-primary font-display border border-primary/30 bg-primary/20 px-1.5 rounded-md">+3</span>}
+            <span className="text-4xl font-black font-display text-white">#{rank}</span>
+            {rankChange === "up" && <span className="text-[11px] font-black text-primary font-display border border-primary/30 bg-primary/20 px-1.5 rounded-md">+3</span>}
           </div>
         </div>
       </div>

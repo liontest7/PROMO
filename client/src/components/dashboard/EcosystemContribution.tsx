@@ -45,21 +45,21 @@ export function EcosystemContribution({ reputationScore, level, progress }: Ecos
                 </Button>
               </TooltipTrigger>
               <TooltipContent 
-                side="left" 
-                align="start"
+                side="top" 
+                align="end"
                 sideOffset={15}
-                className="border border-white/20 bg-black text-white p-4 rounded-xl shadow-[0_20px_50px_rgba(0,0,0,1)] w-64 z-[99999] backdrop-blur-3xl"
+                className="border border-white/20 bg-black text-white p-5 rounded-xl shadow-[0_20px_50px_rgba(0,0,0,1)] w-72 z-[99999] backdrop-blur-3xl"
               >
-                <div className="space-y-3">
-                  <p className="text-xs font-black uppercase tracking-widest text-primary border-b border-primary/20 pb-2">{getLevelLabel(level)} Tier Benefits</p>
-                  <ul className="space-y-2">
+                <div className="space-y-4">
+                  <p className="text-sm font-black uppercase tracking-widest text-primary border-b border-primary/20 pb-2">{getLevelLabel(level)} Tier Benefits</p>
+                  <ul className="space-y-3">
                     {[
                       "Priority Action Verification",
                       "Exclusive Ecosystem Airdrops",
                       "High-Yield Project Access",
                       "Governance Voting Multipliers"
                     ].map((benefit, i) => (
-                      <li key={i} className="flex items-start gap-3 text-[10px] font-black text-white uppercase tracking-widest leading-tight">
+                      <li key={i} className="flex items-start gap-3 text-[11px] font-black text-white uppercase tracking-widest leading-tight">
                         <div className="w-1.5 h-1.5 rounded-full bg-primary mt-0.5 shrink-0" />
                         {benefit}
                       </li>
@@ -80,12 +80,12 @@ export function EcosystemContribution({ reputationScore, level, progress }: Ecos
         <div className="space-y-3">
           <div className="flex flex-col gap-1">
             <div className="flex justify-between items-center w-full gap-4">
-              <span className="text-[13px] font-black text-white uppercase tracking-widest whitespace-nowrap shrink-0">Reputation</span>
-              <div className="flex items-center gap-3 shrink-0">
-                <span className="text-[11px] font-black text-primary uppercase tracking-widest whitespace-nowrap">{100 - (reputationScore % 100)} XP TO LEVEL UP</span>
-                <span className="text-xl font-black font-display text-primary italic tracking-tight drop-shadow-md">{progress}%</span>
-              </div>
+            <span className="text-[14px] font-black text-white uppercase tracking-widest whitespace-nowrap shrink-0">Reputation</span>
+            <div className="flex items-center gap-3 shrink-0">
+              <span className="text-[12px] font-black text-primary uppercase tracking-widest whitespace-nowrap">{100 - (reputationScore % 100)} XP TO LEVEL UP</span>
+              <span className="text-2xl font-black font-display text-primary italic tracking-tight drop-shadow-md">{progress}%</span>
             </div>
+          </div>
           </div>
           <div className="w-full h-7 rounded-full bg-black/90 overflow-hidden p-1 border border-white/10 shadow-inner relative">
             <div 
