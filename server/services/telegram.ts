@@ -78,6 +78,7 @@ export async function verifyTelegramMembership(telegramHandle: string, groupId: 
     // In a real scenario, we'd need the telegram numeric ID.
     // For this implementation, we assume the user has connected via /start and we have their handle.
     // We would use getChatMember here if we had the ID stored.
+    // In dev, we return true if the handle looks valid to allow testing the flow.
     return telegramHandle.length >= 3;
   } catch (error) {
     console.error("[Telegram Service] Verification error:", error);

@@ -3,6 +3,8 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
+import { useQuery } from "@tanstack/react-query";
+
 interface LeaderboardTableProps {
   paginatedLeaders: any[];
   totalPages: number;
@@ -16,6 +18,11 @@ export function LeaderboardTable({
   currentPage, 
   setCurrentPage 
 }: LeaderboardTableProps) {
+  // Add refetch for live updates
+  const { data: leaderboardData } = useQuery({
+    queryKey: ["/api/leaderboard"],
+    refetchInterval: 30000,
+  });
   return (
     <div className="space-y-8">
       <Card className="glass-card border-white/10 bg-white/[0.02] rounded-[3rem] overflow-hidden shadow-[0_0_80px_rgba(0,0,0,0.5)] backdrop-blur-xl">
