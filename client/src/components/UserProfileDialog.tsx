@@ -48,50 +48,48 @@ export function UserProfileDialog({ walletAddress, isOpen, onOpenChange }: UserP
 
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-2xl max-h-[85vh] p-0 border-white/10 bg-[#050505] overflow-hidden rounded-[2.5rem] shadow-[0_0_100px_rgba(0,0,0,0.8)]">
-        <DialogHeader className="p-4 border-b border-white/5 flex flex-row items-center justify-between">
-          <DialogTitle className="text-lg font-black italic uppercase tracking-tighter text-white">
+      <DialogContent className="max-w-4xl max-h-[95vh] p-0 border-white/10 bg-[#050505] overflow-hidden rounded-[2.5rem] shadow-[0_0_100px_rgba(0,0,0,0.8)]">
+        <DialogHeader className="p-8 border-b border-white/5 flex flex-row items-center justify-between">
+          <DialogTitle className="text-3xl font-black italic uppercase tracking-tighter text-white">
             USER <span className="text-primary">PROFILE</span>
           </DialogTitle>
         </DialogHeader>
         
-        <ScrollArea className="h-full max-h-[calc(85vh-60px)]">
-          <div className="p-4 space-y-4 pb-6">
-            {isLoading ? (
-              <div className="space-y-4">
-                <Skeleton className="h-32 w-full bg-white/5 rounded-[1.5rem]" />
-                <div className="grid grid-cols-1 gap-4">
-                  <Skeleton className="h-40 bg-white/5 rounded-2xl" />
-                  <Skeleton className="h-40 bg-white/5 rounded-2xl" />
-                </div>
+        <div className="p-8 space-y-8 pb-12 overflow-visible">
+          {isLoading ? (
+            <div className="space-y-6">
+              <Skeleton className="h-48 w-full bg-white/5 rounded-[2.5rem]" />
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <Skeleton className="h-64 bg-white/5 rounded-3xl" />
+                <Skeleton className="h-64 bg-white/5 rounded-3xl" />
               </div>
-            ) : walletAddress && user ? (
-              <>
-                <ProfileHeader 
-                  walletAddress={walletAddress}
-                  username={user.username || undefined}
-                  avatarUrl={user.profileImageUrl || undefined}
-                  level={Math.floor((user.reputationScore || 0) / 100) + 1}
-                  reputationScore={user.reputationScore || 0}
-                  rank={rank}
-                  rankChange="stable"
-                  isPublicView={true}
-                />
+            </div>
+          ) : walletAddress && user ? (
+            <>
+              <ProfileHeader 
+                walletAddress={walletAddress}
+                username={user.username || undefined}
+                avatarUrl={user.profileImageUrl || undefined}
+                level={Math.floor((user.reputationScore || 0) / 100) + 1}
+                reputationScore={user.reputationScore || 0}
+                rank={rank}
+                rankChange="stable"
+                isPublicView={true}
+              />
 
-                <div className="grid grid-cols-1 gap-4">
-                  <TokenPortfolios tokenBalances={stats?.tokenBalances || []} />
-                  <EcosystemContribution 
-                    reputationScore={user.reputationScore || 0}
-                    level={Math.floor((user.reputationScore || 0) / 100) + 1}
-                    progress={(user.reputationScore || 0) % 100}
-                  />
-                </div>
-              </>
-            ) : (
-              <div className="text-center py-12 text-white/40">User data not available</div>
-            )}
-          </div>
-        </ScrollArea>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <TokenPortfolios tokenBalances={stats?.tokenBalances || []} />
+                <EcosystemContribution 
+                  reputationScore={user.reputationScore || 0}
+                  level={Math.floor((user.reputationScore || 0) / 100) + 1}
+                  progress={(user.reputationScore || 0) % 100}
+                />
+              </div>
+            </>
+          ) : (
+            <div className="text-center py-12 text-white/40">User data not available</div>
+          )}
+        </div>
       </DialogContent>
     </Dialog>
   );
