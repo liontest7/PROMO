@@ -103,18 +103,18 @@ export function ProfileHeader({
   };
 
   return (
-    <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 p-4 rounded-[2rem] bg-white/[0.04] border border-white/10 backdrop-blur-3xl relative overflow-hidden group shadow-xl">
+    <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 p-5 rounded-[2rem] bg-white/[0.04] border border-white/10 backdrop-blur-3xl relative overflow-hidden group shadow-xl">
       <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-transparent to-transparent opacity-60" />
       <div className="relative z-10 flex flex-col md:flex-row items-center gap-6">
         <div className="relative">
-          <div className="w-20 h-20 rounded-full bg-gradient-to-tr from-primary via-primary/60 to-primary/20 p-1 shadow-[0_0_30px_rgba(34,197,94,0.3)] relative">
+          <div className="w-24 h-24 rounded-full bg-gradient-to-tr from-primary via-primary/60 to-primary/20 p-1 shadow-[0_0_30px_rgba(34,197,94,0.3)] relative">
             <div className="w-full h-full rounded-full bg-background flex items-center justify-center overflow-hidden border-2 border-background">
               <Avatar className="h-full w-full">
                 <AvatarImage 
                   src={avatarUrl || PLATFORM_CONFIG.ASSETS.MAIN_LOGO} 
                   className="w-full h-full object-cover hover:scale-110 transition-transform duration-500" 
                 />
-                <AvatarFallback className="bg-primary/20 text-primary font-black text-2xl">
+                <AvatarFallback className="bg-primary/20 text-primary font-black text-3xl">
                   {username ? username[0].toUpperCase() : 'U'}
                 </AvatarFallback>
               </Avatar>

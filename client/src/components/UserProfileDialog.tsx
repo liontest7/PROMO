@@ -48,9 +48,9 @@ export function UserProfileDialog({ walletAddress, isOpen, onOpenChange }: UserP
 
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-5xl max-h-[98vh] p-0 border-white/10 bg-[#050505] overflow-hidden rounded-[2.5rem] shadow-[0_0_100px_rgba(0,0,0,0.8)]">
-        <DialogHeader className="p-4 border-b border-white/5 flex flex-row items-center justify-between shrink-0">
-          <DialogTitle className="text-xl font-black italic uppercase tracking-tighter text-white">
+      <DialogContent className="max-w-4xl max-h-[95vh] p-0 border-white/10 bg-[#050505] overflow-hidden rounded-[2.5rem] shadow-[0_0_100px_rgba(0,0,0,0.8)]">
+        <DialogHeader className="p-6 border-b border-white/5 flex flex-row items-center justify-between shrink-0">
+          <DialogTitle className="text-3xl font-black italic uppercase tracking-tighter text-white">
             USER <span className="text-primary">PROFILE</span>
           </DialogTitle>
         </DialogHeader>
@@ -79,7 +79,7 @@ export function UserProfileDialog({ walletAddress, isOpen, onOpenChange }: UserP
                 />
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 items-stretch flex-1">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 items-stretch flex-1 min-h-0">
                 <TokenPortfolios tokenBalances={stats?.tokenBalances || []} />
                 <EcosystemContribution 
                   reputationScore={user.reputationScore || 0}
