@@ -45,6 +45,7 @@ export function ProfileHeader({
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/users", walletAddress] });
       queryClient.invalidateQueries({ queryKey: ["/api/leaderboard"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/user-stats", walletAddress] });
       setIsEditing(false);
       toast({
         title: "Success",
