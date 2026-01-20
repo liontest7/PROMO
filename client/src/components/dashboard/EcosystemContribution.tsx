@@ -45,9 +45,9 @@ export function EcosystemContribution({ reputationScore, level, progress }: Ecos
                 </Button>
               </TooltipTrigger>
               <TooltipContent 
-                side="top" 
-                align="center"
-                sideOffset={10}
+                side="left" 
+                align="start"
+                sideOffset={15}
                 className="border border-white/20 bg-black text-white p-4 rounded-xl shadow-[0_20px_50px_rgba(0,0,0,1)] w-64 z-[99999] backdrop-blur-3xl"
               >
                 <div className="space-y-3">
