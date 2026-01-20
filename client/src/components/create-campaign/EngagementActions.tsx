@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Plus, Trash2, Globe, Twitter, Send, Coins, Zap, Timer, Shield, ChevronDown, ChevronUp, CheckCircle2 } from "lucide-react";
+import { Plus, Trash2, Globe, Twitter, Send, Coins, Zap, Timer, CheckCircle2, ChevronDown, ChevronUp, MessageSquare, Repeat } from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -39,7 +39,7 @@ export function EngagementActions({ form, gasFeeSol }: EngagementActionsProps) {
         type: "website",
         title: "Visit Website",
         url: "",
-        rewardAmount: 0.01,
+        rewardAmount: "0.01",
         maxExecutions: 10,
       });
     }
@@ -69,9 +69,11 @@ export function EngagementActions({ form, gasFeeSol }: EngagementActionsProps) {
   const getActionDefaultTitle = (type: string) => {
     switch (type) {
       case "website": return "Visit Website";
-      case "twitter_follow": return "Follow on Twitter";
-      case "twitter_retweet": return "Retweet Post";
-      case "telegram_join": return "Join Telegram";
+      case "twitter_follow": return "Follow on X";
+      case "twitter_like": return "Like Post on X";
+      case "twitter_retweet": return "Retweet on X";
+      case "twitter_reply": return "Reply on X";
+      case "telegram": return "Join Telegram";
       default: return "Custom Task";
     }
   };
@@ -80,8 +82,10 @@ export function EngagementActions({ form, gasFeeSol }: EngagementActionsProps) {
     switch (type) {
       case "website": return <Globe className="h-4 w-4 text-blue-400" />;
       case "twitter_follow":
-      case "twitter_retweet": return <Twitter className="h-4 w-4 text-[#1DA1F2]" />;
-      case "telegram_join": return <Send className="h-4 w-4 text-[#0088cc]" />;
+      case "twitter_like":
+      case "twitter_retweet":
+      case "twitter_reply": return <Twitter className="h-4 w-4 text-[#1DA1F2]" />;
+      case "telegram": return <Send className="h-4 w-4 text-[#0088cc]" />;
       default: return <Zap className="h-4 w-4 text-primary" />;
     }
   };
@@ -102,12 +106,11 @@ export function EngagementActions({ form, gasFeeSol }: EngagementActionsProps) {
                 size="sm"
                 className="font-black uppercase tracking-widest text-xs shadow-lg shadow-primary/20 rounded-xl bg-primary text-primary-foreground hover:bg-primary/90 h-9 px-4"
                 onClick={() => {
-                  const id = Math.random().toString(36).substr(2, 9);
                   append({
                     type: "website",
                     title: "Visit Website",
                     url: "",
-                    rewardAmount: 0.01,
+                    rewardAmount: "0.01",
                     maxExecutions: 10,
                   });
                 }}
@@ -192,10 +195,16 @@ export function EngagementActions({ form, gasFeeSol }: EngagementActionsProps) {
                                     <SelectItem value="twitter_follow">
                                       <div className="flex items-center gap-2 font-bold text-white"><Twitter className="h-3.5 w-3.5 text-[#1DA1F2]" /> Follow on X</div>
                                     </SelectItem>
-                                    <SelectItem value="twitter_retweet">
-                                      <div className="flex items-center gap-2 font-bold text-white"><Twitter className="h-3.5 w-3.5 text-[#1DA1F2]" /> Retweet on X</div>
+                                    <SelectItem value="twitter_like">
+                                      <div className="flex items-center gap-2 font-bold text-white"><Twitter className="h-3.5 w-3.5 text-pink-500" /> Like Post</div>
                                     </SelectItem>
-                                    <SelectItem value="telegram_join">
+                                    <SelectItem value="twitter_retweet">
+                                      <div className="flex items-center gap-2 font-bold text-white"><Repeat className="h-3.5 w-3.5 text-green-500" /> Retweet Post</div>
+                                    </SelectItem>
+                                    <SelectItem value="twitter_reply">
+                                      <div className="flex items-center gap-2 font-bold text-white"><MessageSquare className="h-3.5 w-3.5 text-blue-500" /> Reply to Post</div>
+                                    </SelectItem>
+                                    <SelectItem value="telegram">
                                       <div className="flex items-center gap-2 font-bold text-white"><Send className="h-3.5 w-3.5 text-[#0088cc]" /> Join Telegram</div>
                                     </SelectItem>
                                   </SelectContent>
@@ -353,7 +362,6 @@ export function EngagementActions({ form, gasFeeSol }: EngagementActionsProps) {
         )}
       </div>
 
-      {/* Dynamic Real-time Pricing Summary - Inline in scroll content */}
       <div className="mt-auto pt-6 space-y-4 border-t border-white/10">
         <div className="space-y-3">
           <div className="flex justify-between items-center group/item">
