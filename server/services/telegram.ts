@@ -16,7 +16,21 @@ export function startTelegramBot() {
     bot.start(async (ctx) => {
       const payload = ctx.payload; // This is the 'start' parameter (Deep Link)
       if (!payload) {
-        return ctx.reply("Welcome to Dropy! Please use the link from your dashboard to connect your account.");
+        return ctx.reply(`🛡️ *Welcome to Dropy Sentinel* 🛡️
+
+The ultimate pay-per-action protocol on Solana.
+
+*Quick Links:*
+🌐 [Official Website](https://dropy.ai)
+🐦 [Follow us on X](https://x.com/dropy_ai)
+📢 [Join Announcement Channel](https://t.me/dropy_ann)
+
+*How it works:*
+1. Connect your Phantom wallet on our site.
+2. Complete verified social actions.
+3. Earn project tokens directly to your wallet.
+
+To link your account, please click the 'Connect Telegram' button on your Dropy Dashboard.`, { parse_mode: 'Markdown', disable_web_page_preview: true });
       }
 
       // Payload expected format: connect_<walletAddress>
@@ -55,7 +69,27 @@ Return to your dashboard to see your updated status.`, { parse_mode: 'Markdown' 
       }
     });
 
-    bot.launch();
+    bot.help((ctx) => {
+      return ctx.reply(`🛡️ *Dropy Support Node* 🛡️
+
+*Available Commands:*
+/start - Launch identity verification
+/help - Show this manual
+/status - Check your protocol reputation (Coming Soon)
+
+*Task Verification:*
+Our neural net automatically verifies your social actions. Ensure you have linked your account via the dashboard before claiming rewards.
+
+*Need Help?*
+Contact our support team at @DropySupport`, { parse_mode: 'Markdown' });
+    });
+
+    if (process.env.NODE_ENV === "production") {
+      bot.launch();
+    } else {
+      // In development, we might not want to launch if token is mock
+      bot.launch().catch(err => console.error("[Telegram] Dev launch skip:", err.message));
+    }
     console.log("[Telegram Service] Dropy Sentinel Bot initialized and listening.");
 
     // Enable graceful stop
