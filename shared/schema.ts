@@ -85,6 +85,7 @@ export const campaigns = pgTable("campaigns", {
   websiteUrl: text("website_url"),
   twitterUrl: text("twitter_url"),
   telegramUrl: text("telegram_url"),
+  isPremium: boolean("is_premium").default(false).notNull(),
   campaignType: text("campaign_type", { enum: ["engagement", "holder_qualification"] }).default("engagement").notNull(),
   minHoldingAmount: numeric("min_holding_amount"),
   minHoldingDuration: integer("min_holding_duration"), // in days

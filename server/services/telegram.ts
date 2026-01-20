@@ -85,12 +85,16 @@ Contact our support team at @DropySupport`, { parse_mode: 'Markdown' });
     });
 
     if (process.env.NODE_ENV === "production") {
-      bot.launch();
+      bot.launch().catch(err => console.error("[Telegram] Production launch failed:", err));
     } else {
-      // In development, we might not want to launch if token is mock
-      bot.launch().catch(err => console.error("[Telegram] Dev launch skip:", err.message));
+      // In development, skip if token is not set correctly
+      if (process.env.TELEGRAM_BOT_TOKEN && process.env.TELEGRAM_BOT_TOKEN !== "YOUR_TELEGRAM_BOT_TOKEN") {
+        bot.launch().catch(err => console.error("[Telegram] Dev launch skip:", err.message));
+      } else {
+        console.log("[Telegram Service] Dev mode: Skipping bot launch due to missing/default token.");
+      }
     }
-    console.log("[Telegram Service] Dropy Sentinel Bot initialized and listening.");
+    console.log("[Telegram Service] Dropy Sentinel Bot initialized.");
 
     // Enable graceful stop
     process.once('SIGINT', () => bot?.stop('SIGINT'));
