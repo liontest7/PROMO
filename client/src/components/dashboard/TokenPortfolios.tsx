@@ -54,7 +54,7 @@ export const TokenPortfolios = ({ tokenBalances }: TokenPortfoliosProps) => (
         ))}
       </div>
     ) : (
-      <div className="flex flex-col items-center justify-center p-8 rounded-[2rem] bg-white/[0.02] border border-dashed border-white/10 group hover:border-primary/40 transition-all duration-500 shadow-inner flex-1 min-h-[220px] mt-2">
+      <div className="flex flex-col items-center justify-center p-8 rounded-[2rem] bg-white/[0.02] border border-dashed border-white/10 group hover:border-primary/40 transition-all duration-500 shadow-inner flex-1 min-h-[220px]">
         <div className="p-3 rounded-xl bg-white/5 mb-3 group-hover:bg-primary/20 transition-all duration-500 shadow-lg border border-white/5">
           <Activity className="w-6 h-6 text-muted-foreground opacity-30 group-hover:text-primary group-hover:opacity-100 transition-all duration-500" />
         </div>

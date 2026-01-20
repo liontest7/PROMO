@@ -55,7 +55,7 @@ export function UserProfileDialog({ walletAddress, isOpen, onOpenChange }: UserP
           </DialogTitle>
         </DialogHeader>
         
-        <div className="p-5 space-y-4 pb-8 overflow-visible flex flex-col h-full">
+        <div className="p-6 space-y-6 pb-10 overflow-visible flex flex-col h-full">
           {isLoading ? (
             <div className="space-y-3">
               <Skeleton className="h-32 w-full bg-white/5 rounded-[2rem]" />
