@@ -2,10 +2,11 @@ import { useState, useMemo } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Navigation } from "@/components/Navigation";
 import { Input } from "@/components/ui/input";
-import { Search, Loader2, ChevronDown, ChevronUp } from "lucide-react";
+import { Search, Loader2, ChevronDown, ChevronUp, Sparkles, Send, RefreshCw, CheckCircle2 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { queryClient } from "@/lib/queryClient";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { queryClient, apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { useWallet } from "@/hooks/use-wallet";
 import { AdminStats } from "@/components/admin/AdminStats";
@@ -385,6 +386,9 @@ export default function AdminDashboard() {
               <TabsTrigger value="analytics" className="flex-1 md:flex-none rounded-lg px-6 py-3 font-black uppercase text-[15px] tracking-widest data-[state=active]:bg-white data-[state=active]:text-black text-white hover:text-white transition-all">ANALYTICS</TabsTrigger>
               <TabsTrigger value="campaigns" className="flex-1 md:flex-none rounded-lg px-6 py-3 font-black uppercase text-[15px] tracking-widest data-[state=active]:bg-white data-[state=active]:text-black text-white hover:text-white transition-all">CAMPAIGNS</TabsTrigger>
               <TabsTrigger value="executions" className="flex-1 md:flex-none rounded-lg px-6 py-3 font-black uppercase text-[15px] tracking-widest data-[state=active]:bg-white data-[state=active]:text-black text-white hover:text-white transition-all">LOGS</TabsTrigger>
+              <TabsTrigger value="premium" className="flex-1 md:flex-none rounded-lg px-6 py-3 font-black uppercase text-[15px] tracking-widest data-[state=active]:bg-yellow-500 data-[state=active]:text-white text-yellow-400 hover:text-yellow-300 transition-all flex items-center gap-2">
+                <Sparkles className="h-4 w-4" /> PREMIUM
+              </TabsTrigger>
               <TabsTrigger value="wallet" className="flex-1 md:flex-none rounded-lg px-6 py-3 font-black uppercase text-[15px] tracking-widest data-[state=active]:bg-white data-[state=active]:text-black text-white hover:text-white transition-all">WALLET</TabsTrigger>
               <TabsTrigger value="health" className="flex-1 md:flex-none rounded-lg px-6 py-3 font-black uppercase text-[15px] tracking-widest data-[state=active]:bg-white data-[state=active]:text-black text-white hover:text-white transition-all">HEALTH</TabsTrigger>
               <TabsTrigger value="fraud" className="flex-1 md:flex-none rounded-lg px-6 py-3 font-black uppercase text-[15px] tracking-widest data-[state=active]:bg-red-500 data-[state=active]:text-white text-red-400 hover:text-red-300 transition-all">FRAUD</TabsTrigger>
@@ -422,6 +426,10 @@ export default function AdminDashboard() {
 
           <TabsContent value="executions">
             <ExecutionLogTable executions={filteredExecutions} />
+          </TabsContent>
+
+          <TabsContent value="premium">
+            <PremiumManagement campaigns={campaigns} />
           </TabsContent>
 
           <TabsContent value="wallet">

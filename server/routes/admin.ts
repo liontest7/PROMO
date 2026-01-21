@@ -384,54 +384,26 @@ export function setupAdminRoutes(app: Express) {
   });
 
   // Automation / Week Reset
-  app.post("/api/admin/trigger-week-reset", async (req, res) => {
+  app.post("/api/admin/premium/broadcast/:id", async (req, res) => {
     try {
-      // Anti-cheat verification before reset
-      const allExecutions = await storage.getAllExecutions();
-      const suspiciousUsers = await storage.getSuspiciousUsers();
-      const suspiciousUserIds = new Set(suspiciousUsers.map(u => u.id));
+      const campaignId = parseInt(req.params.id);
+      const campaign = await storage.getCampaign(campaignId);
+      if (!campaign) return res.status(404).json({ message: "Campaign not found" });
 
-      // Filter out executions from suspicious users or unverified actions
-      const validExecutions = allExecutions.filter(e => 
-        !suspiciousUserIds.has(e.userId) && 
-        (e.status === 'verified' || e.status === 'paid')
-      );
+      const { broadcastPremiumCampaign } = await import("../services/telegram");
+      await broadcastPremiumCampaign(campaign);
+      
+      await storage.createLog({
+        level: "info",
+        source: "PREMIUM_PROMO",
+        message: `Manual premium broadcast triggered for campaign: ${campaign.title}`,
+        details: { campaignId: campaign.id }
+      });
 
-      console.log(`[Admin Reset] Anti-cheat: Validated ${validExecutions.length}/${allExecutions.length} executions`);
-
-      const automation = AutomationService.getInstance();
-      // @ts-ignore
-      await automation.checkAndCloseWeek();
-      res.json({ success: true, message: "Week reset triggered with anti-cheat validation" });
+      res.json({ success: true });
     } catch (err) {
-      console.error("[Admin Reset] Error:", err);
-      res.status(500).json({ message: "Failed to trigger reset" });
-    }
-  });
-
-  // Prizes
-  app.get("/api/admin/prizes", async (req, res) => {
-    try {
-      const history = await storage.getPrizeHistory();
-      res.json(history);
-    } catch (err) {
-      res.status(500).json({ message: "Failed to fetch prize history" });
-    }
-  });
-
-  app.post("/api/admin/prizes/:id/retry", async (req, res) => {
-    try {
-      const history = await storage.getPrizeHistory();
-      const entry = history.find(h => h.id === parseInt(req.params.id));
-      if (!entry) return res.status(404).json({ message: "Entry not found" });
-
-      const { AutomationService } = await import("../services/automation");
-      const automation = AutomationService.getInstance();
-      await storage.updatePrizeHistoryStatus(entry.id, "processing", entry.winners);
-      automation.processWinners(entry.id, entry.winners).catch(console.error);
-      res.json({ message: "Retry initiated" });
-    } catch (err) {
-      res.status(500).json({ message: "Failed to retry payout" });
+      console.error("Manual broadcast failed:", err);
+      res.status(500).json({ message: "Manual broadcast failed", error: String(err) });
     }
   });
 }

@@ -194,7 +194,15 @@ export class DatabaseStorage implements IStorage {
       if (!existing) { slug = currentSlug; break; }
       counter++;
     }
-    const [campaign] = await db.insert(campaigns).values({ ...insertCampaign, slug, totalBudget, remainingBudget: totalBudget, status: "active", creationFeePaid: false } as any).returning();
+    const [campaign] = await db.insert(campaigns).values({ 
+      ...insertCampaign, 
+      slug, 
+      totalBudget, 
+      remainingBudget: totalBudget, 
+      status: "active", 
+      creationFeePaid: false,
+      isPremium: insertCampaign.isPremium ?? false
+    } as any).returning();
     return campaign;
   }
 

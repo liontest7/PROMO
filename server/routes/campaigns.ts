@@ -89,10 +89,26 @@ export function setupCampaignRoutes(app: Express) {
         gasBudgetSol: gasBudgetSol.toString()
       } as any);
 
-      // Trigger premium broadcast if applicable
-      if (req.body.isPremium === true) {
-        const { broadcastPremiumCampaign } = await import("../services/telegram");
-        broadcastPremiumCampaign(campaign).catch(console.error);
+      // Automated Premium Promotion
+      if (campaign.isPremium) {
+        try {
+          const { broadcastPremiumCampaign } = await import("../services/telegram");
+          await broadcastPremiumCampaign(campaign);
+          await storage.createLog({
+            level: "info",
+            source: "PREMIUM_PROMO",
+            message: `Automated premium broadcast triggered for campaign: ${campaign.title}`,
+            details: { campaignId: campaign.id }
+          });
+        } catch (promoError) {
+          console.error("Premium broadcast failed:", promoError);
+          await storage.createLog({
+            level: "error",
+            source: "PREMIUM_PROMO",
+            message: `Automated premium broadcast failed for campaign: ${campaign.title}`,
+            details: { campaignId: campaign.id, error: String(promoError) }
+          });
+        }
       }
 
       // Create actions
