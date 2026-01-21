@@ -32,7 +32,8 @@ export function CampaignPreview({
 }: CampaignPreviewProps) {
   const isHolder = values.campaignType === "holder_qualification";
   const platformFee = 0.5; 
-  const totalCostSol = Number((platformFee + gasFeeSol).toFixed(4));
+  const premiumFee = values.isPremium ? 0.1 : 0;
+  const totalCostSol = Number((platformFee + premiumFee + gasFeeSol).toFixed(4));
 
   return (
     <div className="space-y-8 animate-in fade-in zoom-in duration-500 max-h-[70vh] overflow-y-auto pr-2 custom-scrollbar">
@@ -202,12 +203,18 @@ export function CampaignPreview({
               </div>
               <div className="space-y-4 relative z-10">
                 <div className="flex justify-between items-center py-2 border-b border-white/10 group">
-                  <span className="text-xs font-black text-white/60 uppercase tracking-[0.15em] group-hover:text-primary transition-colors">Creation Fee</span>
-                  <span className="text-xs font-mono font-black text-white/60 group-hover:text-primary transition-colors">0.5000 SOL</span>
+                  <span className="text-xs font-black text-white uppercase tracking-[0.15em] group-hover:text-primary transition-colors">Creation Fee</span>
+                  <span className="text-xs font-mono font-black text-white group-hover:text-primary transition-colors">0.5000 SOL</span>
                 </div>
+                {values.isPremium && (
+                  <div className="flex justify-between items-center py-2 border-b border-white/10 group">
+                    <span className="text-xs font-black text-white uppercase tracking-[0.15em] group-hover:text-primary transition-colors">Premium Promotion</span>
+                    <span className="text-xs font-mono font-black text-white group-hover:text-primary transition-colors">0.1000 SOL</span>
+                  </div>
+                )}
                 <div className="flex justify-between items-center py-2 border-b border-white/10 group">
-                  <span className="text-xs font-black text-white/60 uppercase tracking-[0.15em] group-hover:text-white transition-colors">Gas Allocation</span>
-                  <span className="text-xs font-mono font-black text-white/60 group-hover:text-primary transition-colors">{gasFeeSol} SOL</span>
+                  <span className="text-xs font-black text-white uppercase tracking-[0.15em] group-hover:text-white transition-colors">Gas Allocation</span>
+                  <span className="text-xs font-mono font-black text-white group-hover:text-primary transition-colors">{gasFeeSol} SOL</span>
                 </div>
                 <div className="flex justify-between items-center pt-4">
                   <div className="space-y-1">

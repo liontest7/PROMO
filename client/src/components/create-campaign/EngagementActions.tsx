@@ -376,7 +376,7 @@ export function EngagementActions({ form, gasFeeSol }: EngagementActionsProps) {
               </div>
               <div>
                 <h4 className="font-black text-white text-sm uppercase tracking-wider">Premium Promotion</h4>
-                <p className="text-[11px] text-primary font-bold uppercase italic leading-tight">
+                <p className="text-[11px] text-white font-bold uppercase italic leading-tight">
                   Boost visibility by post on our X and Telegram
                 </p>
               </div>
