@@ -382,7 +382,7 @@ export function EngagementActions({ form, gasFeeSol }: EngagementActionsProps) {
               </div>
             </div>
             <div className="flex items-center gap-3">
-              <span className="text-xs font-black text-white/60 tracking-tighter">+0.10 SOL</span>
+              <span className="text-sm font-black text-white tracking-tighter">+0.10 SOL</span>
               <FormField
                 control={form.control}
                 name="isPremium"
@@ -404,13 +404,13 @@ export function EngagementActions({ form, gasFeeSol }: EngagementActionsProps) {
 
           {isPremium && (
             <div className="grid grid-cols-2 gap-3 pt-1 animate-in zoom-in-95 duration-300">
-              <div className="flex items-center gap-2 p-2.5 rounded-xl bg-background/60 border-2 border-primary/40 shadow-inner">
-                <Sparkles className="w-3.5 h-3.5 text-primary animate-pulse" />
-                <span className="text-[10px] font-black text-white uppercase tracking-tight">TG Push Broadcast</span>
+              <div className="flex items-center gap-2 p-3 rounded-xl bg-background/60 border-2 border-primary/40 shadow-inner">
+                <Sparkles className="w-4 h-4 text-primary animate-pulse" />
+                <span className="text-xs font-black text-white uppercase tracking-tight">TG Push Broadcast</span>
               </div>
-              <div className="flex items-center gap-2 p-2.5 rounded-xl bg-background/60 border-2 border-primary/40 shadow-inner">
-                <Sparkles className="w-3.5 h-3.5 text-primary animate-pulse" />
-                <span className="text-[10px] font-black text-white uppercase tracking-tight">X Featured Post</span>
+              <div className="flex items-center gap-2 p-3 rounded-xl bg-background/60 border-2 border-primary/40 shadow-inner">
+                <Sparkles className="w-4 h-4 text-primary animate-pulse" />
+                <span className="text-xs font-black text-white uppercase tracking-tight">X Featured Post</span>
               </div>
             </div>
           )}
