@@ -368,41 +368,49 @@ export function EngagementActions({ form, gasFeeSol }: EngagementActionsProps) {
       </div>
 
       <div className="mt-auto pt-6 space-y-4 border-t border-white/10">
-        <div className="p-4 rounded-2xl border border-primary/20 bg-primary/5 space-y-4 mb-4">
+        <div className="p-4 rounded-2xl border border-primary/30 bg-primary/10 space-y-4 mb-4 shadow-lg shadow-primary/5">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <Zap className="w-5 h-5 text-yellow-500 fill-yellow-500" />
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-primary/20 rounded-lg border border-primary/30">
+                <Zap className="w-5 h-5 text-yellow-400 fill-yellow-400" />
+              </div>
               <div>
-                <h4 className="font-semibold text-white text-sm uppercase tracking-tight">Premium Promotion</h4>
-                <p className="text-[10px] text-muted-foreground italic uppercase">Boost visibility on X & Telegram</p>
+                <h4 className="font-black text-white text-sm uppercase tracking-wider">Premium Promotion</h4>
+                <p className="text-[11px] text-primary font-bold uppercase italic leading-tight">
+                  Boost visibility by post on our X and Telegram
+                </p>
               </div>
             </div>
-            <FormField
-              control={form.control}
-              name="isPremium"
-              render={({ field }) => (
-                <FormItem>
-                  <FormControl>
-                    <Switch
-                      checked={field.value}
-                      onCheckedChange={field.onChange}
-                      data-testid="switch-premium"
-                    />
-                  </FormControl>
-                </FormItem>
-              )}
-            />
+            <div className="flex items-center gap-3">
+              <span className="text-xs font-black text-white/60 tracking-tighter">+0.10 SOL</span>
+              <FormField
+                control={form.control}
+                name="isPremium"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <Switch
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                        data-testid="switch-premium"
+                        className="data-[state=checked]:bg-primary"
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+            </div>
           </div>
 
           {isPremium && (
-            <div className="grid grid-cols-2 gap-2 pt-1 animate-in zoom-in-95 duration-300">
-              <div className="flex items-center gap-2 p-2 rounded-lg bg-background/50 border border-primary/10">
-                <Sparkles className="w-3 h-3 text-primary" />
-                <span className="text-[9px] font-bold text-white uppercase">TG Push</span>
+            <div className="grid grid-cols-2 gap-3 pt-1 animate-in zoom-in-95 duration-300">
+              <div className="flex items-center gap-2 p-2.5 rounded-xl bg-background/60 border-2 border-primary/40 shadow-inner">
+                <Sparkles className="w-3.5 h-3.5 text-primary animate-pulse" />
+                <span className="text-[10px] font-black text-white uppercase tracking-tight">TG Push Broadcast</span>
               </div>
-              <div className="flex items-center gap-2 p-2 rounded-lg bg-background/50 border border-primary/10">
-                <Sparkles className="w-3 h-3 text-primary" />
-                <span className="text-[9px] font-bold text-white uppercase">X Featured</span>
+              <div className="flex items-center gap-2 p-2.5 rounded-xl bg-background/60 border-2 border-primary/40 shadow-inner">
+                <Sparkles className="w-3.5 h-3.5 text-primary animate-pulse" />
+                <span className="text-[10px] font-black text-white uppercase tracking-tight">X Featured Post</span>
               </div>
             </div>
           )}
