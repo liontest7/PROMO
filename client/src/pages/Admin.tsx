@@ -24,6 +24,102 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 
+function PremiumManagement({ campaigns }: { campaigns: any[] | undefined }) {
+  const { toast } = useToast();
+  const premiumCampaigns = useMemo(() => (campaigns || []).filter(c => c.isPremium), [campaigns]);
+
+  const broadcastMutation = useMutation({
+    mutationFn: async (campaignId: number) => {
+      await apiRequest("POST", `/api/admin/premium/broadcast/${campaignId}`);
+    },
+    onSuccess: () => {
+      toast({ title: "Broadcast Sent", description: "Premium notification has been broadcasted." });
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/logs"] });
+    },
+    onError: (error: any) => {
+      toast({ 
+        title: "Broadcast Failed", 
+        description: error.message || "Failed to send premium broadcast",
+        variant: "destructive"
+      });
+    }
+  });
+
+  return (
+    <Card className="glass-card border-white/10 bg-white/[0.01] rounded-2xl overflow-hidden">
+      <CardHeader className="border-b border-white/5 bg-white/[0.02] p-6">
+        <div className="flex items-center gap-3">
+          <div className="p-3 bg-yellow-500/20 rounded-2xl border border-yellow-500/30">
+            <Sparkles className="h-6 w-6 text-yellow-500" />
+          </div>
+          <div>
+            <CardTitle className="text-xl text-white uppercase font-black italic tracking-tighter">Premium Growth Management</CardTitle>
+            <CardDescription className="text-sm font-bold text-white/60">Oversee automated & manual premium broadcasts.</CardDescription>
+          </div>
+        </div>
+      </CardHeader>
+      <CardContent className="p-0">
+        <Table>
+          <TableHeader className="bg-white/[0.02]">
+            <TableRow className="border-white/5 hover:bg-transparent">
+              <TableHead className="font-black uppercase tracking-widest text-[10px] text-white/40 py-4 pl-6">Campaign</TableHead>
+              <TableHead className="font-black uppercase tracking-widest text-[10px] text-white/40 py-4">Status</TableHead>
+              <TableHead className="font-black uppercase tracking-widest text-[10px] text-white/40 py-4">Verification</TableHead>
+              <TableHead className="font-black uppercase tracking-widest text-[10px] text-white/40 py-4 text-right pr-6">Control</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {premiumCampaigns.length === 0 ? (
+              <TableRow>
+                <TableCell colSpan={4} className="h-32 text-center text-white/20 font-black uppercase tracking-widest text-xs italic">
+                  No premium campaigns found
+                </TableCell>
+              </TableRow>
+            ) : (
+              premiumCampaigns.map((campaign) => (
+                <TableRow key={campaign.id} className="border-white/5 hover:bg-white/5 transition-colors">
+                  <TableCell className="pl-6 py-4">
+                    <div className="flex items-center gap-3">
+                      <div className="h-10 w-10 rounded-xl overflow-hidden border border-white/10">
+                        <img src={campaign.logoUrl} alt="" className="w-full h-full object-cover" />
+                      </div>
+                      <div>
+                        <div className="font-black text-white uppercase text-sm tracking-tight italic">{campaign.title}</div>
+                        <div className="text-[10px] text-primary font-black uppercase tracking-widest">${campaign.tokenName}</div>
+                      </div>
+                    </div>
+                  </TableCell>
+                  <TableCell>
+                    <Badge variant="outline" className="border-primary/30 text-primary bg-primary/10 font-black uppercase tracking-widest text-[9px]">
+                      {campaign.status}
+                    </Badge>
+                  </TableCell>
+                  <TableCell>
+                    <div className="flex items-center gap-1.5 text-green-500 text-[10px] font-black uppercase tracking-widest">
+                      <CheckCircle2 className="h-3 w-3" /> System Verified
+                    </div>
+                  </TableCell>
+                  <TableCell className="text-right pr-6">
+                    <Button
+                      size="sm"
+                      className="bg-primary text-primary-foreground font-black uppercase tracking-widest text-[10px] rounded-xl h-8 px-4 shadow-lg shadow-primary/20 hover:scale-105 transition-transform"
+                      disabled={broadcastMutation.isPending}
+                      onClick={() => broadcastMutation.mutate(campaign.id)}
+                    >
+                      {broadcastMutation.isPending ? <RefreshCw className="h-3 w-3 animate-spin mr-2" /> : <Send className="h-3 w-3 mr-2" />}
+                      Manual Push
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              ))
+            )}
+          </TableBody>
+        </Table>
+      </CardContent>
+    </Card>
+  );
+}
+
 export default function AdminDashboard() {
   const { toast } = useToast();
   const { walletAddress } = useWallet();
