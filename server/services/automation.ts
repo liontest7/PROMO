@@ -24,6 +24,8 @@ export class AutomationService {
     setInterval(() => this.checkAndCloseWeek(), 60 * 60 * 1000);
     // Initial check on startup
     setTimeout(() => this.checkAndCloseWeek(), 10000);
+    // Start retry mechanism
+    this.startRetryMechanism();
   }
 
   public static getInstance(): AutomationService {
@@ -31,6 +33,32 @@ export class AutomationService {
       AutomationService.instance = new AutomationService();
     }
     return AutomationService.instance;
+  }
+
+  /**
+   * Automated retry mechanism for failed payouts.
+   * Runs every 30 minutes to check for pending/failed prizes.
+   */
+  private async startRetryMechanism() {
+    setInterval(async () => {
+      try {
+        log("Running automated payout retry check...", "Automation:Retry");
+        const history = await storage.getPrizeHistory();
+        const failedEntries = history.filter(h => h.status === 'failed' || h.status === 'processing');
+        
+        for (const entry of failedEntries) {
+          const winners = entry.winners as any[];
+          const hasUnpaid = winners.some(w => w.status !== 'paid');
+          
+          if (hasUnpaid) {
+            log(`Retrying payouts for week #${entry.weekNumber} (ID: ${entry.id})`, "Automation:Retry");
+            await this.processWinners(entry.id, winners);
+          }
+        }
+      } catch (err) {
+        log(`Retry mechanism error: ${err}`, "Automation:Retry");
+      }
+    }, 30 * 60 * 1000); // Every 30 minutes
   }
 
   private async checkAndCloseWeek() {

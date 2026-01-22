@@ -14,7 +14,7 @@ export function startTelegramBot() {
     bot = new Telegraf(token);
 
     bot.start(async (ctx) => {
-      const payload = ctx.payload; // This is the 'start' parameter (Deep Link)
+      const payload = (ctx as any).payload; // Use type casting to avoid LSP error
       if (!payload) {
         return ctx.reply(`🛡️ *Welcome to Dropy Sentinel* 🛡️
 

@@ -260,11 +260,21 @@ export default function Earn() {
         {isLoading ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {[1, 2, 3, 4, 5, 6].map((i) => (
-              <div key={i} className="h-[400px] rounded-2xl border border-white/5 bg-white/5 p-6">
-                <Skeleton className="h-8 w-3/4 mb-4 bg-white/10" />
-                <Skeleton className="h-4 w-full mb-2 bg-white/10" />
-                <Skeleton className="h-4 w-2/3 mb-8 bg-white/10" />
-                <Skeleton className="h-10 w-full bg-white/10 rounded-lg" />
+              <div key={i} className="h-[400px] rounded-[2.5rem] border border-white/5 bg-[#0A0A0A] p-8 flex flex-col">
+                <div className="flex justify-between items-start mb-6">
+                  <Skeleton className="h-12 w-12 rounded-2xl bg-white/5" />
+                  <Skeleton className="h-6 w-24 rounded-full bg-white/5" />
+                </div>
+                <Skeleton className="h-8 w-3/4 mb-4 bg-white/5" />
+                <Skeleton className="h-4 w-full mb-2 bg-white/5" />
+                <Skeleton className="h-4 w-2/3 mb-auto bg-white/5" />
+                <div className="pt-6 border-t border-white/5 space-y-4">
+                  <div className="flex justify-between">
+                    <Skeleton className="h-3 w-20 bg-white/5" />
+                    <Skeleton className="h-3 w-20 bg-white/5" />
+                  </div>
+                  <Skeleton className="h-14 w-full rounded-2xl bg-white/5" />
+                </div>
               </div>
             ))}
           </div>

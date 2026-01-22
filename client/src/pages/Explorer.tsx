@@ -66,7 +66,36 @@ export default function Explorer() {
         <div className="space-y-4">
           {isLoading ? (
             Array.from({ length: 8 }).map((_, i) => (
-              <Skeleton key={i} className="h-20 w-full bg-white/5 rounded-2xl" />
+              <div key={i} className="bg-white/[0.02] border border-white/5 p-4 px-8 rounded-2xl backdrop-blur-xl flex flex-col md:flex-row items-center gap-6">
+                <div className="flex items-center gap-4 min-w-[220px]">
+                  <Skeleton className="h-4 w-32 bg-white/5" />
+                  <div className="flex items-center gap-3">
+                    <Skeleton className="h-10 w-10 rounded-full bg-white/5" />
+                    <Skeleton className="h-4 w-24 bg-white/5" />
+                  </div>
+                </div>
+                <div className="flex-1 flex flex-wrap items-center gap-8">
+                  <div className="flex items-center gap-4">
+                    <Skeleton className="h-10 w-10 rounded-xl bg-white/5" />
+                    <div className="space-y-2">
+                      <Skeleton className="h-3 w-12 bg-white/5" />
+                      <Skeleton className="h-4 w-20 bg-white/5" />
+                    </div>
+                  </div>
+                  <Skeleton className="h-10 w-px bg-white/5 hidden md:block" />
+                  <div className="space-y-2">
+                    <Skeleton className="h-3 w-16 bg-white/5" />
+                    <Skeleton className="h-4 w-24 bg-white/5" />
+                  </div>
+                </div>
+                <div className="flex items-center gap-10 min-w-[280px] justify-end">
+                  <div className="text-right space-y-2">
+                    <Skeleton className="h-3 w-24 bg-white/5" />
+                    <Skeleton className="h-6 w-32 bg-white/5" />
+                  </div>
+                  <Skeleton className="h-10 w-24 rounded-xl bg-white/5" />
+                </div>
+              </div>
             ))
           ) : (
             executions?.map((activity) => (
