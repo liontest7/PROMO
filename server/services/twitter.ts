@@ -73,7 +73,7 @@ class TwitterService {
         }
       }
 
-      if (ageInDays < minAge) {
+      if (minAge > 0 && ageInDays < minAge) {
         console.warn(`[Twitter Verify] Account too young: ${ageInDays.toFixed(1)} days. Required: ${minAge} days`);
         return false;
       }

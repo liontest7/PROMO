@@ -1,6 +1,6 @@
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Download, Twitter, X, CheckCircle2, Trophy, Rocket, ArrowRight } from "lucide-react";
+import { Download, Twitter, X, CheckCircle2, Trophy, Rocket, ArrowRight, Coins } from "lucide-react";
 import { useRef, useState, useEffect } from "react";
 import html2canvas from "html2canvas";
 import { PLATFORM_CONFIG } from "@shared/config";
@@ -99,32 +99,41 @@ export function UnifiedSuccessCard({
 
               {type === 'action' ? (
                 <div className="space-y-4 mb-6">
-                  <div className="bg-primary/10 border border-primary/20 rounded-2xl p-4">
+                  <div className="bg-primary/10 border border-primary/20 rounded-2xl p-4 shadow-[0_0_20px_rgba(34,197,94,0.1)]">
                     <p className="text-4xl font-display font-black text-primary">
                       +{data.rewardAmount} <span className="text-lg">${data.tokenName}</span>
                     </p>
                   </div>
-                  <p className="text-sm text-white/60">{data.title}</p>
+                  <div className="flex items-center justify-center gap-2">
+                    <Trophy className="w-4 h-4 text-primary animate-bounce" />
+                    <p className="text-sm font-bold text-white uppercase tracking-wider">{data.title}</p>
+                  </div>
                 </div>
               ) : (
                 <div className="w-full space-y-4 mb-6">
-                   <div className="flex items-center gap-3 justify-center mb-4">
-                     <div className="w-12 h-12 rounded-xl bg-white/5 border border-white/10 overflow-hidden">
+                   <div className="flex items-center gap-4 justify-center mb-6 bg-white/5 p-4 rounded-2xl border border-white/10">
+                     <div className="w-16 h-16 rounded-2xl bg-black border-2 border-primary/40 overflow-hidden shadow-[0_0_20px_rgba(34,197,94,0.2)]">
                        <img src={data.logoUrl} alt="Logo" className="w-full h-full object-cover" />
                      </div>
                      <div className="text-left">
-                       <p className="font-bold text-white uppercase">{data.title}</p>
-                       <Badge variant="outline" className="bg-primary/20 text-primary border-primary/40">${data.tokenName}</Badge>
+                       <p className="font-black text-xl text-white uppercase italic leading-none">{data.title}</p>
+                       <Badge className="mt-2 bg-primary text-primary-foreground border-none font-black tracking-widest">${data.tokenName}</Badge>
                      </div>
                    </div>
-                   <div className="grid grid-cols-2 gap-2">
-                     <div className="bg-white/5 p-3 rounded-xl border border-white/10">
-                       <p className="text-[10px] uppercase font-black text-white/40">Total Pool</p>
-                       <p className="font-bold text-white">{data.totalBudget}</p>
+                   <div className="grid grid-cols-2 gap-3">
+                     <div className="bg-primary/5 p-4 rounded-2xl border border-primary/20">
+                       <p className="text-[10px] uppercase font-black text-primary/60 tracking-widest mb-1">Total Pool</p>
+                       <div className="flex items-center gap-2">
+                         <Coins className="w-3 h-3 text-primary" />
+                         <p className="font-black text-white text-lg">{data.totalBudget}</p>
+                       </div>
                      </div>
-                     <div className="bg-white/5 p-3 rounded-xl border border-white/10">
-                       <p className="text-[10px] uppercase font-black text-white/40">Slots</p>
-                       <p className="font-bold text-white">{data.maxClaims}</p>
+                     <div className="bg-primary/5 p-4 rounded-2xl border border-primary/20">
+                       <p className="text-[10px] uppercase font-black text-primary/60 tracking-widest mb-1">Available Slots</p>
+                       <div className="flex items-center gap-2">
+                         <Rocket className="w-3 h-3 text-primary" />
+                         <p className="font-black text-white text-lg">{data.maxClaims}</p>
+                       </div>
                      </div>
                    </div>
                 </div>
