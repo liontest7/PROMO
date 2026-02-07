@@ -102,14 +102,16 @@ const parseCsv = (value?: string) =>
     .map((entry) => entry.trim())
     .filter(Boolean);
 
+const getEnv = (key: string) => (typeof process !== "undefined" ? process.env[key] : undefined);
+
 export const SERVER_CONFIG = {
-  SOLANA_CLUSTER: process.env.SOLANA_CLUSTER || "mainnet-beta",
+  SOLANA_CLUSTER: getEnv("SOLANA_CLUSTER") || "mainnet-beta",
   SOLANA_RPC_ENDPOINTS:
-    parseCsv(process.env.SOLANA_RPC_ENDPOINTS) ||
+    parseCsv(getEnv("SOLANA_RPC_ENDPOINTS")) ||
     PUBLIC_SOLANA_RPC_ENDPOINTS,
-  REWARDS_PAYOUTS_ENABLED: process.env.REWARDS_PAYOUTS_ENABLED === "true",
-  MORALIS_API_KEY: process.env.MORALIS_API_KEY,
-  SMART_CONTRACT_ENABLED: process.env.SMART_CONTRACT_ENABLED === "true",
+  REWARDS_PAYOUTS_ENABLED: getEnv("REWARDS_PAYOUTS_ENABLED") === "true",
+  MORALIS_API_KEY: getEnv("MORALIS_API_KEY"),
+  SMART_CONTRACT_ENABLED: getEnv("SMART_CONTRACT_ENABLED") === "true",
 };
 
 export const ADMIN_CONFIG = {
