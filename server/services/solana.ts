@@ -79,14 +79,16 @@ export async function transferTokens(
     }
 
     const transaction = new Transaction().add(
-      createTransferInstruction(
-        fromTokenAccount.address,
-        toTokenAccount.address,
-        fromKeypair.publicKey,
-        BigInt(Math.round(amount * Math.pow(10, 6))), // Fixed decimal handling with BigInt
-        [],
-        TOKEN_PROGRAM_ID
-      )
+        createTransferInstruction(
+          fromTokenAccount.address,
+          toTokenAccount.address,
+          fromKeypair.publicKey,
+          // Note: Assuming 6 decimals for the platform token ($DROPY)
+          // For general tokens, this should be fetched from the mint account
+          BigInt(Math.round(amount * Math.pow(10, 6))),
+          [],
+          TOKEN_PROGRAM_ID
+        )
     );
 
     // Set recent blockhash for reliable transaction

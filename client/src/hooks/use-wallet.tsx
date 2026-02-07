@@ -61,7 +61,8 @@ export function WalletProvider({ children }: { children: ReactNode }) {
           setSolBalance(balance / LAMPORTS_PER_SOL);
           return; // Success
         } catch (e) {
-          console.warn(`Balance fetch failed for ${endpoint}`);
+          // Suppress warnings for expected RPC flakiness in development
+          // console.warn(`Balance fetch failed for ${endpoint}`);
         }
       }
       setSolBalance(0);
