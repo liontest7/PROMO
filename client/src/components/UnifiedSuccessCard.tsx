@@ -37,7 +37,7 @@ export function UnifiedSuccessCard({
   const [, setLocation] = useLocation();
 
   useEffect(() => {
-    if (isOpen && type === 'campaign') {
+    if (isOpen) {
       const duration = 3 * 1000;
       const animationEnd = Date.now() + duration;
       const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 9999 };
