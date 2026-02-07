@@ -194,19 +194,13 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
     form.setValue("initialMarketCap", "");
 
     try {
-      const results = await Promise.allSettled([
-        fetch(`https://api.dexscreener.com/latest/dex/tokens/${address}`).then(r => r.json()),
-        fetch(`https://pmpapi.fun/api/get_metadata/${address}`).then(r => r.json()),
-        fetch(`https://tokens.jup.ag/token/${address}`).then(r => r.json()),
-        fetch(`https://solana-gateway.moralis.io/token/mainnet/${address}/metadata`, {
-          headers: { accept: "application/json", "X-API-Key": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJub25jZSI6ImRhY2M3ZmQ1LWYyOTgtNGY5Zi1iZDIwLTdiYWM5MWRkMjNhNCIsIm9yZ0lkIjoiNDcxNTg3IiwidXNlcklkIjoiNDg1MTI3IiwidHlwZUlkIjoiYmVlNmFiMTItODg0NS00Nzc3LWJlMDQtODU4ODYzOTYxMjAxIiwidHlwZSI6IlBST0pFQ1QiLCJpYXQiOjE3NTgzNDIwMzksImV4cCI6NDkxNDEwMjAzOX0.twhytkJWhGoqh5NVfhSkG9Irub-cS2cSSqKqPCI5Ur8" },
-        }).then(r => r.json())
-      ]);
+      const metadataResponse = await fetch(`/api/tokens/metadata?address=${address}`);
+      const metadata = metadataResponse.ok ? await metadataResponse.json() : null;
 
-      const dexData = results[0].status === 'fulfilled' ? results[0].value : null;
-      const pumpData = results[1].status === 'fulfilled' ? results[1].value : null;
-      const jupData = results[2].status === 'fulfilled' ? results[2].value : null;
-      const moralisData = results[3].status === 'fulfilled' ? results[3].value : null;
+      const dexData = metadata?.dexData ?? null;
+      const pumpData = metadata?.pumpData ?? null;
+      const jupData = metadata?.jupData ?? null;
+      const moralisData = metadata?.moralisData ?? null;
 
       let found = false;
       let description = "";

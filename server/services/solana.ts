@@ -1,10 +1,10 @@
 import { Connection, Keypair, PublicKey, Transaction, SystemProgram, sendAndConfirmTransaction } from "@solana/web3.js";
-import { CONFIG } from "@shared/config";
+import { SERVER_CONFIG } from "@shared/config";
 import { getOrCreateAssociatedTokenAccount, createTransferInstruction, TOKEN_PROGRAM_ID } from "@solana/spl-token";
 import memoize from "memoizee";
 
 const getSolanaConnectionRaw = async () => {
-  const endpoints = CONFIG.SOLANA_RPC_ENDPOINTS || ["https://api.mainnet-beta.solana.com"];
+  const endpoints = SERVER_CONFIG.SOLANA_RPC_ENDPOINTS;
   for (const endpoint of endpoints) {
     try {
       const connection = new Connection(endpoint, {
@@ -112,7 +112,7 @@ export async function claimFromSmartContract(
   userWallet: string,
   amount: number
 ): Promise<string> {
-  if (!CONFIG.SMART_CONTRACT?.ENABLED) {
+  if (!process.env.SMART_CONTRACT_ENABLED) {
     throw new Error("Smart contract integration is not enabled yet");
   }
   // TODO: Implement Anchor/Program call here
