@@ -109,6 +109,9 @@ app.use((req, res, next) => {
 });
 
 (async () => {
+  const { checkDatabaseConnection } = await import("./db");
+  await checkDatabaseConnection();
+
   await registerRoutes(httpServer, app);
 
   // Initialize Automation Service
