@@ -1,86 +1,20 @@
 import { Express } from "express";
-import { generators } from "openid-client";
-import fetch from "node-fetch";
-import { storage } from "../storage";
-import { twitterService } from "../services/twitter";
-
-const TWITTER_REDIRECT_URI = process.env.TWITTER_REDIRECT_URI!;
+import { twitterAuthService } from "../services/auth";
 
 export async function setupTwitterRoutes(app: Express) {
   app.get("/api/auth/twitter", async (req, res) => {
     const { code, state, walletAddress } = req.query;
-    const twitterClient = await twitterService.getClient();
 
-    /* ================= CALLBACK ================= */
     if (code) {
-      console.log("[Twitter OAuth2] Callback received with code and state:", { 
-        state, 
-        sessionId: req.sessionID,
-        sessionData: req.session
-      });
-      const session = (req.session as any).twitterAuth;
-      console.log("[Twitter OAuth2] Session data from req.session.twitterAuth:", session);
-
-      if (!session || session.state !== state) {
-        console.error("[Twitter OAuth2] Session mismatch or missing:", { 
-          hasSession: !!session, 
-          sessionState: session?.state, 
-          queryState: state,
-          sessionId: req.sessionID
-        });
-        return res.status(400).send("Invalid or expired session");
-      }
-
       try {
-        const tokenSet = await twitterClient.oauthCallback(
-          TWITTER_REDIRECT_URI,
-          { code: code as string, state: state as string },
-          { 
-            code_verifier: session.code_verifier,
-            state: session.state 
-          },
+        const { accessToken, twitterUser } = await twitterAuthService.handleCallback(
+          code as string,
+          state as string,
+          (req.session as any).twitterAuth
         );
 
-        console.log("[Twitter OAuth2] Token set received");
-        const accessToken = tokenSet.access_token;
-        if (!accessToken) throw new Error("No access token returned");
-
-        const userRes = await fetch(
-          "https://api.twitter.com/2/users/me?user.fields=profile_image_url,username,created_at,public_metrics",
-          {
-            headers: {
-              Authorization: `Bearer ${accessToken}`,
-            },
-          },
-        );
-
-        const userJson: any = await userRes.json();
-        const twitterUser = {
-          ...userJson.data,
-          followers_count: userJson.data?.public_metrics?.followers_count || 0
-        };
-
-        if (!twitterUser) {
-          throw new Error("Failed to fetch Twitter user");
-        }
-
-        // Check if this Twitter account is already linked to another wallet
-        const existingUser = await storage.getUserByTwitterHandle(twitterUser.username);
-        if (existingUser && existingUser.walletAddress !== session.walletAddress) {
-          return res.status(400).send(`This Twitter account (@${twitterUser.username}) is already linked to another wallet.`);
-        }
-
-        const user = await storage.getUserByWallet(session.walletAddress);
-        if (user) {
-          await storage.updateUserSocials(user.id, {
-            twitterHandle: twitterUser.username,
-            profileImageUrl: twitterUser.profile_image_url,
-          });
-          // Store token securely in session or encrypted in DB for verification
-          (req.session as any).twitterAccessToken = accessToken;
-          (req.session as any).twitterUser = twitterUser;
-        }
-
+        (req.session as any).twitterAccessToken = accessToken;
+        (req.session as any).twitterUser = twitterUser;
         delete (req.session as any).twitterAuth;
 
         return res.send(`
@@ -93,20 +27,17 @@ export async function setupTwitterRoutes(app: Express) {
             }
           </script>
         `);
-      } catch (err) {
+      } catch (err: any) {
         console.error("[Twitter OAuth2 Error]", err);
-        return res.status(500).send("Twitter authentication failed");
+        return res.status(400).send(err.message || "Twitter authentication failed");
       }
     }
 
-    /* ================= START LOGIN ================= */
     if (!walletAddress) {
       return res.status(400).send("Wallet address required");
     }
 
-    const stateValue = generators.state();
-    const codeVerifier = generators.codeVerifier();
-    const codeChallenge = generators.codeChallenge(codeVerifier);
+    const { state: stateValue, codeVerifier, codeChallenge } = twitterAuthService.generateAuthParams();
 
     (req.session as any).twitterAuth = {
       state: stateValue,
@@ -114,19 +45,14 @@ export async function setupTwitterRoutes(app: Express) {
       walletAddress,
     };
 
-    // Explicitly save session before redirecting
     await new Promise<void>((resolve, reject) => {
       req.session.save((err) => {
-        if (err) {
-          console.error("[Twitter OAuth2] Session save error:", err);
-          reject(err);
-        } else {
-          console.log("[Twitter OAuth2] Session saved successfully, ID:", req.sessionID);
-          resolve();
-        }
+        if (err) reject(err);
+        else resolve();
       });
     });
 
+    const twitterClient = await twitterAuthService.getClient();
     const authUrl = twitterClient.authorizationUrl({
       scope: "tweet.read users.read offline.access",
       state: stateValue,
@@ -134,7 +60,6 @@ export async function setupTwitterRoutes(app: Express) {
       code_challenge_method: "S256",
     });
 
-    console.log("[Twitter OAuth2] Redirecting to:", authUrl);
     return res.redirect(authUrl);
   });
 }

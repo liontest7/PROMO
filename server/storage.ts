@@ -157,7 +157,14 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getSuspiciousUsers(): Promise<User[]> {
-    return await db.select().from(users).where(sql`${users.reputationScore} > 200 OR ${users.balance}::numeric > 500 OR ${users.status} = 'suspended'`).orderBy(desc(users.reputationScore));
+    return await db.select({
+      id: users.id,
+      walletAddress: users.walletAddress,
+      username: users.username,
+      status: users.status,
+      reputationScore: users.reputationScore,
+      balance: users.balance
+    }).from(users).where(sql`${users.reputationScore} > 200 OR ${users.balance}::numeric > 500 OR ${users.status} = 'suspended'`).orderBy(desc(users.reputationScore));
   }
 
   async getSuspiciousCampaigns(): Promise<(Campaign & { actions: Action[] })[]> {
