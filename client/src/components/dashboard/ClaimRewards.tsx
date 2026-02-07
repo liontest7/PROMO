@@ -6,7 +6,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Gift, Loader2, Send } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
-import { SuccessCard } from "@/components/SuccessCard";
+import { UnifiedSuccessCard } from "@/components/UnifiedSuccessCard";
 import confetti from "canvas-confetti";
 
 interface PendingReward {
@@ -162,13 +162,17 @@ export function ClaimRewards({ walletAddress, campaignId, campaignTitle }: { wal
           Tip: Claiming multiple rewards at once saves on network transaction fees.
         </p>
       </CardContent>
-      <SuccessCard 
+      <UnifiedSuccessCard 
         isOpen={celebrationData.isOpen}
         onClose={() => setCelebrationData(prev => ({ ...prev, isOpen: false }))}
-        campaignTitle={celebrationData.campaignTitle}
-        rewardAmount={celebrationData.rewardAmount}
-        tokenName={celebrationData.tokenName}
-        actionTitle={celebrationData.actionTitle}
+        type="action"
+        data={{
+          title: celebrationData.actionTitle,
+          campaignTitle: celebrationData.campaignTitle,
+          rewardAmount: celebrationData.rewardAmount,
+          tokenName: celebrationData.tokenName,
+          actionTitle: celebrationData.actionTitle
+        } as any}
       />
     </Card>
   );

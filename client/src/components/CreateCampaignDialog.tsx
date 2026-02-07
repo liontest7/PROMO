@@ -29,7 +29,7 @@ import { BasicSettings } from "./create-campaign/BasicSettings";
 import { EngagementActions } from "./create-campaign/EngagementActions";
 import { CampaignProtections } from "./create-campaign/CampaignProtections";
 import { CampaignPreview } from "./create-campaign/CampaignPreview";
-import { CampaignSuccessCard } from "./CampaignSuccessCard";
+import { UnifiedSuccessCard } from "./UnifiedSuccessCard";
 
 const formSchema = insertCampaignSchema.extend({
   title: z.string().min(3, "Campaign title must be at least 3 characters").max(50, "Title too long"),

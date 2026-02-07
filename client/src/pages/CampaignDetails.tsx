@@ -24,7 +24,7 @@ import {
 import { formatDistanceToNow } from "date-fns";
 import { cn } from "@/lib/utils";
 import { CONFIG } from "@shared/config";
-import { SuccessCard } from "@/components/SuccessCard";
+import { UnifiedSuccessCard } from "@/components/UnifiedSuccessCard";
 import confetti from "canvas-confetti";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { type Action, type Campaign, type Execution, type CampaignWithActions } from "@shared/schema";
@@ -449,13 +449,17 @@ export default function CampaignDetails() {
               </div>
             </section>
 
-            <SuccessCard 
+            <UnifiedSuccessCard 
               isOpen={celebrationData.isOpen}
               onClose={() => setCelebrationData(prev => ({ ...prev, isOpen: false }))}
-              campaignTitle={celebrationData.campaignTitle}
-              rewardAmount={celebrationData.rewardAmount}
-              tokenName={celebrationData.tokenName}
-              actionTitle={celebrationData.actionTitle}
+              type="action"
+              data={{
+                title: celebrationData.actionTitle,
+                campaignTitle: celebrationData.campaignTitle,
+                rewardAmount: celebrationData.rewardAmount,
+                tokenName: celebrationData.tokenName,
+                actionTitle: celebrationData.actionTitle
+              } as any}
             />
 
             <section className="space-y-4">
