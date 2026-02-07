@@ -176,11 +176,42 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getCampaigns(creatorId?: number): Promise<(Campaign & { actions: Action[] })[]> {
-    const allCampaigns = await (creatorId ? db.select().from(campaigns).where(eq(campaigns.creatorId, creatorId)).orderBy(desc(campaigns.createdAt)) : db.select().from(campaigns).orderBy(desc(campaigns.createdAt)));
+    const allCampaigns = await (creatorId 
+      ? db.select({
+          id: campaigns.id,
+          title: campaigns.title,
+          tokenName: campaigns.tokenName,
+          tokenSymbol: campaigns.tokenSymbol,
+          tokenAddress: campaigns.tokenAddress,
+          campaignType: campaigns.campaignType,
+          status: campaigns.status,
+          totalBudget: campaigns.totalBudget,
+          remainingBudget: campaigns.remainingBudget,
+          slug: campaigns.slug,
+          imageUrl: campaigns.imageUrl,
+          isPremium: campaigns.isPremium,
+          createdAt: campaigns.createdAt
+        }).from(campaigns).where(eq(campaigns.creatorId, creatorId)).orderBy(desc(campaigns.createdAt)) 
+      : db.select({
+          id: campaigns.id,
+          title: campaigns.title,
+          tokenName: campaigns.tokenName,
+          tokenSymbol: campaigns.tokenSymbol,
+          tokenAddress: campaigns.tokenAddress,
+          campaignType: campaigns.campaignType,
+          status: campaigns.status,
+          totalBudget: campaigns.totalBudget,
+          remainingBudget: campaigns.remainingBudget,
+          slug: campaigns.slug,
+          imageUrl: campaigns.imageUrl,
+          isPremium: campaigns.isPremium,
+          createdAt: campaigns.createdAt
+        }).from(campaigns).orderBy(desc(campaigns.createdAt)));
+
     if (allCampaigns.length === 0) return [];
     const campaignIds = allCampaigns.map(c => c.id);
     const allActions = await db.select().from(actions).where(sql`${actions.campaignId} IN (${sql.join(campaignIds.map(id => sql`${id}`), sql`, `)})`);
-    return allCampaigns.map(campaign => ({ ...campaign, actions: allActions.filter(a => a.campaignId === campaign.id) }));
+    return allCampaigns.map(campaign => ({ ...campaign, actions: allActions.filter(a => a.campaignId === campaign.id) })) as any;
   }
 
   async getCampaign(id: number): Promise<(Campaign & { actions: Action[] }) | undefined> {
@@ -273,13 +304,15 @@ export class DatabaseStorage implements IStorage {
       .innerJoin(campaigns, eq(executions.campaignId, campaigns.id))
       .where(sql`${executions.userId} = ${userId} AND ${executions.status} = 'verified' AND ${executions.withdrawn} = false`);
     
-    const grouped = pending.reduce((acc, curr) => {
-      const key = curr.campaignId;
-      if (!acc[key]) acc[key] = { campaignId: curr.campaignId, amount: "0", tokenName: curr.tokenName, tokenAddress: curr.tokenAddress };
-      acc[key].amount = (parseFloat(acc[key].amount) + parseFloat(curr.rewardAmount)).toString();
+    return pending.reduce((acc, curr) => {
+      const existing = acc.find(item => item.campaignId === curr.campaignId);
+      if (existing) {
+        existing.amount = (parseFloat(existing.amount) + parseFloat(curr.rewardAmount)).toString();
+      } else {
+        acc.push({ campaignId: curr.campaignId, amount: curr.rewardAmount, tokenName: curr.tokenName, tokenAddress: curr.tokenAddress });
+      }
       return acc;
-    }, {} as Record<number, any>);
-    return Object.values(grouped);
+    }, [] as any[]);
   }
 
   async claimRewards(userId: number, campaignIds: number[]): Promise<void> {
@@ -319,7 +352,18 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getAllUsers(): Promise<User[]> {
-    return await db.select().from(users).orderBy(desc(users.createdAt));
+    return await db.select({
+      id: users.id,
+      walletAddress: users.walletAddress,
+      username: users.username,
+      twitterHandle: users.twitterHandle,
+      telegramHandle: users.telegramHandle,
+      profileImageUrl: users.profileImageUrl,
+      role: users.role,
+      status: users.status,
+      reputationScore: users.reputationScore,
+      createdAt: users.createdAt
+    }).from(users).orderBy(desc(users.createdAt));
   }
 
   async getAllCampaigns(): Promise<(Campaign & { actions: Action[] })[]> {

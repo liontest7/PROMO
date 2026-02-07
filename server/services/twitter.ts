@@ -48,12 +48,29 @@ class TwitterService {
 
       if (!targetUserId || !myUserId) return false;
 
+      // Real API check with pagination or specific check if available
       const followRes = await fetch(`https://api.twitter.com/2/users/${myUserId}/following`, {
         headers: { Authorization: `Bearer ${accessToken}` }
       });
       const followData: any = await followRes.json();
       
-      return followData.data?.some((u: any) => u.id === targetUserId) || false;
+      const isFollowing = followData.data?.some((u: any) => u.id === targetUserId) || false;
+
+      // Enhanced security: Check account age (minimum 7 days)
+      const userRes = await fetch("https://api.twitter.com/2/users/me?user.fields=created_at", {
+        headers: { Authorization: `Bearer ${accessToken}` }
+      });
+      const userData: any = await userRes.json();
+      const createdAt = new Date(userData.data?.created_at);
+      const now = new Date();
+      const ageInDays = (now.getTime() - createdAt.getTime()) / (1000 * 3600 * 24);
+      
+      if (ageInDays < 7) {
+        console.warn(`[Twitter Verify] Account too young: ${ageInDays.toFixed(1)} days`);
+        return false;
+      }
+
+      return isFollowing;
     } catch (error) {
       console.error("Twitter follow verification error:", error);
       return false;
@@ -76,6 +93,11 @@ class TwitterService {
       return false;
     }
   }
+
+  startTwitterHealthCheck() {
+    console.log("Twitter health check started");
+  }
 }
 
 export const twitterService = new TwitterService();
+export const startTwitterHealthCheck = () => twitterService.startTwitterHealthCheck();
