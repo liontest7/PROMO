@@ -436,7 +436,6 @@ export async function registerRoutes(
         }
 
         try {
-          const { verifyTwitterFollow, verifyTwitterRetweet } = await import("./services/twitter");
           let verified = false;
 
           if (action.type === 'twitter_follow') {
@@ -444,7 +443,7 @@ export async function registerRoutes(
             verified = await twitterService.verifyFollow(accessToken, targetUsername, action.campaignId);
           } else if (action.type === 'twitter_retweet') {
             const tweetId = action.url.split('/').pop()?.split('?')[0] || "";
-            verified = await verifyTwitterRetweet(accessToken, tweetId);
+            verified = await twitterService.verifyRetweet(accessToken, tweetId);
           } else {
             verified = true;
           }
