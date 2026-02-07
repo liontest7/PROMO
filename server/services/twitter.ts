@@ -39,7 +39,7 @@ class TwitterService {
     return data.data?.id || null;
   }
 
-  async verifyFollow(accessToken: string, targetUsername: string): Promise<boolean> {
+  async verifyFollow(accessToken: string, targetUsername: string, campaignId?: number): Promise<boolean> {
     try {
       const [targetUserId, myUserId] = await Promise.all([
         this.getUserId(accessToken, targetUsername),
@@ -56,7 +56,7 @@ class TwitterService {
       
       const isFollowing = followData.data?.some((u: any) => u.id === targetUserId) || false;
 
-      // Enhanced security: Check account age (minimum 7 days)
+      // Enhanced security: Check account age based on campaign requirements
       const userRes = await fetch("https://api.twitter.com/2/users/me?user.fields=created_at", {
         headers: { Authorization: `Bearer ${accessToken}` }
       });
@@ -65,8 +65,16 @@ class TwitterService {
       const now = new Date();
       const ageInDays = (now.getTime() - createdAt.getTime()) / (1000 * 3600 * 24);
       
-      if (ageInDays < 7) {
-        console.warn(`[Twitter Verify] Account too young: ${ageInDays.toFixed(1)} days`);
+      let minAge = 0;
+      if (campaignId) {
+        const campaign = await storage.getCampaign(campaignId);
+        if (campaign?.requirements?.minXAccountAgeDays) {
+          minAge = campaign.requirements.minXAccountAgeDays;
+        }
+      }
+
+      if (ageInDays < minAge) {
+        console.warn(`[Twitter Verify] Account too young: ${ageInDays.toFixed(1)} days. Required: ${minAge} days`);
         return false;
       }
 

@@ -316,8 +316,10 @@ export async function registerRoutes(
 
         // 4. X (Twitter) Account Age
         const { minXAccountAgeDays, minXFollowers, minFollowDurationDays } = campaign.requirements;
+        const twitterUser = (req.session as any).twitterUser;
+        const accessToken = (req.session as any).twitterAccessToken;
+
         if (minXAccountAgeDays && minXAccountAgeDays > 0) {
-          const twitterUser = (req.session as any).twitterUser;
           if (!twitterUser || !twitterUser.created_at) {
              return res.status(400).json({ message: "X account details missing. Please re-link your account." });
           }
@@ -356,8 +358,7 @@ export async function registerRoutes(
             if (!tracking) {
               // Initial follow check
               const accessToken = (req.session as any).twitterAccessToken;
-              const { verifyTwitterFollow } = await import("./services/twitter");
-              const isFollowing = await verifyTwitterFollow(accessToken, targetUsername);
+              const isFollowing = await twitterService.verifyFollow(accessToken, targetUsername, campaign.id);
               
               if (isFollowing) {
                 await db.insert(followerTracking).values({
@@ -440,7 +441,7 @@ export async function registerRoutes(
 
           if (action.type === 'twitter_follow') {
             const targetUsername = action.url.split('/').pop()?.split('?')[0] || "";
-            verified = await verifyTwitterFollow(accessToken, targetUsername);
+            verified = await twitterService.verifyFollow(accessToken, targetUsername, action.campaignId);
           } else if (action.type === 'twitter_retweet') {
             const tweetId = action.url.split('/').pop()?.split('?')[0] || "";
             verified = await verifyTwitterRetweet(accessToken, tweetId);
