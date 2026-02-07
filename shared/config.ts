@@ -58,6 +58,12 @@ export const PLATFORM_CONFIG = {
     DEFLATIONARY_MONK:
       "https://i.ibb.co/ycPX4D4Z/20260110-1319-Meditating-Crypto-Monk-remix-01kekt16kyft7vsz2w75t40rxd.png",
   },
+  SMART_CONTRACT: {
+    ENABLED: false,
+    PROGRAM_ID: "Dropy11111111111111111111111111111111111111", // Placeholder
+    DEVNET_PROGRAM_ID: "Dropy11111111111111111111111111111111111111",
+    MIN_DEPOSIT: 0.1,
+  },
   STATS: {
     // Total tokens burned by the platform through campaign creations
     TOTAL_BURNED: 0,

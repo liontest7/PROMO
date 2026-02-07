@@ -40,7 +40,8 @@ export class CampaignService {
     const campaign = await storage.createCampaign({
       ...campaignData,
       isPremium: data.isPremium === true,
-      gasBudgetSol: gasBudgetSol.toString()
+      gasBudgetSol: gasBudgetSol.toString(),
+      creationFeePaid: !CONFIG.SMART_CONTRACT?.ENABLED // Auto-pay if SC is disabled for testing
     } as any);
 
     if (actionsData.length > 0) {
