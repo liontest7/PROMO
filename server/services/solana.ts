@@ -100,3 +100,19 @@ export async function transferTokens(
     });
   }
 }
+
+/**
+ * Future Smart Contract Interaction Handler
+ * This is a placeholder for the move to Devnet/Program-based payouts.
+ */
+export async function claimFromSmartContract(
+  campaignId: number,
+  userWallet: string,
+  amount: number
+): Promise<string> {
+  if (!CONFIG.SMART_CONTRACT?.ENABLED) {
+    throw new Error("Smart contract integration is not enabled yet");
+  }
+  // TODO: Implement Anchor/Program call here
+  return "sc_placeholder_sig";
+}
