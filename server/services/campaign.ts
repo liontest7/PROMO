@@ -1,6 +1,7 @@
 import { storage } from "../storage";
 import { insertCampaignSchema } from "@shared/schema";
 import { z } from "zod";
+import { CONFIG } from "@shared/config";
 
 export class CampaignService {
   async listCampaigns() {
