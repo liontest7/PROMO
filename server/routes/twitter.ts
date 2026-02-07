@@ -1,28 +1,15 @@
 import { Express } from "express";
-import { Issuer, generators } from "openid-client";
+import { generators } from "openid-client";
 import fetch from "node-fetch";
 import { storage } from "../storage";
+import { twitterService } from "../services/twitter";
 
 const TWITTER_REDIRECT_URI = process.env.TWITTER_REDIRECT_URI!;
-// Must be identical to what is configured in X Developer Portal
 
 export async function setupTwitterRoutes(app: Express) {
-  const twitterIssuer = new Issuer({
-    issuer: "https://twitter.com",
-    authorization_endpoint: "https://twitter.com/i/oauth2/authorize",
-    token_endpoint: "https://api.twitter.com/2/oauth2/token",
-  });
-
-  const twitterClient = new twitterIssuer.Client({
-    client_id: process.env.TWITTER_CLIENT_ID!,
-    client_secret: process.env.TWITTER_CLIENT_SECRET!,
-    redirect_uris: [TWITTER_REDIRECT_URI],
-    response_types: ["code"],
-    token_endpoint_auth_method: "client_secret_basic",
-  });
-
   app.get("/api/auth/twitter", async (req, res) => {
     const { code, state, walletAddress } = req.query;
+    const twitterClient = await twitterService.getClient();
 
     /* ================= CALLBACK ================= */
     if (code) {

@@ -1,156 +1,37 @@
 import { Express } from "express";
-import { storage } from "../storage";
+import { campaignService } from "../services/campaign";
 import { api } from "@shared/routes";
-import { insertCampaignSchema, insertActionSchema, auditLogs, executions } from "@shared/schema";
 import { z } from "zod";
-import { db } from "../db";
-import { eq, and, sql } from "drizzle-orm";
 
 export function setupCampaignRoutes(app: Express) {
   app.get(api.campaigns.list.path, async (req, res) => {
     try {
-      const campaigns = await storage.getCampaigns();
-      // Only show campaigns that have paid the creation fee for the main list
-      res.json(campaigns.filter(c => c.creationFeePaid || c.status === 'active'));
+      const campaigns = await campaignService.listCampaigns();
+      res.json(campaigns);
     } catch (err) {
       res.status(500).json({ message: "Failed to fetch campaigns" });
     }
   });
 
   app.get(api.campaigns.get.path, async (req, res) => {
-    const id = req.params.id;
-    // Handle both numeric ID and Symbol
-    let campaign;
-    if (/^\d+$/.test(id)) {
-      campaign = await storage.getCampaign(parseInt(id));
-    } else {
-      campaign = await storage.getCampaignBySymbol(id);
+    try {
+      const campaign = await campaignService.getCampaign(req.params.id);
+      if (!campaign) return res.status(404).json({ message: "Campaign not found" });
+      res.json(campaign);
+    } catch (err) {
+      res.status(500).json({ message: "Failed to fetch campaign" });
     }
-    
-    if (!campaign) return res.status(404).json({ message: "Campaign not found" });
-    res.json(campaign);
-  });
-
-  app.get("/api/campaigns/symbol/:symbol", async (req, res) => {
-    const campaign = await storage.getCampaignBySymbol(req.params.symbol);
-    if (!campaign) return res.status(404).json({ message: "Campaign not found" });
-    res.json(campaign);
   });
 
   app.post(api.campaigns.create.path, async (req, res) => {
     try {
-      const settings = await storage.getSystemSettings();
-      
-      // Global switch check - ensure it strictly checks for false
-      if (settings && settings.campaignsEnabled === false) {
-        return res.status(503).json({ message: "Campaign creation is temporarily disabled by administrator." });
-      }
-
-      const body = req.body;
-      
-      // Category specific checks
-      if (body.campaignType === "holder_qualification" && settings.holderQualificationEnabled === false) {
-        return res.status(403).json({ message: "Holder Qualification campaigns are currently disabled." });
-      }
-      
-      const hasTwitterKeys = !!(process.env.X_CONSUMER_KEY && process.env.X_CONSUMER_SECRET && process.env.X_BEARER_TOKEN);
-      if (body.campaignType === "engagement") {
-        if (!hasTwitterKeys) {
-          return res.status(503).json({ message: "Social Engagement campaigns are unavailable due to missing Twitter API configuration." });
-        }
-        if (settings.socialEngagementEnabled === false) {
-          return res.status(403).json({ message: "Social Engagement campaigns are currently disabled by administrator." });
-        }
-      }
-
-      const campaignData = insertCampaignSchema.parse(req.body);
-      
-      // Calculate real gas budget based on actions and max claims
-      // 0.000005 SOL per interaction is a very safe estimate for transaction fees
-      const actionsData = Array.isArray(req.body.actions) ? req.body.actions : [];
-      const totalPotentialExecutions = actionsData.reduce((acc: number, action: any) => acc + (Number(action.maxExecutions) || 100), 0);
-      const gasBudgetSol = (totalPotentialExecutions * 0.000005).toFixed(6); 
-
-      // Calculation check: Ensure only advertisers or admins can create
-      const creator = await storage.getUser(Number(body.creatorId));
-      if (!creator || (creator.role !== 'advertiser' && creator.role !== 'admin')) {
-        return res.status(403).json({ message: "Only registered advertisers or admins can launch campaigns." });
-      }
-
-      // Budget sanity check
-      const totalBudgetNum = Number(body.totalBudget);
-      if (isNaN(totalBudgetNum) || totalBudgetNum <= 0) {
-        return res.status(400).json({ message: "Campaign budget must be greater than zero." });
-      }
-
-      const campaign = await storage.createCampaign({
-        ...campaignData,
-        isPremium: req.body.isPremium === true,
-        gasBudgetSol: gasBudgetSol.toString()
-      } as any);
-
-      // Automated Premium Promotion
-      if (campaign.isPremium) {
-        try {
-          const { broadcastPremiumCampaign } = await import("../services/telegram");
-          await broadcastPremiumCampaign(campaign);
-          await storage.createLog({
-            level: "info",
-            source: "PREMIUM_PROMO",
-            message: `Automated premium broadcast triggered for campaign: ${campaign.title}`,
-            details: { campaignId: campaign.id }
-          });
-        } catch (promoError) {
-          console.error("Premium broadcast failed:", promoError);
-          await storage.createLog({
-            level: "error",
-            source: "PREMIUM_PROMO",
-            message: `Automated premium broadcast failed for campaign: ${campaign.title}`,
-            details: { campaignId: campaign.id, error: String(promoError) }
-          });
-        }
-      }
-
-      // Create actions
-      if (actionsData.length > 0) {
-        await Promise.all(actionsData.map((action: any) => 
-          storage.createAction({
-            ...action,
-            campaignId: campaign.id
-          })
-        ));
-      }
-
-      // Process deflationary fee (10,000 $Dropy)
-      const DROPY_TOKEN_ADDRESS = process.env.VITE_DROPY_TOKEN_ADDRESS;
-      if (DROPY_TOKEN_ADDRESS) {
-        // Calculate splits
-        const feeAmount = settings.creationFee || 10000;
-        const burnAmount = Math.floor(feeAmount * (settings.burnPercent / 100));
-        const rewardsAmount = Math.floor(feeAmount * (settings.rewardsPercent / 100));
-        const systemAmount = feeAmount - burnAmount - rewardsAmount;
-
-        console.log(`[Fee System] Processing ${feeAmount} $Dropy fee: ${burnAmount} burn, ${rewardsAmount} rewards, ${systemAmount} system`);
-        
-        // Update weekly rewards pool - Removed as it was deprecated in schema
-        
-        // Log auditing for fee distribution
-        await db.insert(auditLogs).values({
-          adminId: campaign.creatorId,
-          action: "campaign_fee_distribution",
-          targetId: campaign.id,
-          targetType: "campaign",
-          details: { feeAmount, burnAmount, rewardsAmount, systemAmount }
-        });
-      }
-
-      const result = await storage.getCampaign(campaign.id);
-      res.status(201).json(result);
-    } catch (err) {
+      const campaign = await campaignService.createCampaign(req.body);
+      res.status(201).json(campaign);
+    } catch (err: any) {
       if (err instanceof z.ZodError) {
         return res.status(400).json({ message: err.errors[0].message });
       }
-      res.status(500).json({ message: "Failed to create campaign" });
+      res.status(err.message.includes("disabled") ? 403 : 500).json({ message: err.message || "Failed to create campaign" });
     }
   });
 }
