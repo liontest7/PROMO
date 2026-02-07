@@ -3,7 +3,7 @@ export const PLATFORM_CONFIG = {
   TOKEN_SYMBOL: "Dropy",
   FEE_SOL: 0.005,
   TOKENOMICS: {
-    CREATION_FEE: 10000, // Total fee in project tokens
+    CREATION_FEE: 1, // 1 SOL as per new spec
     BURN_PERCENT: 50,
     REWARDS_PERCENT: 40,
     SYSTEM_PERCENT: 10,

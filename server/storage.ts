@@ -343,15 +343,13 @@ export class DatabaseStorage implements IStorage {
     return await db.select().from(users).where(eq(users.status, 'active')).orderBy(desc(users.reputationScore)).limit(100);
   }
 
-  async getLeaderboardData(timeframe: string): Promise<any[]> {
+  async getLeaderboardData(timeframe: string, type: "tasks" | "referrals" = "tasks"): Promise<any[]> {
     const allUsers = await this.getAllUsers();
-    const allExecutions = await this.getAllExecutions();
     
     const now = new Date();
     let startDate: Date | null = null;
     
     if (timeframe === 'weekly') {
-      // Start of current week (Monday 00:00:00)
       startDate = new Date(now);
       const day = startDate.getDay();
       const diff = startDate.getDate() - day + (day === 0 ? -6 : 1);
@@ -361,6 +359,26 @@ export class DatabaseStorage implements IStorage {
       startDate = new Date(now.getFullYear(), now.getMonth(), 1);
     }
 
+    if (type === "referrals") {
+      return allUsers
+        .filter(u => u.referralCount > 0)
+        .map(user => ({
+          id: user.id,
+          name: user.username || (user.twitterHandle ? `@${user.twitterHandle}` : `User ${user.walletAddress.slice(0, 4)}...${user.walletAddress.slice(-4)}`),
+          username: user.username,
+          profileImageUrl: user.profileImageUrl,
+          avatar: user.twitterHandle ? user.twitterHandle[0].toUpperCase() : 'U',
+          points: user.referralCount * 50, // 50 points per valid referral
+          referrals: user.referralCount,
+          walletAddress: user.walletAddress,
+          fullWallet: user.walletAddress,
+          rank: 0
+        }))
+        .sort((a, b) => b.referrals - a.referrals || a.id - b.id)
+        .map((item, index) => ({ ...item, rank: index + 1 }));
+    }
+
+    const allExecutions = await this.getAllExecutions();
     const rankings = allUsers.map(user => {
       const filteredExecutions = allExecutions.filter(e => {
         const isUser = e.userId === user.id;
@@ -431,8 +449,8 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getUser(id: number): Promise<User | undefined> {
-    const [user] = await db.select().from(users).where(eq(users.id, id));
-    return user;
+    const results = await db.select().from(users).where(eq(users.id, id));
+    return results[0];
   }
 
   async getExecutionCount(userId: number, timeframeMs: number): Promise<number> {

@@ -23,13 +23,26 @@ export function setupUserRoutes(app: Express) {
       if (!user) {
         console.log(`[Auth API] Creating new user for: ${input.walletAddress}`);
         const isSuperAdmin = ADMIN_CONFIG.superAdminWallets.includes(input.walletAddress);
+        
+        // Handle referral link if present in session or headers (mocked for now)
+        const referrerWallet = req.headers['x-referrer-wallet'] as string;
+        let referrerId: number | undefined;
+        if (referrerWallet) {
+          const referrer = await storage.getUserByWallet(referrerWallet);
+          if (referrer) {
+            referrerId = referrer.id;
+            await storage.updateUser(referrer.id, { referralCount: referrer.referralCount + 1 });
+          }
+        }
+
         const userData = { 
           walletAddress: input.walletAddress,
           role: isSuperAdmin ? "admin" : (input.role || "user"),
           balance: "0",
           reputationScore: 0,
           status: "active",
-          acceptedTerms: false
+          acceptedTerms: false,
+          referrerId
         };
         // @ts-ignore
         user = await storage.createUser(userData);

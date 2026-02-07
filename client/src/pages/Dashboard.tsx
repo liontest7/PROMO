@@ -12,6 +12,7 @@ import { ProfileHeader } from "@/components/dashboard/ProfileHeader";
 import { TokenPortfolios } from "@/components/dashboard/TokenPortfolios";
 import { VerificationLogs } from "@/components/dashboard/VerificationLogs";
 import { EcosystemContribution } from "@/components/dashboard/EcosystemContribution";
+import { ReferralSystem } from "@/components/dashboard/ReferralSystem";
 import { CreateCampaignDialog } from "@/components/CreateCampaignDialog";
 import { PendingRewardsReminder } from "@/components/dashboard/PendingRewardsReminder";
 import { Button } from "@/components/ui/button";
@@ -148,6 +149,10 @@ export default function Dashboard() {
               reputationScore={reputationScore}
               level={level}
               progress={progress}
+            />
+            <ReferralSystem 
+              walletAddress={walletAddress}
+              referralCount={user?.referralCount || 0}
             />
             <IdentitySync user={user} walletAddress={walletAddress} />
           </div>

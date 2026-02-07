@@ -127,18 +127,18 @@ export async function registerRoutes(
   app.get("/api/leaderboard", async (req, res) => {
     try {
       const timeframe = (req.query.timeframe as string) || "all_time";
+      const type = (req.query.type as "tasks" | "referrals") || "tasks";
       
-      // Optimization: Using dedicated storage method for efficiency
-      const leaderboardData = await storage.getLeaderboardData(timeframe);
+      const leaderboardData = await storage.getLeaderboardData(timeframe, type);
 
-      // Get creation fee and rewards percent from settings for dynamic prize pool calculation
       const settings = await storage.getSystemSettings();
       const allCampaigns = (await storage.getAllCampaigns()).filter(c => c.creationFeePaid);
       const rewardsPercent = ((settings?.rewardsPercent || 40)) / 100;
       const creationFee = settings?.creationFee || PLATFORM_CONFIG.TOKENOMICS.CREATION_FEE;
       
-      // Real weekly prize pool: (Total Campaigns * Creation Fee) * Rewards Percent
-      const weeklyPrizePool = allCampaigns.length * creationFee * rewardsPercent;
+      const totalPrizePool = allCampaigns.length * creationFee * rewardsPercent;
+      // 40% for tasks, 40% for referrals as per spec
+      const weeklyPrizePool = type === "tasks" ? totalPrizePool * 0.4 : totalPrizePool * 0.4;
 
       res.json({
         ranking: leaderboardData,

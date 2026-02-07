@@ -20,6 +20,7 @@ import { UserProfileDialog } from "@/components/UserProfileDialog";
 
 export default function Leaderboard() {
   const [view, setView] = useState<"ranking" | "history">("ranking");
+  const [lbType, setLbType] = useState<"tasks" | "referrals">("tasks");
   const [timeframe, setTimeframe] = useState<"all_time" | "monthly" | "weekly">("weekly");
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
@@ -33,9 +34,9 @@ export default function Leaderboard() {
   };
 
   const { data: leaderboardRes, isLoading, error } = useQuery<any>({
-    queryKey: ["/api/leaderboard", timeframe],
+    queryKey: ["/api/leaderboard", timeframe, lbType],
     queryFn: async () => {
-      const response = await fetch(`/api/leaderboard?timeframe=${timeframe}`);
+      const response = await fetch(`/api/leaderboard?timeframe=${timeframe}&type=${lbType}`);
       if (!response.ok) throw new Error("Failed to fetch leaderboard");
       return response.json();
     },
@@ -178,34 +179,34 @@ export default function Leaderboard() {
             <div className="flex flex-col items-center justify-center relative py-6">
               <div className="text-center space-y-4">
                 <h1 className="text-7xl md:text-9xl font-display font-black uppercase italic tracking-tighter leading-none text-white drop-shadow-[0_0_30px_rgba(255,255,255,0.2)]">
-                  Hall <span className="text-primary">of Fame</span>
+                  {lbType === "tasks" ? "Task" : "Referral"} <span className="text-primary">Leaders</span>
                 </h1>
-                <p className="text-white uppercase tracking-[0.5em] text-sm md:text-base font-black italic">Top Ecosystem Contributors • Real-time Sync</p>
+                <p className="text-white uppercase tracking-[0.5em] text-sm md:text-base font-black italic">
+                  {lbType === "tasks" ? "Top Ecosystem Contributors" : "Top Growth Ambassadors"} • Real-time Sync
+                </p>
                 
                 <div className="pt-10 pb-10">
                   <div className="flex flex-col items-center gap-4">
                     <div className="flex bg-white/5 p-2 rounded-2xl border border-white/10 shadow-2xl backdrop-blur-xl">
                       <Button 
                         variant="ghost" 
-                        onClick={() => setView("ranking")}
+                        onClick={() => setLbType("tasks")}
                         className={cn(
                           "rounded-xl font-black uppercase tracking-widest text-sm px-10 h-12 transition-all",
-                          view === "ranking" ? "bg-primary text-white shadow-[0_0_20px_rgba(34,197,94,0.3)]" : "text-white/90 hover:text-white hover:bg-white/10"
+                          lbType === "tasks" ? "bg-primary text-white shadow-[0_0_20px_rgba(34,197,94,0.3)]" : "text-white/90 hover:text-white hover:bg-white/10"
                         )}
                       >
-                        <Trophy className="w-5 h-5 mr-2" />
-                        Live Ranking
+                        Tasks
                       </Button>
                       <Button 
                         variant="ghost" 
-                        onClick={() => setView("history")}
+                        onClick={() => setLbType("referrals")}
                         className={cn(
                           "rounded-xl font-black uppercase tracking-widest text-sm px-10 h-12 transition-all",
-                          view === "history" ? "bg-primary text-white shadow-[0_0_20px_rgba(34,197,94,0.3)]" : "text-white/90 hover:text-white hover:bg-white/10"
+                          lbType === "referrals" ? "bg-primary text-white shadow-[0_0_20px_rgba(34,197,94,0.3)]" : "text-white/90 hover:text-white hover:bg-white/10"
                         )}
                       >
-                        <History className="w-5 h-5 mr-2" />
-                        Prize History
+                        Referrals
                       </Button>
                     </div>
                   </div>
@@ -378,7 +379,7 @@ export default function Leaderboard() {
                   <span className="w-16 md:w-20">Rank</span>
                   <span className="flex-1">Contributor</span>
                   <span className="w-32 md:w-40 text-right">Score</span>
-                  <span className="w-32 md:w-40 text-right">Tasks</span>
+                  <span className="w-32 md:w-40 text-right">{lbType === "tasks" ? "Tasks" : "Referrals"}</span>
                 </div>
                 <CardContent className="p-0">
                   <div className="divide-y divide-white/10">
@@ -419,7 +420,7 @@ export default function Leaderboard() {
                         <p className="text-3xl font-black font-display text-primary drop-shadow-[0_0_15px_rgba(34,197,94,0.4)]">{(user.points || 0).toLocaleString()}</p>
                       </div>
                       <div className="w-40 text-right">
-                        <p className="text-2xl font-black font-display text-white/50">{user.tasks || 0}</p>
+                        <p className="text-2xl font-black font-display text-white/50">{lbType === "tasks" ? (user.tasks || 0) : (user.referrals || 0)}</p>
                       </div>
                     </motion.div>
                   )) : (

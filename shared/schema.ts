@@ -47,6 +47,8 @@ export const users = pgTable("users", {
   acceptedTerms: boolean("accepted_terms").default(false).notNull(),
   earnedXBonus: boolean("earned_x_bonus").default(false).notNull(),
   earnedTGBonus: boolean("earned_tg_bonus").default(false).notNull(),
+  referrerId: integer("referrer_id").references(() => users.id),
+  referralCount: integer("referral_count").default(0).notNull(),
   createdAt: timestamp("created_at").defaultNow(),
 });
 
@@ -154,9 +156,17 @@ export const executions = pgTable("executions", {
 
 // === RELATIONS ===
 
-export const usersRelations = relations(users, ({ many }) => ({
+export const usersRelations = relations(users, ({ one, many }) => ({
   campaigns: many(campaigns),
   executions: many(executions),
+  referrer: one(users, {
+    fields: [users.referrerId],
+    references: [users.id],
+    relationName: "user_referrals",
+  }),
+  referrals: many(users, {
+    relationName: "user_referrals",
+  }),
 }));
 
 export const campaignsRelations = relations(campaigns, ({ one, many }) => ({

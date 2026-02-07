@@ -228,20 +228,20 @@ export default function About() {
           <div className="grid md:grid-cols-3 gap-8">
             <Card className="glass-card border-primary/20 bg-primary/5">
               <CardContent className="p-8">
-                <h3 className="text-2xl font-black mb-4 uppercase italic tracking-tight text-white">Deflationary Burn</h3>
-                <p className="text-lg text-white/80 leading-relaxed font-medium">Every campaign creation removes {burnAmount.toLocaleString()} ${PLATFORM_CONFIG.TOKEN_SYMBOL} from circulation forever, reducing supply.</p>
+                <h3 className="text-2xl font-black mb-4 uppercase italic tracking-tight text-white">Platform Model</h3>
+                <p className="text-lg text-white/80 leading-relaxed font-medium">Advertisers pay 1 SOL total fee which covers rewards distribution gas, platform maintenance, and $DROPY buybacks.</p>
               </CardContent>
             </Card>
             <Card className="glass-card border-white/5 bg-white/[0.02]">
               <CardContent className="p-8">
-                <h3 className="text-2xl font-black mb-4 uppercase italic tracking-tight text-white">Governance & Voting</h3>
-                <p className="text-lg text-white/80 leading-relaxed font-medium">Token holders shape the future of the platform, voting on roadmap priorities and fee structures.</p>
+                <h3 className="text-2xl font-black mb-4 uppercase italic tracking-tight text-white">Community Rewards</h3>
+                <p className="text-lg text-white/80 leading-relaxed font-medium">40% of campaign fees are used to buy $DROPY and distributed to the top contributors on our leaderboards.</p>
               </CardContent>
             </Card>
             <Card className="glass-card border-white/5 bg-white/[0.02]">
               <CardContent className="p-8">
-                <h3 className="text-2xl font-black mb-4 uppercase italic tracking-tight text-white">Priority Access</h3>
-                <p className="text-lg text-white/80 leading-relaxed font-medium">Holders get first access to high-reward campaigns and exclusive community-only distributions.</p>
+                <h3 className="text-2xl font-black mb-4 uppercase italic tracking-tight text-white">Zero Cost for Users</h3>
+                <p className="text-lg text-white/80 leading-relaxed font-medium">Users never pay for gas or fees. Complete tasks, earn tokens, and grow with the ecosystem.</p>
               </CardContent>
             </Card>
           </div>

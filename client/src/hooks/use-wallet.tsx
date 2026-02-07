@@ -146,7 +146,10 @@ export function WalletProvider({ children }: { children: ReactNode }) {
       
       const res = await fetch('/api/users/auth', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'x-referrer-wallet': new URLSearchParams(window.location.search).get('ref') || ''
+        },
         body: JSON.stringify({
           walletAddress: publicAddress,
           role: pendingRole
