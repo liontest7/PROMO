@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction, Express } from "express";
 import { storage } from "../storage";
 import { PLATFORM_CONFIG } from "@shared/config";
+import { SERVER_CONFIG } from "@shared/config";
 import os from "os";
 import { AutomationService } from "../services/automation";
 
@@ -354,7 +355,7 @@ export function setupAdminRoutes(app: Express) {
         balanceSol,
         balanceDropy,
         weeklyRewardsPool,
-        network: "mainnet-beta",
+        network: SERVER_CONFIG.SOLANA_CLUSTER,
         recentLogs: walletLogs.slice(0, 10)
       });
     } catch (err) {

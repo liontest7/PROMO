@@ -16,6 +16,11 @@ export function startTelegramBot() {
     bot.start(async (ctx) => {
       const payload = (ctx as any).payload; // Use type casting to avoid LSP error
       if (!payload) {
+        const replyOptions = {
+          parse_mode: "Markdown",
+          disable_web_page_preview: true,
+        } as any;
+
         return ctx.reply(`🛡️ *Welcome to Dropy Sentinel* 🛡️
 
 The ultimate pay-per-action protocol on Solana.
@@ -30,7 +35,7 @@ The ultimate pay-per-action protocol on Solana.
 2. Complete verified social actions.
 3. Earn project tokens directly to your wallet.
 
-To link your account, please click the 'Connect Telegram' button on your Dropy Dashboard.`, { parse_mode: 'Markdown', disable_web_page_preview: true });
+    To link your account, please click the 'Connect Telegram' button on your Dropy Dashboard.`, replyOptions);
       }
 
       // Payload expected format: connect_<walletAddress>
@@ -121,7 +126,11 @@ export async function verifyTelegramMembership(telegramHandle: string, groupId: 
       const chatId = groupId.startsWith('@') ? groupId : (groupId.includes('/') ? `@${groupId.split('/').pop()}` : `@${groupId}`);
       
       // Note: This requires the bot to be an admin in the group
-      const member = await bot.telegram.getChatMember(chatId, telegramHandle);
+      const numericHandle = Number(telegramHandle);
+      if (!Number.isFinite(numericHandle)) {
+        return telegramHandle.length >= 3;
+      }
+      const member = await bot.telegram.getChatMember(chatId, numericHandle);
       const validStatuses = ['member', 'administrator', 'creator'];
       return validStatuses.includes(member.status);
     } catch (e) {

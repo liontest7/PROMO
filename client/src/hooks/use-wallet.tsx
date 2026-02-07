@@ -2,6 +2,7 @@ import { createContext, useContext, useState, ReactNode, useEffect } from "react
 import { useToast } from "@/hooks/use-toast";
 import { useQueryClient, useQuery } from "@tanstack/react-query";
 import { api } from "@shared/routes";
+import { PUBLIC_SOLANA_RPC_ENDPOINTS } from "@shared/config";
 import { Connection, PublicKey, LAMPORTS_PER_SOL, clusterApiUrl } from "@solana/web3.js";
 import { WalletSelector } from "@/components/WalletSelector";
 
@@ -47,11 +48,7 @@ export function WalletProvider({ children }: { children: ReactNode }) {
 
   const fetchBalance = async (address: string) => {
     try {
-      // Prioritize mainnet, then devnet as fallback
-      const endpoints = [
-        "https://api.mainnet-beta.solana.com",
-        "https://api.devnet.solana.com"
-      ];
+      const endpoints = PUBLIC_SOLANA_RPC_ENDPOINTS;
       
       for (const endpoint of endpoints) {
         try {

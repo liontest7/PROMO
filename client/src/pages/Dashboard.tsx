@@ -77,6 +77,19 @@ export default function Dashboard() {
 
   const leaderboard = leaderboardData?.ranking || [];
 
+  if (!walletAddress) {
+    return (
+      <div className="min-h-screen bg-background text-foreground">
+        <Navigation />
+        <main className="max-w-7xl mx-auto px-4 py-12">
+          <p className="text-sm text-muted-foreground">
+            Please connect your wallet to view your dashboard.
+          </p>
+        </main>
+      </div>
+    );
+  }
+
   if (statsLoading || userLoading || leaderboardLoading) {
     return (
       <div className="min-h-screen bg-background">
@@ -102,7 +115,7 @@ export default function Dashboard() {
         .sort((a, b) => (Number(b.reputationScore) || 0) - (Number(a.reputationScore) || 0))
         .findIndex((u: any) => u.walletAddress === walletAddress) 
     : -1;
-  const rank = rankIndex !== -1 ? rankIndex + 1 : (Number(stats?.totalUsers) || 100);
+  const rank = rankIndex !== -1 ? rankIndex + 1 : Math.max(leaderboard.length, 1);
   const rankChange = tasksCompleted > 0 ? "up" : "stable";
 
   return (

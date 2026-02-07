@@ -1,7 +1,7 @@
 import { storage } from "../storage";
 import { insertCampaignSchema } from "@shared/schema";
 import { z } from "zod";
-import { CONFIG } from "@shared/config";
+import { SERVER_CONFIG } from "@shared/config";
 
 export class CampaignService {
   async listCampaigns() {
@@ -30,8 +30,12 @@ export class CampaignService {
     const campaignData = insertCampaignSchema.parse(data);
     
     const actionsData = Array.isArray(data.actions) ? data.actions : [];
-    const totalPotentialExecutions = actionsData.reduce((acc: number, action: any) => acc + (Number(action.maxExecutions) || 100), 0);
-    const gasBudgetSol = (totalPotentialExecutions * 0.000005).toFixed(6); 
+    const totalPotentialExecutions = actionsData.reduce(
+      (acc: number, action: any) => acc + (Number(action.maxExecutions) || 100),
+      0
+    );
+    const baseGasBudget = totalPotentialExecutions * 0.000005;
+    const gasBudgetSol = (baseGasBudget * 1.15).toFixed(6);
 
     const creator = await storage.getUser(Number(data.creatorId));
     if (!creator || (creator.role !== 'advertiser' && creator.role !== 'admin')) {
@@ -42,7 +46,7 @@ export class CampaignService {
       ...campaignData,
       isPremium: data.isPremium === true,
       gasBudgetSol: gasBudgetSol.toString(),
-      creationFeePaid: !CONFIG.SMART_CONTRACT?.ENABLED // Auto-pay if SC is disabled for testing
+      creationFeePaid: !SERVER_CONFIG.SMART_CONTRACT_ENABLED
     } as any);
 
     if (actionsData.length > 0) {

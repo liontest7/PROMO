@@ -2,12 +2,6 @@ export const PLATFORM_CONFIG = {
   BURN_AMOUNT: 10000,
   TOKEN_SYMBOL: "Dropy",
   FEE_SOL: 0.005,
-  SOLANA_RPC_ENDPOINTS: [
-    "https://mainnet.helius-rpc.com/?api-key=d2e5b128-da30-4ef0-84ea-d7afaf76c596",
-    "https://mainnet.helius-rpc.com/?api-key=dd4d0f55-719e-4f2e-b8b8-2f686bc7d2bf",
-    "https://api.mainnet-beta.solana.com",
-    "https://solana-mainnet.rpc.extrnode.com",
-  ],
   TOKENOMICS: {
     CREATION_FEE: 10000, // Total fee in project tokens
     BURN_PERCENT: 50,
@@ -86,6 +80,36 @@ export const PLATFORM_CONFIG = {
     MIN_REPUTATION_FOR_REWARD: 50,
     BURN_PERCENTAGE_PER_CAMPAIGN: 5,
   },
+  PAYMENT_MODEL: {
+    GAS_BUFFER_MARGIN: 1.15,
+    DEFAULT_SWAP_BUDGET_SOL: 0.2,
+    LEADERBOARD_TASKS_PERCENT: 40,
+    LEADERBOARD_REFERRALS_PERCENT: 40,
+    SYSTEM_PERCENT: 20,
+    REFERRAL_MIN_TASKS: 1,
+    REFERRAL_MIN_CLAIMS: 1,
+  },
+};
+
+export const PUBLIC_SOLANA_RPC_ENDPOINTS = [
+  "https://api.mainnet-beta.solana.com",
+  "https://api.devnet.solana.com",
+];
+
+const parseCsv = (value?: string) =>
+  value
+    ?.split(",")
+    .map((entry) => entry.trim())
+    .filter(Boolean);
+
+export const SERVER_CONFIG = {
+  SOLANA_CLUSTER: process.env.SOLANA_CLUSTER || "mainnet-beta",
+  SOLANA_RPC_ENDPOINTS:
+    parseCsv(process.env.SOLANA_RPC_ENDPOINTS) ||
+    PUBLIC_SOLANA_RPC_ENDPOINTS,
+  REWARDS_PAYOUTS_ENABLED: process.env.REWARDS_PAYOUTS_ENABLED === "true",
+  MORALIS_API_KEY: process.env.MORALIS_API_KEY,
+  SMART_CONTRACT_ENABLED: process.env.SMART_CONTRACT_ENABLED === "true",
 };
 
 export const ADMIN_CONFIG = {

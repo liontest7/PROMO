@@ -11,6 +11,8 @@ import { PLATFORM_CONFIG } from "@shared/config";
 import { PublicKey } from "@solana/web3.js";
 import { getSolanaConnection } from "./services/solana";
 import { checkIpFraud, verifyTurnstile } from "./services/security";
+import { twitterService } from "./services/twitter";
+import { SERVER_CONFIG } from "@shared/config";
 import { db } from "./db";
 import { eq, and, sql, desc, asc } from "drizzle-orm";
 import { followerTracking, prizeHistory } from "@shared/schema";
@@ -50,6 +52,75 @@ export async function registerRoutes(
     } catch (err) {
       console.error("Public settings error:", err);
       res.status(500).json({ message: "Failed to fetch public settings" });
+    }
+  });
+
+  app.get("/api/health", async (_req, res) => {
+    res.json({
+      ok: true,
+      cluster: SERVER_CONFIG.SOLANA_CLUSTER,
+      payoutsEnabled: SERVER_CONFIG.REWARDS_PAYOUTS_ENABLED,
+      smartContractEnabled: SERVER_CONFIG.SMART_CONTRACT_ENABLED,
+      rpcEndpoints: SERVER_CONFIG.SOLANA_RPC_ENDPOINTS.length,
+      moralisConfigured: Boolean(SERVER_CONFIG.MORALIS_API_KEY),
+      paymentModel: {
+        gasBufferMargin: PLATFORM_CONFIG.PAYMENT_MODEL.GAS_BUFFER_MARGIN,
+        defaultSwapBudgetSol: PLATFORM_CONFIG.PAYMENT_MODEL.DEFAULT_SWAP_BUDGET_SOL,
+        leaderboardTasksPercent: PLATFORM_CONFIG.PAYMENT_MODEL.LEADERBOARD_TASKS_PERCENT,
+        leaderboardReferralsPercent:
+          PLATFORM_CONFIG.PAYMENT_MODEL.LEADERBOARD_REFERRALS_PERCENT,
+        systemPercent: PLATFORM_CONFIG.PAYMENT_MODEL.SYSTEM_PERCENT,
+      },
+      timestamp: new Date().toISOString(),
+    });
+  });
+
+  app.get("/api/tokens/metadata", async (req, res) => {
+    try {
+      const address = req.query.address as string;
+      if (!address) {
+        return res.status(400).json({ message: "Token address is required" });
+      }
+
+      const requests = [
+        fetch(`https://api.dexscreener.com/latest/dex/tokens/${address}`).then(
+          (response) => response.json(),
+        ),
+        fetch(`https://pmpapi.fun/api/get_metadata/${address}`).then((response) =>
+          response.json(),
+        ),
+        fetch(`https://tokens.jup.ag/token/${address}`).then((response) =>
+          response.json(),
+        ),
+      ];
+
+      if (SERVER_CONFIG.MORALIS_API_KEY) {
+        requests.push(
+          fetch(
+            `https://solana-gateway.moralis.io/token/mainnet/${address}/metadata`,
+            {
+              headers: {
+                accept: "application/json",
+                "X-API-Key": SERVER_CONFIG.MORALIS_API_KEY,
+              },
+            },
+          ).then((response) => response.json()),
+        );
+      } else {
+        requests.push(Promise.resolve(null));
+      }
+
+      const results = await Promise.allSettled(requests);
+
+      const dexData = results[0].status === "fulfilled" ? results[0].value : null;
+      const pumpData = results[1].status === "fulfilled" ? results[1].value : null;
+      const jupData = results[2].status === "fulfilled" ? results[2].value : null;
+      const moralisData = results[3].status === "fulfilled" ? results[3].value : null;
+
+      res.json({ dexData, pumpData, jupData, moralisData });
+    } catch (err) {
+      console.error("Metadata aggregator error:", err);
+      res.status(500).json({ message: "Failed to fetch metadata" });
     }
   });
 
@@ -187,8 +258,16 @@ export async function registerRoutes(
       console.log(`[Claim] Processing claim for user ${user.walletAddress} across ${campaignIds.length} campaigns`);
       
       try {
+        if (!SERVER_CONFIG.REWARDS_PAYOUTS_ENABLED) {
+          await storage.claimRewards(user.id, campaignIds);
+          return res.json({
+            success: true,
+            message: "Rewards marked as claimed (payouts disabled).",
+            signatures: [],
+          });
+        }
         const { Keypair } = await import("@solana/web3.js");
-        const { transferTokens } = await import("./services/solana");
+        const { transferTokens, claimFromSmartContract } = await import("./services/solana");
         const bs58 = (await import("bs58")).default;
 
         const systemKeypairString = process.env.SYSTEM_WALLET_PRIVATE_KEY;
@@ -200,12 +279,18 @@ export async function registerRoutes(
         const signatures: string[] = [];
 
         for (const reward of filteredPending) {
-          const sig = await transferTokens(
-            user.walletAddress.trim(),
-            parseFloat(reward.amount),
-            reward.tokenAddress,
-            fromKeypair
-          );
+          const sig = SERVER_CONFIG.SMART_CONTRACT_ENABLED
+            ? await claimFromSmartContract(
+                reward.campaignId,
+                user.walletAddress.trim(),
+                parseFloat(reward.amount),
+              )
+            : await transferTokens(
+                user.walletAddress.trim(),
+                parseFloat(reward.amount),
+                reward.tokenAddress,
+                fromKeypair,
+              );
           signatures.push(sig);
         }
 
