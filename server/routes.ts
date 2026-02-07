@@ -139,25 +139,6 @@ export async function registerRoutes(
     }
   });
 
-  // Remaining specialized routes (Verification/Admin)
-  app.get("/api/admin/settings", async (req, res) => {
-    try {
-      const settings = await storage.getSystemSettings();
-      res.json(settings);
-    } catch (err) {
-      res.status(500).json({ message: "Error fetching settings" });
-    }
-  });
-
-  app.post("/api/admin/settings", async (req, res) => {
-    try {
-      const settings = await storage.updateSystemSettings(req.body);
-      res.json(settings);
-    } catch (err) {
-      res.status(500).json({ message: "Error updating settings" });
-    }
-  });
-
   app.get("/api/rewards/pending", async (req, res) => {
     try {
       const user = await storage.getUserByWallet(req.query.wallet as string);
@@ -172,6 +153,19 @@ export async function registerRoutes(
       res.json(pending);
     } catch (err) {
       res.status(500).json({ message: "Error fetching pending rewards" });
+    }
+  });
+
+  app.get("/api/executions/user/:wallet/campaign/:campaignId", async (req, res) => {
+    try {
+      const user = await storage.getUserByWallet(req.params.wallet);
+      if (!user) return res.status(404).json({ message: "User not found" });
+      const campaignId = parseInt(req.params.campaignId);
+      const allExecutions = await storage.getExecutionsByUser(user.id);
+      const filtered = allExecutions.filter(e => e.campaignId === campaignId);
+      res.json(filtered);
+    } catch (err) {
+      res.status(500).json({ message: "Error fetching user executions" });
     }
   });
 
@@ -224,19 +218,6 @@ export async function registerRoutes(
     } catch (err) {
       console.error("Claim error:", err);
       res.status(500).json({ message: "Error claiming rewards" });
-    }
-  });
-
-  app.get("/api/executions/user/:wallet/campaign/:campaignId", async (req, res) => {
-    try {
-      const user = await storage.getUserByWallet(req.params.wallet);
-      if (!user) return res.status(404).json({ message: "User not found" });
-      const campaignId = parseInt(req.params.campaignId);
-      const allExecutions = await storage.getExecutionsByUser(user.id);
-      const filtered = allExecutions.filter(e => e.campaignId === campaignId);
-      res.json(filtered);
-    } catch (err) {
-      res.status(500).json({ message: "Error fetching user executions" });
     }
   });
 

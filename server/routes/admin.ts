@@ -306,15 +306,14 @@ export function setupAdminRoutes(app: Express) {
   // Wallet Info
   app.get("/api/admin/wallet-info", async (req, res) => {
     try {
-      const { Keypair, PublicKey, Connection } = await import("@solana/web3.js");
+      const { Keypair, PublicKey } = await import("@solana/web3.js");
       const { getAccount, getAssociatedTokenAddress } = await import("@solana/spl-token");
       const bs58 = (await import("bs58")).default;
 
-      const privateKey = process.env.SYSTEM_WALLET_PRIVATE_KEY || process.env.X_BEARER_TOKEN; // Fallback to another secret if key is missing, or ensure it's loaded
+      const privateKey = process.env.SYSTEM_WALLET_PRIVATE_KEY;
       if (!privateKey) {
-        // Log all available env var keys for debugging (omit values)
-        console.warn("[Admin Wallet Info] Available Env Keys:", Object.keys(process.env));
-        return res.status(500).json({ message: "System wallet secret not found in environment" });
+        console.warn("[Admin Wallet Info] System wallet secret not found in environment");
+        return res.status(500).json({ message: "System wallet secret not found in environment. Please check SYSTEM_WALLET_PRIVATE_KEY." });
       }
 
       const keypair = Keypair.fromSecretKey(bs58.decode(privateKey));
