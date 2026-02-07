@@ -434,6 +434,14 @@ export class DatabaseStorage implements IStorage {
     const [user] = await db.select().from(users).where(eq(users.id, id));
     return user;
   }
+
+  async getExecutionCount(userId: number, timeframeMs: number): Promise<number> {
+    const startTime = new Date(Date.now() - timeframeMs);
+    const [result] = await db.select({ count: sql<number>`count(*)` })
+      .from(executions)
+      .where(sql`${executions.userId} = ${userId} AND ${executions.createdAt} > ${startTime}`);
+    return result?.count || 0;
+  }
 }
 
 export const storage = new DatabaseStorage();
