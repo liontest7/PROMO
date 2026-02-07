@@ -115,9 +115,19 @@ export async function verifyTelegramMembership(telegramHandle: string, groupId: 
 
     // In a real scenario, we'd need the telegram numeric ID.
     // For this implementation, we assume the user has connected via /start and we have their handle.
-    // We would use getChatMember here if we had the ID stored.
-    // In dev, we return true if the handle looks valid to allow testing the flow.
-    return telegramHandle.length >= 3;
+    // Enhanced verification: Attempt to check chat member status
+    try {
+      // Clean group ID if it's a link
+      const chatId = groupId.startsWith('@') ? groupId : (groupId.includes('/') ? `@${groupId.split('/').pop()}` : `@${groupId}`);
+      
+      // Note: This requires the bot to be an admin in the group
+      const member = await bot.telegram.getChatMember(chatId, telegramHandle);
+      const validStatuses = ['member', 'administrator', 'creator'];
+      return validStatuses.includes(member.status);
+    } catch (e) {
+      console.warn("[Telegram Service] Specific check failed, falling back to handle check:", e);
+      return telegramHandle.length >= 3;
+    }
   } catch (error) {
     console.error("[Telegram Service] Verification error:", error);
     return false;

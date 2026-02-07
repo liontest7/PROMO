@@ -703,10 +703,18 @@ export function CreateCampaignDialog({ open: controlledOpen, onOpenChange: contr
         </DialogContent>
       </Dialog>
       {showSuccessCard && createdCampaign && (
-        <CampaignSuccessCard
-          campaign={createdCampaign}
-          open={showSuccessCard}
-          onOpenChange={setShowSuccessCard}
+        <UnifiedSuccessCard
+          isOpen={showSuccessCard}
+          onClose={() => setShowSuccessCard(false)}
+          type="campaign"
+          data={{
+            title: createdCampaign.title,
+            tokenName: createdCampaign.tokenName,
+            totalBudget: createdCampaign.totalBudget,
+            maxClaims: createdCampaign.maxClaims,
+            logoUrl: createdCampaign.logoUrl,
+            slug: createdCampaign.slug
+          } as any}
         />
       )}
     </>
