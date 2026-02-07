@@ -157,14 +157,8 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getSuspiciousUsers(): Promise<User[]> {
-    return await db.select({
-      id: users.id,
-      walletAddress: users.walletAddress,
-      username: users.username,
-      status: users.status,
-      reputationScore: users.reputationScore,
-      balance: users.balance
-    }).from(users).where(sql`${users.reputationScore} > 200 OR ${users.balance}::numeric > 500 OR ${users.status} = 'suspended'`).orderBy(desc(users.reputationScore));
+    const results = await db.select().from(users).where(sql`${users.reputationScore} > 200 OR ${users.balance}::numeric > 500 OR ${users.status} = 'suspended'`).orderBy(desc(users.reputationScore));
+    return results;
   }
 
   async getSuspiciousCampaigns(): Promise<(Campaign & { actions: Action[] })[]> {
@@ -177,36 +171,8 @@ export class DatabaseStorage implements IStorage {
 
   async getCampaigns(creatorId?: number): Promise<(Campaign & { actions: Action[] })[]> {
     const allCampaigns = await (creatorId 
-      ? db.select({
-          id: campaigns.id,
-          title: campaigns.title,
-          tokenName: campaigns.tokenName,
-          tokenSymbol: campaigns.tokenSymbol,
-          tokenAddress: campaigns.tokenAddress,
-          campaignType: campaigns.campaignType,
-          status: campaigns.status,
-          totalBudget: campaigns.totalBudget,
-          remainingBudget: campaigns.remainingBudget,
-          slug: campaigns.slug,
-          imageUrl: campaigns.imageUrl,
-          isPremium: campaigns.isPremium,
-          createdAt: campaigns.createdAt
-        }).from(campaigns).where(eq(campaigns.creatorId, creatorId)).orderBy(desc(campaigns.createdAt)) 
-      : db.select({
-          id: campaigns.id,
-          title: campaigns.title,
-          tokenName: campaigns.tokenName,
-          tokenSymbol: campaigns.tokenSymbol,
-          tokenAddress: campaigns.tokenAddress,
-          campaignType: campaigns.campaignType,
-          status: campaigns.status,
-          totalBudget: campaigns.totalBudget,
-          remainingBudget: campaigns.remainingBudget,
-          slug: campaigns.slug,
-          imageUrl: campaigns.imageUrl,
-          isPremium: campaigns.isPremium,
-          createdAt: campaigns.createdAt
-        }).from(campaigns).orderBy(desc(campaigns.createdAt)));
+      ? db.select().from(campaigns).where(eq(campaigns.creatorId, creatorId)).orderBy(desc(campaigns.createdAt)) 
+      : db.select().from(campaigns).orderBy(desc(campaigns.createdAt)));
 
     if (allCampaigns.length === 0) return [];
     const campaignIds = allCampaigns.map(c => c.id);
@@ -352,18 +318,7 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getAllUsers(): Promise<User[]> {
-    return await db.select({
-      id: users.id,
-      walletAddress: users.walletAddress,
-      username: users.username,
-      twitterHandle: users.twitterHandle,
-      telegramHandle: users.telegramHandle,
-      profileImageUrl: users.profileImageUrl,
-      role: users.role,
-      status: users.status,
-      reputationScore: users.reputationScore,
-      createdAt: users.createdAt
-    }).from(users).orderBy(desc(users.createdAt));
+    return await db.select().from(users).orderBy(desc(users.createdAt));
   }
 
   async getAllCampaigns(): Promise<(Campaign & { actions: Action[] })[]> {
