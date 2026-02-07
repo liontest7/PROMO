@@ -108,6 +108,9 @@ export function UnifiedSuccessCard({
                     <Trophy className="w-4 h-4 text-primary animate-bounce" />
                     <p className="text-sm font-bold text-white uppercase tracking-wider">{data.title}</p>
                   </div>
+                  <p className="text-[10px] text-white/40 uppercase font-black tracking-widest italic">
+                    You can find your tokens in the dashboard
+                  </p>
                 </div>
               ) : (
                 <div className="w-full space-y-4 mb-6">
@@ -136,6 +139,9 @@ export function UnifiedSuccessCard({
                        </div>
                      </div>
                    </div>
+                   <p className="text-[10px] text-primary/60 uppercase font-black tracking-widest animate-pulse mt-2">
+                     Mission initialized successfully
+                   </p>
                 </div>
               )}
               
