@@ -345,6 +345,7 @@ export class DatabaseStorage implements IStorage {
 
   async getLeaderboardData(timeframe: string, type: "tasks" | "referrals" = "tasks"): Promise<any[]> {
     const allUsers = await this.getAllUsers();
+    const allExecutions = await this.getAllExecutions();
     
     const now = new Date();
     let startDate: Date | null = null;
@@ -361,24 +362,31 @@ export class DatabaseStorage implements IStorage {
 
     if (type === "referrals") {
       return allUsers
-        .filter(u => u.referralCount > 0)
-        .map(user => ({
-          id: user.id,
-          name: user.username || (user.twitterHandle ? `@${user.twitterHandle}` : `User ${user.walletAddress.slice(0, 4)}...${user.walletAddress.slice(-4)}`),
-          username: user.username,
-          profileImageUrl: user.profileImageUrl,
-          avatar: user.twitterHandle ? user.twitterHandle[0].toUpperCase() : 'U',
-          points: user.referralCount * 50, // 50 points per valid referral
-          referrals: user.referralCount,
-          walletAddress: user.walletAddress,
-          fullWallet: user.walletAddress,
-          rank: 0
-        }))
+        .map(user => {
+          // Count referrals within timeframe
+          const referralsInRange = allUsers.filter(u => 
+            u.referrerId === user.id && 
+            (!startDate || (u.createdAt && new Date(u.createdAt) >= startDate))
+          );
+
+          return {
+            id: user.id,
+            name: user.username || (user.twitterHandle ? `@${user.twitterHandle}` : `User ${user.walletAddress.slice(0, 4)}...${user.walletAddress.slice(-4)}`),
+            username: user.username,
+            profileImageUrl: user.profileImageUrl,
+            avatar: user.twitterHandle ? user.twitterHandle[0].toUpperCase() : 'U',
+            points: referralsInRange.length * 50, // 50 points per valid referral
+            referrals: referralsInRange.length,
+            walletAddress: user.walletAddress,
+            fullWallet: user.walletAddress,
+            rank: 0
+          };
+        })
+        .filter(u => u.referrals > 0)
         .sort((a, b) => b.referrals - a.referrals || a.id - b.id)
         .map((item, index) => ({ ...item, rank: index + 1 }));
     }
 
-    const allExecutions = await this.getAllExecutions();
     const rankings = allUsers.map(user => {
       const filteredExecutions = allExecutions.filter(e => {
         const isUser = e.userId === user.id;
@@ -405,6 +413,7 @@ export class DatabaseStorage implements IStorage {
     });
 
     return rankings
+      .filter(u => u.points > 0)
       .sort((a, b) => b.points - a.points || a.id - b.id)
       .map((item, index) => ({ ...item, rank: index + 1 }));
   }

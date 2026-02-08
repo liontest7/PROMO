@@ -123,11 +123,11 @@ export const IdentitySync = ({ user, walletAddress }: IdentitySyncProps) => {
 
   return (
     <Card className="glass-card border border-white/10 bg-white/[0.02] rounded-[2rem] overflow-hidden p-1 shadow-xl lg:max-w-md ml-auto">
-      <CardHeader className="p-6 pb-4">
-        <CardTitle className="text-2xl font-black font-display uppercase italic tracking-tighter leading-none text-white">Identity Sync</CardTitle>
-        <div className="h-0.5 w-12 bg-white/20 mt-3 rounded-full" />
+      <CardHeader className="p-6 pb-2">
+        <CardTitle className="text-2xl font-black font-display uppercase italic tracking-tighter leading-none text-white">Identity <span className="text-primary">Sync</span></CardTitle>
+        <div className="h-0.5 w-12 bg-primary/40 mt-3 rounded-full" />
       </CardHeader>
-      <CardContent className="p-6 pt-0 space-y-4">
+      <CardContent className="p-6 pt-2 space-y-4">
         {!user?.twitterHandle ? (
           <div className="p-5 rounded-xl bg-blue-500/5 border border-blue-500/10 relative overflow-hidden group shadow-lg">
             <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-all duration-700">
@@ -140,7 +140,7 @@ export const IdentitySync = ({ user, walletAddress }: IdentitySyncProps) => {
                 </div>
                 <span className="text-[13px] font-black uppercase tracking-widest text-white italic">X Identity Sync</span>
               </div>
-              <p className="text-[13px] text-white font-bold uppercase tracking-widest leading-relaxed max-w-[90%]">
+              <p className="text-[13px] text-white font-bold uppercase tracking-widest leading-relaxed max-w-[90%] opacity-80">
                 Verify your X account to unlock high-yield engagement campaigns.
               </p>
               <div className="flex flex-col gap-2 pt-2">
@@ -164,7 +164,7 @@ export const IdentitySync = ({ user, walletAddress }: IdentitySyncProps) => {
             <div className="flex-1 relative z-10">
               <div className="flex items-center gap-2">
                 <Twitter className="w-3 h-3 text-blue-400" />
-                <span className="text-[9px] font-black uppercase tracking-widest text-white/40">Verified Identity</span>
+                <span className="text-[9px] font-black uppercase tracking-widest text-white/60">Verified Identity</span>
               </div>
               <p className="text-base font-black font-display tracking-tight text-white uppercase italic">@{user.twitterHandle}</p>
               <Badge className="bg-primary/20 text-primary border-none text-[8px] font-black mt-1 uppercase tracking-widest">Node Synced</Badge>
@@ -173,7 +173,7 @@ export const IdentitySync = ({ user, walletAddress }: IdentitySyncProps) => {
               size="icon"
               variant="ghost"
               disabled={unlinkMutation.isPending}
-              className="h-8 w-8 rounded-lg text-white/30 hover:text-destructive hover:bg-destructive/10 relative z-[100] transition-all"
+              className="h-8 w-8 rounded-lg text-white/40 hover:text-destructive hover:bg-destructive/10 relative z-[100] transition-all"
               onClick={handleUnlink}
             >
               <LogOut className={`w-4 h-4 ${unlinkMutation.isPending ? 'animate-spin' : ''}`} />
@@ -196,7 +196,7 @@ export const IdentitySync = ({ user, walletAddress }: IdentitySyncProps) => {
                 </div>
                 <span className="text-[13px] font-black uppercase tracking-widest text-white italic">TG Identity</span>
               </div>
-              <p className="text-[13px] text-white font-bold uppercase tracking-widest leading-relaxed max-w-[90%]">
+              <p className="text-[13px] text-white font-bold uppercase tracking-widest leading-relaxed max-w-[90%] opacity-80">
                 Link your Telegram account to verify community group membership.
               </p>
               <div className="flex flex-col gap-2 pt-2">
@@ -220,7 +220,7 @@ export const IdentitySync = ({ user, walletAddress }: IdentitySyncProps) => {
             <div className="flex-1 relative z-10">
               <div className="flex items-center gap-2">
                 <Send className="w-3 h-3 text-[#0088cc]" />
-                <span className="text-[9px] font-black uppercase tracking-widest text-white/40">Verified Telegram</span>
+                <span className="text-[9px] font-black uppercase tracking-widest text-white/60">Verified Telegram</span>
               </div>
               <p className="text-base font-black font-display tracking-tight text-white uppercase italic">@{user.telegramHandle}</p>
               <Badge className="bg-[#0088cc]/20 text-[#0088cc] border-none text-[8px] font-black mt-1 uppercase tracking-widest">Link Active</Badge>
@@ -228,7 +228,7 @@ export const IdentitySync = ({ user, walletAddress }: IdentitySyncProps) => {
             <Button
               size="icon"
               variant="ghost"
-              className="h-8 w-8 rounded-lg text-white/30 hover:text-destructive hover:bg-destructive/10 relative z-[100] transition-all"
+              className="h-8 w-8 rounded-lg text-white/40 hover:text-destructive hover:bg-destructive/10 relative z-[100] transition-all"
               onClick={() => {
                 syncMutation.mutate({
                   walletAddress,

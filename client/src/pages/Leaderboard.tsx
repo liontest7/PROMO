@@ -182,7 +182,7 @@ export default function Leaderboard() {
                   {lbType === "tasks" ? "Task" : "Referral"} <span className="text-primary">Leaders</span>
                 </h1>
                 <p className="text-white uppercase tracking-[0.5em] text-sm md:text-base font-black italic">
-                  {lbType === "tasks" ? "Top Ecosystem Contributors" : "Top Growth Ambassadors"} • Real-time Sync
+                  {lbType === "tasks" ? "Top Ecosystem Contributors" : "Top Growth Ambassadors"} • {timeframe.replace('_', '-')} Stats
                 </p>
                 
                 <div className="pt-10 pb-10">

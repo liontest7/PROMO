@@ -46,7 +46,7 @@ export function EcosystemContribution({ reputationScore, level, progress }: Ecos
               </TooltipTrigger>
               <TooltipContent 
                 side="top" 
-                align="end"
+                align="end" 
                 sideOffset={15}
                 className="border border-white/20 bg-black text-white p-5 rounded-xl shadow-[0_20px_50px_rgba(0,0,0,1)] w-72 z-[99999] backdrop-blur-3xl"
               >
@@ -87,7 +87,7 @@ export function EcosystemContribution({ reputationScore, level, progress }: Ecos
             </div>
           </div>
           </div>
-          <div className="w-full h-7 rounded-full bg-black/90 overflow-hidden p-1 border border-white/10 shadow-inner relative">
+          <div className="w-full h-8 rounded-full bg-black/90 overflow-hidden p-1 border border-white/10 shadow-inner relative">
             <div 
               className="h-full bg-primary shadow-[0_0_20px_rgba(34,197,94,0.8)] rounded-full transition-all duration-1000 relative overflow-hidden" 
               style={{ width: `${progress}%` }}
@@ -95,20 +95,20 @@ export function EcosystemContribution({ reputationScore, level, progress }: Ecos
               <div className="absolute inset-0 bg-[linear-gradient(90deg,transparent_0%,rgba(255,255,255,0.4)_50%,transparent_100%)] animate-shimmer" />
             </div>
             <div className="absolute inset-0 flex items-center justify-center">
-              <span className="text-[11px] font-black text-white uppercase tracking-[0.2em] drop-shadow-md">
+              <span className="text-[12px] font-black text-white uppercase tracking-[0.2em] drop-shadow-md">
                 {reputationScore % 100} / 100 XP
               </span>
             </div>
           </div>
-          <div className="flex justify-between items-center text-[11px] font-black uppercase tracking-widest text-white">
-            <span className="flex items-center gap-2 bg-white/5 px-2 py-1 rounded-md border border-white/10">
-              <Badge className={cn("h-5 px-3 text-[12px] border-none", getLabelColor(prevLevel))}>LVL {prevLevel}</Badge> 
+          <div className="flex justify-between items-center text-[12px] font-black uppercase tracking-widest text-white">
+            <span className="flex items-center gap-2 bg-white/5 px-3 py-1.5 rounded-md border border-white/10">
+              <Badge className={cn("h-6 px-3 text-[13px] border-none", getLabelColor(prevLevel))}>LVL {prevLevel}</Badge> 
               {prevLabel}
             </span>
             <ArrowUpRight className="w-5 h-5 text-primary/40" />
-            <span className="flex items-center gap-2 bg-primary/10 px-2 py-1 rounded-md border border-primary/20">
+            <span className="flex items-center gap-2 bg-primary/10 px-3 py-1.5 rounded-md border border-primary/20">
               {nextLabel} 
-              <Badge className={cn("h-5 px-3 text-primary-foreground border-none text-[12px]", getLabelColor(nextLevel))}>LVL {nextLevel}</Badge>
+              <Badge className={cn("h-6 px-3 text-primary-foreground border-none text-[13px]", getLabelColor(nextLevel))}>LVL {nextLevel}</Badge>
             </span>
           </div>
         </div>
