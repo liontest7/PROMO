@@ -138,7 +138,7 @@ export default function About() {
                   "Verified On-chain Holder Qualification",
                   "Anti-Bot Protection (Cloudflare Turnstile)",
                   "Dynamic Gas Optimization System",
-                  "Deflationary 50/40/10 Tokenomics Model",
+                  "Deflationary 40/40/20 Tokenomics Model",
                   "Social Media API Direct Verification"
                 ],
                 status: "completed"
