@@ -242,9 +242,9 @@ export default function About() {
             </Card>
             <Card className="glass-card border-white/5 bg-white/[0.02]">
               <CardContent className="p-8 text-center">
-                <h3 className="text-2xl font-black mb-4 uppercase italic tracking-tight text-white">System Growth</h3>
+                <h3 className="text-2xl font-black mb-4 uppercase italic tracking-tight text-white">Ecosystem Growth</h3>
                 <div className="text-4xl font-black text-white/40 mb-2">20%</div>
-                <p className="text-base text-white/80 leading-relaxed font-medium">Reserved for platform maintenance, buybacks, and ecosystem stability.</p>
+                <p className="text-base text-white/80 leading-relaxed font-medium">Reserved for marketing, buybacks, and ensuring long-term platform stability.</p>
               </CardContent>
             </Card>
           </div>

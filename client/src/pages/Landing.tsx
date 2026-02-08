@@ -244,7 +244,7 @@ export default function Landing() {
                     </div>
                     <div className="p-6 bg-black/40 rounded-[2rem] border border-secondary/20 backdrop-blur-md group hover:border-secondary/50 transition-all text-center">
                       <p className="text-3xl font-black text-secondary mb-2">20%</p>
-                      <p className="text-[11px] text-white/80 uppercase font-black tracking-widest">System Fees</p>
+                      <p className="text-[11px] text-white/80 uppercase font-black tracking-widest">Ecosystem Growth</p>
                     </div>
                   </div>
                 </div>
