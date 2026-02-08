@@ -227,21 +227,24 @@ export default function About() {
           </div>
           <div className="grid md:grid-cols-3 gap-8">
             <Card className="glass-card border-primary/20 bg-primary/5">
-              <CardContent className="p-8">
-                <h3 className="text-2xl font-black mb-4 uppercase italic tracking-tight text-white">Platform Model</h3>
-                <p className="text-lg text-white/80 leading-relaxed font-medium">Advertisers pay 1 SOL total fee which covers rewards distribution gas, platform maintenance, and $DROPY buybacks.</p>
+              <CardContent className="p-8 text-center">
+                <h3 className="text-2xl font-black mb-4 uppercase italic tracking-tight text-white">Tasks Leaderboard</h3>
+                <div className="text-4xl font-black text-primary mb-2">40%</div>
+                <p className="text-base text-white/80 leading-relaxed font-medium">Of all campaign fees are distributed weekly to the top task contributors.</p>
+              </CardContent>
+            </Card>
+            <Card className="glass-card border-primary/20 bg-primary/5">
+              <CardContent className="p-8 text-center">
+                <h3 className="text-2xl font-black mb-4 uppercase italic tracking-tight text-white">Referral Leaders</h3>
+                <div className="text-4xl font-black text-primary mb-2">40%</div>
+                <p className="text-base text-white/80 leading-relaxed font-medium">Of all campaign fees are distributed weekly to the top community ambassadors.</p>
               </CardContent>
             </Card>
             <Card className="glass-card border-white/5 bg-white/[0.02]">
-              <CardContent className="p-8">
-                <h3 className="text-2xl font-black mb-4 uppercase italic tracking-tight text-white">Community Rewards</h3>
-                <p className="text-lg text-white/80 leading-relaxed font-medium">40% of campaign fees are used to buy $DROPY and distributed to the top contributors on our leaderboards.</p>
-              </CardContent>
-            </Card>
-            <Card className="glass-card border-white/5 bg-white/[0.02]">
-              <CardContent className="p-8">
-                <h3 className="text-2xl font-black mb-4 uppercase italic tracking-tight text-white">Zero Cost for Users</h3>
-                <p className="text-lg text-white/80 leading-relaxed font-medium">Users never pay for gas or fees. Complete tasks, earn tokens, and grow with the ecosystem.</p>
+              <CardContent className="p-8 text-center">
+                <h3 className="text-2xl font-black mb-4 uppercase italic tracking-tight text-white">System Growth</h3>
+                <div className="text-4xl font-black text-white/40 mb-2">20%</div>
+                <p className="text-base text-white/80 leading-relaxed font-medium">Reserved for platform maintenance, buybacks, and ecosystem stability.</p>
               </CardContent>
             </Card>
           </div>
