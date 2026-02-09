@@ -104,72 +104,72 @@ export function ProfileHeader({
   };
 
   return (
-    <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 p-4 rounded-[2rem] bg-white/[0.04] border border-white/10 backdrop-blur-3xl relative overflow-hidden group shadow-xl">
+    <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 p-5 rounded-[2rem] bg-white/[0.04] border border-white/10 backdrop-blur-3xl relative overflow-hidden group shadow-xl max-w-xl">
       <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-transparent to-transparent opacity-60" />
-      <div className="relative z-10 flex flex-col md:flex-row items-center gap-4">
+      <div className="relative z-10 flex flex-col md:flex-row items-center gap-6">
         <div className="relative">
-          <div className="w-16 h-16 rounded-full bg-gradient-to-tr from-primary via-primary/60 to-primary/20 p-1 shadow-[0_0_30px_rgba(34,197,94,0.3)] relative">
+          <div className="w-24 h-24 rounded-full bg-gradient-to-tr from-primary via-primary/60 to-primary/20 p-1 shadow-[0_0_30px_rgba(34,197,94,0.3)] relative">
             <div className="w-full h-full rounded-full bg-background flex items-center justify-center overflow-hidden border-2 border-background">
               <Avatar className="h-full w-full">
                 <AvatarImage 
                   src={avatarUrl || PLATFORM_CONFIG.ASSETS.MAIN_LOGO} 
                   className="w-full h-full object-cover hover:scale-110 transition-transform duration-500" 
                 />
-                <AvatarFallback className="bg-primary/20 text-primary font-black text-xl">
+                <AvatarFallback className="bg-primary/20 text-primary font-black text-3xl">
                   {username ? username[0].toUpperCase() : 'U'}
                 </AvatarFallback>
               </Avatar>
             </div>
           </div>
-          <Badge className="absolute -bottom-1 left-1/2 -translate-x-1/2 px-2 py-0.5 bg-primary text-primary-foreground font-black text-[8px] rounded-full border-2 border-background shadow-xl uppercase tracking-widest">
+          <Badge className="absolute -bottom-2 left-1/2 -translate-x-1/2 px-3 py-1 bg-primary text-primary-foreground font-black text-[10px] rounded-full border-2 border-background shadow-xl uppercase tracking-widest">
             LVL {levelInfo.lvl}
           </Badge>
         </div>
         
-        <div className="text-center md:text-left space-y-0.5">
+        <div className="text-center md:text-left space-y-1">
           <div className="flex flex-col md:flex-row items-center gap-2">
             {isEditing ? (
-              <div className="flex flex-col gap-1">
+              <div className="flex flex-col gap-2">
                 <div className="flex items-center gap-2">
                   <Input 
                     placeholder="New Username"
                     value={newName}
                     onChange={(e) => setNewName(e.target.value)}
-                    className="bg-white/5 border-white/10 text-base font-display font-black italic uppercase tracking-tighter w-40 h-7"
+                    className="bg-white/5 border-white/10 text-lg font-display font-black italic uppercase tracking-tighter w-48 h-8"
                     autoFocus
                   />
-                  <Button size="icon" variant="ghost" className="h-7 w-7" onClick={handleSave} disabled={mutation.isPending}>
-                    <Check className="w-3 h-3 text-primary" />
+                  <Button size="icon" variant="ghost" className="h-8 w-8" onClick={handleSave} disabled={mutation.isPending}>
+                    <Check className="w-4 h-4 text-primary" />
                   </Button>
-                  <Button size="icon" variant="ghost" className="h-7 w-7" onClick={() => setIsEditing(false)}>
-                    <X className="w-3 h-3 text-red-500" />
+                  <Button size="icon" variant="ghost" className="h-8 w-8" onClick={() => setIsEditing(false)}>
+                    <X className="w-4 h-4 text-red-500" />
                   </Button>
                 </div>
                 <Input 
                   placeholder="Avatar Image URL"
                   value={newAvatarUrl}
                   onChange={(e) => setNewAvatarUrl(e.target.value)}
-                  className="bg-white/5 border-white/10 h-6 text-[9px] w-40"
+                  className="bg-white/5 border-white/10 h-7 text-[10px] w-48"
                 />
               </div>
             ) : (
               <div className="flex items-center gap-2">
-                <h1 className="text-xl font-display font-black tracking-tighter uppercase italic leading-none text-white drop-shadow-sm">
+                <h1 className="text-2xl font-display font-black tracking-tighter uppercase italic leading-none text-white drop-shadow-sm">
                   {username && !username.startsWith('USER ') ? username : (walletAddress ? `${walletAddress.slice(0, 4)}...${walletAddress.slice(-4)}` : 'U')}
                 </h1>
                 {!isPublicView && (
-                  <Button size="icon" variant="ghost" className="h-6 w-6 opacity-50 hover:opacity-100" onClick={() => {
+                  <Button size="icon" variant="ghost" className="h-7 w-7 opacity-50 hover:opacity-100" onClick={() => {
                     setNewName(username || "");
                     setNewAvatarUrl(avatarUrl || "");
                     setIsEditing(true);
                   }}>
-                    <Edit2 className="w-3 h-3" />
+                    <Edit2 className="w-3.5 h-3.5" />
                   </Button>
                 )}
               </div>
             )}
             <Badge className={cn(
-              "text-[9px] font-black uppercase px-2 py-0.5 tracking-[0.1em] rounded-full italic border",
+              "text-[10px] font-black uppercase px-2 py-0.5 tracking-[0.1em] rounded-full italic border",
               getLabelColor(levelInfo.label)
             )}>
               {levelInfo.label}
@@ -177,11 +177,11 @@ export function ProfileHeader({
           </div>
 
           <div className="flex items-center justify-center md:justify-start gap-1.5">
-            <p className="text-white/70 font-mono text-[10px] uppercase font-bold tracking-wider">
+            <p className="text-white/70 font-mono text-xs uppercase font-bold tracking-wider">
               {isPublicView ? formatWallet(walletAddress) : walletAddress}
             </p>
-            <Button size="icon" variant="ghost" className="h-4 w-4 opacity-30 hover:opacity-100" onClick={copyToClipboard}>
-              <Copy className="w-2 h-2" />
+            <Button size="icon" variant="ghost" className="h-5 w-5 opacity-30 hover:opacity-100" onClick={copyToClipboard}>
+              <Copy className="w-2.5 h-2.5" />
             </Button>
           </div>
         </div>

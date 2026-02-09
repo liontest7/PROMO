@@ -105,10 +105,14 @@ export default function Leaderboard() {
     );
   }
 
-  const activeLeaders = leaderboardRes?.ranking || [];
-  const weeklyPrizePool = leaderboardRes?.weeklyPrizePool || 0;
-  
   // Show all users in list, but top 3 cards only if they have points
+  const activeLeaders = (leaderboardRes?.ranking || []).filter((user: any) => {
+    if (lbType === "referrals") {
+      return (user.points || 0) > 0;
+    }
+    return true; // Show all for tasks
+  });
+  
   const top3Leaders = activeLeaders.slice(0, 3);
   const paginatedLeaders = activeLeaders.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
   
