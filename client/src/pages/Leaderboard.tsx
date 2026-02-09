@@ -41,6 +41,7 @@ export default function Leaderboard() {
       return response.json();
     },
     refetchInterval: 10000, // Refresh data every 10 seconds for "Live" feel
+    placeholderData: (previousData) => previousData,
   });
 
   const { data: history } = useQuery<any[]>({
@@ -107,6 +108,8 @@ export default function Leaderboard() {
   const activeLeaders = leaderboardRes?.ranking || [];
   const weeklyPrizePool = leaderboardRes?.weeklyPrizePool || 0;
   
+  // Show all users in list, but top 3 cards only if they have points
+  const top3Leaders = activeLeaders.slice(0, 3);
   const paginatedLeaders = activeLeaders.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
   
   const historyItemsPerPage = 5;
@@ -289,85 +292,85 @@ export default function Leaderboard() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16 pt-12 items-end px-4 overflow-visible">
               <Card 
                 className="glass-card border-white/10 bg-white/[0.03] rounded-[3rem] overflow-hidden order-2 md:order-1 hover-elevate transition-all duration-500 min-h-[280px] cursor-pointer"
-                onClick={() => activeLeaders?.[1]?.walletAddress && handleUserClick(activeLeaders[1].walletAddress)}
+                onClick={() => top3Leaders?.[1]?.walletAddress && handleUserClick(top3Leaders[1].walletAddress)}
               >
                 <CardContent className="p-8 flex flex-col items-center text-center">
                   <div className="relative mb-6">
                     <div className="w-24 h-24 rounded-full bg-[#111] border-2 border-white/20 p-1.5 relative">
                       <Avatar className="h-full w-full">
-                        <AvatarImage src={activeLeaders?.[1]?.profileImageUrl || PLATFORM_CONFIG.ASSETS.MAIN_LOGO} className="object-cover" />
-                        <AvatarFallback className="bg-emerald-500/20 text-emerald-500 font-black text-2xl">{activeLeaders?.[1]?.username?.[0] || activeLeaders?.[1]?.avatar || '?'}</AvatarFallback>
+                        <AvatarImage src={top3Leaders?.[1]?.profileImageUrl || PLATFORM_CONFIG.ASSETS.MAIN_LOGO} className="object-cover" />
+                        <AvatarFallback className="bg-emerald-500/20 text-emerald-500 font-black text-2xl">{top3Leaders?.[1]?.username?.[0] || top3Leaders?.[1]?.avatar || '?'}</AvatarFallback>
                       </Avatar>
                       <div className="absolute -top-3 -right-3 w-10 h-10 rounded-2xl bg-white text-black flex items-center justify-center font-black text-lg border-2 border-[#050505] shadow-2xl transform rotate-12 transition-transform group-hover:scale-110 group-hover:rotate-0">#2</div>
                     </div>
                   </div>
                   <h3 className="text-2xl font-black font-display uppercase italic tracking-tight text-white truncate w-full px-2">
-                    {activeLeaders?.[1]?.username || activeLeaders?.[1]?.name || '---'}
-                    {activeLeaders?.[1] && <Top3RankBadge score={activeLeaders[1].points || 0} />}
-                    {activeLeaders?.[1] && activeLeaders[1].points === 0 && (
+                    {top3Leaders?.[1]?.username || top3Leaders?.[1]?.name || '---'}
+                    {top3Leaders?.[1] && <Top3RankBadge score={top3Leaders[1].points || 0} />}
+                    {top3Leaders?.[1] && top3Leaders[1].points === 0 && (
                       <span className="block text-[8px] text-red-400 not-italic mt-1">NOT ELIGIBLE</span>
                     )}
                   </h3>
                   <div className="flex items-center gap-2 mt-3 bg-emerald-500/15 px-4 py-1.5 rounded-full border border-emerald-500/30">
                     <Star className="w-4 h-4 text-emerald-500" />
-                    <span className="text-xl font-black font-display text-emerald-500">{activeLeaders?.[1]?.points?.toLocaleString() || 0}</span>
+                    <span className="text-xl font-black font-display text-emerald-500">{top3Leaders?.[1]?.points?.toLocaleString() || 0}</span>
                   </div>
                 </CardContent>
               </Card>
 
               <Card 
                 className="glass-card border-yellow-500/40 bg-yellow-500/10 rounded-[3.5rem] overflow-visible order-1 md:order-2 scale-105 relative z-20 shadow-[0_0_60px_rgba(234,179,8,0.25)] hover-elevate transition-all duration-500 min-h-[340px] cursor-pointer"
-                onClick={() => activeLeaders?.[0]?.walletAddress && handleUserClick(activeLeaders[0].walletAddress)}
+                onClick={() => top3Leaders?.[0]?.walletAddress && handleUserClick(top3Leaders[0].walletAddress)}
               >
                 <CardContent className="p-10 flex flex-col items-center text-center">
                   <div className="relative mb-6">
                     <div className="w-32 h-32 rounded-full bg-[#111] border-4 border-yellow-500/50 p-1.5 shadow-[0_0_40px_rgba(234,179,8,0.4)] relative">
                       <Avatar className="h-full w-full">
-                        <AvatarImage src={activeLeaders?.[0]?.profileImageUrl || PLATFORM_CONFIG.ASSETS.MAIN_LOGO} className="object-cover" />
-                        <AvatarFallback className="bg-primary/20 text-primary font-black text-4xl">{activeLeaders?.[0]?.username?.[0] || activeLeaders?.[0]?.avatar || '?'}</AvatarFallback>
+                        <AvatarImage src={top3Leaders?.[0]?.profileImageUrl || PLATFORM_CONFIG.ASSETS.MAIN_LOGO} className="object-cover" />
+                        <AvatarFallback className="bg-primary/20 text-primary font-black text-4xl">{top3Leaders?.[0]?.username?.[0] || top3Leaders?.[0]?.avatar || '?'}</AvatarFallback>
                       </Avatar>
                       <div className="absolute -top-3 -right-3 w-12 h-12 rounded-2xl bg-yellow-500 text-black flex items-center justify-center font-black text-xl border-2 border-[#050505] shadow-2xl transform rotate-12 transition-transform group-hover:scale-110 group-hover:rotate-0">#1</div>
                       <Crown className="absolute -top-10 left-1/2 -translate-x-1/2 w-8 h-8 text-yellow-500 drop-shadow-[0_0_15px_rgba(234,179,8,0.6)]" />
                     </div>
                   </div>
                   <h3 className="text-3xl font-black font-display uppercase italic tracking-tighter text-white truncate w-full px-2">
-                    {activeLeaders?.[0]?.username || activeLeaders?.[0]?.name || '---'}
-                    {activeLeaders?.[0] && <Top3RankBadge score={activeLeaders[0].points || 0} />}
-                    {activeLeaders?.[0] && activeLeaders[0].points === 0 && (
+                    {top3Leaders?.[0]?.username || top3Leaders?.[0]?.name || '---'}
+                    {top3Leaders?.[0] && <Top3RankBadge score={top3Leaders[0].points || 0} />}
+                    {top3Leaders?.[0] && top3Leaders[0].points === 0 && (
                       <span className="block text-[10px] text-red-400 not-italic mt-1">NOT ELIGIBLE</span>
                     )}
                   </h3>
                   <div className="flex items-center gap-2 mt-4 bg-primary/25 px-6 py-2 rounded-full border border-primary/40 shadow-xl">
                     <Star className="w-5 h-5 text-primary" />
-                    <span className="text-3xl font-black font-display text-primary">{activeLeaders?.[0]?.points?.toLocaleString() || 0}</span>
+                    <span className="text-3xl font-black font-display text-primary">{top3Leaders?.[0]?.points?.toLocaleString() || 0}</span>
                   </div>
                 </CardContent>
               </Card>
 
               <Card 
                 className="glass-card border-white/10 bg-white/[0.03] rounded-[3rem] overflow-hidden order-3 hover-elevate transition-all duration-500 min-h-[280px] cursor-pointer"
-                onClick={() => activeLeaders?.[2]?.walletAddress && handleUserClick(activeLeaders[2].walletAddress)}
+                onClick={() => top3Leaders?.[2]?.walletAddress && handleUserClick(top3Leaders[2].walletAddress)}
               >
                 <CardContent className="p-8 flex flex-col items-center text-center">
                   <div className="relative mb-6">
                     <div className="w-24 h-24 rounded-full bg-[#111] border-2 border-white/20 p-1.5 relative">
                       <Avatar className="h-full w-full">
-                        <AvatarImage src={activeLeaders?.[2]?.profileImageUrl || PLATFORM_CONFIG.ASSETS.MAIN_LOGO} className="object-cover" />
-                        <AvatarFallback className="bg-amber-600/20 text-amber-600 font-black text-2xl">{activeLeaders?.[2]?.username?.[0] || activeLeaders?.[2]?.avatar || '?'}</AvatarFallback>
+                        <AvatarImage src={top3Leaders?.[2]?.profileImageUrl || PLATFORM_CONFIG.ASSETS.MAIN_LOGO} className="object-cover" />
+                        <AvatarFallback className="bg-amber-600/20 text-amber-600 font-black text-2xl">{top3Leaders?.[2]?.username?.[0] || top3Leaders?.[2]?.avatar || '?'}</AvatarFallback>
                       </Avatar>
                       <div className="absolute -top-3 -right-3 w-10 h-10 rounded-2xl bg-amber-600 text-white flex items-center justify-center font-black text-lg border-2 border-[#050505] shadow-2xl transform rotate-12 transition-transform group-hover:scale-110 group-hover:rotate-0">#3</div>
                     </div>
                   </div>
                   <h3 className="text-2xl font-black font-display uppercase italic tracking-tight text-white truncate w-full px-2">
-                    {activeLeaders?.[2]?.username || activeLeaders?.[2]?.name || '---'}
-                    {activeLeaders?.[2] && <Top3RankBadge score={activeLeaders[2].points || 0} />}
-                    {activeLeaders?.[2] && activeLeaders[2].points === 0 && (
+                    {top3Leaders?.[2]?.username || top3Leaders?.[2]?.name || '---'}
+                    {top3Leaders?.[2] && <Top3RankBadge score={top3Leaders[2].points || 0} />}
+                    {top3Leaders?.[2] && top3Leaders[2].points === 0 && (
                       <span className="block text-[8px] text-red-400 not-italic mt-1">NOT ELIGIBLE</span>
                     )}
                   </h3>
                   <div className="flex items-center gap-2 mt-3 bg-amber-600/15 px-4 py-1.5 rounded-full border border-amber-600/30">
                     <Star className="w-4 h-4 text-amber-600" />
-                    <span className="text-xl font-black font-display text-amber-600">{activeLeaders?.[2]?.points?.toLocaleString() || 0}</span>
+                    <span className="text-xl font-black font-display text-amber-600">{top3Leaders?.[2]?.points?.toLocaleString() || 0}</span>
                   </div>
                 </CardContent>
               </Card>
@@ -387,10 +390,10 @@ export default function Leaderboard() {
                     {paginatedLeaders?.length > 0 ? paginatedLeaders.map((user: any, idx: number) => (
                       <motion.div 
                         layout
-                        initial={{ opacity: 0, x: -20 }}
+                        initial={false}
                         animate={{ opacity: 1, x: 0 }}
                         exit={{ opacity: 0, x: 20 }}
-                        transition={{ duration: 0.5, type: "spring", stiffness: 100 }}
+                        transition={{ duration: 0.3 }}
                         key={user.id} 
                         className="flex items-center px-12 py-10 hover:bg-white/[0.05] transition-all group relative cursor-pointer"
                         onClick={() => handleUserClick(user.fullWallet)}
@@ -412,7 +415,7 @@ export default function Leaderboard() {
                             <AvatarFallback className="text-base font-black bg-white/10">{user.username?.[0] || user.avatar || 'U'}</AvatarFallback>
                           </Avatar>
                           <div className="flex flex-col gap-1">
-                            <span className="font-black text-2xl font-display uppercase italic tracking-tight text-white group-hover:text-primary transition-colors">{user.username || user.name || "Anonymous User"}</span>
+                            <span className="font-black text-2xl font-display uppercase italic tracking-tight text-white group-hover:text-primary transition-colors line-clamp-1">{user.username || user.name || "Anonymous User"}</span>
                             <span className="text-xs font-mono text-white/40 truncate max-w-[250px]">{user.fullWallet || "No Wallet"}</span>
                           </div>
                       </div>
