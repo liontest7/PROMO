@@ -9,9 +9,11 @@ interface EcosystemContributionProps {
   reputationScore: number;
   level: number;
   progress: number;
+  rank: number;
+  rankChange: "up" | "stable";
 }
 
-export function EcosystemContribution({ reputationScore, level, progress }: EcosystemContributionProps) {
+export function EcosystemContribution({ reputationScore, level, progress, rank, rankChange }: EcosystemContributionProps) {
   const getLevelLabel = (lvl: number) => {
     if (lvl >= 10) return "LEGEND";
     if (lvl >= 5) return "ELITE";
@@ -72,9 +74,21 @@ export function EcosystemContribution({ reputationScore, level, progress }: Ecos
         </div>
       </CardHeader>
       <CardContent className="relative z-10 p-5 pt-0 space-y-4">
-        <div className="flex items-baseline gap-2">
-          <span className="text-[3.5rem] font-black font-display text-primary tracking-tighter leading-none drop-shadow-[0_0_15px_rgba(34,197,94,0.5)]">{reputationScore}</span>
-          <span className="text-base font-black text-primary/60 uppercase italic tracking-widest">Score</span>
+        <div className="flex items-baseline justify-between">
+          <div className="flex items-baseline gap-2">
+            <span className="text-[3.5rem] font-black font-display text-primary tracking-tighter leading-none drop-shadow-[0_0_15px_rgba(34,197,94,0.5)]">{reputationScore}</span>
+            <span className="text-base font-black text-primary/60 uppercase italic tracking-widest">Score</span>
+          </div>
+          <div className="flex flex-col items-end">
+            <div className="flex items-center gap-1.5 mb-1">
+              <Trophy className="w-4 h-4 text-primary" />
+              <span className="text-[10px] font-black text-white uppercase tracking-widest">WEEK RANK</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="text-3xl font-black font-display text-white">#{rank}</span>
+              {rankChange === "up" && <ArrowUpRight className="w-4 h-4 text-primary animate-bounce-slow" />}
+            </div>
+          </div>
         </div>
         
         <div className="space-y-3">

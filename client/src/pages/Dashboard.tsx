@@ -149,6 +149,8 @@ export default function Dashboard() {
               reputationScore={reputationScore}
               level={level}
               progress={progress}
+              rank={rank}
+              rankChange={rankChange as "up" | "stable"}
             />
             <ReferralSystem 
               walletAddress={walletAddress}

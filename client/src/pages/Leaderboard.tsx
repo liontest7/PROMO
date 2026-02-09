@@ -123,7 +123,7 @@ export default function Leaderboard() {
   };
 
   const CountdownTimer = () => {
-    if (!timeLeft || (weeklyPrizePool === 0 && timeframe === 'weekly')) return null;
+    if (!timeLeft || timeframe !== 'weekly') return null;
     return (
       <div className="flex gap-4 mt-4">
         {[
@@ -178,7 +178,7 @@ export default function Leaderboard() {
           <div className="relative z-10 max-w-4xl mx-auto">
             <div className="flex flex-col items-center justify-center relative py-6">
               <div className="text-center space-y-4">
-                <h1 className="text-7xl md:text-9xl font-display font-black uppercase italic tracking-tighter leading-none text-white drop-shadow-[0_0_30px_rgba(255,255,255,0.2)]">
+                <h1 className="text-5xl md:text-8xl font-display font-black uppercase italic tracking-tighter leading-none text-white drop-shadow-[0_0_30px_rgba(255,255,255,0.2)] whitespace-nowrap">
                   {lbType === "tasks" ? "Task" : "Referral"} <span className="text-primary">Leaders</span>
                 </h1>
                 <p className="text-white uppercase tracking-[0.5em] text-sm md:text-base font-black italic">
