@@ -137,14 +137,14 @@ export default function Dashboard() {
           rankChange={rankChange as "up" | "stable"}
         />
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          <div className="lg:col-span-2 space-y-8">
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+          <div className="lg:col-span-3 space-y-8">
             <PendingRewardsReminder walletAddress={walletAddress} />
             <TokenPortfolios tokenBalances={stats?.tokenBalances || []} />
             <VerificationLogs executions={executions || []} />
           </div>
 
-          <div className="space-y-8">
+          <div className="lg:col-span-1 space-y-8">
             <IdentitySync user={user} walletAddress={walletAddress} />
             <ReferralSystem 
               walletAddress={walletAddress}
