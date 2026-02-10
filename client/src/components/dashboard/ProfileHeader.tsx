@@ -204,9 +204,20 @@ export function ProfileHeader({
         </div>
       </div>
 
-      <div className="relative z-10 flex flex-row lg:flex-row items-center justify-center gap-8 px-6 py-4 bg-white/[0.04] rounded-2xl border border-white/10 backdrop-blur-md">
+      <div className="relative z-10 flex flex-row items-center justify-center gap-12 px-2">
         <div className="flex flex-col items-center lg:items-start">
-          <div className="flex items-center gap-2 text-white font-black text-xs tracking-widest mb-1">
+          <div className="text-white font-black text-xs tracking-widest mb-1 opacity-60">
+            REP SCORE
+          </div>
+          <div className="text-4xl font-display font-black tracking-tighter italic uppercase text-primary drop-shadow-[0_0_15px_rgba(34,197,94,0.3)]">
+            {reputationScore}
+          </div>
+        </div>
+
+        <div className="w-px h-12 bg-white/10" />
+
+        <div className="flex flex-col items-center lg:items-start">
+          <div className="flex items-center gap-2 text-white font-black text-xs tracking-widest mb-1 opacity-60">
             <Trophy className="w-4 h-4 text-yellow-500" />
             WEEKLY RANK
             <TooltipProvider>
@@ -222,19 +233,8 @@ export function ProfileHeader({
               </Tooltip>
             </TooltipProvider>
           </div>
-          <div className="text-3xl font-display font-black tracking-tighter italic uppercase text-white">
+          <div className="text-4xl font-display font-black tracking-tighter italic uppercase text-white">
             #{rank}
-          </div>
-        </div>
-
-        <div className="w-px h-12 bg-white/20" />
-
-        <div className="flex flex-col items-center lg:items-start">
-          <div className="text-white font-black text-xs tracking-widest mb-1">
-            REP SCORE
-          </div>
-          <div className="text-3xl font-display font-black tracking-tighter italic uppercase text-primary drop-shadow-[0_0_15px_rgba(34,197,94,0.3)]">
-            {reputationScore}
           </div>
         </div>
       </div>

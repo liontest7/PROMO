@@ -46,58 +46,58 @@ export function ReferralSystem({ walletAddress, referralCount }: ReferralSystemP
 
   return (
     <Card className="glass-card border-white/10 bg-white/[0.02] rounded-[2rem] shadow-xl overflow-hidden">
-      <CardHeader className="p-6 pb-2">
+      <CardHeader className="p-5 pb-2">
         <div className="flex flex-row items-center justify-between gap-4">
-          <CardTitle className="text-xl font-black font-display uppercase italic tracking-tight text-white flex items-center gap-2">
+          <CardTitle className="text-lg font-black font-display uppercase italic tracking-tight text-white flex items-center gap-2">
             <Users className="w-5 h-5 text-primary" />
             Referral <span className="text-primary">Protocol</span>
           </CardTitle>
           
-          <div className="flex bg-primary/10 border border-primary/20 px-4 py-2 rounded-xl items-center gap-3">
+          <div className="flex bg-primary/10 border border-primary/20 px-3 py-1.5 rounded-xl items-center gap-3">
             <div className="text-right">
-              <p className="text-[9px] text-primary font-black uppercase tracking-widest opacity-80 leading-none">Weekly</p>
-              <p className="text-lg font-black font-display text-primary leading-none mt-1">0%</p>
+              <p className="text-[8px] text-primary font-black uppercase tracking-widest opacity-80 leading-none">Weekly</p>
+              <p className="text-base font-black font-display text-primary leading-none mt-1">0%</p>
             </div>
-            <div className="w-px h-6 bg-primary/20" />
+            <div className="w-px h-5 bg-primary/20" />
             <div className="text-right">
-              <p className="text-[9px] text-white font-black uppercase tracking-widest opacity-60 leading-none">Total</p>
-              <p className="text-lg font-black font-display text-white leading-none mt-1">{referralCount}</p>
+              <p className="text-[8px] text-white font-black uppercase tracking-widest opacity-60 leading-none">Total</p>
+              <p className="text-base font-black font-display text-white leading-none mt-1">{referralCount}</p>
             </div>
           </div>
         </div>
       </CardHeader>
       
-      <CardContent className="p-6 pt-2 space-y-6">
-        <div className="space-y-3">
-          <div className="flex items-center justify-between">
-            <p className="text-[10px] text-white/60 font-black uppercase tracking-widest">Growth Link</p>
-            <span className="text-[9px] text-primary font-bold uppercase italic tracking-tight">+100 XP per referral</span>
+      <CardContent className="p-5 pt-1 space-y-4">
+        <div className="space-y-2">
+          <div className="flex items-center justify-between px-1">
+            <p className="text-[9px] text-white font-black uppercase tracking-widest">Growth Link</p>
+            <span className="text-[8px] text-primary font-bold uppercase italic tracking-tight">+10 Reputation per referral</span>
           </div>
           <div className="flex gap-2">
             <div className="relative flex-1">
               <Input 
                 value={referralLink} 
                 readOnly 
-                className="bg-black/40 border-white/10 text-white font-mono text-xs h-10 rounded-xl pl-3 pr-10 focus-visible:ring-primary/50"
+                className="bg-black/40 border-white/10 text-white font-mono text-[10px] h-9 rounded-xl pl-3 pr-10 focus-visible:ring-primary/50"
               />
               <Users className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/20" />
             </div>
-            <Button size="icon" onClick={copyToClipboard} className="shrink-0 h-10 w-10 rounded-xl bg-primary hover:bg-primary/80 text-black shadow-[0_0_15px_rgba(34,197,94,0.3)] transition-all active:scale-95">
-              <Copy className="w-4 h-4" />
+            <Button size="icon" onClick={copyToClipboard} className="shrink-0 h-9 w-9 rounded-xl bg-primary hover:bg-primary/80 text-black shadow-[0_0_15px_rgba(34,197,94,0.3)] transition-all active:scale-95">
+              <Copy className="w-3.5 h-3.5" />
             </Button>
           </div>
         </div>
 
-        <div className="space-y-4">
-          <div className="flex items-center justify-between border-b border-white/5 pb-2">
-            <h3 className="text-[11px] font-black uppercase tracking-widest text-white/80 flex items-center gap-2">
-              <Clock className="w-3.5 h-3.5 text-primary/60" />
+        <div className="space-y-3">
+          <div className="flex items-center justify-between border-b border-white/5 pb-1.5 px-1">
+            <h3 className="text-[10px] font-black uppercase tracking-widest text-white flex items-center gap-2">
+              <Clock className="w-3 h-3 text-primary/60" />
               Recruitment Feed
             </h3>
-            <span className="text-[9px] text-white/40 font-bold uppercase tracking-widest">Live</span>
+            <span className="text-[8px] text-white/40 font-bold uppercase tracking-widest">Live</span>
           </div>
 
-          <div className="space-y-2 max-h-[220px] overflow-y-auto pr-1 custom-scrollbar">
+          <div className="space-y-1.5 max-h-[160px] overflow-y-auto pr-1 custom-scrollbar">
             {isLoading ? (
               <div className="py-10 text-center space-y-4">
                 <div className="w-10 h-10 border-2 border-primary/20 border-t-primary rounded-full animate-spin mx-auto" />
