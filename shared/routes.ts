@@ -24,7 +24,9 @@ export const api = {
       path: '/api/users/auth',
       input: z.object({
         walletAddress: z.string(),
-        role: z.enum(["user", "advertiser"]).optional()
+        role: z.enum(["user", "advertiser"]).optional(),
+        nonce: z.string(),
+        signature: z.string(),
       }),
       responses: {
         200: z.custom<typeof users.$inferSelect>(),

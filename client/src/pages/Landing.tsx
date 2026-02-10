@@ -2,7 +2,8 @@ import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Navigation } from "@/components/Navigation";
 import { useWallet } from "@/hooks/use-wallet";
-import { Rocket, Coins, ShieldCheck, ArrowRight, Users, Search, Zap, Send, Twitter } from "lucide-react";
+import { Rocket, Coins, ShieldCheck, ArrowRight, Users, Search, Zap, Send } from "lucide-react";
+import { FaXTwitter } from "react-icons/fa6";
 import { motion } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
 import { useCampaigns } from "@/hooks/use-campaigns";
@@ -284,7 +285,7 @@ export default function Landing() {
                 <Button size="lg" className="h-20 px-12 bg-white text-black hover:bg-gray-100 font-black text-2xl rounded-2xl shadow-2xl group transition-all hover:scale-105" asChild data-testid="link-twitter">
                   <a href={PLATFORM_CONFIG.SOCIAL_LINKS.TWITTER} target="_blank" rel="noreferrer" className="flex items-center gap-4">
                     <div className="w-12 h-12 rounded-xl bg-black/10 flex items-center justify-center group-hover:rotate-12 transition-transform">
-                      <Twitter className="w-8 h-8 fill-black" />
+                      <FaXTwitter className="w-7 h-7" />
                     </div>
                     FOLLOW TWITTER (X)
                   </a>
