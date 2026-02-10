@@ -23,6 +23,17 @@ export function setupCampaignRoutes(app: Express) {
     }
   });
 
+  // Backward-compatible symbol endpoint used by older client builds
+  app.get("/api/campaigns/symbol/:symbol", async (req, res) => {
+    try {
+      const campaign = await campaignService.getCampaign(req.params.symbol);
+      if (!campaign) return res.status(404).json({ message: "Campaign not found" });
+      res.json(campaign);
+    } catch (err) {
+      res.status(500).json({ message: "Failed to fetch campaign" });
+    }
+  });
+
   app.post(api.campaigns.create.path, async (req, res) => {
     try {
       const campaign = await campaignService.createCampaign(req.body);

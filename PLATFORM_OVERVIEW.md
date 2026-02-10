@@ -56,6 +56,9 @@ To move to Devnet and enable the Smart Contract:
 - `shared/schema.ts`: Database definitions (PostgreSQL).
 - `shared/config.ts`: Central platform configuration.
 
+## Execution Checklist
+- Use `DEVNET_READINESS_CHECKLIST.md` as the step-by-step go-live checklist for Devnet and Mainnet readiness.
+
 ## Deployment & Verification
 - Use `npm run dev` for local development.
 - Database is managed via Drizzle ORM.
