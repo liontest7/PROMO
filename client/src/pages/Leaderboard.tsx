@@ -225,7 +225,7 @@ export default function Leaderboard() {
                       <p className="text-xs text-primary font-black uppercase tracking-[0.4em] mb-3 opacity-100 text-center drop-shadow-[0_0_10px_rgba(34,197,94,0.5)]">Weekly Prize Pool</p>
                     <div className="flex items-center justify-center gap-4">
                         <span className="text-5xl md:text-6xl font-black text-white leading-none">
-                          {weeklyPrizePool?.toLocaleString() || "0"}
+                          {leaderboardRes?.weeklyPrizePool?.toLocaleString() || "0"}
                         </span>
                         <span className="text-xl text-primary font-black uppercase tracking-widest">$DROPY</span>
                       </div>
