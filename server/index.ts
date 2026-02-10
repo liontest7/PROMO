@@ -6,6 +6,7 @@ import { registerRoutes } from "./routes";
 import { serveStatic } from "./static";
 import { createServer } from "http";
 import { db } from "./db";
+import { validateServerConfiguration } from "./config-validation";
 
 const app = express();
 const httpServer = createServer(app);
@@ -28,9 +29,10 @@ const strictLimiter = rateLimit({
   legacyHeaders: false,
 });
 
-app.use("/api/auth", strictLimiter);
+app.use("/api/users/auth", strictLimiter);
 app.use("/api/rewards/claim", strictLimiter);
-app.use("/api/campaigns/create", strictLimiter);
+app.use("/api/campaigns", strictLimiter);
+app.use("/api/admin", strictLimiter);
 app.use("/api", limiter);
 
 // Setup Session Store
@@ -43,7 +45,7 @@ app.use(
       },
       createTableIfMissing: true,
     }),
-    secret: process.env.SESSION_SECRET || "dropy-secret-marketing-platform",
+    secret: process.env.SESSION_SECRET || (process.env.NODE_ENV === "development" ? "dropy-dev-session-secret" : "dropy-secret-marketing-platform"),
     resave: false,
     saveUninitialized: false,
     proxy: true,
@@ -109,6 +111,8 @@ app.use((req, res, next) => {
 });
 
 (async () => {
+  validateServerConfiguration();
+
   const { checkDatabaseConnection } = await import("./db");
   await checkDatabaseConnection();
 

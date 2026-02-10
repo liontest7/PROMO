@@ -16,6 +16,9 @@ import { SERVER_CONFIG } from "@shared/config";
 import { db } from "./db";
 import { eq, and, sql, desc, asc } from "drizzle-orm";
 import { followerTracking, prizeHistory } from "@shared/schema";
+import { randomUUID } from "crypto";
+
+const createTraceId = (prefix: string) => `${prefix}_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
 
 export async function registerRoutes(
   httpServer: Server,
@@ -241,16 +244,48 @@ export async function registerRoutes(
   });
 
   app.post("/api/rewards/claim", async (req, res) => {
+    const traceId = createTraceId("claim");
     try {
       const user = await storage.getUserByWallet(req.body.wallet);
+      await storage.createLog({ level: "info", source: "CLAIM", message: `Claim request received [${traceId}]`, details: { traceId, wallet: req.body.wallet } });
       if (!user) return res.status(404).json({ message: "User not found" });
       
       const pendingRewards = await storage.getPendingRewards(user.id);
       const campaignIds = req.body.campaignIds;
+      const requestedClaimNonce = typeof req.body.claimNonce === "string" && req.body.claimNonce.trim().length > 0
+        ? req.body.claimNonce.trim()
+        : undefined;
+      const claimNonce = requestedClaimNonce || randomUUID();
+      const existingReceipt = await storage.getClaimReceiptByNonce(user.id, claimNonce);
+
+      if (existingReceipt?.status === "completed") {
+        return res.json({
+          success: true,
+          message: "Rewards claim already completed",
+          signatures: existingReceipt.signatures || [],
+          traceId,
+          claimNonce,
+          idempotentReplay: true,
+        });
+      }
+
+      if (existingReceipt?.status === "processing") {
+        return res.status(409).json({
+          message: "Claim is already processing for this nonce",
+          traceId,
+          claimNonce,
+        });
+      }
+
+      if (!existingReceipt) {
+        await storage.createClaimReceipt({ userId: user.id, claimNonce, campaignIds });
+      }
+
       const filteredPending = pendingRewards.filter(r => campaignIds.includes(r.campaignId));
       
       if (filteredPending.length === 0) {
-        return res.status(400).json({ message: "No pending rewards to claim for selected campaigns" });
+        await storage.failClaimReceipt(claimNonce, "No pending rewards to claim for selected campaigns");
+        return res.status(400).json({ message: "No pending rewards to claim for selected campaigns", traceId, claimNonce });
       }
 
       // In a real implementation, we would call the Solana service to transfer tokens here.
@@ -260,10 +295,13 @@ export async function registerRoutes(
       try {
         if (!SERVER_CONFIG.REWARDS_PAYOUTS_ENABLED) {
           await storage.claimRewards(user.id, campaignIds);
+          await storage.completeClaimReceipt(claimNonce, { signatures: [] });
           return res.json({
             success: true,
             message: "Rewards marked as claimed (payouts disabled).",
             signatures: [],
+            traceId,
+            claimNonce,
           });
         }
         const { Keypair } = await import("@solana/web3.js");
@@ -279,37 +317,73 @@ export async function registerRoutes(
         const signatures: string[] = [];
 
         for (const reward of filteredPending) {
-          const sig = SERVER_CONFIG.SMART_CONTRACT_ENABLED
-            ? await claimFromSmartContract(
+          let sig: string;
+          if (SERVER_CONFIG.SMART_CONTRACT_ENABLED) {
+            try {
+              sig = await claimFromSmartContract(
                 reward.campaignId,
                 user.walletAddress.trim(),
                 parseFloat(reward.amount),
-              )
-            : await transferTokens(
+                claimNonce,
+              );
+            } catch (smartContractClaimError) {
+              if (!SERVER_CONFIG.SMART_CONTRACT_CLAIMS_FALLBACK_TO_TRANSFER) {
+                throw smartContractClaimError;
+              }
+
+              await storage.createLog({
+                level: "warn",
+                source: "CLAIM",
+                message: `Smart contract claim failed, using SPL transfer fallback [${traceId}]`,
+                details: {
+                  traceId,
+                  campaignId: reward.campaignId,
+                  error: smartContractClaimError instanceof Error ? smartContractClaimError.message : String(smartContractClaimError),
+                },
+              });
+
+              sig = await transferTokens(
                 user.walletAddress.trim(),
                 parseFloat(reward.amount),
                 reward.tokenAddress,
                 fromKeypair,
               );
+            }
+          } else {
+            sig = await transferTokens(
+              user.walletAddress.trim(),
+              parseFloat(reward.amount),
+              reward.tokenAddress,
+              fromKeypair,
+            );
+          }
+
           signatures.push(sig);
         }
 
         await storage.claimRewards(user.id, campaignIds);
-        res.json({ success: true, message: "Rewards claimed successfully", signatures });
+        await storage.completeClaimReceipt(claimNonce, { signatures });
+        await storage.createLog({ level: "info", source: "CLAIM", message: `Claim completed [${traceId}]`, details: { traceId, userId: user.id, campaignIds, signatures } });
+        res.json({ success: true, message: "Rewards claimed successfully", signatures, traceId, claimNonce });
       } catch (transferError: any) {
         console.error("Transfer error during claim:", transferError);
-        res.status(500).json({ message: "Blockchain transfer failed", error: transferError.message });
+        await storage.failClaimReceipt(claimNonce, transferError?.message || "Unknown blockchain transfer error");
+        await storage.createLog({ level: "error", source: "CLAIM", message: `Claim transfer failed [${traceId}]`, details: { traceId, error: transferError.message } });
+        res.status(500).json({ message: "Blockchain transfer failed", error: transferError.message, traceId, claimNonce });
       }
     } catch (err) {
       console.error("Claim error:", err);
-      res.status(500).json({ message: "Error claiming rewards" });
+      await storage.createLog({ level: "error", source: "CLAIM", message: `Claim route failed [${traceId}]`, details: { traceId, error: err instanceof Error ? err.message : String(err) } });
+      res.status(500).json({ message: "Error claiming rewards", traceId });
     }
   });
 
   app.post(api.executions.verify.path, async (req, res) => {
+    const traceId = createTraceId("verify");
     // Keep verification logic here for now or move to separate service
     try {
       const userIp = req.ip;
+      await storage.createLog({ level: "info", source: "VERIFY", message: `Verification request received [${traceId}]`, details: { traceId, actionId: req.body.actionId, wallet: req.body.userWallet } });
       const { turnstileToken } = req.body;
       const parsedProof = JSON.parse(req.body.proof || "{}");
       const isAutoFetch = parsedProof.isAutoFetch === true;
@@ -487,7 +561,7 @@ export async function registerRoutes(
           status: "verified"
         } as any);
         
-        return res.json({ success: true, status: "verified", message: "Action verified!" });
+        return res.json({ success: true, status: "verified", message: "Action verified!", traceId });
       }
 
       // Twitter API Verification Integration
@@ -546,10 +620,11 @@ export async function registerRoutes(
         status: "verified"
       } as any);
       
-      res.json({ success: true, status: "verified", message: "Action verified!" });
+      res.json({ success: true, status: "verified", message: "Action verified!", traceId });
     } catch (err) {
       console.error("Verification error:", err);
-      res.status(400).json({ message: "Invalid request" });
+      await storage.createLog({ level: "error", source: "VERIFY", message: `Verification failed [${traceId}]`, details: { traceId, error: err instanceof Error ? err.message : String(err) } });
+      res.status(400).json({ message: "Invalid request", traceId });
     }
   });
 

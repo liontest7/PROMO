@@ -85,6 +85,8 @@ export function UserProfileDialog({ walletAddress, isOpen, onOpenChange }: UserP
                   reputationScore={user.reputationScore || 0}
                   level={Math.floor((user.reputationScore || 0) / 100) + 1}
                   progress={(user.reputationScore || 0) % 100}
+                  rank={rank}
+                  rankChange="stable"
                 />
               </div>
             </>

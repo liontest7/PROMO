@@ -26,6 +26,66 @@ export class AutomationService {
     setTimeout(() => this.checkAndCloseWeek(), 10000);
     // Start retry mechanism
     this.startRetryMechanism();
+    // Start payout/RPC alert monitor
+    this.startHealthAlertMonitor();
+  }
+
+  private async startHealthAlertMonitor() {
+    const intervalMs = 10 * 60 * 1000;
+    const failureRateThreshold = Number(process.env.PAYOUT_FAILURE_ALERT_THRESHOLD_PERCENT || "15");
+    const rpcErrorThreshold = Number(process.env.RPC_ERROR_ALERT_THRESHOLD_COUNT || "5");
+
+    setInterval(async () => {
+      try {
+        const oneHourAgo = Date.now() - 60 * 60 * 1000;
+        const executions = await storage.getAllExecutions();
+        const recent = executions.filter((execution) =>
+          execution.createdAt && new Date(execution.createdAt).getTime() >= oneHourAgo,
+        );
+        const failed = recent.filter((execution) => execution.status === "failed").length;
+        const failureRate = recent.length > 0 ? (failed / recent.length) * 100 : 0;
+
+        const errorLogs = await storage.getErrorLogs(200);
+        const recentRpcErrors = errorLogs.filter((entry) => {
+          const createdAt = entry.createdAt ? new Date(entry.createdAt).getTime() : 0;
+          if (createdAt < oneHourAgo) return false;
+          const message = `${entry.message || ""} ${JSON.stringify(entry.details || {})}`.toLowerCase();
+          return message.includes("rpc") || message.includes("solana") || message.includes("blockhash");
+        }).length;
+
+        if (failureRate >= failureRateThreshold) {
+          await storage.createLog({
+            level: "warn",
+            source: "ALERT",
+            message: "High payout failure rate detected",
+            details: {
+              failureRatePercent: Number(failureRate.toFixed(2)),
+              thresholdPercent: failureRateThreshold,
+              failed,
+              totalRecent: recent.length,
+              windowMinutes: 60,
+            },
+          });
+          log(`ALERT payout failure rate ${failureRate.toFixed(2)}% (threshold ${failureRateThreshold}%)`, "Automation:Alert");
+        }
+
+        if (recentRpcErrors >= rpcErrorThreshold) {
+          await storage.createLog({
+            level: "warn",
+            source: "ALERT",
+            message: "RPC error spike detected",
+            details: {
+              rpcErrors: recentRpcErrors,
+              thresholdCount: rpcErrorThreshold,
+              windowMinutes: 60,
+            },
+          });
+          log(`ALERT RPC error spike ${recentRpcErrors} (threshold ${rpcErrorThreshold})`, "Automation:Alert");
+        }
+      } catch (err) {
+        log(`Alert monitor error: ${err}`, "Automation:Alert");
+      }
+    }, intervalMs);
   }
 
   public static getInstance(): AutomationService {
