@@ -16,6 +16,7 @@ import {
   User as UserIcon
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { FaXTwitter } from "react-icons/fa6";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -153,7 +154,7 @@ export function Navigation() {
                 data-testid="nav-link-twitter"
               >
                 <a href={PLATFORM_CONFIG.SOCIAL_LINKS.TWITTER} target="_blank" rel="noreferrer">
-                  <ShieldCheck className="w-5 h-5" />
+                  <FaXTwitter className="w-4 h-4" />
                 </a>
               </Button>
               <Button 

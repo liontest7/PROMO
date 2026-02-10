@@ -103,9 +103,29 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getCampaignBySymbol(symbol: string): Promise<(Campaign & { actions: Action[] }) | undefined> {
-    const [campaign] = await db.select().from(campaigns).where(sql`LOWER(${campaigns.slug}) = LOWER(${symbol})`).orderBy(desc(campaigns.createdAt)).limit(1);
+    const normalized = decodeURIComponent(symbol || "")
+      .trim()
+      .toLowerCase()
+      .replace(/^\$+/, "");
+
+    const [campaign] = await db
+      .select()
+      .from(campaigns)
+      .where(sql`
+        LOWER(${campaigns.slug}) = ${normalized}
+        OR LOWER(REPLACE(${campaigns.slug}, '$', '')) = ${normalized}
+        OR LOWER(${campaigns.tokenName}) = ${normalized}
+        OR LOWER(REPLACE(${campaigns.tokenName}, '$', '')) = ${normalized}
+      `)
+      .orderBy(desc(campaigns.createdAt))
+      .limit(1);
     if (!campaign) {
-      const [campaignByTicker] = await db.select().from(campaigns).where(sql`LOWER(${campaigns.tokenName}) = LOWER(${symbol})`).orderBy(asc(campaigns.createdAt)).limit(1);
+      const [campaignByTicker] = await db
+        .select()
+        .from(campaigns)
+        .where(sql`LOWER(${campaigns.tokenName}) = ${normalized}`)
+        .orderBy(asc(campaigns.createdAt))
+        .limit(1);
       if (!campaignByTicker) return undefined;
       const campaignActions = await db.select().from(actions).where(eq(actions.campaignId, campaignByTicker.id));
       return { ...campaignByTicker, actions: campaignActions };

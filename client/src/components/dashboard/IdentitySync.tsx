@@ -1,6 +1,7 @@
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ShieldCheck, Send, LogOut, User as UserIcon } from "lucide-react";
+import { FaXTwitter } from "react-icons/fa6";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
@@ -162,7 +163,7 @@ export const IdentitySync = ({ user, walletAddress }: IdentitySyncProps) => {
             </Avatar>
             <div className="flex-1 relative z-10">
               <div className="flex items-center gap-2">
-                <ShieldCheck className="w-3 h-3 text-blue-400" />
+                <FaXTwitter className="w-3 h-3 text-white" />
                 <span className="text-[9px] font-black uppercase tracking-widest text-white">Verified Identity</span>
               </div>
               <p className="text-base font-black font-display tracking-tight text-white uppercase italic">@{user.twitterHandle}</p>

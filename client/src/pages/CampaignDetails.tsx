@@ -8,7 +8,6 @@ import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { 
-  Twitter, 
   Globe, 
   ArrowLeft, 
   ShieldCheck, 
@@ -21,6 +20,7 @@ import {
   TrendingUp,
   TrendingDown
 } from "lucide-react";
+import { FaXTwitter } from "react-icons/fa6";
 import { formatDistanceToNow } from "date-fns";
 import { cn } from "@/lib/utils";
 import { CONFIG } from "@shared/config";
@@ -283,18 +283,18 @@ export default function CampaignDetails() {
                   className="rounded-xl border-white/10 bg-white/5 hover:bg-white/10 text-white h-10 w-10"
                   onClick={() => {
                     const text = encodeURIComponent(`Check out ${campaign.title} on Dropy! #Solana #Dropy`);
-                    const shareUrl = `${window.location.origin}/c/${campaign.tokenName}`;
+                    const shareUrl = `${window.location.origin}/c/${campaign.slug || campaign.tokenName.toLowerCase()}`;
                     window.open(`https://twitter.com/intent/tweet?text=${text}&url=${encodeURIComponent(shareUrl)}`, '_blank');
                   }}
                 >
-                  <Twitter className="w-4 h-4" />
+                  <FaXTwitter className="w-4 h-4" />
                 </Button>
                 <Button 
                   variant="outline" 
                   size="icon" 
                   className="rounded-xl border-white/10 bg-white/5 hover:bg-white/10 text-white h-10 w-10"
                   onClick={() => {
-                    const shareUrl = `${window.location.origin}/c/${campaign.tokenName}`;
+                    const shareUrl = `${window.location.origin}/c/${campaign.slug || campaign.tokenName.toLowerCase()}`;
                     navigator.clipboard.writeText(shareUrl);
                     toast({ title: "Link copied!" });
                   }}
@@ -411,7 +411,7 @@ export default function CampaignDetails() {
                                   "w-10 h-10 rounded-lg flex items-center justify-center transition-all border",
                                   isCompleted ? "bg-primary text-white border-primary" : "bg-white/5 text-white/50 border-white/5 group-hover:bg-primary group-hover:text-white"
                                 )}>
-                                  {action.type === 'twitter' || action.type.startsWith('twitter_') ? <Twitter className="w-5 h-5" /> : action.type === 'telegram' ? <Send className="w-5 h-5" /> : <ExternalLink className="w-5 h-5" />}
+                                  {action.type === 'twitter' || action.type.startsWith('twitter_') ? <FaXTwitter className="w-4 h-4" /> : action.type === 'telegram' ? <Send className="w-5 h-5" /> : <ExternalLink className="w-5 h-5" />}
                                 </div>
                                 <div className="text-left">
                                   <p className="font-black text-base text-white uppercase tracking-tight">{action.title}</p>
@@ -634,7 +634,7 @@ export default function CampaignDetails() {
                   </Button>
                   <Button variant="outline" className="w-full gap-2 border-white/10 bg-white/5 hover:bg-white/10 text-white font-black h-12 rounded-xl text-xs uppercase transition-all" asChild>
                     <a href={campaign.twitterUrl || "#"} target="_blank" rel="noreferrer">
-                      Twitter <Twitter className="w-4 h-4" />
+                      X <FaXTwitter className="w-4 h-4" />
                     </a>
                   </Button>
                 </div>
