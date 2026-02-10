@@ -12,7 +12,9 @@ export function setupAdminRoutes(app: Express) {
     const walletAddress = (req.headers['x-wallet-address'] as string) || 
                          (req.headers['wallet-address'] as string) ||
                          (req.query.walletAddress as string) || 
-                         (req.body?.walletAddress as string);
+                         (req.query.wallet as string) ||
+                         (req.body?.walletAddress as string) ||
+                         (req.body?.wallet as string);
     
     console.log(`[Admin Auth] Request: ${req.method} ${req.originalUrl}, Wallet: ${walletAddress}`);
 

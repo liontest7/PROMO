@@ -29,7 +29,7 @@ export const getQueryFn: <T>(options: {
 }) => QueryFunction<T> =
   ({ on401: unauthorizedBehavior }) =>
   async ({ queryKey }) => {
-    const walletAddress = localStorage.getItem('walletAddress');
+    const walletAddress = localStorage.getItem('wallet_address');
     const headers: Record<string, string> = {
       'Content-Type': 'application/json'
     };

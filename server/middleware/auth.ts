@@ -2,7 +2,12 @@ import { Request, Response, NextFunction } from "express";
 import { storage } from "../storage";
 
 export async function authMiddleware(req: Request, res: Response, next: NextFunction) {
-  const walletAddress = (req.headers['x-wallet-address'] as string) || req.body?.walletAddress || (req.query?.walletAddress as string);
+  const walletAddress = (req.headers['x-wallet-address'] as string) || 
+                       (req.headers['wallet-address'] as string) ||
+                       req.body?.walletAddress || 
+                       req.body?.wallet ||
+                       (req.query?.walletAddress as string) ||
+                       (req.query?.wallet as string);
   
   if (walletAddress && typeof walletAddress === 'string') {
     const user = await storage.getUserByWallet(walletAddress);
