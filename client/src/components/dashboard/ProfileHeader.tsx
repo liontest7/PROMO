@@ -104,7 +104,7 @@ export function ProfileHeader({
   };
 
   return (
-    <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 p-5 rounded-[2rem] bg-white/[0.04] border border-white/10 backdrop-blur-3xl relative overflow-hidden group shadow-xl max-w-xl">
+    <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 p-5 rounded-[2rem] bg-white/[0.04] border border-white/10 backdrop-blur-3xl relative overflow-hidden group shadow-xl w-full">
       <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-transparent to-transparent opacity-60" />
       <div className="relative z-10 flex flex-col md:flex-row items-center gap-6">
         <div className="relative">

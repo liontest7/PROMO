@@ -142,6 +142,10 @@ export default function Dashboard() {
             <PendingRewardsReminder walletAddress={walletAddress} />
             <TokenPortfolios tokenBalances={stats?.tokenBalances || []} />
             <VerificationLogs executions={executions || []} />
+            <ReferralSystem 
+              walletAddress={walletAddress}
+              referralCount={user?.referralCount || 0}
+            />
           </div>
 
           <div className="space-y-8">
@@ -151,10 +155,6 @@ export default function Dashboard() {
               progress={progress}
               rank={rank}
               rankChange={rankChange as "up" | "stable"}
-            />
-            <ReferralSystem 
-              walletAddress={walletAddress}
-              referralCount={user?.referralCount || 0}
             />
             <IdentitySync user={user} walletAddress={walletAddress} />
           </div>
