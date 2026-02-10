@@ -142,21 +142,14 @@ export default function Dashboard() {
             <PendingRewardsReminder walletAddress={walletAddress} />
             <TokenPortfolios tokenBalances={stats?.tokenBalances || []} />
             <VerificationLogs executions={executions || []} />
+          </div>
+
+          <div className="space-y-8">
+            <IdentitySync user={user} walletAddress={walletAddress} />
             <ReferralSystem 
               walletAddress={walletAddress}
               referralCount={user?.referralCount || 0}
             />
-          </div>
-
-          <div className="space-y-8">
-            <EcosystemContribution 
-              reputationScore={reputationScore}
-              level={level}
-              progress={progress}
-              rank={rank}
-              rankChange={rankChange as "up" | "stable"}
-            />
-            <IdentitySync user={user} walletAddress={walletAddress} />
           </div>
         </div>
       </main>

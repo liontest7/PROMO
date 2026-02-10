@@ -2,13 +2,20 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Edit2, Check, X, Trophy, ArrowUpRight, Copy } from "lucide-react";
+import { Edit2, Check, X, Trophy, Copy, Info } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { PLATFORM_CONFIG } from "@shared/config";
 import { cn } from "@/lib/utils";
+import { Progress } from "@/components/ui/progress";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 interface ProfileHeaderProps {
   walletAddress: string;
@@ -95,6 +102,7 @@ export function ProfileHeader({
   };
 
   const levelInfo = getLevelInfo(reputationScore);
+  const xpInLevel = reputationScore % 100;
 
   const getLabelColor = (label: string) => {
     if (label === "LEGEND") return "bg-purple-500/20 text-purple-500 border-purple-500/30 shadow-[0_0_10px_rgba(168,85,247,0.2)]";
@@ -104,9 +112,10 @@ export function ProfileHeader({
   };
 
   return (
-    <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 p-5 rounded-[2rem] bg-white/[0.04] border border-white/10 backdrop-blur-3xl relative overflow-hidden group shadow-xl w-full">
+    <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 p-6 rounded-[2rem] bg-white/[0.04] border border-white/10 backdrop-blur-3xl relative overflow-hidden group shadow-xl w-full">
       <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-transparent to-transparent opacity-60" />
-      <div className="relative z-10 flex flex-col md:flex-row items-center gap-6">
+      
+      <div className="relative z-10 flex flex-col md:flex-row items-center gap-8 flex-1">
         <div className="relative">
           <div className="w-24 h-24 rounded-full bg-gradient-to-tr from-primary via-primary/60 to-primary/20 p-1 shadow-[0_0_30px_rgba(34,197,94,0.3)] relative">
             <div className="w-full h-full rounded-full bg-background flex items-center justify-center overflow-hidden border-2 border-background">
@@ -126,8 +135,8 @@ export function ProfileHeader({
           </Badge>
         </div>
         
-        <div className="text-center md:text-left space-y-1">
-          <div className="flex flex-col md:flex-row items-center gap-2">
+        <div className="text-center md:text-left space-y-3 flex-1">
+          <div className="flex flex-col md:flex-row items-center gap-3">
             {isEditing ? (
               <div className="flex flex-col gap-2">
                 <div className="flex items-center gap-2">
@@ -154,7 +163,7 @@ export function ProfileHeader({
               </div>
             ) : (
               <div className="flex items-center gap-2">
-                <h1 className="text-2xl font-display font-black tracking-tighter uppercase italic leading-none text-white drop-shadow-sm">
+                <h1 className="text-3xl font-display font-black tracking-tighter uppercase italic leading-none text-white drop-shadow-sm">
                   {username && !username.startsWith('USER ') ? username : (walletAddress ? `${walletAddress.slice(0, 4)}...${walletAddress.slice(-4)}` : 'U')}
                 </h1>
                 {!isPublicView && (
@@ -184,8 +193,53 @@ export function ProfileHeader({
               <Copy className="w-2.5 h-2.5" />
             </Button>
           </div>
+
+          <div className="max-w-md w-full space-y-2 mt-4 mx-auto md:mx-0">
+            <div className="flex justify-between text-[10px] font-black uppercase tracking-widest text-white/50">
+              <span>REPUTATION PROGRESS</span>
+              <span>{xpInLevel} / 100 XP</span>
+            </div>
+            <Progress value={xpInLevel} className="h-1.5 bg-white/5" indicatorClassName="bg-gradient-to-r from-primary/40 to-primary" />
+          </div>
+        </div>
+      </div>
+
+      <div className="relative z-10 flex flex-row lg:flex-col items-center lg:items-end justify-center gap-6 lg:gap-4 px-4 py-2 bg-white/[0.02] rounded-2xl border border-white/5 lg:border-none lg:bg-transparent">
+        <div className="flex flex-col items-center lg:items-end">
+          <div className="flex items-center gap-2 text-white/40 uppercase font-black text-[10px] tracking-widest mb-1">
+            <Trophy className="w-3 h-3 text-yellow-500" />
+            WEEKLY RANK
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button variant="ghost" size="icon" className="h-4 w-4 p-0 opacity-50 hover:opacity-100">
+                    <Info className="w-3 h-3" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent className="bg-background border-white/10 text-[10px] font-bold p-2">
+                  Rank based on weekly task completion points
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          </div>
+          <div className="text-3xl font-display font-black tracking-tighter italic uppercase text-white">
+            #{rank}
+          </div>
+        </div>
+
+        <div className="w-px h-10 lg:h-px lg:w-24 bg-white/10" />
+
+        <div className="flex flex-col items-center lg:items-end">
+          <div className="text-white/40 uppercase font-black text-[10px] tracking-widest mb-1">
+            REP SCORE
+          </div>
+          <div className="text-3xl font-display font-black tracking-tighter italic uppercase text-primary drop-shadow-[0_0_15px_rgba(34,197,94,0.3)]">
+            {reputationScore}
+          </div>
         </div>
       </div>
     </div>
   );
+}
+
 }
