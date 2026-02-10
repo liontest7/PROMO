@@ -206,34 +206,34 @@ export function ProfileHeader({
 
       <div className="relative z-10 flex flex-row items-center justify-center gap-12 px-2">
         <div className="flex flex-col items-center lg:items-start">
-          <div className="text-white font-black text-xs tracking-widest mb-1 opacity-60">
+          <div className="text-white font-black text-sm tracking-widest mb-1 opacity-90">
             REP SCORE
           </div>
-          <div className="text-4xl font-display font-black tracking-tighter italic uppercase text-primary drop-shadow-[0_0_15px_rgba(34,197,94,0.3)]">
+          <div className="text-5xl font-display font-black tracking-tighter italic uppercase text-primary drop-shadow-[0_0_15px_rgba(34,197,94,0.3)]">
             {reputationScore}
           </div>
         </div>
 
-        <div className="w-px h-12 bg-white/10" />
+        <div className="w-px h-16 bg-white/10" />
 
         <div className="flex flex-col items-center lg:items-start">
-          <div className="flex items-center gap-2 text-white font-black text-xs tracking-widest mb-1 opacity-60">
-            <Trophy className="w-4 h-4 text-yellow-500" />
+          <div className="flex items-center gap-2 text-white font-black text-sm tracking-widest mb-1 opacity-90">
+            <Trophy className="w-5 h-5 text-yellow-500" />
             WEEKLY RANK
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <Button variant="ghost" size="icon" className="h-4 w-4 p-0 opacity-50 hover:opacity-100">
-                    <Info className="w-3 h-3" />
+                  <Button variant="ghost" size="icon" className="h-4 w-4 p-0 opacity-80 hover:opacity-100">
+                    <Info className="w-4 h-4 text-white" />
                   </Button>
                 </TooltipTrigger>
-                <TooltipContent className="bg-background border-white/10 text-[10px] font-bold p-2">
+                <TooltipContent className="bg-background border-white/20 text-[10px] font-bold p-2 text-white">
                   Rank based on weekly task completion points
                 </TooltipContent>
               </Tooltip>
             </TooltipProvider>
           </div>
-          <div className="text-4xl font-display font-black tracking-tighter italic uppercase text-white">
+          <div className="text-5xl font-display font-black tracking-tighter italic uppercase text-white">
             #{rank}
           </div>
         </div>

@@ -1,6 +1,6 @@
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Twitter, Send, LogOut, ShieldCheck, User as UserIcon } from "lucide-react";
+import { ShieldCheck, Send, LogOut, User as UserIcon } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
@@ -131,26 +131,25 @@ export const IdentitySync = ({ user, walletAddress }: IdentitySyncProps) => {
         {!user?.twitterHandle ? (
           <div className="p-5 rounded-xl bg-blue-500/5 border border-blue-500/10 relative overflow-hidden group shadow-lg">
             <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-all duration-700">
-              <Twitter className="w-14 h-14" />
+              <ShieldCheck className="w-14 h-14" />
             </div>
             <div className="relative z-10 text-left space-y-4">
               <div className="flex items-center gap-2 mb-1">
                 <div className="p-2 rounded-lg bg-blue-500/20 border border-blue-500/30">
-                  <Twitter className="w-5 h-5 text-blue-400" />
+                  <ShieldCheck className="w-5 h-5 text-blue-400" />
                 </div>
                 <span className="text-[13px] font-black uppercase tracking-widest text-white italic">X Identity Sync</span>
               </div>
-              <p className="text-[13px] text-white font-bold uppercase tracking-widest leading-relaxed max-w-[90%] opacity-80">
-                Verify your X account to unlock high-yield engagement campaigns.
+              <p className="text-[13px] text-white font-bold uppercase tracking-widest leading-relaxed max-w-[90%] opacity-90">
+                Link your X account to unlock high-yield engagement.
               </p>
-              <div className="flex flex-col gap-2 pt-2">
+              <div className="flex flex-col gap-2 pt-1">
                 <Button 
                   onClick={handleConnect}
                   disabled={syncMutation.isPending}
-                  className="w-full bg-blue-500 hover:bg-blue-600 text-white gap-3 font-black text-[13px] h-12 rounded-lg shadow-md transition-all active-elevate-2 uppercase tracking-widest relative overflow-hidden group/btn"
+                  className="w-full bg-blue-500 hover:bg-blue-600 text-white gap-3 font-black text-[13px] h-11 rounded-lg shadow-md transition-all active-elevate-2 uppercase tracking-widest relative overflow-hidden group/btn"
                 >
                   <span className="relative z-10">{syncMutation.isPending ? 'Syncing...' : 'Connect Protocol Node'}</span>
-                  <div className="absolute inset-0 bg-white/10 opacity-0 group-hover/btn:opacity-100 transition-opacity" />
                 </Button>
               </div>
             </div>
@@ -163,8 +162,8 @@ export const IdentitySync = ({ user, walletAddress }: IdentitySyncProps) => {
             </Avatar>
             <div className="flex-1 relative z-10">
               <div className="flex items-center gap-2">
-                <Twitter className="w-3 h-3 text-blue-400" />
-                <span className="text-[9px] font-black uppercase tracking-widest text-white/60">Verified Identity</span>
+                <ShieldCheck className="w-3 h-3 text-blue-400" />
+                <span className="text-[9px] font-black uppercase tracking-widest text-white">Verified Identity</span>
               </div>
               <p className="text-base font-black font-display tracking-tight text-white uppercase italic">@{user.twitterHandle}</p>
               <Badge className="bg-primary/20 text-primary border-none text-[8px] font-black mt-1 uppercase tracking-widest">Node Synced</Badge>
@@ -196,13 +195,13 @@ export const IdentitySync = ({ user, walletAddress }: IdentitySyncProps) => {
                 </div>
                 <span className="text-[13px] font-black uppercase tracking-widest text-white italic">TG Identity</span>
               </div>
-              <p className="text-[13px] text-white font-bold uppercase tracking-widest leading-relaxed max-w-[90%] opacity-80">
-                Link your Telegram account to verify community group membership.
+              <p className="text-[13px] text-white font-bold uppercase tracking-widest leading-relaxed max-w-[90%] opacity-90">
+                Link Telegram to verify community group membership.
               </p>
-              <div className="flex flex-col gap-2 pt-2">
+              <div className="flex flex-col gap-2 pt-1">
                 <Button 
                   onClick={handleTGConnect}
-                  className="w-full bg-blue-600 hover:bg-blue-700 text-white gap-3 font-black text-[13px] h-12 rounded-lg shadow-md transition-all active-elevate-2 uppercase tracking-widest relative overflow-hidden group/btn"
+                  className="w-full bg-blue-600 hover:bg-blue-700 text-white gap-3 font-black text-[13px] h-11 rounded-lg shadow-md transition-all active-elevate-2 uppercase tracking-widest relative overflow-hidden group/btn"
                 >
                   <span className="relative z-10">Initiate Secure Link</span>
                 </Button>

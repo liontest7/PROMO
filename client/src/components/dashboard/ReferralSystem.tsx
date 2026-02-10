@@ -97,11 +97,11 @@ export function ReferralSystem({ walletAddress, referralCount }: ReferralSystemP
             <span className="text-[8px] text-white/40 font-bold uppercase tracking-widest">Live</span>
           </div>
 
-          <div className="space-y-1.5 max-h-[160px] overflow-y-auto pr-1 custom-scrollbar">
+          <div className="space-y-1.5 max-h-[160px] overflow-y-auto pr-1 custom-scrollbar text-white">
             {isLoading ? (
               <div className="py-10 text-center space-y-4">
                 <div className="w-10 h-10 border-2 border-primary/20 border-t-primary rounded-full animate-spin mx-auto" />
-                <p className="text-[10px] text-white/40 font-black uppercase tracking-[0.2em]">Syncing Network...</p>
+                <p className="text-[10px] text-white font-black uppercase tracking-[0.2em]">Syncing Network...</p>
               </div>
             ) : invitees && invitees.length > 0 ? (
               invitees.map((invitee) => (
@@ -121,10 +121,10 @@ export function ReferralSystem({ walletAddress, referralCount }: ReferralSystemP
                         {invitee.hasCompletedTask ? (
                           <CheckCircle2 className="w-3.5 h-3.5 text-primary" />
                         ) : (
-                          <XCircle className="w-3.5 h-3.5 text-white/20" />
+                          <XCircle className="w-3.5 h-3.5 text-white/40" />
                         )}
                       </div>
-                      <p className="text-[10px] font-mono text-white/40 uppercase tracking-tight">
+                      <p className="text-[10px] font-mono text-white/60 uppercase tracking-tight">
                         Joined {new Date(invitee.joinedAt).toLocaleDateString()}
                       </p>
                     </div>
@@ -135,23 +135,19 @@ export function ReferralSystem({ walletAddress, referralCount }: ReferralSystemP
                       "text-[9px] font-black uppercase tracking-widest px-2 py-1 rounded-lg border italic inline-block mb-1",
                       invitee.hasCompletedTask 
                         ? "bg-primary/10 text-primary border-primary/20" 
-                        : "bg-white/5 text-white/40 border-white/10"
+                        : "bg-white/5 text-white/60 border-white/20"
                     )}>
                       {invitee.hasCompletedTask ? "Verified Agent" : "Verification Pending"}
-                    </div>
-                    <div className="flex items-center justify-end gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
-                      <span className="text-[9px] text-white/30 font-bold uppercase tracking-tight">View Pulse</span>
-                      <ExternalLink className="w-2.5 h-2.5 text-white/30" />
                     </div>
                   </div>
                 </div>
               ))
             ) : (
-              <div className="py-12 text-center bg-white/[0.02] border border-dashed border-white/10 rounded-3xl">
-                <Users className="w-10 h-10 text-white/10 mx-auto mb-4" />
-                <p className="text-xs text-white/40 font-black uppercase tracking-widest mb-2">No Active Invitations</p>
-                <p className="text-[10px] text-white/20 font-bold uppercase tracking-tight px-10 leading-relaxed">
-                  Broadcast your unique protocol link to recruit agents and dominate the leaderboard.
+              <div className="py-8 text-center bg-white/[0.02] border border-dashed border-white/10 rounded-3xl">
+                <Users className="w-8 h-8 text-white/20 mx-auto mb-3" />
+                <p className="text-xs text-white font-black uppercase tracking-widest mb-1">No Active Invitations</p>
+                <p className="text-[9px] text-white/40 font-bold uppercase tracking-tight px-8 leading-relaxed">
+                  Recruit agents to dominate the leaderboard.
                 </p>
               </div>
             )}
@@ -159,7 +155,7 @@ export function ReferralSystem({ walletAddress, referralCount }: ReferralSystemP
         </div>
 
         <div className="pt-2 border-t border-white/5 text-center">
-          <p className="text-[10px] text-white/40 font-bold uppercase tracking-tight italic leading-relaxed">
+          <p className="text-[10px] text-white font-bold uppercase tracking-tight italic leading-relaxed">
             Rewards are sent after verification.
           </p>
         </div>

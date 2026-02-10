@@ -1,7 +1,7 @@
 import { Link } from "wouter";
 import { PLATFORM_CONFIG } from "@shared/config";
 import { useWallet } from "@/hooks/use-wallet";
-import { Twitter, Send, Mail, ArrowUpRight, ChevronRight } from "lucide-react";
+import { ShieldCheck, Send, Mail, ArrowUpRight, ChevronRight } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 
 export function Footer() {
@@ -16,10 +16,10 @@ export function Footer() {
     ],
     community: [
       {
-        label: "Twitter / X",
+        label: "X (Twitter)",
         href: PLATFORM_CONFIG.SOCIAL_LINKS.TWITTER,
         isExternal: true,
-        icon: Twitter,
+        icon: ShieldCheck,
       },
       {
         label: "Telegram",

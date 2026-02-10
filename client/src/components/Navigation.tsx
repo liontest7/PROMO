@@ -9,9 +9,8 @@ import {
   LogOut, 
   ExternalLink, 
   Trophy, 
-  Twitter, 
+  ShieldCheck, 
   Send, 
-  ShieldCheck,
   ChevronDown,
   ShieldAlert,
   User as UserIcon
@@ -149,12 +148,12 @@ export function Navigation() {
               <Button 
                 variant="ghost" 
                 size="icon" 
-                className="w-10 h-10 rounded-full border border-white/10 hover:bg-white/10 text-white/80 hover:text-blue-400 transition-colors shadow-lg shadow-black/20"
+                className="w-10 h-10 rounded-full border border-white/10 hover:bg-white/10 text-white/80 hover:text-primary transition-colors shadow-lg shadow-black/20"
                 asChild
                 data-testid="nav-link-twitter"
               >
                 <a href={PLATFORM_CONFIG.SOCIAL_LINKS.TWITTER} target="_blank" rel="noreferrer">
-                  <Twitter className="w-5 h-5" />
+                  <ShieldCheck className="w-5 h-5" />
                 </a>
               </Button>
               <Button 
