@@ -199,7 +199,7 @@ export function ProfileHeader({
               <span>REPUTATION PROGRESS</span>
               <span>{xpInLevel} / 100 XP</span>
             </div>
-            <Progress value={xpInLevel} className="h-2.5 bg-white/10" indicatorClassName="bg-gradient-to-r from-primary/60 to-primary shadow-[0_0_15px_rgba(34,197,94,0.4)]" />
+            <Progress value={xpInLevel} className="h-2.5 bg-white/10" />
           </div>
         </div>
       </div>
