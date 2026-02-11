@@ -208,7 +208,6 @@ export function Navigation() {
                 size="icon"
                 className="w-10 h-10 rounded-full border border-white/10 hover:bg-white/10 text-white hover:text-primary transition-colors shadow-lg shadow-black/20"
                 asChild
-                data-testid="nav-link-twitter"
               >
                 <a
                   href={PLATFORM_CONFIG.SOCIAL_LINKS.TWITTER}
@@ -224,7 +223,6 @@ export function Navigation() {
                 size="icon"
                 className="w-10 h-10 rounded-full border border-white/10 hover:bg-white/10 text-white hover:text-blue-400 transition-colors shadow-lg shadow-black/20"
                 asChild
-                data-testid="nav-link-telegram"
               >
                 <a
                   href={PLATFORM_CONFIG.SOCIAL_LINKS.TELEGRAM}
