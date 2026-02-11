@@ -128,7 +128,7 @@ export default function AdminDashboard() {
   const [settingsUpdate, setSettingsUpdate] = useState<any>({});
   const [selectedCampaign, setSelectedCampaign] = useState<any>(null);
   
-  const sessionRole = ((localStorage.getItem('userRole') as any) || role) as string | null;
+  const sessionRole = ((localStorage.getItem('user_role') as any) || role) as string | null;
   const isAdminSession = !!isConnected && (sessionRole === "admin" || sessionRole === "superadmin");
 
   const fetchAdmin = async ({ queryKey }: any) => {

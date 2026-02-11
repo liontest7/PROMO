@@ -12,7 +12,7 @@ interface WalletContextType {
   isConnected: boolean;
   walletAddress: string | null;
   userId: number | null;
-  role: "user" | "advertiser" | null;
+  role: "user" | "advertiser" | "admin" | null;
   connect: (role: "user" | "advertiser") => Promise<void>;
   disconnect: () => void;
   isLoading: boolean;
@@ -36,7 +36,7 @@ const WalletContext = createContext<WalletContextType | undefined>(undefined);
 export function WalletProvider({ children }: { children: ReactNode }) {
   const [walletAddress, setWalletAddress] = useState<string | null>(null);
   const [userId, setUserId] = useState<number | null>(null);
-  const [role, setRole] = useState<"user" | "advertiser" | null>(null);
+  const [role, setRole] = useState<"user" | "advertiser" | "admin" | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [solBalance, setSolBalance] = useState<number | null>(null);
   const [walletBalance, setWalletBalance] = useState<number | null>(null);
@@ -71,7 +71,7 @@ export function WalletProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     const savedAddress = localStorage.getItem("wallet_address");
-    const savedRole = localStorage.getItem("user_role") as "user" | "advertiser";
+    const savedRole = localStorage.getItem("user_role") as "user" | "advertiser" | "admin";
     const savedId = localStorage.getItem("user_id");
     const savedStatus = localStorage.getItem("user_status") as "active" | "suspended" | "blocked";
     

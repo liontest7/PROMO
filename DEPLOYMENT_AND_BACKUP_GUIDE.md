@@ -105,6 +105,7 @@ Use branch-to-environment mapping:
 
 Detailed setup is documented in `RAILWAY_TWO_STAGE_RELEASE.md`.
 
+
 ## 8) Database + Smart Contract environment model (recommended)
 
 For long-term stability, use strict environment separation:
@@ -137,4 +138,3 @@ If you need real visibility during development, use one of these patterns:
    - compare staging behavior against production metrics/logs without direct writes.
 
 Do **not** share a writable DB between staging and production.
-

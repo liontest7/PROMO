@@ -112,7 +112,6 @@ export function Navigation() {
           </div>
 
           <div className="flex items-center gap-2 lg:gap-4">
-            {/* Buy Menu */}
             <div
               className="relative hidden lg:flex items-center gap-3 mr-2 lg:mr-4 pr-2 lg:pr-4 border-r border-white/10"
               onMouseEnter={openBuyMenu}
@@ -127,9 +126,7 @@ export function Navigation() {
                   Buy ${PLATFORM_CONFIG.TOKEN_SYMBOL}
                 </span>
                 <ChevronDown
-                  className={`w-4 h-4 transition-transform ${
-                    buyMenuOpen ? "rotate-180" : ""
-                  }`}
+                  className={`w-4 h-4 transition-transform ${buyMenuOpen ? "rotate-180" : ""}`}
                 />
               </Button>
 
@@ -147,16 +144,12 @@ export function Navigation() {
                   >
                     <div className="w-8 h-8 rounded bg-primary/10 flex items-center justify-center overflow-hidden">
                       <img
-                        src={
-                          PLATFORM_CONFIG.TOKEN_DETAILS.BUY_LINKS.PUMP_FUN_LOGO
-                        }
+                        src={PLATFORM_CONFIG.TOKEN_DETAILS.BUY_LINKS.PUMP_FUN_LOGO}
                         className="w-full h-full object-cover"
                         alt="Pump.fun"
                       />
                     </div>
-                    <span className="text-sm font-bold text-white">
-                      Pump.fun
-                    </span>
+                    <span className="text-sm font-bold text-white">Pump.fun</span>
                     <ExternalLink className="w-3 h-3 ml-auto opacity-50" />
                   </a>
 
@@ -173,9 +166,7 @@ export function Navigation() {
                         alt="DexScreener"
                       />
                     </div>
-                    <span className="text-sm font-bold text-white">
-                      DEXScreener
-                    </span>
+                    <span className="text-sm font-bold text-white">DEXScreener</span>
                     <ExternalLink className="w-3 h-3 ml-auto opacity-50" />
                   </a>
 
@@ -192,16 +183,13 @@ export function Navigation() {
                         alt="Jupiter"
                       />
                     </div>
-                    <span className="text-sm font-bold text-white">
-                      Jupiter
-                    </span>
+                    <span className="text-sm font-bold text-white">Jupiter</span>
                     <ExternalLink className="w-3 h-3 ml-auto opacity-50" />
                   </a>
                 </div>
               )}
             </div>
 
-            {/* Social + Wallet */}
             <div className="hidden lg:flex items-center gap-3 mr-2">
               <Button
                 variant="ghost"
@@ -246,14 +234,13 @@ export function Navigation() {
               </Button>
             </div>
 
-            {/* Wallet Connect / Logout */}
             {isConnected ? (
               <div className="flex items-center gap-4">
                 <div className="hidden sm:flex flex-col items-end">
                   <span
                     className={cn(
                       "text-[10px] font-black uppercase tracking-widest leading-none mb-1",
-                      role === "admin" || role === "superadmin"
+                      (role as any) === "admin" || (role as any) === "superadmin"
                         ? "text-primary"
                         : "text-white",
                     )}
