@@ -1,4 +1,5 @@
 import { Request, Response, NextFunction, Express } from "express";
+import { z } from "zod";
 import { storage } from "../storage";
 import { PLATFORM_CONFIG } from "@shared/config";
 import { SERVER_CONFIG } from "@shared/config";
@@ -6,32 +7,36 @@ import os from "os";
 import { AutomationService } from "../services/automation";
 
 export function setupAdminRoutes(app: Express) {
-  // Use a middleware function that properly extracts the wallet address and attaches the admin user
-  const adminAuthMiddleware = async (req: Request, res: Response, next: NextFunction) => {
-    // Check header first, then query, then body
-    const walletAddress = (req.headers['x-wallet-address'] as string) || 
-                         (req.headers['wallet-address'] as string) ||
-                         (req.query.walletAddress as string) || 
-                         (req.query.wallet as string) ||
-                         (req.body?.walletAddress as string) ||
-                         (req.body?.wallet as string);
-    
-    console.log(`[Admin Auth] Request: ${req.method} ${req.originalUrl}, Wallet: ${walletAddress}`);
+  const roleSchema = z.enum(["user", "advertiser", "admin"]);
+  const statusSchema = z.enum(["active", "suspended", "blocked"]);
+  const settingsPatchSchema = z.object({
+    campaignsEnabled: z.boolean().optional(),
+    holderQualificationEnabled: z.boolean().optional(),
+    socialEngagementEnabled: z.boolean().optional(),
+    rewardsPercent: z.number().int().min(0).max(100).optional(),
+    burnPercent: z.number().int().min(0).max(100).optional(),
+    systemPercent: z.number().int().min(0).max(100).optional(),
+    creationFee: z.number().int().min(0).optional(),
+    systemWalletAddress: z.string().min(32).max(44).optional(),
+    solanaRpcUrls: z.array(z.string().url()).optional(),
+    twitterApiStatus: z.enum(["active", "coming_soon", "error"]).optional(),
+    twitterApiKeys: z.any().optional(),
+  }).refine((data) => {
+    const values = [data.rewardsPercent, data.burnPercent, data.systemPercent];
+    if (values.every((v) => v === undefined)) return true;
+    return (data.rewardsPercent ?? 0) + (data.burnPercent ?? 0) + (data.systemPercent ?? 0) === 100;
+  }, { message: "burnPercent + rewardsPercent + systemPercent must equal 100 when updated together" });
 
-    if (!walletAddress || walletAddress === 'undefined' || walletAddress === 'null') {
-      console.warn("[Admin Auth] No valid wallet address found");
-      return res.status(403).json({ message: "Forbidden: Wallet address required" });
+  // Session-backed admin guard
+  const adminAuthMiddleware = async (req: Request, res: Response, next: NextFunction) => {
+    const sessionWallet = (req.session as any)?.walletAddress as string | undefined;
+    if (!sessionWallet) {
+      return res.status(403).json({ message: "Forbidden: active admin session required" });
     }
 
     try {
-      const user = await storage.getUserByWallet(walletAddress);
-      if (!user) {
-        console.error(`[Admin Auth] No user found for wallet: ${walletAddress}`);
-        return res.status(403).json({ message: "Forbidden: Admin access required" });
-      }
-
-      if (user.role !== "admin") {
-        console.error(`[Admin Auth] Wallet ${walletAddress} is not an admin. Role: ${user.role}`);
+      const user = await storage.getUserByWallet(sessionWallet);
+      if (!user || user.role !== "admin") {
         return res.status(403).json({ message: "Forbidden: Admin access required" });
       }
 
@@ -86,18 +91,26 @@ export function setupAdminRoutes(app: Express) {
 
   app.post("/api/admin/users/:id/role", async (req, res) => {
     try {
-      const user = await storage.updateUser(parseInt(req.params.id), { role: req.body.role });
+      const role = roleSchema.parse(req.body.role);
+      const user = await storage.updateUser(parseInt(req.params.id, 10), { role });
       res.json(user);
     } catch (err) {
+      if (err instanceof z.ZodError) {
+        return res.status(400).json({ message: "Invalid role value" });
+      }
       res.status(500).json({ message: "Failed to update role" });
     }
   });
 
   app.post("/api/admin/users/:id/status", async (req, res) => {
     try {
-      const user = await storage.updateUser(parseInt(req.params.id), { status: req.body.status });
+      const status = statusSchema.parse(req.body.status);
+      const user = await storage.updateUser(parseInt(req.params.id, 10), { status });
       res.json(user);
     } catch (err) {
+      if (err instanceof z.ZodError) {
+        return res.status(400).json({ message: "Invalid status value" });
+      }
       res.status(500).json({ message: "Failed to update status" });
     }
   });
@@ -166,9 +179,13 @@ export function setupAdminRoutes(app: Express) {
 
   app.patch("/api/admin/settings", async (req, res) => {
     try {
-      const settings = await storage.updateSystemSettings(req.body);
+      const payload = settingsPatchSchema.parse(req.body);
+      const settings = await storage.updateSystemSettings(payload);
       res.json(settings);
     } catch (err) {
+      if (err instanceof z.ZodError) {
+        return res.status(400).json({ message: err.errors[0]?.message || "Invalid settings payload" });
+      }
       console.error("[Admin Settings Update] Error:", err);
       res.status(500).json({ message: "Failed to update settings" });
     }
@@ -244,6 +261,177 @@ export function setupAdminRoutes(app: Express) {
     }
   });
 
+  app.get("/api/admin/reconciliation", async (_req, res) => {
+    try {
+      const executions = await storage.getAllExecutions();
+      const prizeRounds = await storage.getPrizeHistory();
+
+      const paidWithoutSignature = executions.filter((execution) => execution.status === "paid" && !execution.transactionSignature);
+      const failedWithSignature = executions.filter((execution) => execution.status === "failed" && !!execution.transactionSignature);
+      const verifiedTooOld = executions.filter((execution) => {
+        if (execution.status !== "verified" || !execution.createdAt) return false;
+        return Date.now() - new Date(execution.createdAt).getTime() > 24 * 60 * 60 * 1000;
+      });
+
+      const inconsistentPrizeRounds = prizeRounds.filter((round) => {
+        const winners = (round.winners || []) as any[];
+        const hasFailedWinner = winners.some((winner) => winner.status === "failed");
+        return round.status === "completed" && hasFailedWinner;
+      }).map((round) => ({
+        id: round.id,
+        weekNumber: round.weekNumber,
+        status: round.status,
+      }));
+
+      return res.json({
+        summary: {
+          paidWithoutSignature: paidWithoutSignature.length,
+          failedWithSignature: failedWithSignature.length,
+          verifiedOlderThan24h: verifiedTooOld.length,
+          inconsistentPrizeRounds: inconsistentPrizeRounds.length,
+        },
+        sample: {
+          paidWithoutSignature: paidWithoutSignature.slice(0, 10).map((execution) => execution.id),
+          failedWithSignature: failedWithSignature.slice(0, 10).map((execution) => execution.id),
+          verifiedOlderThan24h: verifiedTooOld.slice(0, 10).map((execution) => execution.id),
+          inconsistentPrizeRounds,
+        },
+      });
+    } catch (err) {
+      console.error("[Admin Reconciliation] Error:", err);
+      return res.status(500).json({ message: "Failed to fetch reconciliation report" });
+    }
+  });
+
+  app.get("/api/admin/payout-health", async (_req, res) => {
+    try {
+      const allExecutions = await storage.getAllExecutions();
+      const paid = allExecutions.filter(e => e.status === "paid");
+      const failed = allExecutions.filter(e => e.status === "failed");
+      const verifiedPending = allExecutions.filter(e => e.status === "verified");
+      const missingSignature = paid.filter(e => !e.transactionSignature);
+
+      const oneDayAgo = Date.now() - 24 * 60 * 60 * 1000;
+      const recent = allExecutions.filter(e => e.createdAt && new Date(e.createdAt).getTime() >= oneDayAgo);
+      const recentFailed = recent.filter(e => e.status === "failed").length;
+
+      const prizeHistory = await storage.getPrizeHistory();
+      const recentPrizeRounds = prizeHistory.slice(0, 5).map((round) => ({
+        weekNumber: round.weekNumber,
+        status: round.status,
+        totalPrizePool: round.totalPrizePool,
+        endDate: round.endDate,
+      }));
+
+      return res.json({
+        totals: {
+          executions: allExecutions.length,
+          paid: paid.length,
+          failed: failed.length,
+          verifiedPending: verifiedPending.length,
+          missingSignature: missingSignature.length,
+        },
+        recent24hFailureRate: recent.length > 0 ? Number(((recentFailed / recent.length) * 100).toFixed(2)) : 0,
+        recentPrizeRounds,
+      });
+    } catch (err) {
+      console.error("[Admin Payout Health] Error:", err);
+      return res.status(500).json({ message: "Failed to fetch payout health" });
+    }
+  });
+
+  app.get("/api/admin/payout-metrics", async (req, res) => {
+    try {
+      const rawDays = typeof req.query.days === "string" ? Number(req.query.days) : 7;
+      const days = Number.isFinite(rawDays) ? Math.min(30, Math.max(1, Math.floor(rawDays))) : 7;
+
+      const executions = await storage.getAllExecutions();
+      const campaigns = await storage.getAllCampaigns();
+      const campaignNameById = new Map(campaigns.map((campaign) => [campaign.id, campaign.title]));
+
+      const dayKeys = Array.from({ length: days }, (_, idx) => {
+        const date = new Date();
+        date.setHours(0, 0, 0, 0);
+        date.setDate(date.getDate() - idx);
+        return date.toISOString().slice(0, 10);
+      }).reverse();
+
+      const metricByDay = new Map(dayKeys.map((day) => [day, {
+        day,
+        paid: 0,
+        failed: 0,
+        verifiedPending: 0,
+        total: 0,
+      }]));
+
+      const metricByCampaignDay = new Map<string, {
+        campaignId: number;
+        campaignName: string;
+        day: string;
+        paid: number;
+        failed: number;
+        verifiedPending: number;
+        total: number;
+      }>();
+
+      for (const execution of executions) {
+        if (!execution.createdAt) continue;
+        const day = new Date(execution.createdAt).toISOString().slice(0, 10);
+        if (!metricByDay.has(day)) continue;
+
+        const dayMetric = metricByDay.get(day)!;
+        dayMetric.total += 1;
+        if (execution.status === "paid") dayMetric.paid += 1;
+        if (execution.status === "failed") dayMetric.failed += 1;
+        if (execution.status === "verified") dayMetric.verifiedPending += 1;
+
+        const campaignName = campaignNameById.get(execution.campaignId) || `Campaign ${execution.campaignId}`;
+        const campaignKey = `${execution.campaignId}:${day}`;
+        if (!metricByCampaignDay.has(campaignKey)) {
+          metricByCampaignDay.set(campaignKey, {
+            campaignId: execution.campaignId,
+            campaignName,
+            day,
+            paid: 0,
+            failed: 0,
+            verifiedPending: 0,
+            total: 0,
+          });
+        }
+
+        const campaignMetric = metricByCampaignDay.get(campaignKey)!;
+        campaignMetric.total += 1;
+        if (execution.status === "paid") campaignMetric.paid += 1;
+        if (execution.status === "failed") campaignMetric.failed += 1;
+        if (execution.status === "verified") campaignMetric.verifiedPending += 1;
+      }
+
+      const daily = Array.from(metricByDay.values()).map((metric) => ({
+        ...metric,
+        failureRatePercent: metric.total > 0 ? Number(((metric.failed / metric.total) * 100).toFixed(2)) : 0,
+      }));
+
+      const perCampaignPerDay = Array.from(metricByCampaignDay.values())
+        .map((metric) => ({
+          ...metric,
+          failureRatePercent: metric.total > 0 ? Number(((metric.failed / metric.total) * 100).toFixed(2)) : 0,
+        }))
+        .sort((a, b) => {
+          if (a.day !== b.day) return a.day.localeCompare(b.day);
+          return a.campaignName.localeCompare(b.campaignName);
+        });
+
+      return res.json({
+        windowDays: days,
+        daily,
+        perCampaignPerDay,
+      });
+    } catch (err) {
+      console.error("[Admin Payout Metrics] Error:", err);
+      return res.status(500).json({ message: "Failed to fetch payout metrics" });
+    }
+  });
+
   // System Health
   app.get("/api/admin/system-health", async (req, res) => {
     try {
@@ -306,63 +494,81 @@ export function setupAdminRoutes(app: Express) {
     }
   });
 
-  // Wallet Info
-  app.get("/api/admin/wallet-info", async (req, res) => {
+  // Wallet & payout model info
+  app.get("/api/admin/wallet-info", async (_req, res) => {
     try {
       const { Keypair, PublicKey } = await import("@solana/web3.js");
       const { getAccount, getAssociatedTokenAddress } = await import("@solana/spl-token");
       const bs58 = (await import("bs58")).default;
 
       const privateKey = process.env.SYSTEM_WALLET_PRIVATE_KEY;
-      if (!privateKey) {
-        console.warn("[Admin Wallet Info] System wallet secret not found in environment");
-        return res.status(500).json({ message: "System wallet secret not found in environment. Please check SYSTEM_WALLET_PRIVATE_KEY." });
-      }
-
-      const keypair = Keypair.fromSecretKey(bs58.decode(privateKey));
-      const systemWalletAddress = keypair.publicKey.toBase58();
-      
-      const connection = await (await import("../services/solana")).getSolanaConnection();
-      const pubkey = keypair.publicKey;
-      
-      const solLamports = await connection.getBalance(pubkey);
-      const balanceSol = solLamports / 1e9;
-
+      const systemWalletConfigured = Boolean(privateKey);
+      let systemWalletAddress: string | null = null;
+      let balanceSol = 0;
       let balanceDropy = 0;
-      const DROPY_CA = process.env.VITE_DROPY_CA;
-      if (DROPY_CA && DROPY_CA !== "DropyAddressHere") {
-        try {
-          const tokenMint = new PublicKey(DROPY_CA);
-          const ata = await getAssociatedTokenAddress(tokenMint, pubkey);
-          const account = await getAccount(connection, ata);
-          balanceDropy = Number(account.amount) / 1e6;
-        } catch (e) {
-          console.warn("[Admin Wallet Info] Could not fetch DROPY balance:", e);
+
+      const connection = await (await import("../services/solana")).getSolanaConnection();
+
+      if (privateKey) {
+        const keypair = Keypair.fromSecretKey(bs58.decode(privateKey));
+        systemWalletAddress = keypair.publicKey.toBase58();
+        const pubkey = keypair.publicKey;
+
+        const solLamports = await connection.getBalance(pubkey);
+        balanceSol = solLamports / 1e9;
+
+        const DROPY_CA = process.env.VITE_DROPY_CA;
+        if (DROPY_CA && DROPY_CA !== "DropyAddressHere") {
+          try {
+            const tokenMint = new PublicKey(DROPY_CA);
+            const ata = await getAssociatedTokenAddress(tokenMint, pubkey);
+            const account = await getAccount(connection, ata);
+            balanceDropy = Number(account.amount) / 1e6;
+          } catch (e) {
+            console.warn("[Admin Wallet Info] Could not fetch DROPY balance:", e);
+          }
         }
       }
 
       const allExecutions = await storage.getAllExecutions();
+      const allCampaigns = await storage.getAllCampaigns();
+      const activeEscrows = allCampaigns.filter((campaign) => Boolean(campaign.escrowWallet)).length;
+      const fundedEscrows = allCampaigns.filter((campaign) => Boolean(campaign.fundingTxSignature)).length;
+
       const weeklyRewardsPool = allExecutions
-        .filter(e => e.status === 'paid' || e.status === 'verified')
-        .reduce((acc, e) => {
-          const reward = e.action ? parseFloat(e.action.rewardAmount) : 0;
+        .filter((execution) => execution.status === "paid" || execution.status === "verified")
+        .reduce((acc, execution) => {
+          const reward = execution.action ? parseFloat(execution.action.rewardAmount) : 0;
           return acc + (reward * 0.05);
         }, 0);
 
       const logs = await (storage as any).getAdminLogs?.() || [];
-      const walletLogs = logs.filter((l: any) => l.source === 'Wallet' || l.source === 'Payout' || l.source === 'System');
+      const walletLogs = logs.filter((log: any) => ["Wallet", "Payout", "System", "CLAIM"].includes(log.source));
 
-      res.json({
-        address: systemWalletAddress,
-        balanceSol,
-        balanceDropy,
+      return res.json({
+        payoutModel: {
+          rewardsPayoutsEnabled: SERVER_CONFIG.REWARDS_PAYOUTS_ENABLED,
+          smartContractEnabled: SERVER_CONFIG.SMART_CONTRACT_ENABLED,
+          smartContractProgramId: process.env.SMART_CONTRACT_PROGRAM_ID || PLATFORM_CONFIG.SMART_CONTRACT.PROGRAM_ID,
+          cluster: SERVER_CONFIG.SOLANA_CLUSTER,
+        },
+        treasury: {
+          systemWalletConfigured,
+          systemWalletAddress,
+          balanceSol,
+          balanceDropy,
+        },
+        escrow: {
+          activeEscrows,
+          fundedEscrows,
+          totalCampaigns: allCampaigns.length,
+        },
         weeklyRewardsPool,
-        network: SERVER_CONFIG.SOLANA_CLUSTER,
-        recentLogs: walletLogs.slice(0, 10)
+        recentLogs: walletLogs.slice(0, 10),
       });
     } catch (err) {
       console.error("[Admin Wallet Info] Error:", err);
-      res.status(500).json({ message: "Failed to fetch wallet info" });
+      return res.status(500).json({ message: "Failed to fetch wallet info" });
     }
   });
 

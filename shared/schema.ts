@@ -1,7 +1,7 @@
-import { pgTable, text, serial, integer, boolean, timestamp, numeric, jsonb } from "drizzle-orm/pg-core";
+import { pgTable, text, serial, integer, boolean, timestamp, numeric, jsonb, type AnyPgColumn } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
-import { relations } from "drizzle-orm";
+import { relations, sql } from "drizzle-orm";
 
 // === TABLE DEFINITIONS ===
 
@@ -47,7 +47,7 @@ export const users = pgTable("users", {
   acceptedTerms: boolean("accepted_terms").default(false).notNull(),
   earnedXBonus: boolean("earned_x_bonus").default(false).notNull(),
   earnedTGBonus: boolean("earned_tg_bonus").default(false).notNull(),
-  referrerId: integer("referrer_id").references(() => users.id),
+  referrerId: integer("referrer_id").references((): AnyPgColumn => users.id),
   referralCount: integer("referral_count").default(0).notNull(),
   createdAt: timestamp("created_at").defaultNow(),
 });
@@ -154,11 +154,24 @@ export const executions = pgTable("executions", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
+export const claimReceipts = pgTable("claim_receipts", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").references(() => users.id).notNull(),
+  claimNonce: text("claim_nonce").notNull().unique(),
+  status: text("status", { enum: ["processing", "completed", "failed"] }).default("processing").notNull(),
+  campaignIds: jsonb("campaign_ids").$type<number[]>().notNull(),
+  signatures: jsonb("signatures").$type<string[]>().default(sql`'[]'::jsonb`).notNull(),
+  errorMessage: text("error_message"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  completedAt: timestamp("completed_at"),
+});
+
 // === RELATIONS ===
 
 export const usersRelations = relations(users, ({ one, many }) => ({
   campaigns: many(campaigns),
   executions: many(executions),
+  claimReceipts: many(claimReceipts),
   referrer: one(users, {
     fields: [users.referrerId],
     references: [users.id],
@@ -225,6 +238,13 @@ export const executionsRelations = relations(executions, ({ one }) => ({
   }),
 }));
 
+export const claimReceiptsRelations = relations(claimReceipts, ({ one }) => ({
+  user: one(users, {
+    fields: [claimReceipts.userId],
+    references: [users.id],
+  }),
+}));
+
 // === BASE SCHEMAS ===
 
 export const prizeHistory = pgTable("prize_history", {
@@ -282,6 +302,7 @@ export type InsertAction = z.infer<typeof insertActionSchema>;
 
 export type Execution = typeof executions.$inferSelect;
 export type InsertExecution = z.infer<typeof insertExecutionSchema>;
+export type ClaimReceipt = typeof claimReceipts.$inferSelect;
 
 export const insertHolderStateSchema = createInsertSchema(holderState).omit({ id: true });
 export type HolderState = typeof holderState.$inferSelect;

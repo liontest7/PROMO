@@ -1,6 +1,7 @@
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ShieldCheck, Send, LogOut, User as UserIcon } from "lucide-react";
+import { Send, LogOut, User as UserIcon } from "lucide-react";
+import { FaXTwitter } from "react-icons/fa6";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
@@ -131,12 +132,12 @@ export const IdentitySync = ({ user, walletAddress }: IdentitySyncProps) => {
         {!user?.twitterHandle ? (
           <div className="p-5 rounded-xl bg-blue-500/5 border border-blue-500/10 relative overflow-hidden group shadow-lg">
             <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-all duration-700">
-              <ShieldCheck className="w-14 h-14" />
+              <FaXTwitter className="w-12 h-12" />
             </div>
             <div className="relative z-10 text-left space-y-4">
               <div className="flex items-center gap-2 mb-1">
                 <div className="p-2 rounded-lg bg-blue-500/20 border border-blue-500/30">
-                  <ShieldCheck className="w-5 h-5 text-blue-400" />
+                  <FaXTwitter className="w-5 h-5 text-white" />
                 </div>
                 <span className="text-[13px] font-black uppercase tracking-widest text-white italic">X Identity Sync</span>
               </div>
@@ -149,7 +150,7 @@ export const IdentitySync = ({ user, walletAddress }: IdentitySyncProps) => {
                   disabled={syncMutation.isPending}
                   className="w-full bg-blue-500 hover:bg-blue-600 text-white gap-3 font-black text-[13px] h-11 rounded-lg shadow-md transition-all active-elevate-2 uppercase tracking-widest relative overflow-hidden group/btn"
                 >
-                  <span className="relative z-10">{syncMutation.isPending ? 'Syncing...' : 'Connect Protocol Node'}</span>
+                  <span className="relative z-10">{syncMutation.isPending ? 'Syncing...' : 'Connect Your X'}</span>
                 </Button>
               </div>
             </div>
@@ -162,23 +163,23 @@ export const IdentitySync = ({ user, walletAddress }: IdentitySyncProps) => {
             </Avatar>
             <div className="flex-1 relative z-10">
               <div className="flex items-center gap-2">
-                <ShieldCheck className="w-3 h-3 text-blue-400" />
+                <FaXTwitter className="w-3 h-3 text-white" />
                 <span className="text-[9px] font-black uppercase tracking-widest text-white">Verified Identity</span>
               </div>
               <p className="text-base font-black font-display tracking-tight text-white uppercase italic">@{user.twitterHandle}</p>
-              <Badge className="bg-primary/20 text-primary border-none text-[8px] font-black mt-1 uppercase tracking-widest">Node Synced</Badge>
+              <Badge className="bg-primary/20 text-primary border-none text-[8px] font-black mt-1 uppercase tracking-widest">X Connected</Badge>
             </div>
             <Button
               size="icon"
               variant="ghost"
               disabled={unlinkMutation.isPending}
-              className="h-8 w-8 rounded-lg text-white/40 hover:text-destructive hover:bg-destructive/10 relative z-[100] transition-all"
+              className="h-8 w-8 rounded-lg text-white hover:text-destructive hover:bg-destructive/10 relative z-[100] transition-all"
               onClick={handleUnlink}
             >
               <LogOut className={`w-4 h-4 ${unlinkMutation.isPending ? 'animate-spin' : ''}`} />
             </Button>
             <div className="absolute bottom-0 right-0 p-2 opacity-5">
-              <ShieldCheck className="w-10 h-10 text-primary" />
+              <FaXTwitter className="w-10 h-10 text-primary" />
             </div>
           </div>
         )}
@@ -203,7 +204,7 @@ export const IdentitySync = ({ user, walletAddress }: IdentitySyncProps) => {
                   onClick={handleTGConnect}
                   className="w-full bg-blue-600 hover:bg-blue-700 text-white gap-3 font-black text-[13px] h-11 rounded-lg shadow-md transition-all active-elevate-2 uppercase tracking-widest relative overflow-hidden group/btn"
                 >
-                  <span className="relative z-10">Initiate Secure Link</span>
+                  <span className="relative z-10">Connect Your Telegram</span>
                 </Button>
               </div>
             </div>
@@ -219,7 +220,7 @@ export const IdentitySync = ({ user, walletAddress }: IdentitySyncProps) => {
             <div className="flex-1 relative z-10">
               <div className="flex items-center gap-2">
                 <Send className="w-3 h-3 text-[#0088cc]" />
-                <span className="text-[9px] font-black uppercase tracking-widest text-white/60">Verified Telegram</span>
+                <span className="text-[9px] font-black uppercase tracking-widest text-white">Verified Telegram</span>
               </div>
               <p className="text-base font-black font-display tracking-tight text-white uppercase italic">@{user.telegramHandle}</p>
               <Badge className="bg-[#0088cc]/20 text-[#0088cc] border-none text-[8px] font-black mt-1 uppercase tracking-widest">Link Active</Badge>
@@ -227,7 +228,7 @@ export const IdentitySync = ({ user, walletAddress }: IdentitySyncProps) => {
             <Button
               size="icon"
               variant="ghost"
-              className="h-8 w-8 rounded-lg text-white/40 hover:text-destructive hover:bg-destructive/10 relative z-[100] transition-all"
+              className="h-8 w-8 rounded-lg text-white hover:text-destructive hover:bg-destructive/10 relative z-[100] transition-all"
               onClick={() => {
                 syncMutation.mutate({
                   walletAddress,
