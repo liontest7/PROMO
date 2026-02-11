@@ -1,6 +1,7 @@
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ShieldCheck, Send, LogOut, User as UserIcon } from "lucide-react";
+import { Send, LogOut, User as UserIcon } from "lucide-react";
+import { FaXTwitter } from "react-icons/fa6";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
@@ -131,12 +132,12 @@ export const IdentitySync = ({ user, walletAddress }: IdentitySyncProps) => {
         {!user?.twitterHandle ? (
           <div className="p-5 rounded-xl bg-blue-500/5 border border-blue-500/10 relative overflow-hidden group shadow-lg">
             <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-all duration-700">
-              <ShieldCheck className="w-14 h-14" />
+              <FaXTwitter className="w-12 h-12" />
             </div>
             <div className="relative z-10 text-left space-y-4">
               <div className="flex items-center gap-2 mb-1">
                 <div className="p-2 rounded-lg bg-blue-500/20 border border-blue-500/30">
-                  <ShieldCheck className="w-5 h-5 text-blue-400" />
+                  <FaXTwitter className="w-5 h-5 text-white" />
                 </div>
                 <span className="text-[13px] font-black uppercase tracking-widest text-white italic">X Identity Sync</span>
               </div>
@@ -162,7 +163,7 @@ export const IdentitySync = ({ user, walletAddress }: IdentitySyncProps) => {
             </Avatar>
             <div className="flex-1 relative z-10">
               <div className="flex items-center gap-2">
-                <ShieldCheck className="w-3 h-3 text-blue-400" />
+                <FaXTwitter className="w-3 h-3 text-white" />
                 <span className="text-[9px] font-black uppercase tracking-widest text-white">Verified Identity</span>
               </div>
               <p className="text-base font-black font-display tracking-tight text-white uppercase italic">@{user.twitterHandle}</p>
@@ -178,7 +179,7 @@ export const IdentitySync = ({ user, walletAddress }: IdentitySyncProps) => {
               <LogOut className={`w-4 h-4 ${unlinkMutation.isPending ? 'animate-spin' : ''}`} />
             </Button>
             <div className="absolute bottom-0 right-0 p-2 opacity-5">
-              <ShieldCheck className="w-10 h-10 text-primary" />
+              <FaXTwitter className="w-10 h-10 text-primary" />
             </div>
           </div>
         )}

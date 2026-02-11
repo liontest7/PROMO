@@ -8,7 +8,11 @@
     "build": "tsx script/build.ts",
     "start": "NODE_ENV=production node dist/index.cjs",
     "check": "tsc",
-    "db:push": "drizzle-kit push"
+    "db:push": "drizzle-kit push",
+    "smoke:test": "tsx script/smoke-test.ts",
+    "lint": "tsx script/lint-rules.ts",
+    "db:backup": "bash script/backup-postgres.sh",
+    "db:restore": "bash script/restore-postgres.sh"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",

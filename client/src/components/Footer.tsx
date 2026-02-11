@@ -2,6 +2,7 @@ import { Link } from "wouter";
 import { PLATFORM_CONFIG } from "@shared/config";
 import { useWallet } from "@/hooks/use-wallet";
 import { ShieldCheck, Send, Mail, ArrowUpRight, ChevronRight } from "lucide-react";
+import { FaXTwitter } from "react-icons/fa6";
 import { Separator } from "@/components/ui/separator";
 
 export function Footer() {
@@ -19,7 +20,7 @@ export function Footer() {
         label: "X (Twitter)",
         href: PLATFORM_CONFIG.SOCIAL_LINKS.TWITTER,
         isExternal: true,
-        icon: ShieldCheck,
+        icon: FaXTwitter,
       },
       {
         label: "Telegram",
@@ -77,9 +78,9 @@ export function Footer() {
             </Link>
 
             <p className="text-muted-foreground text-[14px] leading-relaxed max-w-sm font-medium">
-              The premier Pay-Per-Action engine for the Solana ecosystem.
-              Bridging projects and users through decentralized engagement and
-              verifiable rewards.
+              A performance-based campaign engine for Solana.
+              Connecting projects and contributors through verified actions
+              and transparent reward distribution.
             </p>
           </div>
 
