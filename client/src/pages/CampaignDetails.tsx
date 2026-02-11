@@ -364,8 +364,8 @@ export default function CampaignDetails() {
                           </div>
                           <div className="flex items-center gap-6">
                             <div className="text-right hidden sm:block">
-                              <p className="text-[10px] font-black text-white uppercase tracking-widest">Reward</p>
-                              <p className="text-sm font-black text-primary">+{campaign.rewardPerWallet}</p>
+                              <p className="text-xs font-black text-white uppercase tracking-[0.14em]">Reward</p>
+                              <p className="text-base font-black text-primary tracking-tight">+{campaign.rewardPerWallet} ${campaign.tokenName}</p>
                             </div>
                             {(() => {
                               const execution = executions?.[0]; // For holder, usually one execution
@@ -380,7 +380,7 @@ export default function CampaignDetails() {
                                   className={cn(
                                     "font-black px-5 h-9 rounded-lg text-xs uppercase tracking-widest transition-all",
                                     isCompleted && "border-primary/50 text-primary bg-primary/5 no-default-hover-elevate",
-                                    isWithdrawn && "bg-muted text-muted-foreground border-muted cursor-default opacity-70"
+                                    isWithdrawn && "bg-white/10 text-white border-white/20 cursor-default opacity-80"
                                   )}
                                   onClick={handleHolderClick}
                                 >
@@ -420,8 +420,8 @@ export default function CampaignDetails() {
                               </div>
                               <div className="flex items-center gap-6">
                                 <div className="text-right hidden sm:block">
-                                  <p className="text-[10px] font-black text-white uppercase tracking-widest">Reward</p>
-                                  <p className="text-sm font-black text-primary">+{action.rewardAmount}</p>
+                                  <p className="text-xs font-black text-white uppercase tracking-[0.14em]">Reward</p>
+                                  <p className="text-base font-black text-primary tracking-tight">+{action.rewardAmount} ${campaign.tokenName}</p>
                                 </div>
                                 <Button 
                                   size="sm"
@@ -430,7 +430,7 @@ export default function CampaignDetails() {
                                   className={cn(
                                     "font-black px-5 h-9 rounded-lg text-xs uppercase tracking-widest transition-all",
                                     isCompleted && "border-primary/50 text-primary bg-primary/5 no-default-hover-elevate",
-                                    isWithdrawn && "bg-muted text-muted-foreground border-muted cursor-default opacity-70"
+                                    isWithdrawn && "bg-white/10 text-white border-white/20 cursor-default opacity-80"
                                   )}
                                   onClick={() => !isCompleted && handleActionClick(action)}
                                 >

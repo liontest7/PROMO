@@ -258,7 +258,7 @@ export function VerifyActionDialog({ action, campaign, open, onOpenChange, onSuc
                 <Button 
                   variant="ghost" 
                   size="icon" 
-                  className="h-6 w-6 text-white/20 hover:text-white transition-colors"
+                  className="h-6 w-6 text-white/80 hover:text-primary transition-colors"
                   onClick={() => handleVerify(true)}
                   disabled={verifyMutation.isPending || isVerifying}
                 >
@@ -278,13 +278,13 @@ export function VerifyActionDialog({ action, campaign, open, onOpenChange, onSuc
               <div className="bg-white/5 p-6 rounded-3xl border border-white/10 space-y-4">
                 <div className="flex justify-between items-center border-b border-white/5 pb-4">
                   <div className="space-y-1">
-                    <p className="text-[10px] font-black uppercase text-white/40 tracking-widest">Your Balance</p>
+                    <p className="text-[10px] font-black uppercase text-white tracking-widest">Your Balance</p>
                     <p className={cn("text-2xl font-black font-mono tracking-tighter", (holdingStatus?.currentBalance || 0) >= Number(campaign.minHoldingAmount || 0) ? "text-primary" : "text-red-500")}>
                       {holdingStatus?.currentBalance?.toLocaleString() || "0"} <span className="text-xs">${campaign.tokenName}</span>
                     </p>
                   </div>
                   <div className="text-right space-y-1">
-                    <p className="text-[10px] font-black uppercase text-white/40 tracking-widest">Requirement</p>
+                    <p className="text-[10px] font-black uppercase text-white tracking-widest">Requirement</p>
                     <p className="text-2xl font-black font-mono text-white tracking-tighter">
                       {Number(campaign.minHoldingAmount).toLocaleString()}
                     </p>
@@ -293,8 +293,8 @@ export function VerifyActionDialog({ action, campaign, open, onOpenChange, onSuc
 
                 <div className="space-y-3">
                   <div className="flex justify-between items-center">
-                    <p className="text-[10px] font-black uppercase text-white/60 tracking-widest">Verification Status</p>
-                    <Badge className={cn("text-[9px] font-black px-2 py-0.5", holdingStatus?.status === 'verified' ? "bg-primary/20 text-primary border-primary/30" : "bg-white/5 text-white/40 border-white/10")}>
+                    <p className="text-[10px] font-black uppercase text-white tracking-widest">Verification Status</p>
+                    <Badge className={cn("text-[9px] font-black px-2 py-0.5", holdingStatus?.status === 'verified' ? "bg-primary/20 text-primary border-primary/30" : "bg-white/10 text-white border-white/20")}>
                       {holdingStatus?.status === 'verified' ? 'VERIFIED' : 'PENDING'}
                     </Badge>
                   </div>
@@ -328,11 +328,11 @@ export function VerifyActionDialog({ action, campaign, open, onOpenChange, onSuc
                 </Button>
                 
                 <div className="flex justify-center items-center gap-4">
-                  <Button variant="ghost" size="sm" className="text-[10px] font-black text-white/40 hover:text-white uppercase tracking-widest" onClick={() => window.open(`${CONFIG.TOKEN_DETAILS.BUY_LINKS.JUPITER}${campaign.tokenAddress}`, '_blank')}>
+                  <Button variant="ghost" size="sm" className="text-[10px] font-black text-white hover:text-primary uppercase tracking-widest" onClick={() => window.open(`${CONFIG.TOKEN_DETAILS.BUY_LINKS.JUPITER}${campaign.tokenAddress}`, '_blank')}>
                     Buy ${campaign.tokenName}
                   </Button>
                   <div className="w-1 h-1 rounded-full bg-white/10" />
-                  <Button variant="ghost" size="sm" className="text-[10px] font-black text-white/40 hover:text-white uppercase tracking-widest" onClick={() => window.open(`https://dexscreener.com/solana/${campaign.tokenAddress}`, '_blank')}>
+                  <Button variant="ghost" size="sm" className="text-[10px] font-black text-white hover:text-primary uppercase tracking-widest" onClick={() => window.open(`https://dexscreener.com/solana/${campaign.tokenAddress}`, '_blank')}>
                     View Chart
                   </Button>
                 </div>
@@ -344,7 +344,7 @@ export function VerifyActionDialog({ action, campaign, open, onOpenChange, onSuc
                 <div className="space-y-4">
                   <div className="bg-white/5 p-8 rounded-[2rem] border border-white/10 text-center">
                     <CheckCircle className="w-12 h-12 text-primary mx-auto opacity-20 mb-4" />
-                    <p className="text-sm font-medium text-white/60">{action?.title}</p>
+                    <p className="text-sm font-bold text-white">{action?.title}</p>
                   </div>
                   <Button className="w-full h-16 rounded-2xl bg-white/5 border border-white/10 font-black uppercase tracking-widest gap-3" onClick={() => { window.open(action?.url, '_blank'); setStep("verify"); }}>
                     OPEN TASK <ExternalLink className="w-5 h-5" />
@@ -357,14 +357,14 @@ export function VerifyActionDialog({ action, campaign, open, onOpenChange, onSuc
                     <div className="space-y-4">
                       {action?.type === 'twitter' || action?.type.startsWith('twitter_') ? (
                         <div className="bg-white/5 p-6 rounded-2xl border border-white/10 space-y-3">
-                          <p className="text-[10px] uppercase font-black text-white/40 tracking-widest">Linked X Account</p>
+                          <p className="text-[10px] uppercase font-black text-white tracking-widest">Linked X Account</p>
                           <div className="flex items-center gap-3">
                             <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center border border-primary/20">
                               <span className="text-primary font-black">X</span>
                             </div>
                             <div>
                               <p className="text-sm font-black text-white">{user?.twitterHandle ? `@${user.twitterHandle}` : "Not Linked"}</p>
-                              <p className="text-[10px] font-bold text-white/40 uppercase tracking-widest">Identity Verified</p>
+                              <p className="text-[10px] font-bold text-white uppercase tracking-widest">Identity Verified</p>
                             </div>
                           </div>
                           {!user?.twitterHandle && (
@@ -382,7 +382,7 @@ export function VerifyActionDialog({ action, campaign, open, onOpenChange, onSuc
                         </div>
                       ) : (
                         <div className="space-y-2">
-                          <Label className="text-[10px] uppercase font-black text-white/40 tracking-widest">PROOF (USERNAME)</Label>
+                          <Label className="text-[10px] uppercase font-black text-white tracking-widest">PROOF (USERNAME)</Label>
                           <Input placeholder="@username" value={proof} onChange={(e) => setProof(e.target.value)} className="bg-[#141414] border-white/10 h-14 rounded-xl" />
                         </div>
                       )}
@@ -400,7 +400,7 @@ export function VerifyActionDialog({ action, campaign, open, onOpenChange, onSuc
                   {holdingStatus?.followProgress && (
                     <div className="bg-white/5 p-5 rounded-2xl border border-white/10 space-y-3">
                       <div className="flex justify-between items-center text-[10px] font-black uppercase tracking-widest">
-                        <span className="text-white/40">Follow Progress</span>
+                        <span className="text-white">Follow Progress</span>
                         <span className="text-primary">{holdingStatus.followProgress.currentDays} / {holdingStatus.followProgress.requiredDays} Days</span>
                       </div>
                       <div className="relative h-2 w-full bg-white/5 rounded-full overflow-hidden">
@@ -409,7 +409,7 @@ export function VerifyActionDialog({ action, campaign, open, onOpenChange, onSuc
                           style={{ width: `${(holdingStatus.followProgress.currentDays / holdingStatus.followProgress.requiredDays) * 100}%` }}
                         />
                       </div>
-                      <p className="text-[9px] text-center text-white/30 font-bold uppercase">
+                      <p className="text-[9px] text-center text-white/80 font-bold uppercase">
                         Required: Follow since {new Date(holdingStatus.followProgress.startDate).toLocaleDateString()}
                       </p>
                     </div>
@@ -434,7 +434,7 @@ export function VerifyActionDialog({ action, campaign, open, onOpenChange, onSuc
                       )}
                     </Button>
                     
-                    <p className="text-[10px] text-center text-white/30 font-bold uppercase tracking-widest">
+                    <p className="text-[10px] text-center text-white/85 font-bold uppercase tracking-widest">
                       {isVerifying ? "Verifying with X API..." : "Verification is secured and encrypted"}
                     </p>
                   </div>
@@ -444,7 +444,7 @@ export function VerifyActionDialog({ action, campaign, open, onOpenChange, onSuc
                 <div className="text-center py-10 space-y-4">
                   <CheckCircle className="w-20 h-20 text-[#00D1FF] mx-auto" />
                   <h3 className="text-2xl font-black text-white uppercase tracking-tighter">VERIFIED!</h3>
-                  <p className="text-white/40 font-bold uppercase tracking-widest text-[10px]">Reward unlocked</p>
+                  <p className="text-white/90 font-bold uppercase tracking-widest text-[10px]">Reward unlocked</p>
                 </div>
               )}
             </div>

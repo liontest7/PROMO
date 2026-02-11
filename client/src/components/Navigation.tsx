@@ -45,7 +45,7 @@ export function Navigation() {
     }
     buyMenuCloseTimeout.current = window.setTimeout(() => {
       setBuyMenuOpen(false);
-    }, 120);
+    }, 180);
   };
 
   useEffect(() => {
@@ -99,55 +99,98 @@ export function Navigation() {
               )}
             </div>
 
-          <div className="flex items-center gap-2 lg:gap-4">
-            <div className="hidden lg:flex items-center gap-3 mr-2 lg:mr-4 pr-2 lg:pr-4 border-r border-white/10">
-              <DropdownMenu open={buyMenuOpen} onOpenChange={setBuyMenuOpen}>
-                <DropdownMenuTrigger asChild>
-                  <Button 
-                    variant="ghost" 
-                    size="default" 
-                    className="px-4 h-10 rounded-full bg-primary/10 border border-primary/20 text-primary hover:bg-primary/20 transition-all gap-2 group"
-                    onMouseEnter={openBuyMenu}
-                    onMouseLeave={closeBuyMenu}
-                  >
-                    <span className="text-xs font-black uppercase tracking-widest">Buy ${PLATFORM_CONFIG.TOKEN_SYMBOL}</span>
-                    <ChevronDown className="w-4 h-4 transition-transform group-data-[state=open]:rotate-180" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-56 glass-card border-white/10 bg-background/95 backdrop-blur-xl" onMouseEnter={openBuyMenu} onMouseLeave={closeBuyMenu}>
-                  <div className="p-2 text-[10px] font-black uppercase text-white/80 tracking-widest border-b border-white/5 mb-1">
-                    Buy ${PLATFORM_CONFIG.TOKEN_SYMBOL} on DEX
-                  </div>
-                  <DropdownMenuItem asChild className="cursor-pointer focus:bg-primary/10 focus:text-primary">
-                    <a href={PLATFORM_CONFIG.TOKEN_DETAILS.BUY_LINKS.PUMP_FUN} target="_blank" rel="noreferrer" className="flex items-center gap-3 w-full py-2">
-                      <div className="w-8 h-8 rounded bg-primary/10 flex items-center justify-center overflow-hidden">
-                        <img src={PLATFORM_CONFIG.TOKEN_DETAILS.BUY_LINKS.PUMP_FUN_LOGO} className="w-full h-full object-cover" alt="Pump.fun" />
-                      </div>
-                      <span className="text-sm font-bold">Pump.fun</span>
-                      <ExternalLink className="w-3 h-3 ml-auto opacity-50" />
-                    </a>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem asChild className="cursor-pointer focus:bg-primary/10 focus:text-primary">
-                    <a href={PLATFORM_CONFIG.TOKEN_DETAILS.BUY_LINKS.DEX_SCREENER} target="_blank" rel="noreferrer" className="flex items-center gap-3 w-full py-2">
-                      <div className="w-8 h-8 rounded bg-primary/10 flex items-center justify-center overflow-hidden p-1">
-                        <img src="https://dexscreener.com/favicon.png" className="w-full h-full object-contain" alt="DexScreener" />
-                      </div>
-                      <span className="text-sm font-bold">DEXScreener</span>
-                      <ExternalLink className="w-3 h-3 ml-auto opacity-50" />
-                    </a>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem asChild className="cursor-pointer focus:bg-primary/10 focus:text-primary">
-                    <a href={PLATFORM_CONFIG.TOKEN_DETAILS.BUY_LINKS.JUPITER} target="_blank" rel="noreferrer" className="flex items-center gap-3 w-full py-2">
-                      <div className="w-8 h-8 rounded bg-primary/10 flex items-center justify-center overflow-hidden p-1">
-                        <img src="https://jup.ag/svg/jupiter-logo.svg" className="w-full h-full object-contain" alt="Jupiter" />
-                      </div>
-                      <span className="text-sm font-bold">Jupiter</span>
-                      <ExternalLink className="w-3 h-3 ml-auto opacity-50" />
-                    </a>
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
+<div className="flex items-center gap-2 lg:gap-4">
+  <div
+    className="hidden lg:flex items-center gap-3 mr-2 lg:mr-4 pr-2 lg:pr-4 border-r border-white/10"
+    onMouseEnter={openBuyMenu}
+    onMouseLeave={closeBuyMenu}
+  >
+    <DropdownMenu open={buyMenuOpen} onOpenChange={setBuyMenuOpen}>
+      <DropdownMenuTrigger asChild>
+        <Button 
+          variant="ghost" 
+          size="default" 
+          className="px-4 h-10 rounded-full bg-primary/10 border border-primary/20 text-primary hover:bg-primary/20 transition-all gap-2 group"
+          onClick={(e) => e.preventDefault()}
+        >
+          <span className="text-xs font-black uppercase tracking-widest">
+            Buy ${PLATFORM_CONFIG.TOKEN_SYMBOL}
+          </span>
+          <ChevronDown className="w-4 h-4 transition-transform group-data-[state=open]:rotate-180" />
+        </Button>
+      </DropdownMenuTrigger>
+
+      <DropdownMenuContent
+        align="end"
+        className="w-56 glass-card border-white/10 bg-background/95 backdrop-blur-xl"
+        onMouseEnter={openBuyMenu}
+        onMouseLeave={closeBuyMenu}
+      >
+        <div className="p-2 text-[10px] font-black uppercase text-white/80 tracking-widest border-b border-white/5 mb-1">
+          Buy ${PLATFORM_CONFIG.TOKEN_SYMBOL} on DEX
+        </div>
+
+        <DropdownMenuItem asChild className="cursor-pointer focus:bg-primary/10 focus:text-primary">
+          <a
+            href={PLATFORM_CONFIG.TOKEN_DETAILS.BUY_LINKS.PUMP_FUN}
+            target="_blank"
+            rel="noreferrer"
+            className="flex items-center gap-3 w-full py-2"
+          >
+            <div className="w-8 h-8 rounded bg-primary/10 flex items-center justify-center overflow-hidden">
+              <img
+                src={PLATFORM_CONFIG.TOKEN_DETAILS.BUY_LINKS.PUMP_FUN_LOGO}
+                className="w-full h-full object-cover"
+                alt="Pump.fun"
+              />
             </div>
+            <span className="text-sm font-bold">Pump.fun</span>
+            <ExternalLink className="w-3 h-3 ml-auto opacity-50" />
+          </a>
+        </DropdownMenuItem>
+
+        <DropdownMenuItem asChild className="cursor-pointer focus:bg-primary/10 focus:text-primary">
+          <a
+            href={PLATFORM_CONFIG.TOKEN_DETAILS.BUY_LINKS.DEX_SCREENER}
+            target="_blank"
+            rel="noreferrer"
+            className="flex items-center gap-3 w-full py-2"
+          >
+            <div className="w-8 h-8 rounded bg-primary/10 flex items-center justify-center overflow-hidden p-1">
+              <img
+                src="https://dexscreener.com/favicon.png"
+                className="w-full h-full object-contain"
+                alt="DexScreener"
+              />
+            </div>
+            <span className="text-sm font-bold">DEXScreener</span>
+            <ExternalLink className="w-3 h-3 ml-auto opacity-50" />
+          </a>
+        </DropdownMenuItem>
+
+        <DropdownMenuItem asChild className="cursor-pointer focus:bg-primary/10 focus:text-primary">
+          <a
+            href={PLATFORM_CONFIG.TOKEN_DETAILS.BUY_LINKS.JUPITER}
+            target="_blank"
+            rel="noreferrer"
+            className="flex items-center gap-3 w-full py-2"
+          >
+            <div className="w-8 h-8 rounded bg-primary/10 flex items-center justify-center overflow-hidden p-1">
+              <img
+                src="https://jup.ag/svg/jupiter-logo.svg"
+                className="w-full h-full object-contain"
+                alt="Jupiter"
+              />
+            </div>
+            <span className="text-sm font-bold">Jupiter</span>
+            <ExternalLink className="w-3 h-3 ml-auto opacity-50" />
+          </a>
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  </div>
+</div>
+
 
             {/* Social Links */}
             <div className="hidden lg:flex items-center gap-3 mr-2">
