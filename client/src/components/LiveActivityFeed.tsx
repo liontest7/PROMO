@@ -87,6 +87,23 @@ export function LiveActivityFeed() {
         </div>
 
         <div className={viewMode === "grid" ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4" : "space-y-3"}>
+          {activities.length === 0 ? (
+            <div className="col-span-full rounded-[2rem] border border-white/10 bg-white/[0.03] backdrop-blur-xl px-8 py-12 text-center">
+              <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl border border-primary/30 bg-primary/10">
+                <ShieldCheck className="h-7 w-7 text-primary" />
+              </div>
+              <h3 className="text-2xl font-display font-black uppercase tracking-tight text-white">
+                No rewards distributed yet
+              </h3>
+              <p className="mx-auto mt-3 max-w-2xl text-sm font-bold text-white/85 leading-relaxed">
+                Campaign verification is live and waiting for the first successful claim. Be the first contributor to complete a task and appear here.
+              </p>
+              <div className="mt-6 flex items-center justify-center gap-2 text-[11px] font-black uppercase tracking-[0.2em] text-primary">
+                <Zap className="h-4 w-4" />
+                First payout spotlight is open
+              </div>
+            </div>
+          ) : (
           <AnimatePresence mode="popLayout" initial={false}>
             {activities.map((activity) => (
               <motion.div
@@ -158,6 +175,7 @@ export function LiveActivityFeed() {
               </motion.div>
             ))}
           </AnimatePresence>
+          )}
         </div>
       </div>
     </section>

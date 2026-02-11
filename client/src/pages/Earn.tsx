@@ -166,7 +166,7 @@ export default function Earn() {
 
             <div className="flex gap-3 w-full sm:w-auto">
               <div className="relative flex-1 md:w-64">
-                <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-white/40" />
+                <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-white/80" />
                 <Input 
                   placeholder="Search projects..." 
                   className="pl-12 h-12 bg-white/5 border-white/10 focus:border-primary/50 text-base rounded-xl"
@@ -206,7 +206,7 @@ export default function Earn() {
                     </div>
 
                     <div className="space-y-2.5">
-                      <Label className="text-[11px] text-muted-foreground uppercase font-black tracking-wider">Min Reward Amount</Label>
+                      <Label className="text-[11px] text-white uppercase font-black tracking-wider">Min Reward Amount</Label>
                       <Input 
                         type="number"
                         placeholder="0.00"
@@ -217,7 +217,7 @@ export default function Earn() {
                     </div>
 
                     <div className="space-y-2.5">
-                      <Label className="text-[11px] text-muted-foreground uppercase font-black tracking-wider">Sort By</Label>
+                      <Label className="text-[11px] text-white uppercase font-black tracking-wider">Sort By</Label>
                       <select 
                         className="w-full h-9 bg-white/5 border border-white/10 rounded-md px-2 text-sm text-white focus:outline-none focus:border-primary/50"
                         value={sortBy}
@@ -230,7 +230,7 @@ export default function Earn() {
                     </div>
 
                     <div className="space-y-3.5">
-                      <Label className="text-[11px] text-muted-foreground uppercase font-black tracking-wider">Task Types</Label>
+                      <Label className="text-[11px] text-white uppercase font-black tracking-wider">Task Types</Label>
                       {[
                         { id: 'holder', label: 'Holder Qualification' },
                         { id: 'twitter', label: 'Twitter Follow' },
@@ -312,7 +312,7 @@ export default function Earn() {
                         "w-11 h-11 rounded-xl font-bold text-base transition-all",
                         currentPage === page 
                           ? "bg-primary text-primary-foreground shadow-[0_0_15px_rgba(34,197,94,0.3)]" 
-                          : "text-muted-foreground hover:text-white hover:bg-white/5"
+                          : "text-white/80 hover:text-white hover:bg-white/5"
                       )}
                     >
                       {page}
@@ -340,10 +340,10 @@ export default function Earn() {
             className="text-center py-20"
           >
             <div className="w-20 h-20 bg-white/5 rounded-full flex items-center justify-center mx-auto mb-4">
-              <Search className="w-10 h-10 text-muted-foreground" />
+              <Search className="w-10 h-10 text-white/80" />
             </div>
             <h3 className="text-xl font-bold mb-2">No campaigns found</h3>
-            <p className="text-muted-foreground">Try adjusting your search terms.</p>
+            <p className="text-white/80">Try adjusting your search terms.</p>
           </motion.div>
         )}
       </main>

@@ -35,8 +35,8 @@ export default function About() {
   return (
     <div className="min-h-screen bg-background text-foreground">
       <header>
-        <title>About {PLATFORM_CONFIG.TOKEN_SYMBOL} - Solana Engagement Revolution</title>
-        <meta name="description" content={`Learn how ${PLATFORM_CONFIG.TOKEN_SYMBOL} is revolutionizing marketing on Solana by connecting projects with real, verified users.`} />
+        <title>About Dropy - Solana Campaign Infrastructure</title>
+        <meta name="description" content="Learn how Dropy enables Solana projects to launch verified, performance-based campaign flows." />
       </header>
       <Navigation />
       
@@ -52,9 +52,9 @@ export default function About() {
             <span className="text-primary">The Future of Growth</span>
           </motion.h1>
           <p className="text-xl text-white/80 max-w-3xl mx-auto leading-relaxed font-medium">
-            Dropy is the premier marketing platform built specifically for the Solana ecosystem. We bridge the gap between innovative crypto projects and an engaged community of supporters through a unique, action-based reward system.
+            Dropy is a Solana campaign platform focused on measurable, verified engagement.
             <br/><br/>
-            Our mission is to democratize token distribution while providing advertisers with high-quality, verified engagement. We believe that marketing in the Web3 space should be transparent, efficient, and rewarding for everyone involved.
+            We connect projects and contributors through transparent reward mechanics, qualification checks, and a workflow designed for sustainable community growth.
           </p>
         </div>
 
@@ -95,7 +95,7 @@ export default function About() {
                   </div>
                   <div>
                     <h4 className="text-xl font-bold mb-2 text-white">For Projects & Developers</h4>
-                    <p className="text-lg text-white/80 leading-relaxed">Gain massive exposure and build trust. By requiring holder qualification, you ensure your community is composed of real stakeholders, not bots.</p>
+                    <p className="text-lg text-white/80 leading-relaxed">Build visibility and trust with verifiable participation. Holder qualification helps keep campaign traffic focused on real stakeholders instead of low-quality bot activity.</p>
                   </div>
                 </div>
                 <div className="flex gap-6">
@@ -130,39 +130,34 @@ export default function About() {
           
           <div className="relative space-y-12 before:absolute before:inset-0 before:ml-5 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-1 before:bg-gradient-to-b before:from-transparent before:via-primary/30 before:to-transparent">
             {[
-              { 
-                phase: "Phase 1: Foundation", 
-                title: "Engine & Core Infrastructure", 
+              {
+                phase: "Now",
+                title: "Core Campaign Engine",
                 items: [
-                  "Secure Platform Launch with Solana Escrow",
-                  "Verified On-chain Holder Qualification",
-                  "Anti-Bot Protection (Cloudflare Turnstile)",
-                  "Dynamic Gas Optimization System",
-                  "Deflationary 40/40/20 Tokenomics Model",
-                  "Social Media API Direct Verification"
+                  "Campaign creation and participation flows",
+                  "On-chain holder qualification checks",
+                  "Anti-bot protection and social verification",
+                  "Live campaign and payout visibility"
                 ],
                 status: "completed"
               },
-              { 
-                phase: "Phase 2: Growth", 
-                title: "Engagement & Ecosystem Expansion", 
+              {
+                phase: "Next",
+                title: "Operational Enhancements",
                 items: [
-                  "DEX Liquidity Boosting Rewards",
-                  "Premium Airdrop Tiers for High-Reputation Users",
-                  "Advertiser Dashboard & Advanced Analytics",
-                  "Cross-Chain Social Identity Integration"
+                  "Expanded advertiser analytics",
+                  "Safer automation and retry tooling",
+                  "Improved admin controls for campaign operations"
                 ],
                 status: "in_progress"
               },
-              { 
-                phase: "Phase 3: Ecosystem", 
-                title: "Global Scaling & Utility", 
+              {
+                phase: "Later",
+                title: "Ecosystem Expansion",
                 items: [
-                  "Small-Tier Exchange (CEX) Listings",
-                  "Automated Permissionless Campaign Factory",
-                  "Staking Rewards for $DROPY Long-term Holders",
-                  "Governance DAO Implementation",
-                  "Strategic Partnerships with Top Solana Protocols"
+                  "Additional integrations and partner workflows",
+                  "Advanced incentive design for long-term growth",
+                  "New distribution channels after readiness validation"
                 ],
                 status: "pending"
               }
@@ -186,7 +181,7 @@ export default function About() {
                     <span className={`font-black text-xs uppercase tracking-[0.2em] px-4 py-1.5 rounded-full border ${
                       step.status === 'completed' ? 'text-primary border-primary/20 bg-primary/10' : 
                       step.status === 'in_progress' ? 'text-orange-500 border-orange-500/30 bg-orange-500/20' : 
-                      'text-white/40 border-white/10 bg-white/5'
+                      'text-white/80 border-white/20 bg-white/5'
                     }`}>
                       {step.phase}
                     </span>

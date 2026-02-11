@@ -1,12 +1,13 @@
 import { db } from "./db";
 import { eq, desc, asc, sql } from "drizzle-orm";
 import {
-  users, campaigns, actions, executions, holderState, systemSettings, prizeHistory, systemLogs,
+  users, campaigns, actions, executions, holderState, systemSettings, prizeHistory, systemLogs, claimReceipts,
   type User, type InsertUser,
   type Campaign, type InsertCampaign,
   type Action, type InsertAction,
   type Execution, type InsertExecution,
-  type HolderState, type InsertHolderState
+  type HolderState, type InsertHolderState,
+  type ClaimReceipt,
 } from "@shared/schema";
 
 export interface IStorage {
@@ -34,6 +35,10 @@ export interface IStorage {
   updateCampaignRemainingBudget(id: number, remainingBudget: string): Promise<Campaign>;
   getPendingRewards(userId: number): Promise<{ campaignId: number; amount: string; tokenName: string; tokenAddress: string }[]>;
   claimRewards(userId: number, campaignIds: number[]): Promise<void>;
+  getClaimReceiptByNonce(userId: number, claimNonce: string): Promise<ClaimReceipt | undefined>;
+  createClaimReceipt(payload: { userId: number; claimNonce: string; campaignIds: number[] }): Promise<ClaimReceipt>;
+  completeClaimReceipt(claimNonce: string, data: { signatures: string[] }): Promise<void>;
+  failClaimReceipt(claimNonce: string, errorMessage: string): Promise<void>;
   getHolderState(userId: number, campaignId: number): Promise<HolderState | undefined>;
   createHolderState(state: InsertHolderState): Promise<HolderState>;
   updateHolderClaimed(id: number): Promise<void>;
@@ -98,9 +103,29 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getCampaignBySymbol(symbol: string): Promise<(Campaign & { actions: Action[] }) | undefined> {
-    const [campaign] = await db.select().from(campaigns).where(sql`LOWER(${campaigns.slug}) = LOWER(${symbol})`).orderBy(desc(campaigns.createdAt)).limit(1);
+    const normalized = decodeURIComponent(symbol || "")
+      .trim()
+      .toLowerCase()
+      .replace(/^\$+/, "");
+
+    const [campaign] = await db
+      .select()
+      .from(campaigns)
+      .where(sql`
+        LOWER(${campaigns.slug}) = ${normalized}
+        OR LOWER(REPLACE(${campaigns.slug}, '$', '')) = ${normalized}
+        OR LOWER(${campaigns.tokenName}) = ${normalized}
+        OR LOWER(REPLACE(${campaigns.tokenName}, '$', '')) = ${normalized}
+      `)
+      .orderBy(desc(campaigns.createdAt))
+      .limit(1);
     if (!campaign) {
-      const [campaignByTicker] = await db.select().from(campaigns).where(sql`LOWER(${campaigns.tokenName}) = LOWER(${symbol})`).orderBy(asc(campaigns.createdAt)).limit(1);
+      const [campaignByTicker] = await db
+        .select()
+        .from(campaigns)
+        .where(sql`LOWER(${campaigns.tokenName}) = ${normalized}`)
+        .orderBy(asc(campaigns.createdAt))
+        .limit(1);
       if (!campaignByTicker) return undefined;
       const campaignActions = await db.select().from(actions).where(eq(actions.campaignId, campaignByTicker.id));
       return { ...campaignByTicker, actions: campaignActions };
@@ -120,8 +145,11 @@ export class DatabaseStorage implements IStorage {
   }
 
   async createUser(insertUser: InsertUser): Promise<User> {
-    const [user] = await db.insert(users).values(insertUser).returning();
-    return user;
+    const createdUsers = await db.insert(users).values(insertUser).returning();
+    if (!Array.isArray(createdUsers) || createdUsers.length === 0) {
+      throw new Error("Failed to create user record");
+    }
+    return createdUsers[0];
   }
 
   async updateUserReputation(id: number, score: number): Promise<User> {
@@ -288,6 +316,43 @@ export class DatabaseStorage implements IStorage {
     const totalReward = rewards.reduce((sum, r) => sum + parseFloat(r.rewardAmount), 0);
     const [user] = await db.select().from(users).where(eq(users.id, userId));
     if (user) await db.update(users).set({ balance: (parseFloat(user.balance) + totalReward).toFixed(6), reputationScore: (user.reputationScore || 0) + (rewards.length * 10) }).where(eq(users.id, userId));
+  }
+
+  async getClaimReceiptByNonce(userId: number, claimNonce: string): Promise<ClaimReceipt | undefined> {
+    const [receipt] = await db
+      .select()
+      .from(claimReceipts)
+      .where(sql`${claimReceipts.userId} = ${userId} AND ${claimReceipts.claimNonce} = ${claimNonce}`)
+      .limit(1);
+    return receipt;
+  }
+
+  async createClaimReceipt(payload: { userId: number; claimNonce: string; campaignIds: number[] }): Promise<ClaimReceipt> {
+    const [receipt] = await db.insert(claimReceipts).values({
+      userId: payload.userId,
+      claimNonce: payload.claimNonce,
+      campaignIds: payload.campaignIds,
+      status: "processing",
+      signatures: [],
+    }).returning();
+    return receipt;
+  }
+
+  async completeClaimReceipt(claimNonce: string, data: { signatures: string[] }): Promise<void> {
+    await db.update(claimReceipts).set({
+      status: "completed",
+      signatures: data.signatures,
+      completedAt: new Date(),
+      errorMessage: null,
+    }).where(eq(claimReceipts.claimNonce, claimNonce));
+  }
+
+  async failClaimReceipt(claimNonce: string, errorMessage: string): Promise<void> {
+    await db.update(claimReceipts).set({
+      status: "failed",
+      errorMessage,
+      completedAt: new Date(),
+    }).where(eq(claimReceipts.claimNonce, claimNonce));
   }
 
   async getHolderState(userId: number, campaignId: number): Promise<HolderState | undefined> {

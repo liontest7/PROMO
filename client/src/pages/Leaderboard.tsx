@@ -18,6 +18,18 @@ import {
 
 import { UserProfileDialog } from "@/components/UserProfileDialog";
 
+interface LeaderboardResponse {
+  ranking: Array<{
+    id: number;
+    rank: number;
+    reputationScore?: number;
+    points?: number;
+    walletAddress: string;
+    [key: string]: any;
+  }>;
+  weeklyPrizePool: number;
+}
+
 export default function Leaderboard() {
   const [view, setView] = useState<"ranking" | "history">("ranking");
   const [lbType, setLbType] = useState<"tasks" | "referrals">("tasks");
@@ -33,7 +45,7 @@ export default function Leaderboard() {
     setIsProfileOpen(true);
   };
 
-  const { data: leaderboardRes, isLoading, error } = useQuery<any>({
+  const { data: leaderboardRes, isLoading, error } = useQuery<LeaderboardResponse>({
     queryKey: ["/api/leaderboard", timeframe, lbType],
     queryFn: async () => {
       const response = await fetch(`/api/leaderboard?timeframe=${timeframe}&type=${lbType}`);

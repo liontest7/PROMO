@@ -4,7 +4,8 @@ import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@/componen
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { Coins, Twitter, MessageCircle, ExternalLink, ShieldCheck, Globe, Send, Share2, Copy, Check, ArrowRight, Zap, TrendingUp, TrendingDown } from "lucide-react";
+import { Coins, MessageCircle, ExternalLink, ShieldCheck, Globe, Send, Share2, Copy, Check, ArrowRight, Zap, TrendingUp, TrendingDown } from "lucide-react";
+import { FaXTwitter } from "react-icons/fa6";
 import { formatDistanceToNow } from "date-fns";
 import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
@@ -64,13 +65,13 @@ export function CampaignCard({ campaign, onActionClick, isOwner }: CampaignCardP
 
   const getIcon = (type: string) => {
     switch(type) {
-      case 'twitter': return <Twitter className="w-4 h-4 text-blue-400" />;
+      case 'twitter': return <FaXTwitter className="w-3.5 h-3.5 text-white" />;
       case 'telegram': return <MessageCircle className="w-4 h-4 text-blue-500" />;
       default: return <ExternalLink className="w-4 h-4 text-gray-400" />;
     }
   };
 
-  const shareUrl = `${window.location.origin}/c/${campaign.tokenName}`;
+  const shareUrl = `${window.location.origin}/c/${campaign.slug || campaign.tokenName.toLowerCase()}`;
   const shareText = `Check out this airdrop on Dropy: ${campaign.title}! Earn ${campaign.tokenName} by completing simple tasks.`;
 
   const handleCopyLink = (e: React.MouseEvent) => {
@@ -130,7 +131,7 @@ export function CampaignCard({ campaign, onActionClick, isOwner }: CampaignCardP
             {campaign.twitterUrl && (
               <Button size="icon" variant="secondary" className="h-8 w-8 rounded-full bg-background/80 backdrop-blur-md border border-white/10" asChild>
                 <a href={campaign.twitterUrl} target="_blank" rel="noreferrer" onClick={(e) => e.stopPropagation()}>
-                  <Twitter className="w-3.5 h-3.5" />
+                  <FaXTwitter className="w-3 h-3" />
                 </a>
               </Button>
             )}
