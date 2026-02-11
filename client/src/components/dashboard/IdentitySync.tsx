@@ -1,6 +1,6 @@
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ShieldCheck, Send, LogOut, User as UserIcon } from "lucide-react";
+import { Send, LogOut, User as UserIcon } from "lucide-react";
 import { FaXTwitter } from "react-icons/fa6";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";

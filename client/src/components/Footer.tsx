@@ -78,9 +78,9 @@ export function Footer() {
             </Link>
 
             <p className="text-muted-foreground text-[14px] leading-relaxed max-w-sm font-medium">
-              The premier Pay-Per-Action engine for the Solana ecosystem.
-              Bridging projects and users through decentralized engagement and
-              verifiable rewards.
+              A performance-based campaign engine for Solana.
+              Connecting projects and contributors through verified actions
+              and transparent reward distribution.
             </p>
           </div>
 

@@ -245,7 +245,7 @@ export default function CampaignDetails() {
         <div className="absolute inset-0 flex items-center">
           <div className="container max-w-6xl mx-auto px-4">
             <Link href="/earn">
-              <Button variant="ghost" className="mb-4 -ml-4 gap-2 hover:bg-white/5 text-white/50 hover:text-white transition-colors">
+              <Button variant="ghost" className="mb-4 -ml-4 gap-2 hover:bg-white/5 text-white hover:text-white transition-colors">
                 <ArrowLeft className="w-4 h-4" /> Back
               </Button>
             </Link>
@@ -339,23 +339,23 @@ export default function CampaignDetails() {
                               "w-10 h-10 rounded-lg flex items-center justify-center transition-all border",
                               executions?.some(e => e.status === 'verified' || e.status === 'paid') 
                                 ? "bg-primary text-white border-primary" 
-                                : "bg-white/5 text-white/50 border-white/5 group-hover:bg-primary group-hover:text-white"
+                                : "bg-white/5 text-white border-white/5 group-hover:bg-primary group-hover:text-white"
                             )}>
                               <ShieldCheck className="w-5 h-5" />
                             </div>
                             <div className="text-left">
                               <p className="font-black text-base text-white uppercase tracking-tight">Holder Verification</p>
                               <div className="flex flex-wrap gap-x-3 gap-y-1 mt-1">
-                                <p className="text-[10px] font-bold text-white/40 uppercase tracking-widest leading-none">
+                                <p className="text-[10px] font-bold text-white uppercase tracking-widest leading-none">
                                   Hold {Number(campaign.minHoldingAmount).toLocaleString()} ${campaign.tokenName}
                                 </p>
                                 {campaign.requirements?.minSolBalance && (
-                                  <p className="text-[10px] font-bold text-primary/50 uppercase tracking-widest leading-none">
+                                  <p className="text-[10px] font-bold text-white uppercase tracking-widest leading-none">
                                     Min SOL: {campaign.requirements.minSolBalance}
                                   </p>
                                 )}
                                 {campaign.requirements?.minWalletAgeDays && (
-                                  <p className="text-[10px] font-bold text-primary/50 uppercase tracking-widest leading-none">
+                                  <p className="text-[10px] font-bold text-white uppercase tracking-widest leading-none">
                                     Age: {campaign.requirements.minWalletAgeDays}d
                                   </p>
                                 )}
@@ -364,7 +364,7 @@ export default function CampaignDetails() {
                           </div>
                           <div className="flex items-center gap-6">
                             <div className="text-right hidden sm:block">
-                              <p className="text-[10px] font-black text-white/30 uppercase tracking-widest">Reward</p>
+                              <p className="text-[10px] font-black text-white uppercase tracking-widest">Reward</p>
                               <p className="text-sm font-black text-primary">+{campaign.rewardPerWallet}</p>
                             </div>
                             {(() => {
@@ -409,18 +409,18 @@ export default function CampaignDetails() {
                               <div className="flex items-center gap-5">
                                 <div className={cn(
                                   "w-10 h-10 rounded-lg flex items-center justify-center transition-all border",
-                                  isCompleted ? "bg-primary text-white border-primary" : "bg-white/5 text-white/50 border-white/5 group-hover:bg-primary group-hover:text-white"
+                                  isCompleted ? "bg-primary text-white border-primary" : "bg-white/5 text-white border-white/5 group-hover:bg-primary group-hover:text-white"
                                 )}>
                                   {action.type === 'twitter' || action.type.startsWith('twitter_') ? <FaXTwitter className="w-4 h-4" /> : action.type === 'telegram' ? <Send className="w-5 h-5" /> : <ExternalLink className="w-5 h-5" />}
                                 </div>
                                 <div className="text-left">
                                   <p className="font-black text-base text-white uppercase tracking-tight">{action.title}</p>
-                                  <p className="text-xs text-white/40 uppercase font-bold tracking-widest">{action.type.replace('_', ' ')}</p>
+                                  <p className="text-xs text-white uppercase font-bold tracking-widest">{action.type.replace('_', ' ')}</p>
                                 </div>
                               </div>
                               <div className="flex items-center gap-6">
                                 <div className="text-right hidden sm:block">
-                                  <p className="text-[10px] font-black text-white/30 uppercase tracking-widest">Reward</p>
+                                  <p className="text-[10px] font-black text-white uppercase tracking-widest">Reward</p>
                                   <p className="text-sm font-black text-primary">+{action.rewardAmount}</p>
                                 </div>
                                 <Button 
@@ -511,7 +511,7 @@ export default function CampaignDetails() {
                     Payment Proofs
                     <ShieldCheck className="w-5 h-5 text-primary" />
                   </h2>
-                  <p className="text-sm text-white/40 font-bold uppercase tracking-widest">Live reward distribution from Solana</p>
+                  <p className="text-sm text-white font-bold uppercase tracking-widest">Live reward distribution from Solana</p>
                 </div>
                 <div className="flex gap-2">
                   <Badge variant="secondary" className="gap-2 px-4 py-1.5 bg-primary/10 text-primary border-primary/20 rounded-lg text-sm font-black">
@@ -524,7 +524,7 @@ export default function CampaignDetails() {
                 {participants === undefined ? (
                   <div className="col-span-full py-20 flex flex-col items-center justify-center gap-4 bg-white/[0.02] rounded-3xl border border-dashed border-white/10">
                     <Loader2 className="w-8 h-8 animate-spin text-primary" />
-                    <p className="text-xs font-black text-white/20 uppercase tracking-[0.2em]">Verifying Blockchain Data...</p>
+                    <p className="text-xs font-black text-white uppercase tracking-[0.2em]">Verifying Blockchain Data...</p>
                   </div>
                 ) : participants && participants.length > 0 ? (
                   participants.slice(0, 10).map((p, i) => (
@@ -537,7 +537,7 @@ export default function CampaignDetails() {
                           <p className="text-sm font-black text-white font-mono truncate">
                             {p.user.walletAddress.substring(0, 6)}...{p.user.walletAddress.substring(p.user.walletAddress.length - 6)}
                           </p>
-                          <p className="text-[10px] text-white/40 uppercase font-black tracking-widest flex items-center gap-2">
+                          <p className="text-[10px] text-white uppercase font-black tracking-widest flex items-center gap-2">
                             {formatDistanceToNow(new Date(p.createdAt || Date.now()), { addSuffix: true })}
                             <span className="w-1 h-1 rounded-full bg-white/10" />
                             SOLANA MAINNET
@@ -556,7 +556,7 @@ export default function CampaignDetails() {
                               href={`https://solscan.io/tx/${p.transactionSignature}`} 
                               target="_blank" 
                               rel="noreferrer"
-                              className="text-[10px] font-black text-white/20 hover:text-primary transition-colors uppercase flex items-center gap-1.5 sm:justify-end tracking-wider"
+                              className="text-[10px] font-black text-white hover:text-primary transition-colors uppercase flex items-center gap-1.5 sm:justify-end tracking-wider"
                             >
                               Verify Transaction <ExternalLink className="w-2.5 h-2.5" />
                             </a>
@@ -566,7 +566,7 @@ export default function CampaignDetails() {
                     </div>
                   ))
                 ) : (
-                  <div className="col-span-full text-center text-white/20 py-16 bg-white/[0.02] rounded-3xl border border-dashed border-white/10 italic text-sm flex flex-col items-center gap-3">
+                  <div className="col-span-full text-center text-white py-16 bg-white/[0.02] rounded-3xl border border-dashed border-white/10 italic text-sm flex flex-col items-center gap-3">
                     <ShieldCheck className="w-8 h-8 opacity-10" />
                     No rewards distributed yet. Be the first to claim!
                   </div>
@@ -587,7 +587,7 @@ export default function CampaignDetails() {
                 {initialMC !== null && currentMC !== null && (
                   <div className="p-5 rounded-2xl bg-white/[0.03] border border-white/5 space-y-4">
                     <div className="flex justify-between items-center">
-                      <span className="text-xs font-black text-white/40 uppercase tracking-widest">Performance</span>
+                      <span className="text-xs font-black text-white uppercase tracking-widest">Performance</span>
                       <div className={cn(
                         "flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-black",
                         mcChange! >= 0 ? "text-primary bg-primary/10" : "text-red-400 bg-red-400/10"
@@ -598,11 +598,11 @@ export default function CampaignDetails() {
                     </div>
                     <div className="grid grid-cols-2 gap-6">
                       <div className="space-y-1">
-                        <p className="text-[11px] font-black text-white/30 uppercase tracking-tight">MC Air-drop Launch</p>
+                        <p className="text-[11px] font-black text-white uppercase tracking-tight">MC Air-drop Launch</p>
                         <p className="text-lg font-black text-white">{formatMC(initialMC)}</p>
                       </div>
                       <div className="space-y-1">
-                        <p className="text-[11px] font-black text-primary/40 uppercase tracking-tight">Current Real MC</p>
+                        <p className="text-[11px] font-black text-white uppercase tracking-tight">Current Real MC</p>
                         <p className="text-lg font-black text-primary">{formatMC(currentMC)}</p>
                       </div>
                     </div>
@@ -610,18 +610,18 @@ export default function CampaignDetails() {
                 )}
                 <div className="space-y-5">
                   <div className="flex justify-between items-center">
-                    <span className="text-white/40 text-sm font-black uppercase tracking-wider">Network</span>
+                    <span className="text-white text-sm font-black uppercase tracking-wider">Network</span>
                     <span className="font-black text-white text-base flex items-center gap-2">
                       <img src={CONFIG.ui.walletIcons.solana} alt="Solana" className="w-4 h-4 rounded-full" />
                       SOLANA
                     </span>
                   </div>
                   <div className="flex justify-between items-center">
-                    <span className="text-white/40 text-sm font-black uppercase tracking-wider">Participants</span>
+                    <span className="text-white text-sm font-black uppercase tracking-wider">Participants</span>
                     <span className="font-black text-white text-lg">{participants?.length || 0}</span>
                   </div>
                   <div className="flex justify-between items-center">
-                    <span className="text-white/40 text-sm font-black uppercase tracking-wider">Created</span>
+                    <span className="text-white text-sm font-black uppercase tracking-wider">Created</span>
                     <span className="font-black text-white text-sm">{formatDistanceToNow(new Date(campaign.createdAt || Date.now()), { addSuffix: true })}</span>
                   </div>
                 </div>
@@ -651,7 +651,7 @@ export default function CampaignDetails() {
               <CardContent className="p-5 space-y-5">
                 <div className="space-y-5">
                   <div className="flex justify-between items-center py-2.5 border-b border-white/5">
-                    <span className="text-white/40 text-sm font-black uppercase tracking-wider">Escrow Wallet</span>
+                    <span className="text-white text-sm font-black uppercase tracking-wider">Escrow Wallet</span>
                     <a 
                       href={`https://solscan.io/account/${campaign.escrowWallet || campaign.tokenAddress}`} 
                       target="_blank" 
@@ -663,15 +663,15 @@ export default function CampaignDetails() {
                     </a>
                   </div>
                   <div className="flex justify-between items-center py-2.5 border-b border-white/5">
-                    <span className="text-white/40 text-sm font-black uppercase tracking-wider">Locked Rewards</span>
+                    <span className="text-white text-sm font-black uppercase tracking-wider">Locked Rewards</span>
                     <span className="font-black text-white text-base uppercase">{Number(campaign.totalBudget).toLocaleString()} ${campaign.tokenName}</span>
                   </div>
                   <div className="flex justify-between items-center py-2.5 border-b border-white/5">
-                    <span className="text-white/40 text-sm font-black uppercase tracking-wider">Gas Reserve</span>
+                    <span className="text-white text-sm font-black uppercase tracking-wider">Gas Reserve</span>
                     <span className="font-black text-primary text-base uppercase">{campaign.gasBudgetSol || "0.00"} SOL</span>
                   </div>
                   <div className="flex justify-between items-center py-2.5">
-                    <span className="text-white/40 text-sm font-black uppercase tracking-wider">Contract Status</span>
+                    <span className="text-white text-sm font-black uppercase tracking-wider">Contract Status</span>
                     <Badge variant="outline" className={cn(
                       "text-xs font-black h-7 px-4 uppercase tracking-widest",
                       campaign.creationFeePaid ? "border-green-500/20 bg-green-500/10 text-green-400" : "border-yellow-500/20 bg-yellow-500/10 text-yellow-500"

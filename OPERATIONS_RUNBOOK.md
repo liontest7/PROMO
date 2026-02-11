@@ -23,6 +23,31 @@
 3. Retry failed weekly winners from admin automation path.
 4. Validate with smoke tests and payout-health metrics.
 
+## Backup and restore operations
+
+### Daily backup job
+- Run `db:backup` once daily:
+  - `npm run db:backup`
+- Store output from `backups/` in external object storage.
+- Keep at least:
+  - 30 daily backups
+  - 12 weekly backups
+  - 12 monthly backups
+
+### Restore procedure
+1. Provision empty PostgreSQL instance.
+2. Export target `DATABASE_URL`.
+3. Restore selected snapshot:
+   - `npm run db:restore -- backups/dropy_YYYYMMDD_HHMMSS.sql.gz`
+4. Start backend and validate:
+   - `/api/health`
+   - sample campaign reads
+   - admin payout-health/reconciliation
+
+### Restore drill policy
+- Run restore drill at least once per month in staging.
+- Document RTO/RPO and any data gaps.
+
 ## Post-incident
 - Export logs + traceIds.
 - Document impact window and affected campaignIds.
