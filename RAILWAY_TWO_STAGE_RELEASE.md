@@ -83,3 +83,29 @@ If a production release fails:
 1. Roll back to previous Railway deployment.
 2. Keep payouts paused until health checks pass.
 3. Re-run smoke + admin health checks.
+
+## 7) Smart contract and chain mapping
+
+Use different chain/program settings per environment:
+
+- **Staging**
+  - `SOLANA_CLUSTER=devnet`
+  - `SMART_CONTRACT_PROGRAM_ID=<devnet-program-id>`
+
+- **Production**
+  - `SOLANA_CLUSTER=mainnet-beta`
+  - `SMART_CONTRACT_PROGRAM_ID=<mainnet-program-id>`
+
+Never point staging to mainnet signing keys.
+
+## 8) Real data visibility without production risk
+
+If your team wants to see realistic data while developing:
+
+- Keep production DB private to production service.
+- Expose a read-only replica or scheduled sanitized copy to staging.
+- Keep all staging write operations isolated from production.
+
+This gives realistic dashboards without risking live-user data integrity.
+=======
+

@@ -150,7 +150,7 @@ export const IdentitySync = ({ user, walletAddress }: IdentitySyncProps) => {
                   disabled={syncMutation.isPending}
                   className="w-full bg-blue-500 hover:bg-blue-600 text-white gap-3 font-black text-[13px] h-11 rounded-lg shadow-md transition-all active-elevate-2 uppercase tracking-widest relative overflow-hidden group/btn"
                 >
-                  <span className="relative z-10">{syncMutation.isPending ? 'Syncing...' : 'Connect Protocol Node'}</span>
+                  <span className="relative z-10">{syncMutation.isPending ? 'Syncing...' : 'Connect Your X'}</span>
                 </Button>
               </div>
             </div>
@@ -167,13 +167,13 @@ export const IdentitySync = ({ user, walletAddress }: IdentitySyncProps) => {
                 <span className="text-[9px] font-black uppercase tracking-widest text-white">Verified Identity</span>
               </div>
               <p className="text-base font-black font-display tracking-tight text-white uppercase italic">@{user.twitterHandle}</p>
-              <Badge className="bg-primary/20 text-primary border-none text-[8px] font-black mt-1 uppercase tracking-widest">Node Synced</Badge>
+              <Badge className="bg-primary/20 text-primary border-none text-[8px] font-black mt-1 uppercase tracking-widest">X Connected</Badge>
             </div>
             <Button
               size="icon"
               variant="ghost"
               disabled={unlinkMutation.isPending}
-              className="h-8 w-8 rounded-lg text-white/40 hover:text-destructive hover:bg-destructive/10 relative z-[100] transition-all"
+              className="h-8 w-8 rounded-lg text-white hover:text-destructive hover:bg-destructive/10 relative z-[100] transition-all"
               onClick={handleUnlink}
             >
               <LogOut className={`w-4 h-4 ${unlinkMutation.isPending ? 'animate-spin' : ''}`} />
@@ -204,7 +204,7 @@ export const IdentitySync = ({ user, walletAddress }: IdentitySyncProps) => {
                   onClick={handleTGConnect}
                   className="w-full bg-blue-600 hover:bg-blue-700 text-white gap-3 font-black text-[13px] h-11 rounded-lg shadow-md transition-all active-elevate-2 uppercase tracking-widest relative overflow-hidden group/btn"
                 >
-                  <span className="relative z-10">Initiate Secure Link</span>
+                  <span className="relative z-10">Connect Your Telegram</span>
                 </Button>
               </div>
             </div>
@@ -220,7 +220,7 @@ export const IdentitySync = ({ user, walletAddress }: IdentitySyncProps) => {
             <div className="flex-1 relative z-10">
               <div className="flex items-center gap-2">
                 <Send className="w-3 h-3 text-[#0088cc]" />
-                <span className="text-[9px] font-black uppercase tracking-widest text-white/60">Verified Telegram</span>
+                <span className="text-[9px] font-black uppercase tracking-widest text-white">Verified Telegram</span>
               </div>
               <p className="text-base font-black font-display tracking-tight text-white uppercase italic">@{user.telegramHandle}</p>
               <Badge className="bg-[#0088cc]/20 text-[#0088cc] border-none text-[8px] font-black mt-1 uppercase tracking-widest">Link Active</Badge>
@@ -228,7 +228,7 @@ export const IdentitySync = ({ user, walletAddress }: IdentitySyncProps) => {
             <Button
               size="icon"
               variant="ghost"
-              className="h-8 w-8 rounded-lg text-white/40 hover:text-destructive hover:bg-destructive/10 relative z-[100] transition-all"
+              className="h-8 w-8 rounded-lg text-white hover:text-destructive hover:bg-destructive/10 relative z-[100] transition-all"
               onClick={() => {
                 syncMutation.mutate({
                   walletAddress,

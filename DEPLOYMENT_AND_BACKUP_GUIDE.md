@@ -104,3 +104,37 @@ Use branch-to-environment mapping:
 - `main` branch -> Railway production service
 
 Detailed setup is documented in `RAILWAY_TWO_STAGE_RELEASE.md`.
+
+## 8) Database + Smart Contract environment model (recommended)
+
+For long-term stability, use strict environment separation:
+
+- **Staging DB**: used by staging app and developer testing.
+- **Production DB**: used only by production app.
+- Never allow local/Replit development to write directly to production DB.
+
+For smart contracts, use separate deployments:
+
+- **Devnet Program ID** for staging/testing flows.
+- **Mainnet Program ID** for production flows.
+
+This means you can work on the same codebase while each environment points to its own chain + DB safely.
+
+## 9) Seeing real production data while developing (safe approach)
+
+If you need real visibility during development, use one of these patterns:
+
+1. **Read-only production replica (preferred)**
+   - replicate production DB to a read-only analytics/staging replica.
+   - staging can read realistic data without risking production writes.
+
+2. **Periodic sanitized snapshot copy**
+   - copy production data into staging on schedule (daily/weekly).
+   - remove sensitive values as needed.
+
+3. **Feature-flagged shadow checks**
+   - production remains source of truth.
+   - compare staging behavior against production metrics/logs without direct writes.
+
+Do **not** share a writable DB between staging and production.
+ain
