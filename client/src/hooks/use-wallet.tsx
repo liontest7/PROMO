@@ -12,7 +12,7 @@ interface WalletContextType {
   isConnected: boolean;
   walletAddress: string | null;
   userId: number | null;
-  role: "user" | "advertiser" | null;
+  role: "user" | "advertiser" | "admin" | null;
   connect: (role: "user" | "advertiser") => Promise<void>;
   disconnect: () => void;
   isLoading: boolean;
@@ -36,7 +36,7 @@ const WalletContext = createContext<WalletContextType | undefined>(undefined);
 export function WalletProvider({ children }: { children: ReactNode }) {
   const [walletAddress, setWalletAddress] = useState<string | null>(null);
   const [userId, setUserId] = useState<number | null>(null);
-  const [role, setRole] = useState<"user" | "advertiser" | null>(null);
+  const [role, setRole] = useState<"user" | "advertiser" | "admin" | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [solBalance, setSolBalance] = useState<number | null>(null);
   const [walletBalance, setWalletBalance] = useState<number | null>(null);
@@ -71,7 +71,7 @@ export function WalletProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     const savedAddress = localStorage.getItem("wallet_address");
-    const savedRole = localStorage.getItem("user_role") as "user" | "advertiser";
+    const savedRole = localStorage.getItem("user_role") as "user" | "advertiser" | "admin";
     const savedId = localStorage.getItem("user_id");
     const savedStatus = localStorage.getItem("user_status") as "active" | "suspended" | "blocked";
     
@@ -143,16 +143,38 @@ export function WalletProvider({ children }: { children: ReactNode }) {
       }
       
       const publicAddress = publicKey.toString();
-      
+
+      if (typeof provider.signMessage !== 'function') {
+        throw new Error("Selected wallet does not support message signing. Please use Phantom or Solflare.");
+      }
+
+      const challengeRes = await fetch('/api/users/auth/challenge', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ walletAddress: publicAddress })
+      });
+
+      if (!challengeRes.ok) {
+        throw new Error("Failed to fetch wallet challenge from server");
+      }
+
+      const challenge = await challengeRes.json();
+      const messageBytes = new TextEncoder().encode(challenge.message as string);
+      const signed = await provider.signMessage(messageBytes, 'utf8');
+      const signatureBytes: Uint8Array = (signed?.signature ? signed.signature : signed) as Uint8Array;
+      const signature = btoa(String.fromCharCode(...Array.from(signatureBytes)));
+
       const res = await fetch('/api/users/auth', {
         method: 'POST',
-        headers: { 
+        headers: {
           'Content-Type': 'application/json',
           'x-referrer-wallet': new URLSearchParams(window.location.search).get('ref') || ''
         },
         body: JSON.stringify({
           walletAddress: publicAddress,
-          role: pendingRole
+          role: pendingRole,
+          nonce: challenge.nonce,
+          signature
         })
       });
       
@@ -233,6 +255,7 @@ export function WalletProvider({ children }: { children: ReactNode }) {
   };
 
   const disconnect = () => {
+    fetch('/api/users/logout', { method: 'POST' }).catch(() => undefined);
     setWalletAddress(null);
     setRole(null);
     setUserId(null);

@@ -2,7 +2,8 @@ import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Navigation } from "@/components/Navigation";
 import { useWallet } from "@/hooks/use-wallet";
-import { Rocket, Coins, ShieldCheck, ArrowRight, Users, Search, Zap, Send, Twitter } from "lucide-react";
+import { Rocket, Coins, ShieldCheck, ArrowRight, Users, Search, Zap, Send } from "lucide-react";
+import { FaXTwitter } from "react-icons/fa6";
 import { motion } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
 import { useCampaigns } from "@/hooks/use-campaigns";
@@ -37,7 +38,7 @@ function EarnContentOnly({ settings }: { settings: any }) {
   if (settings && !settings.campaignsEnabled) {
     return (
       <div className="col-span-full py-20 text-center">
-        <p className="text-xl font-bold text-white/40 italic uppercase tracking-widest">Campaigns are temporarily paused for maintenance.</p>
+        <p className="text-xl font-bold text-white italic uppercase tracking-widest">Campaigns are temporarily paused for maintenance.</p>
       </div>
     );
   }
@@ -65,7 +66,7 @@ function EarnContentOnly({ settings }: { settings: any }) {
 
 export default function Landing() {
   const { connect, isConnected } = useWallet();
-  const { data: campaigns } = useCampaigns();
+  useCampaigns();
   const { data: stats } = useQuery({
     queryKey: ["/api/stats/global"],
     queryFn: async () => {
@@ -97,10 +98,10 @@ export default function Landing() {
   return (
     <div className="min-h-screen bg-background text-foreground relative">
       <header>
-        <title>Dropy - The #1 Solana Marketing Platform</title>
-        <meta name="description" content="Connect, complete tasks, and earn crypto rewards instantly on Solana. The premier engagement platform for real users and authentic growth." />
-        <meta property="og:title" content="Dropy - The #1 Solana Marketing Platform" />
-        <meta property="og:description" content="Connect, complete tasks, and earn crypto rewards instantly on Solana." />
+        <title>Dropy - Solana Growth Campaigns With On-Chain Qualification</title>
+        <meta name="description" content="Launch and join Solana campaigns with verified participation, anti-bot checks, and transparent reward distribution." />
+        <meta property="og:title" content="Dropy - Solana Growth Campaigns" />
+        <meta property="og:description" content="Run and complete campaigns with on-chain qualification and transparent reward flows." />
         <meta property="og:image" content={PLATFORM_CONFIG.ASSETS.LANDING_MASCOT} />
         <meta name="twitter:card" content="summary_large_image" />
       </header>
@@ -131,8 +132,8 @@ export default function Landing() {
                 <span className="text-primary neon-text italic">Drive Real Growth</span>
               </h1>
               <p className="text-xl md:text-2xl text-white/80 max-w-3xl mx-auto mb-12 leading-relaxed font-medium">
-                Dropy is Solana's premier Pay-Per-Action platform. Drive authentic growth with verified on-chain holder qualification, bot-free task verification, and automated token distribution. 
-                Built for projects that demand real engagement and a deflationary ecosystem.
+                Dropy helps Solana projects run performance-based campaigns with real user participation.
+                Use on-chain holder qualification, anti-bot checks, and transparent reward flows to scale community growth with confidence.
               </p>
 
               <div className="flex flex-col sm:flex-row gap-4 justify-center mb-16">
@@ -205,7 +206,7 @@ export default function Landing() {
             <div className="flex flex-col md:flex-row justify-between items-end gap-6 mb-12">
               <div>
                 <h2 className="text-4xl font-display font-bold mb-2">Active Campaigns</h2>
-                <p className="text-xl text-white/80 font-medium">Join these top-tier projects and start earning rewards today.</p>
+                <p className="text-xl text-white/80 font-medium">Discover live campaigns and complete verified actions to earn rewards.</p>
               </div>
               <Link href="/earn">
                 <Button variant="ghost" className="text-primary hover:text-primary hover:bg-primary/10 group font-bold" data-testid="button-view-all">
@@ -284,7 +285,7 @@ export default function Landing() {
                 <Button size="lg" className="h-20 px-12 bg-white text-black hover:bg-gray-100 font-black text-2xl rounded-2xl shadow-2xl group transition-all hover:scale-105" asChild data-testid="link-twitter">
                   <a href={PLATFORM_CONFIG.SOCIAL_LINKS.TWITTER} target="_blank" rel="noreferrer" className="flex items-center gap-4">
                     <div className="w-12 h-12 rounded-xl bg-black/10 flex items-center justify-center group-hover:rotate-12 transition-transform">
-                      <Twitter className="w-8 h-8 fill-black" />
+                      <FaXTwitter className="w-7 h-7" />
                     </div>
                     FOLLOW TWITTER (X)
                   </a>
