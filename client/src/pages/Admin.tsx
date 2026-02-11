@@ -122,23 +122,21 @@ function PremiumManagement({ campaigns }: { campaigns: any[] | undefined }) {
 
 export default function AdminDashboard() {
   const { toast } = useToast();
-  const { walletAddress } = useWallet();
+  const { walletAddress, isConnected, role } = useWallet();
   const [searchTerm, setSearchTerm] = useState("");
   const [isControlsExpanded, setIsControlsExpanded] = useState(false);
   const [settingsUpdate, setSettingsUpdate] = useState<any>({});
   const [selectedCampaign, setSelectedCampaign] = useState<any>(null);
   
-  const currentWallet = walletAddress || localStorage.getItem('walletAddress');
+  const sessionRole = ((localStorage.getItem('userRole') as any) || role) as string | null;
+  const isAdminSession = !!isConnected && (sessionRole === "admin" || sessionRole === "superadmin");
 
   const fetchAdmin = async ({ queryKey }: any) => {
     const path = queryKey.join("/");
     const fetchUrl = path.startsWith('/') ? path : `/${path}`;
     const res = await fetch(fetchUrl, {
-      headers: {
-        'x-wallet-address': currentWallet || '',
-        'wallet-address': currentWallet || '',
-        'Content-Type': 'application/json'
-      }
+      credentials: 'include',
+      headers: { 'Content-Type': 'application/json' }
     });
     if (!res.ok) {
       const errorText = await res.text();
@@ -151,21 +149,21 @@ export default function AdminDashboard() {
     queryKey: ["/api/admin/users"],
     queryFn: fetchAdmin,
     staleTime: 60000,
-    enabled: !!currentWallet
+    enabled: isAdminSession
   });
 
   const { data: campaigns, isLoading: loadingCampaigns } = useQuery<any[]>({
     queryKey: ["/api/admin/campaigns"],
     queryFn: fetchAdmin,
     staleTime: 60000,
-    enabled: !!currentWallet
+    enabled: isAdminSession
   });
 
   const { data: executions, isLoading: loadingExecutions } = useQuery<any[]>({
     queryKey: ["/api/admin/executions"],
     queryFn: fetchAdmin,
     staleTime: 60000,
-    enabled: !!currentWallet
+    enabled: isAdminSession
   });
 
   const { data: settings, isLoading: loadingSettings } = useQuery<any>({
@@ -173,21 +171,21 @@ export default function AdminDashboard() {
     queryFn: fetchAdmin,
     staleTime: 0,
     refetchOnWindowFocus: true,
-    enabled: !!currentWallet,
+    enabled: isAdminSession,
   });
 
   const { data: adminStats, isLoading: loadingStats } = useQuery<any>({
     queryKey: ["/api/admin/stats"],
     queryFn: fetchAdmin,
     staleTime: 60000,
-    enabled: !!currentWallet
+    enabled: isAdminSession
   });
 
   const { data: walletInfo } = useQuery<any>({
     queryKey: ["/api/admin/wallet-info"],
     queryFn: fetchAdmin,
     staleTime: 60000,
-    enabled: !!currentWallet
+    enabled: isAdminSession
   });
 
   const filteredUsers = useMemo(() => (users || []).filter(u => 
@@ -213,11 +211,8 @@ export default function AdminDashboard() {
     mutationFn: async ({ campaignId, status }: { campaignId: number, status: string }) => {
       const res = await fetch(`/api/admin/campaigns/${campaignId}/status`, {
         method: 'PATCH',
-        headers: { 
-          'Content-Type': 'application/json',
-          'x-wallet-address': currentWallet || '',
-          'wallet-address': currentWallet || ''
-        },
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ status })
       });
       if (!res.ok) throw new Error('Failed to update campaign status');
@@ -232,14 +227,10 @@ export default function AdminDashboard() {
 
   const updateRoleMutation = useMutation({
     mutationFn: async ({ userId, role }: { userId: number, role: string }) => {
-      const currentWallet = walletAddress || localStorage.getItem('walletAddress');
       const res = await fetch(`/api/admin/users/${userId}/role`, {
         method: 'POST',
-        headers: { 
-          'Content-Type': 'application/json',
-          'x-wallet-address': currentWallet || '',
-          'wallet-address': currentWallet || ''
-        },
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ role })
       });
       if (!res.ok) throw new Error('Failed to update role');
@@ -253,14 +244,10 @@ export default function AdminDashboard() {
 
   const updateStatusMutation = useMutation({
     mutationFn: async ({ userId, status }: { userId: number, status: string }) => {
-      const currentWallet = walletAddress || localStorage.getItem('walletAddress');
       const res = await fetch(`/api/admin/users/${userId}/status`, {
         method: 'POST',
-        headers: { 
-          'Content-Type': 'application/json',
-          'x-wallet-address': currentWallet || '',
-          'wallet-address': currentWallet || ''
-        },
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ status })
       });
       if (!res.ok) throw new Error('Failed to update status');
@@ -276,10 +263,8 @@ export default function AdminDashboard() {
     mutationFn: async (updates: any) => {
       const res = await fetch("/api/admin/settings", {
         method: 'PATCH',
-        headers: { 
-          'Content-Type': 'application/json',
-          'x-wallet-address': currentWallet || '',
-        },
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(updates)
       });
       if (!res.ok) throw new Error(await res.text() || 'Failed to update settings');
@@ -312,7 +297,7 @@ export default function AdminDashboard() {
     mutationFn: async () => {
       const res = await fetch("/api/admin/settings/test-twitter", {
         method: 'POST',
-        headers: { 'x-wallet-address': currentWallet || '' }
+        credentials: 'include'
       });
       return res.json();
     },
@@ -334,6 +319,23 @@ export default function AdminDashboard() {
         <div className="flex flex-col items-center gap-4">
           <Loader2 className="h-10 w-10 animate-spin text-primary" />
           <p className="text-sm font-bold animate-pulse text-primary tracking-widest uppercase italic">Establishing Secure Admin Connection...</p>
+        </div>
+      </div>
+    );
+  }
+
+
+  if (!isConnected || !isAdminSession) {
+    return (
+      <div className="min-h-screen bg-background text-foreground pb-20">
+        <Navigation />
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+          <Card className="glass-card border-white/10 bg-white/[0.02] rounded-2xl">
+            <CardContent className="p-10 text-center">
+              <h2 className="text-2xl font-black text-white mb-3 uppercase tracking-widest">Admin Access Required</h2>
+              <p className="text-white/80 font-medium">Connect with an admin wallet and complete session login to view admin data.</p>
+            </CardContent>
+          </Card>
         </div>
       </div>
     );

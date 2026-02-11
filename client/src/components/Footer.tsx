@@ -2,6 +2,7 @@ import { Link } from "wouter";
 import { PLATFORM_CONFIG } from "@shared/config";
 import { useWallet } from "@/hooks/use-wallet";
 import { ShieldCheck, Send, Mail, ArrowUpRight, ChevronRight } from "lucide-react";
+import { FaXTwitter } from "react-icons/fa6";
 import { Separator } from "@/components/ui/separator";
 
 export function Footer() {
@@ -19,7 +20,7 @@ export function Footer() {
         label: "X (Twitter)",
         href: PLATFORM_CONFIG.SOCIAL_LINKS.TWITTER,
         isExternal: true,
-        icon: ShieldCheck,
+        icon: FaXTwitter,
       },
       {
         label: "Telegram",
@@ -76,10 +77,10 @@ export function Footer() {
               </span>
             </Link>
 
-            <p className="text-muted-foreground text-[14px] leading-relaxed max-w-sm font-medium">
-              The premier Pay-Per-Action engine for the Solana ecosystem.
-              Bridging projects and users through decentralized engagement and
-              verifiable rewards.
+            <p className="text-white/90 text-[14px] leading-relaxed max-w-sm font-medium">
+              A performance-based campaign engine for Solana.
+              Connecting projects and contributors through verified actions
+              and transparent reward distribution.
             </p>
           </div>
 
@@ -95,7 +96,7 @@ export function Footer() {
                   <li key={link.label}>
                     <Link
                       href={link.href}
-                      className="group flex items-center text-muted-foreground hover:text-primary transition-colors text-sm font-bold"
+                      className="group flex items-center text-white hover:text-primary transition-colors text-sm font-bold"
                     >
                       <ChevronRight className="w-3 h-3 mr-1 opacity-0 -ml-4 group-hover:opacity-100 group-hover:ml-0 transition-all duration-300" />
                       {link.label}
@@ -108,7 +109,7 @@ export function Footer() {
                     <li>
                       <Link
                         href="/admin"
-                        className="group flex items-center text-muted-foreground hover:text-primary transition-colors text-sm font-bold"
+                        className="group flex items-center text-white hover:text-primary transition-colors text-sm font-bold"
                       >
                         <ChevronRight className="w-3 h-3 mr-1 opacity-0 -ml-4 group-hover:opacity-100 group-hover:ml-0 transition-all duration-300" />
                         Admin Panel
@@ -130,7 +131,7 @@ export function Footer() {
                       href={link.href}
                       target="_blank"
                       rel="noreferrer"
-                      className="group flex items-center text-muted-foreground hover:text-primary transition-colors text-sm font-bold"
+                      className="group flex items-center text-white hover:text-primary transition-colors text-sm font-bold"
                     >
                       <ChevronRight className="w-3 h-3 mr-1 opacity-0 -ml-4 group-hover:opacity-100 group-hover:ml-0 transition-all duration-300" />
                       <link.icon className="w-4 h-4 mr-2" />
@@ -154,7 +155,7 @@ export function Footer() {
                       href={link.href}
                       target="_blank"
                       rel="noreferrer"
-                      className="group flex items-center text-muted-foreground hover:text-primary transition-colors text-sm font-bold"
+                      className="group flex items-center text-white hover:text-primary transition-colors text-sm font-bold"
                     >
                       <ChevronRight className="w-3 h-3 mr-1 opacity-0 -ml-4 group-hover:opacity-100 group-hover:ml-0 transition-all duration-300" />
                       {link.label}
@@ -171,10 +172,10 @@ export function Footer() {
 
         <div className="flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="flex flex-col items-center md:items-start">
-            <p className="text-[12px] text-muted-foreground font-medium">
+            <p className="text-[12px] text-white/90 font-medium">
               © {currentYear} {PLATFORM_CONFIG.TOKEN_SYMBOL} Platform.
             </p>
-            <div className="flex items-center gap-2 text-[10px] text-muted-foreground/40 font-black uppercase tracking-widest mt-0.5">
+            <div className="flex items-center gap-2 text-[10px] text-white/80 font-black uppercase tracking-widest mt-0.5">
               <div className="w-1 h-1 rounded-full bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.6)] animate-pulse" />
               Solana Mainnet-Beta
             </div>
@@ -191,13 +192,13 @@ export function Footer() {
             <div className="flex items-center gap-4">
               <Link
                 href="/privacy"
-                className="text-[10px] text-white/70 hover:text-primary transition-colors uppercase tracking-[0.15em] font-black"
+                className="text-[10px] text-white hover:text-primary transition-colors uppercase tracking-[0.15em] font-black"
               >
                 Privacy
               </Link>
               <Link
                 href="/terms"
-                className="text-[10px] text-white/70 hover:text-primary transition-colors uppercase tracking-[0.15em] font-black"
+                className="text-[10px] text-white hover:text-primary transition-colors uppercase tracking-[0.15em] font-black"
               >
                 Terms
               </Link>

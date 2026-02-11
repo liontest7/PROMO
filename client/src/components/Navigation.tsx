@@ -1,43 +1,58 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Link, useLocation } from "wouter";
 import { useWallet } from "@/hooks/use-wallet";
 import { Button } from "@/components/ui/button";
 import { 
-  LayoutDashboard, 
-  Coins, 
-  Wallet, 
-  LogOut, 
-  ExternalLink, 
-  Trophy, 
-  ShieldCheck, 
-  Send, 
+  Coins,
+  Wallet,
+  LogOut,
+  ExternalLink,
+  Trophy,
+  ShieldCheck,
+  Send,
   ChevronDown,
-  ShieldAlert,
   User as UserIcon
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { FaXTwitter } from "react-icons/fa6";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-  DropdownMenuSeparator,
-  DropdownMenuLabel,
 } from "@/components/ui/dropdown-menu";
-import { SiJupyter } from "react-icons/si";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
 import { PLATFORM_CONFIG } from "@shared/config";
 
-import { useToast } from "@/hooks/use-toast";
-import { Turnstile } from "@marsidev/react-turnstile";
 
 export function Navigation() {
   const [location] = useLocation();
   const { isConnected, role, walletAddress, disconnect, connect } = useWallet();
-  const { toast } = useToast();
-  const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
   const [isConnecting, setIsConnecting] = useState(false);
+  const [buyMenuOpen, setBuyMenuOpen] = useState(false);
+  const buyMenuCloseTimeout = useRef<number | null>(null);
+
+  const openBuyMenu = () => {
+    if (buyMenuCloseTimeout.current) {
+      window.clearTimeout(buyMenuCloseTimeout.current);
+      buyMenuCloseTimeout.current = null;
+    }
+    setBuyMenuOpen(true);
+  };
+
+  const closeBuyMenu = () => {
+    if (buyMenuCloseTimeout.current) {
+      window.clearTimeout(buyMenuCloseTimeout.current);
+    }
+    buyMenuCloseTimeout.current = window.setTimeout(() => {
+      setBuyMenuOpen(false);
+    }, 120);
+  };
+
+  useEffect(() => {
+    return () => {
+      if (buyMenuCloseTimeout.current) window.clearTimeout(buyMenuCloseTimeout.current);
+    };
+  }, []);
 
   const handleConnect = async (roleType: 'user') => {
     setIsConnecting(true);
@@ -53,7 +68,7 @@ export function Navigation() {
       "flex items-center gap-2 px-4 py-2 rounded-lg text-[15px] font-bold transition-all duration-200",
       location === href 
         ? "bg-primary/15 text-white border border-primary/30 shadow-[0_0_15px_rgba(34,197,94,0.2)]" 
-        : "text-white/80 hover:text-white hover:bg-white/10"
+        : "text-white hover:text-white hover:bg-white/10"
     )}>
       <Icon className="w-5 h-5" />
       {children}
@@ -79,26 +94,28 @@ export function Navigation() {
               
               {isConnected && (
                 <>
-                  <NavLink href="/dashboard" icon={Trophy}>My Dashboard</NavLink>
+                  <NavLink href="/dashboard" icon={UserIcon}>My Dashboard</NavLink>
                 </>
               )}
             </div>
 
           <div className="flex items-center gap-2 lg:gap-4">
             <div className="hidden lg:flex items-center gap-3 mr-2 lg:mr-4 pr-2 lg:pr-4 border-r border-white/10">
-              <DropdownMenu>
+              <DropdownMenu open={buyMenuOpen} onOpenChange={setBuyMenuOpen}>
                 <DropdownMenuTrigger asChild>
                   <Button 
                     variant="ghost" 
                     size="default" 
                     className="px-4 h-10 rounded-full bg-primary/10 border border-primary/20 text-primary hover:bg-primary/20 transition-all gap-2 group"
+                    onMouseEnter={openBuyMenu}
+                    onMouseLeave={closeBuyMenu}
                   >
                     <span className="text-xs font-black uppercase tracking-widest">Buy ${PLATFORM_CONFIG.TOKEN_SYMBOL}</span>
                     <ChevronDown className="w-4 h-4 transition-transform group-data-[state=open]:rotate-180" />
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-56 glass-card border-white/10 bg-background/95 backdrop-blur-xl">
-                  <div className="p-2 text-[10px] font-black uppercase text-muted-foreground tracking-widest border-b border-white/5 mb-1">
+                <DropdownMenuContent align="end" className="w-56 glass-card border-white/10 bg-background/95 backdrop-blur-xl" onMouseEnter={openBuyMenu} onMouseLeave={closeBuyMenu}>
+                  <div className="p-2 text-[10px] font-black uppercase text-white/80 tracking-widest border-b border-white/5 mb-1">
                     Buy ${PLATFORM_CONFIG.TOKEN_SYMBOL} on DEX
                   </div>
                   <DropdownMenuItem asChild className="cursor-pointer focus:bg-primary/10 focus:text-primary">
@@ -137,7 +154,7 @@ export function Navigation() {
               <Button 
                 variant="ghost" 
                 size="icon" 
-                className="w-10 h-10 rounded-full border border-white/10 text-white/70 hover:text-white hover:bg-white/5 transition-all shadow-lg shadow-black/20"
+                className="w-10 h-10 rounded-full border border-white/10 text-white hover:text-white hover:bg-white/5 transition-all shadow-lg shadow-black/20"
                 asChild
                 title="Leaderboard"
               >
@@ -148,18 +165,18 @@ export function Navigation() {
               <Button 
                 variant="ghost" 
                 size="icon" 
-                className="w-10 h-10 rounded-full border border-white/10 hover:bg-white/10 text-white/80 hover:text-primary transition-colors shadow-lg shadow-black/20"
+                className="w-10 h-10 rounded-full border border-white/10 hover:bg-white/10 text-white hover:text-primary transition-colors shadow-lg shadow-black/20"
                 asChild
                 data-testid="nav-link-twitter"
               >
                 <a href={PLATFORM_CONFIG.SOCIAL_LINKS.TWITTER} target="_blank" rel="noreferrer">
-                  <ShieldCheck className="w-5 h-5" />
+                  <FaXTwitter className="w-4 h-4" />
                 </a>
               </Button>
               <Button 
                 variant="ghost" 
                 size="icon" 
-                className="w-10 h-10 rounded-full border border-white/10 hover:bg-white/10 text-white/80 hover:text-blue-500 transition-colors shadow-lg shadow-black/20"
+                className="w-10 h-10 rounded-full border border-white/10 hover:bg-white/10 text-white hover:text-blue-400 transition-colors shadow-lg shadow-black/20"
                 asChild
                 data-testid="nav-link-telegram"
               >
@@ -173,7 +190,7 @@ export function Navigation() {
             {isConnected ? (
               <div className="flex items-center gap-4">
                 <div className="hidden sm:flex flex-col items-end">
-                  <span className="text-[10px] font-black text-muted-foreground uppercase tracking-widest leading-none mb-1">{role}</span>
+                  <span className={cn("text-[10px] font-black uppercase tracking-widest leading-none mb-1", ((role as any) === "admin" || (role as any) === "superadmin") ? "text-primary" : "text-white")}>{role}</span>
                   <span className="text-[14px] font-mono text-primary font-black leading-none">
                     {walletAddress?.slice(0, 4)}...{walletAddress?.slice(-4)}
                   </span>
