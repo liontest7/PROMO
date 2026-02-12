@@ -8,9 +8,11 @@ const databaseUrl = process.env.DATABASE_URL;
 
 if (!databaseUrl) {
   throw new Error(
-    "DATABASE_URL must be set.",
+    "DATABASE_URL must be set in Secrets.",
   );
 }
+
+console.log("[Database] Initializing connection to external PostgreSQL...");
 
 export const pool = new Pool({ 
   connectionString: databaseUrl,

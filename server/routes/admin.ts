@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction, Express } from "express";
 import { z } from "zod";
 import { storage } from "../storage";
+import { pool } from "../db";
 import { PLATFORM_CONFIG } from "@shared/config";
 import { SERVER_CONFIG } from "@shared/config";
 import os from "os";
@@ -170,9 +171,14 @@ export function setupAdminRoutes(app: Express) {
   app.get("/api/admin/settings", async (req, res) => {
     try {
       const settings = await storage.getSystemSettings();
+      // Use pg to check the actual connection info from the pool
+      const client = await pool.connect();
+      const dbInfo = await client.query("SELECT current_database() as db, inet_server_addr() as addr");
+      client.release();
+
       res.json({
         ...(settings || {}),
-        dbSource: process.env.DATABASE_URL ? "Production" : "Staging (Railway)",
+        dbSource: `External (${dbInfo.rows[0].db} @ ${dbInfo.rows[0].addr || 'localhost'})`,
         solanaCluster: SERVER_CONFIG.SOLANA_CLUSTER
       });
     } catch (err) {
