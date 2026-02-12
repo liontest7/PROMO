@@ -6,7 +6,7 @@ import { CampaignCard } from "@/components/CampaignCard";
 import { VerifyActionDialog } from "@/components/VerifyActionDialog";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Search, Filter, X, Plus, Coins } from "lucide-react";
+import { Search, Filter, X, Plus, Coins, Rocket } from "lucide-react";
 import { type Action, type Campaign } from "@shared/schema";
 import { type Action as ActionType, type Campaign as CampaignType } from "@shared/schema";
 import { motion } from "framer-motion";
