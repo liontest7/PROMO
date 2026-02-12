@@ -170,7 +170,11 @@ export function setupAdminRoutes(app: Express) {
   app.get("/api/admin/settings", async (req, res) => {
     try {
       const settings = await storage.getSystemSettings();
-      res.json(settings || {});
+      res.json({
+        ...(settings || {}),
+        dbSource: process.env.DATABASE_URL ? "Production" : "Staging (Railway)",
+        solanaCluster: SERVER_CONFIG.SOLANA_CLUSTER
+      });
     } catch (err) {
       console.error("[Admin Settings] Error:", err);
       res.status(500).json({ message: "Failed to fetch settings" });
