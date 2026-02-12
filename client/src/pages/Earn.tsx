@@ -52,14 +52,14 @@ export default function Earn() {
 
   // Add global settings query to handle real-time feature toggling
   const { data: settings } = useQuery<any>({
-    queryKey: ["/api/admin/settings"],
+    queryKey: ["/api/public/settings"],
     queryFn: async () => {
-      const res = await fetch("/api/admin/settings");
+      const res = await fetch("/api/public/settings");
       if (!res.ok) return null;
       return res.json();
     },
-    refetchInterval: 1000,
-    staleTime: 0,
+    refetchInterval: 10000,
+    staleTime: 5000,
   });
 
   const [activeTab, setActiveTab] = useState<"active" | "closed">("active");
@@ -337,13 +337,13 @@ export default function Earn() {
           <motion.div 
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="text-center py-20"
+            className="text-center py-24 bg-white/5 rounded-[3rem] border border-white/5 backdrop-blur-sm"
           >
-            <div className="w-20 h-20 bg-white/5 rounded-full flex items-center justify-center mx-auto mb-4">
-              <Search className="w-10 h-10 text-white/80" />
+            <div className="w-24 h-24 bg-white/5 rounded-full flex items-center justify-center mx-auto mb-6">
+              <Rocket className="w-12 h-12 text-primary/40" />
             </div>
-            <h3 className="text-xl font-bold mb-2">No campaigns found</h3>
-            <p className="text-white/80">Try adjusting your search terms.</p>
+            <h3 className="text-2xl font-display font-black mb-3 uppercase tracking-tighter italic">No active campaigns at the moment</h3>
+            <p className="text-white/60 max-w-md mx-auto font-medium">The system is currently waiting for new project submissions. Be the first to launch or stay tuned for updates.</p>
           </motion.div>
         )}
       </main>
