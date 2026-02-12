@@ -1,0 +1,47 @@
+We need to fully switch this app to our new external PostgreSQL environments and stop using any old/internal DB state.
+
+Please do the following for this Repl:
+
+Remove old/internal DB coupling
+Detach/disable any legacy Replit DB bindings or previous DATABASE_URL values.
+Ensure the app uses ONLY the DATABASE_URL we provide in Secrets.
+Set clean environment secrets for STAGING (devnet)
+NODE_ENV=production
+PORT=5000
+DATABASE_URL=<external_staging_postgres_url>
+SESSION_SECRET=<strong_random_secret>
+SOLANA_CLUSTER=devnet
+SOLANA_RPC_ENDPOINTS=<comma-separated devnet RPCs>
+REWARDS_PAYOUTS_ENABLED=false
+SMART_CONTRACT_ENABLED=true
+SMART_CONTRACT_PROGRAM_ID=<devnet_program_id>
+SMART_CONTRACT_CLAIMS_FALLBACK_TO_TRANSFER=true
+SYSTEM_WALLET_PRIVATE_KEY=<base58_key>
+PAYOUT_FAILURE_ALERT_THRESHOLD_PERCENT=15
+RPC_ERROR_ALERT_THRESHOLD_COUNT=5
+Confirm app behavior after restart
+Start app and verify it boots using external DATABASE_URL.
+Confirm /api/admin/stats responds with admin session (not empty due to wrong DB).
+Confirm /api/admin/users and /api/admin/campaigns return data from the new external staging DB.
+Session/auth behavior
+Keep cookies/sessions enabled (admin routes are session-based).
+We login via wallet challenge/signature and then admin APIs rely on session cookie.
+Data reset policy
+We accept starting staging as a clean DB for testing.
+If needed, run schema/migrations on the new external DB, then we will seed test data manually.
+Production separation
+We will use a separate production DATABASE_URL and separate mainnet program ID.
+No shared writable DB between staging and production.
+ואמרת לי שזה מה שעשית וזה אני רוצה שתבדוק את כל מה שעשינו ומה שעוד נשאר לנו לעשות כדי שהכל יעבוד כמו שצריך 
+
+מה בוצע:
+
+תיקון באג קריטי באוטומציה: הסרתי כפילויות בקוד שמנעו מהשרת לעלות ותיקנתי את מנגנון ההתראות על כשלי תשלום.
+שיפור השקיפות בניהול: הוספתי תצוגה בלוח הבקרה של המנהל (Admin) המציגה את מקור בסיס הנתונים (Railway vs Staging) ואת רשת ה-Solana הפעילה.
+אופטימיזציה של שירות ה-Solana: שיפרתי את הטיפול בייצוג עשרוני של טוקנים (Decimals) כדי להבטיח דיוק מוחלט בהעברות כספים ופרסים.
+מנגנון התראות: הוספתי ניטור אוטומטי שמתריע על אחוז כשלונו גבוה בתשלומים או בעיות בתקשורת עם רשת הבלוקצ'יין (RPC).
+מה נשאר לביצוע (באחריותך):
+
+הגדרת סודות (Secrets): עליך להזין ב-Replit את ה-DATABASE_URL של Railway (עבור Staging ו-Production) ואת ה-SMART_CONTRACT_PROGRAM_ID ברגע שהחוזה יופץ.
+פריסת החוזה החכם: לאחר הפריסה ל-Devnet, יש לעדכן את ה-Program ID ולהגדיר את SMART_CONTRACT_ENABLED ל-true בקובץ הקונפיגורציה.
+המערכת כעת יציבה, רצה ומחוברת בהצלחה לבסיס הנתונים החיצוני.
